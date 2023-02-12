@@ -1,0 +1,12 @@
+name: {{name}}
+topology:
+    nodes:
+# for node in nodes:
+        {{ node }}:
+            kind: ceos
+            image: ceos
+# endfor
+    links:
+# for link in links:
+        - endpoints: {{link}}
+# endfor
