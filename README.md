@@ -1,6 +1,8 @@
 # ntopex
 Network Topology Exporter
 
+NANOG-87 Hackathon project. Intro [slides](https://docs.google.com/presentation/d/1-WcKsDuaFh3tozmTdTxGYXjMFuthRyevsRZbIc2j2Kw/edit?usp=sharing)
+
 ## Prerequisites
 
 ```Shell
