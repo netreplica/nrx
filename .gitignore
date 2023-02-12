@@ -132,3 +132,4 @@ dmypy.json
 *.bak
 *.clab.yml
 *_interface_map.json
+clab-*
