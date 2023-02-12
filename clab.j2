@@ -5,6 +5,8 @@ topology:
         {{ node }}:
             kind: ceos
             image: ceos
+            binds:
+                - {{node}}_interface_map.json:/mnt/flash/EosIntfMapping.json:ro
 # endfor
     links:
 # for link in links:
