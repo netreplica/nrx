@@ -129,3 +129,7 @@ dmypy.json
 .pyre/
 *.gml
 *.cyjs
+*.bak
+*.clab.yml
+*_interface_map.json
+clab-*
