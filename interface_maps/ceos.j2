@@ -4,7 +4,7 @@
   },
   "EthernetIntf": {
 # for k, v in map.items():
-    "{{v}}": "{{k}}",
+    "{{v}}": "{{k}}"{% if not loop.last %},{% endif %}
 # endfor
   }
 }
