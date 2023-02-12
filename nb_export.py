@@ -26,6 +26,7 @@ class NB_Factory:
         self.G = nx.Graph()
         self.nb_session = pynetbox.api(self.config['nb_api_url'], token=self.config['nb_api_token'], threading=True)
         self.nb_site = self.nb_session.dcim.sites.get(name=config['export_site'])
+        print(f"Exporing {config['export_site']} site from netbox at {config['nb_api_url']}")
         self._get_nb_device_info()
         self._build_network_graph()
 
@@ -46,7 +47,7 @@ class NB_Factory:
 
             for interface in list(self.nb_session.dcim.interfaces.filter(device_id=device.id)):
                 if "base" in interface.type.value and interface.cable:  # only connected ethernet interfaces
-                    print(device.name, ":", interface, ":", interface.type.value)
+                    #print(device.name, ":", interface, ":", interface.type.value)
                     i = {
                         "id": interface.id,
                         "type": "interface",
@@ -89,13 +90,11 @@ class NB_Factory:
                     ])
 
     def export_graph_gml(self):
-        #print("\n".join(nx.generate_gml(G)))
         nx.write_gml(self.G, self.config['export_site'] + ".gml")
         print(f'Graph GML saved to {self.config["export_site"]}.gml')
 
     def export_graph_json(self):
         cyjs = nx.cytoscape_data(self.G)
-        #print(json.dumps(cyjs, indent=4))
         with open(self.config['export_site'] + ".cyjs", 'w', encoding='utf-8') as f:
             json.dump(cyjs, f, indent=4)
         print(f'Graph JSON saved to {self.config["export_site"]}.cyjs')
