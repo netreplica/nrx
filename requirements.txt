@@ -1,2 +1,3 @@
-pynetbox
+pynetbox~=7.0.1
 networkx
+toml~=0.10.2
