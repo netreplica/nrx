@@ -6,8 +6,6 @@ import json
 import toml
 import pynetbox
 import networkx as nx
-import matplotlib.pyplot as plt
-
 
 
 class NB_Network:
@@ -26,8 +24,6 @@ class NB_Factory:
         self.config = config
         self.nb_net = NB_Network()
         self.G = nx.Graph()
-        self.N = nx.Graph()  # graph with names as IDs for quick visual validation only
-        self.graph_plot = None
         self.nb_session = pynetbox.api(self.config['nb_api_url'], token=self.config['nb_api_token'], threading=True)
         self.nb_site = self.nb_session.dcim.sites.get(name=config['export_site'])
         self._get_nb_device_info()
@@ -78,46 +74,19 @@ class NB_Factory:
                         (d_a["node_id"], {"side": "a", "type": "device", "device": d_a}),
                         (d_b["node_id"], {"side": "b", "type": "device", "device": d_b}),
                     ])
-                    self.N.add_nodes_from([
-                        (d_a["name"], {"side": "a", "type": "device", "device": d_a}),
-                        (d_b["name"], {"side": "b", "type": "device", "device": d_b}),
-                    ])
                     i_a = self.nb_net.interfaces[self.nb_net.interface_ids.index(int_a.id)]
                     i_b = self.nb_net.interfaces[self.nb_net.interface_ids.index(int_b.id)]
                     self.G.add_nodes_from([
                         (i_a["node_id"], {"side": "a", "type": "interface", "interface": i_a}),
                         (i_b["node_id"], {"side": "b", "type": "interface", "interface": i_b}),
                     ])
-                    self.N.add_nodes_from([
-                        (i_a["name"], {"side": "a", "type": "interface", "interface": i_a}),
-                        (i_b["name"], {"side": "b", "type": "interface", "interface": i_b}),
-                    ])
                     self.G.add_edges_from([
                         (d_a["node_id"], i_a["node_id"]),
                         (d_b["node_id"], i_b["node_id"]),
                     ])
-                    self.N.add_edges_from([
-                        (d_a["name"], i_a["name"]),
-                        (d_b["name"], i_b["name"]),
-                    ])
                     self.G.add_edges_from([
                         (i_a["node_id"], i_b["node_id"]),
                     ])
-                    self.N.add_edges_from([
-                        (i_a["name"], i_b["name"]),
-                    ])
-        self._build_network_graph_image()
-
-    def _build_network_graph_image(self):
-        self.graph_plot = plt.subplot(121)
-        nx.draw(self.G, with_labels=True, font_weight='bold')
-        self.graph_plot = plt.subplot(122)
-        nx.draw(self.N, with_labels=True, font_size='6')
-
-    def export_graph_image(self):
-        filename = f'{self.config["export_site"]}.graph.png'
-        plt.savefig(filename)
-        print(f'Graph image saved to {filename}')
 
     def export_graph_gml(self):
         #print("\n".join(nx.generate_gml(G)))
@@ -149,7 +118,6 @@ def main():
 
     config = load_config('config.toml')
     nb_network = NB_Factory(config)
-    nb_network.export_graph_image()
     nb_network.export_graph_gml()
     nb_network.export_graph_json()
 
