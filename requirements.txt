@@ -1,3 +1,4 @@
 pynetbox~=7.0.1
 networkx
+jinja2
 toml~=0.10.2
