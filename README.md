@@ -6,7 +6,7 @@
 
 Network Topology Exporter
 
-Ntopex helps you export network topology graphs from [NetBox](https://docs.netbox.dev/en/stable/) DCIM system and create topology files for [Containerlab](https://containerlab.dev) network emulation tool. This is a [NANOG-87 Hackathon project](https://docs.google.com/presentation/d/?1-WcKsDuaFh3tozmTdTxGYXjMFuthRyevsRZbIc2j2Kw/edit?usp=sharing).
+Ntopex helps you export network topology graphs from [NetBox](https://docs.netbox.dev/en/stable/) DCIM system and create topology files for [Containerlab](https://containerlab.dev) network emulation tool.
 
 ## Workflow
 
@@ -66,7 +66,7 @@ Conversion capabilities:
     mkdir -p ~/.venv
     cd ~/.venv
     export PYENV=ntopex-py39
-    python3.9 -m venv $PYENV; cd $PYENV; export PYENV_DIR=`pwd`
+    python3.9 -m venv $PYENV; cd $PYENV; export PYENV_DIR=`pwd`; cd $HOME
     source "$PYENV_DIR/bin/activate"
     ```
 
@@ -94,3 +94,28 @@ Conversion capabilities:
     sudo -E containerlab deploy -t <site_name>.clab.yml --reconfigure
     ```
 
+# Credits
+
+## NANOG-87 Hackathon
+
+This is a [NANOG-87 Hackathon project](https://docs.google.com/presentation/d/1-WcKsDuaFh3tozmTdTxGYXjMFuthRyevsRZbIc2j2Kw/edit?usp=sharing). The project team:
+
+* [Alex Bortok](https://github.com/bortok)
+* [Chip Gwyn](https://github.com/chipgwyn)
+* [Toni Yannick Kalombo](https://github.com/tonikalombo)
+
+## Copyright notice
+
+Copyright 2023 Netreplica Team
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
