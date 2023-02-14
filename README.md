@@ -1,11 +1,12 @@
-# Netreplica `ntopex`
+# Netreplica ntopex
 Network Topology Exporter
 
 <p align=center><img src="https://raw.githubusercontent.com/netreplica/ntopex/readme/images/ntopex_concept_diagram.png"  width="500px"/></p>
 
-> NANOG-87 Hackathon project. Intro [slides](https://docs.google.com/presentation/d/?1-WcKsDuaFh3tozmTdTxGYXjMFuthRyevsRZbIc2j2Kw/edit?usp=sharing)
+Ntopex helps you export network topology graphs from [NetBox](https://docs.netbox.dev/en/stable/) DCIM system and create topology files for [Containerlab](https://containerlab.dev) network emulation tool.
 
-`ntopex` helps you export network topology graphs from [NetBox](https://docs.netbox.dev/en/stable/) DCIM system and create topology files for [Containerlab](https://containerlab.dev) network emulation tool.
+> NANOG-87 Hackathon project. See intro slides [here](https://docs.google.com/presentation/d/?1-WcKsDuaFh3tozmTdTxGYXjMFuthRyevsRZbIc2j2Kw/edit?usp=sharing).
+
 
 ## Prerequisites
 
