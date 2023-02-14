@@ -37,49 +37,60 @@ Conversion capabilities:
 
 ## Prerequisites
 
-```Shell
-python3.9 -V
-pip -V
-cd /tmp
-wget https://bootstrap.pypa.io/get-pip.py
-python3.9 get-pip.py
-pip -V
-pip install virtualenv
-```
+* Python 3.9
+* PIP
 
-## Create venv environment
+    ```Shell
+    cd /tmp
+    wget https://bootstrap.pypa.io/get-pip.py
+    python3.9 get-pip.py
+    ```
 
-```Shell
-mkdir -p ~/.venv
-cd ~/.venv
-export PYENV=ntopex-py39
-python3.9 -m venv $PYENV; cd $PYENV; export PYENV_DIR=`pwd`
-source "$PYENV_DIR/bin/activate"
-```
+* Virtualenv (recommended)
 
-Create venv environment for Jupyter
+    ```Shell
+    pip install virtualenv
+    ```
 
-```Shell
-mkdir -p ~/.venv
-cd ~/.venv
-export PYENV=ntopex-jup39
-python3.9 -m venv $PYENV; cd $PYENV; export PYENV_DIR=`pwd`
-source "$PYENV_DIR/bin/activate"
-```
+* Containerlab – not required for `ntopex`, but needed to deploy the topology created
 
-Clone and initialize venv
-```Shell
-git clone https://github.com/netreplica/ntopex.git
+    ```Shell
+    bash -c "$(curl -sL https://get.containerlab.dev)"
+    ```
 
-source ~/.venv/ntopex-py39/bin/activate
-cd ntopex
-pip3 install -r requirements.txt
-```
+## How to use
 
-Run as a Jupyter notebook:
-```Shell
-source ~/.venv/ntopex-jup39/bin/activate
-cd ntopex
-pip3 install -r requirements.txt -r requirements_jupyter.txt
-jupyter notebook --ip=0.0.0.0
-```
+1. Create venv environment (adjust path to `.venv` folder if needed)
+
+    ```Shell
+    mkdir -p ~/.venv
+    cd ~/.venv
+    export PYENV=ntopex-py39
+    python3.9 -m venv $PYENV; cd $PYENV; export PYENV_DIR=`pwd`
+    source "$PYENV_DIR/bin/activate"
+    ```
+
+2. Clone this repository and install required modules
+
+    ```Shell
+    git clone https://github.com/netreplica/ntopex.git
+    cd ntopex
+    pip3 install -r requirements.txt -r requirements_jupyter.txt
+    ```
+
+4. Launch a Jupyter server (we're working on CLI-only programs) and connect to its web interface using one of the URLs that will be presented to you
+
+    ```Shell
+    jupyter notebook
+    ```
+
+5. Open and run [`ntopex.ipynb`](ntopex.ipynb) to export topology graph. Change initial parameters in the first code block to use NetBox instance you have and export the site you need
+
+6. Open and run [`clab.ipynb`](clab.ipynb) to create a Containerlab topology. Change initial parameters in the first code block to match the site name you used in the previous stop
+
+7. Now you're ready to start the Containerlab topology:
+
+    ```Shell
+    sudo -E containerlab deploy -t <site_name>.clab.yml --reconfigure
+    ```
+
