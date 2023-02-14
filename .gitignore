@@ -51,3 +51,6 @@ dmypy.json
 clab-*
 .idea/
 .ipynb_checkpoints
+*.bkp
+*.dtmp
+.DS_Store
