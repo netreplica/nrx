@@ -96,13 +96,15 @@ Conversion capabilities:
 
 # Credits
 
-## NANOG-87 Hackathon
+## Original idea and implementation
 
-This is a [NANOG-87 Hackathon project](https://docs.google.com/presentation/d/1-WcKsDuaFh3tozmTdTxGYXjMFuthRyevsRZbIc2j2Kw/edit?usp=sharing). The project team:
+This is a [NANOG-87 Hackathon](https://www.nanog.org/events/nanog-87-hackathon/) project. The original project [slides](https://docs.google.com/presentation/d/1-WcKsDuaFh3tozmTdTxGYXjMFuthRyevsRZbIc2j2Kw/edit?usp=sharing). The project team:
 
 * [Alex Bortok](https://github.com/bortok)
 * [Chip Gwyn](https://github.com/chipgwyn)
 * [Toni Yannick Kalombo](https://github.com/tonikalombo)
+
+The implementation is inspired by [ContainerLab random labs](https://gist.github.com/renatoalmeidaoliveira/fdb772a5a02f3cfc0b5fbe7e8b7586a2) by [Renato Almeida de Oliveira](https://github.com/renatoalmeidaoliveira).
 
 ## Copyright notice
 
