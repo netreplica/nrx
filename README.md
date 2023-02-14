@@ -5,7 +5,7 @@ Network Topology Exporter
 
 > NANOG-87 Hackathon project. Intro [slides](https://docs.google.com/presentation/d/?1-WcKsDuaFh3tozmTdTxGYXjMFuthRyevsRZbIc2j2Kw/edit?usp=sharing)
 
-`ntopex` helps you to export network topology graphs from [NetBox](https://docs.netbox.dev/en/stable/) DCIM system and create topology files for [Containerlab](htts://containerlab.dev) network emulation tool.
+`ntopex` helps you export network topology graphs from [NetBox](https://docs.netbox.dev/en/stable/) DCIM system and create topology files for [Containerlab](https://containerlab.dev) network emulation tool.
 
 ## Prerequisites
 
