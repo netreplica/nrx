@@ -1,4 +1,4 @@
-<p align=center><img src="https://raw.githubusercontent.com/netreplica/ntopex/readme/images/ntopex_concept_diagram.png" width="500px"/></p>
+<p align=center><img src="https://github.com/netreplica/ntopex/raw/main/images/ntopex_concept_diagram.png" width="500px"/></p>
 
 ---
 
