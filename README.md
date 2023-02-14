@@ -8,12 +8,14 @@ Network Topology Exporter
 
 Ntopex helps you export network topology graphs from [NetBox](https://docs.netbox.dev/en/stable/) DCIM system and create topology files for [Containerlab](https://containerlab.dev) network emulation tool. This is a [NANOG-87 Hackathon project](https://docs.google.com/presentation/d/?1-WcKsDuaFh3tozmTdTxGYXjMFuthRyevsRZbIc2j2Kw/edit?usp=sharing).
 
-## Capabilities
+## Workflow
 
 Ntopex works in two steps:
 
 1. Export step. A graph is exported from NetBox into a file using a [GML](https://networkx.org/documentation/stable/reference/readwrite/gml.html) as well as [CYJS](http://manual.cytoscape.org/en/stable/index.html) formats.
 2. Conversion step. A separate program read the graph from a CYJS file and creates a Containerlab topology file
+
+## Capabilities
 
 Ntopex is in a very early, proof-of-concept phase.
 
