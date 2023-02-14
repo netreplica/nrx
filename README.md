@@ -1,7 +1,7 @@
 # Netreplica `ntopex`
 Network Topology Exporter
 
-<p align=center><img src="https://raw.githubusercontent.com/netreplica/ntopex/readme/images/ntopex_concept_diagram.svg"  width="500px"/></p>
+<p align=center><img src="https://raw.githubusercontent.com/netreplica/ntopex/readme/images/ntopex_concept_diagram.png"  width="500px"/></p>
 
 > NANOG-87 Hackathon project. Intro [slides](https://docs.google.com/presentation/d/?1-WcKsDuaFh3tozmTdTxGYXjMFuthRyevsRZbIc2j2Kw/edit?usp=sharing)
 
