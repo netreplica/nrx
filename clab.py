@@ -19,21 +19,22 @@
 # Read CYJS graph data into a dictonary and initialize networkx graph from it
 import os
 import sys
+import argparse
 import json
 import toml
 import networkx as nx
 
 class NetworkGraph:
-    def __init__(self, config):
-        self.config = config
-        self.topology_name = config['export_site']
+    def __init__(self, file):
+        self.graph_file = file
         self._read_network_graph()
+        self.topology_name = self.G.graph["name"]
         self._build_topology()
 
     def _read_network_graph(self):
-        print(f"Reading CYJS topology graph:\t{self.topology_name}.cyjs")
+        print(f"Reading CYJS topology graph:\t{self.graph_file}")
         cyjs = {}
-        with open(self.topology_name + ".cyjs", 'r', encoding='utf-8') as f:
+        with open(self.graph_file, 'r', encoding='utf-8') as f:
             cyjs = json.load(f)
         self.G = nx.cytoscape_graph(cyjs)
 
@@ -130,8 +131,16 @@ def load_config(filename):
 
 def main():
 
-    config = load_config('config.toml')
-    ng = NetworkGraph(config)
+    # CLI arguments parser
+    parser = argparse.ArgumentParser(prog='clab.py', description='Network Topology Exporter')
+    parser.add_argument('-f', '--file', required=True, help='file with the network graph in CYJS format to import')
+
+    # Common parameters
+    args = parser.parse_args()
+
+    graph_file = args.file
+
+    ng = NetworkGraph(graph_file)
     ng.export_clab()
 
     return 0
