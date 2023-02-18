@@ -17,12 +17,21 @@
 # Create Containerlab topology from CYJS graph
 
 # Read CYJS graph data into a dictonary and initialize networkx graph from it
-import os
 import sys
 import argparse
 import json
-import toml
 import networkx as nx
+
+# DEFINE GLOBAL VARs HERE
+
+debug_on = False
+
+def errlog(*args, **kwargs):
+  print(*args, file=sys.stderr, **kwargs)
+
+def debug(*args, **kwargs):
+  if debug_on:
+    errlog(*args, **kwargs)
 
 class NetworkGraph:
     def __init__(self, file):
@@ -122,21 +131,19 @@ class NetworkGraph:
                 print(f"Created interface map file:\t{d}_interface_map.json")
 
 
-def load_config(filename):
-    config = {}
-    with open(filename, 'r') as f:
-        nb_config = toml.load(f)
-    config['export_site'] = os.getenv('EXPORT_SITE', nb_config['export_site'])
-    return config
-
 def main():
 
     # CLI arguments parser
     parser = argparse.ArgumentParser(prog='clab.py', description='Network Topology Exporter')
     parser.add_argument('-f', '--file', required=True, help='file with the network graph in CYJS format to import')
+    parser.add_argument('-d', '--debug', required=False, help='enable debug output', action=argparse.BooleanOptionalAction)
 
     # Common parameters
     args = parser.parse_args()
+
+    global debug_on
+    debug_on = (args.debug == True)
+    debug(f"DEBUG: arguments {args}")
 
     graph_file = args.file
 
