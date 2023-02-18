@@ -1,5 +1,21 @@
 #!/usr/bin/env python3
 
+# Copyright 2023 Netreplica Team
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#    http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Export network topology from NetBox as a graph
+
 import os
 import sys
 import json
@@ -26,7 +42,7 @@ class NB_Factory:
         self.G = nx.Graph(name=config['export_site'])
         self.nb_session = pynetbox.api(self.config['nb_api_url'], token=self.config['nb_api_token'], threading=True)
         self.nb_site = self.nb_session.dcim.sites.get(name=config['export_site'])
-        print(f"Exporing {config['export_site']} site from netbox at {config['nb_api_url']}")
+        print(f"Exporting {config['export_site']} site from NetBox at {config['nb_api_url']}")
         self._get_nb_device_info()
         self._build_network_graph()
 
