@@ -18,11 +18,22 @@
 
 import os
 import sys
+import argparse
 import json
 import toml
 import pynetbox
 import networkx as nx
 
+# DEFINE GLOBAL VARs HERE
+
+debug_on = False
+
+def errlog(*args, **kwargs):
+  print(*args, file=sys.stderr, **kwargs)
+
+def debug(*args, **kwargs):
+  if debug_on:
+    errlog(*args, **kwargs)
 
 class NB_Network:
     def __init__(self):
@@ -42,9 +53,13 @@ class NB_Factory:
         self.G = nx.Graph(name=config['export_site'])
         self.nb_session = pynetbox.api(self.config['nb_api_url'], token=self.config['nb_api_token'], threading=True)
         self.nb_site = self.nb_session.dcim.sites.get(name=config['export_site'])
-        print(f"Exporting {config['export_site']} site from NetBox at {config['nb_api_url']}")
-        self._get_nb_device_info()
-        self._build_network_graph()
+        debug(f"DEBUG: returned site data {self.nb_site}")
+        if self.nb_site is None:
+            print(f"No data found for a site {config['export_site']}")
+        else:
+            print(f"Exporting {config['export_site']} site from NetBox at {config['nb_api_url']}")
+            self._get_nb_device_info()
+            self._build_network_graph()
 
 
     def _get_nb_device_info(self):
@@ -120,10 +135,15 @@ def load_config(filename):
     config = {}
     with open(filename, 'r') as f:
         nb_config = toml.load(f)
-    config['export_site'] = os.getenv('EXPORT_SITE', nb_config['export_site'])
+    if 'export_site' in nb_config:
+        config['export_site'] = nb_config['export_site']
+    if 'export_device_roles' in nb_config:
+        config['export_device_roles'] = nb_config['export_device_roles']
+    else:
+        config['export_device_roles'] = ["router", "core-switch", "access-switch", "distribution-switch", "tor-switch"]
+    
     config['nb_api_url'] = os.getenv('NB_API_URL', nb_config['nb_api_url'])
     config['nb_api_token'] = os.getenv('NB_API_TOKEN', nb_config['nb_api_token'])
-    config['export_device_roles'] = os.getenv('EXPORT_DEVICE_ROLES', nb_config['export_device_roles'])
     return config
 
 
@@ -131,7 +151,25 @@ def load_config(filename):
 
 def main():
 
+    # CLI arguments parser
+    parser = argparse.ArgumentParser(prog='netopex.py', description='Network Topology Exporter')
+    parser.add_argument('-s', '--site', required=False, help='site to export')
+    parser.add_argument('-d', '--debug', required=False, help='enable debug output', action=argparse.BooleanOptionalAction)
+
+    # Common parameters
+    args = parser.parse_args()
+
+    global debug_on
+    debug_on = (args.debug == True)
+    debug(f"DEBUG: arguments {args}")
+
     config = load_config('config.toml')
+    if args.site is not None and len(args.site) > 0:
+        config['export_site'] = args.site
+    elif 'export_site' not in config:
+        print(f"Error: need a site to export, but none was provided")
+        return 1
+
     nb_network = NB_Factory(config)
     nb_network.export_graph_gml()
     nb_network.export_graph_json()

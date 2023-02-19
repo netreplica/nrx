@@ -1,5 +1,5 @@
-export_site = "DM-Akron"
 nb_api_url = 'https://demo.netbox.dev'
-nb_api_token = '1097d9f95484b207b84bdcabcf509c8208593a49'
+nb_api_token = 'f0d59603ab4fad9a9e20f0c09e9d77c2b10d7d9d'
 export_device_roles = ["router", "core-switch", "access-switch", "distribution-switch", "tor-switch"]
+export_site = "DM-Akron"
 
