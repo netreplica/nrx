@@ -96,49 +96,55 @@ Conversion capabilities:
 2. Environmental variables
 3. Configuration file
 
-* Command-line arguments. Note: NB_API_TOKEN is not supported as an argument for security reasons
+### Command-line arguments
 
-    ```Shell
-    ./ntopex.py -h
-    usage: ntopex.py [-h] [-c CONFIG] [-o OUTPUT] [-a API] [-s SITE] [-d | --debug | --no-debug]
+Note: NB_API_TOKEN is not supported as an argument for security reasons
 
-    Network Topology Exporter
+```Shell
+./ntopex.py -h
+usage: ntopex.py [-h] [-c CONFIG] [-o OUTPUT] [-a API] [-s SITE] [-d | --debug | --no-debug]
 
-    optional arguments:
-    -h, --help            show this help message and exit
-    -c CONFIG, --config CONFIG
-                            configuration file
-    -o OUTPUT, --output OUTPUT
-                            export format: gml | cyjs
-    -a API, --api API     NetBox API URL
-    -s SITE, --site SITE  NetBox Site to export
-    -d, --debug, --no-debug
-                            enable debug output
-    ```
+Network Topology Exporter
 
-* Environmental variables support NetBox API connection parameters, as an alternative to a configuration file
+optional arguments:
+-h, --help            show this help message and exit
+-c CONFIG, --config CONFIG
+                        configuration file
+-o OUTPUT, --output OUTPUT
+                        export format: gml | cyjs
+-a API, --api API     NetBox API URL
+-s SITE, --site SITE  NetBox Site to export
+-d, --debug, --no-debug
+                        enable debug output
+```
 
-    ```Shell
-    # NetBox API URL
-    export NB_API_URL           = 'https://demo.netbox.dev'
-    # NetBox API Token
-    export NB_API_TOKEN         = ''
-    ```
+### Environmental variables 
 
-* Configuration file, use `--config <filename>` argument to specify the file to use. Example configuration file is provided as [`ntopex.conf`](ntopex.conf)
+Environmental variables support NetBox API connection parameters, as an alternative to a configuration file.
 
-    ```TOML
-    # NetBox API URL. Alternatively, use --api argument or NB_API_URL environmental variable
-    NB_API_URL           = 'https://demo.netbox.dev'
-    # NetBox API Token. Alternatively, use NB_API_TOKEN environmental variable
-    NB_API_TOKEN         = ''
-    # Output format to use for export: 'gml' | 'cyjs'. Alternatively, use --output argument
-    OUTPUT_FORMAT        = 'cyjs'
-    # List of NetBox Device Roles to export
-    EXPORT_DEVICE_ROLES  = ['router', 'core-switch', 'access-switch', 'distribution-switch', 'tor-switch']
-    # NetBox Site to export. Alternatively, use --site argument
-    EXPORT_SITE          = 'DM-Akron'
-    ```
+```Shell
+# NetBox API URL
+export NB_API_URL           = 'https://demo.netbox.dev'
+# NetBox API Token
+export NB_API_TOKEN         = ''
+```
+
+### Configuration file
+
+Use `--config <filename>` argument to specify the file to use. Example configuration file is provided as [`ntopex.conf`](ntopex.conf)
+
+```TOML
+# NetBox API URL. Alternatively, use --api argument or NB_API_URL environmental variable
+NB_API_URL           = 'https://demo.netbox.dev'
+# NetBox API Token. Alternatively, use NB_API_TOKEN environmental variable
+NB_API_TOKEN         = ''
+# Output format to use for export: 'gml' | 'cyjs'. Alternatively, use --output argument
+OUTPUT_FORMAT        = 'cyjs'
+# List of NetBox Device Roles to export
+EXPORT_DEVICE_ROLES  = ['router', 'core-switch', 'access-switch', 'distribution-switch', 'tor-switch']
+# NetBox Site to export. Alternatively, use --site argument
+EXPORT_SITE          = 'DM-Akron'
+```
 
 ## How to use
 
