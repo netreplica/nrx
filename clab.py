@@ -16,7 +16,7 @@
 
 # Create Containerlab topology from CYJS graph
 
-# Read CYJS graph data into a dictonary and initialize networkx graph from it
+# Read CYJS graph data into a dictionary and initialize networkx graph from it
 import sys
 import argparse
 import json
@@ -49,12 +49,12 @@ class NetworkGraph:
 
     def _build_topology(self):
         # Parse graph G into lists of: nodes and links. Keep a list of interfaces per device in `device_interfaces_map`.
-        nodes, links = [], []
+        self.nodes, self.links = [], []
         self.device_interfaces_map = {}
         for n in self.G.nodes:
             if self.G.nodes[n]['type'] == 'device':
                 dev = self.G.nodes[n]['device']
-                nodes.append(dev)
+                self.nodes.append(dev)
                 self.device_interfaces_map[dev['name']] = {}
             elif self.G.nodes[n]['type'] == 'interface':
                 int_name = self.G.nodes[n]['interface']['name']
@@ -72,7 +72,7 @@ class NetworkGraph:
                                 peer_dev_name = self.G.nodes[b_adj[0]]['device']['name']
                                 peer_dev_node_id = self.G.nodes[b_adj[0]]['device']['node_id']
                 if self.G.nodes[n]['side'] == 'a':
-                    links.append({
+                    self.links.append({
                         'a': {
                             'node': dev_name,
                             'node_id': dev_node_id,
@@ -85,6 +85,8 @@ class NetworkGraph:
                         },
                     })
 
+    def export_clab(self):
+
         # Create container-compatible interface names for each device. We assume interface with index `0` is reserved for management, and start with `1`
         for node, map in self.device_interfaces_map.items():
             # sort keys (interface names) in the map
@@ -93,18 +95,16 @@ class NetworkGraph:
             sorted_map = {k: f"eth{map_keys.index(k)+1}" for k in map_keys}
             self.device_interfaces_map[node] = sorted_map
 
-        for l in links:
+        for l in self.links:
             l['a']['c_interface'] = self.device_interfaces_map[l['a']['node']][l['a']['interface']]
             l['b']['c_interface'] = self.device_interfaces_map[l['b']['node']][l['b']['interface']]
 
-        # Generate clab topology. Using this gist as inspiration https://gist.github.com/renatoalmeidaoliveira/fdb772a5a02f3cfc0b5fbe7e8b7586a2
+        # Generate topology data structure for clab
         self.topology = {
             'name': self.G.name,
-            'nodes': [f"{n['name']}" for n in nodes],
-            'links': [f"[\"{l['a']['node']}:{l['a']['c_interface']}\", \"{l['b']['node']}:{l['b']['c_interface']}\"]" for l in links],
+            'nodes': [f"{n['name']}" for n in self.nodes],
+            'links': [f"[\"{l['a']['node']}:{l['a']['c_interface']}\", \"{l['b']['node']}:{l['b']['c_interface']}\"]" for l in self.links],
         }
-
-    def export_clab(self):
 
         # Load Jinja2 template for Containerlab to run the topology through
         from jinja2 import Environment, FileSystemLoader
@@ -114,13 +114,11 @@ class NetworkGraph:
                 )
         templ = env.get_template(f"clab.j2")
 
-
         # Run the topology through jinja2 template to get the final result
         topo = templ.render(self.topology)
         with open(self.topology_name + ".clab.yml", "w") as f:
             f.write(topo)
             print(f"Created Containerlab topology:\t{self.topology_name}.clab.yml")
-
 
         # Interface mapping file for cEOS
         ceos_interfaces_templ = env.get_template(f"interface_maps/ceos.j2")
