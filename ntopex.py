@@ -33,7 +33,7 @@ def errlog(*args, **kwargs):
 
 def debug(*args, **kwargs):
   if debug_on:
-    errlog(*args, **kwargs)
+    errlog("DEBUG:", *args, **kwargs)
 
 class NB_Network:
     def __init__(self):
@@ -53,7 +53,7 @@ class NB_Factory:
         self.G = nx.Graph(name=config['export_site'])
         self.nb_session = pynetbox.api(self.config['nb_api_url'], token=self.config['nb_api_token'], threading=True)
         self.nb_site = self.nb_session.dcim.sites.get(name=config['export_site'])
-        debug(f"DEBUG: returned site data {self.nb_site}")
+        debug(f"returned site data {self.nb_site}")
         if self.nb_site is None:
             print(f"No data found for a site {config['export_site']}")
         else:
@@ -78,7 +78,7 @@ class NB_Factory:
 
             for interface in list(self.nb_session.dcim.interfaces.filter(device_id=device.id)):
                 if "base" in interface.type.value and interface.cable:  # only connected ethernet interfaces
-                    #print(device.name, ":", interface, ":", interface.type.value)
+                    debug(device.name, ":", interface, ":", interface.type.value)
                     i = {
                         "id": interface.id,
                         "type": "interface",
@@ -99,7 +99,7 @@ class NB_Factory:
                 int_b = cable.b_terminations[0]
                 if isinstance(int_a, pynetbox.models.dcim.Interfaces) and isinstance(int_b,
                                                                                      pynetbox.models.dcim.Interfaces):
-                    print("{}:{} <> {}:{}".format(int_a.device, int_a, int_b.device, int_b))
+                    debug("{}:{} <> {}:{}".format(int_a.device, int_a, int_b.device, int_b))
                     d_a = self.nb_net.devices[self.nb_net.device_ids.index(int_a.device.id)]
                     d_b = self.nb_net.devices[self.nb_net.device_ids.index(int_b.device.id)]
                     self.G.add_nodes_from([
@@ -161,7 +161,7 @@ def main():
 
     global debug_on
     debug_on = (args.debug == True)
-    debug(f"DEBUG: arguments {args}")
+    debug(f"arguments {args}")
 
     config = load_config('config.toml')
     if args.site is not None and len(args.site) > 0:
