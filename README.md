@@ -163,7 +163,11 @@ EXPORT_SITE          = 'DM-Akron'
     ./ntopex.py --api https://demo.netbox.dev --site DM-Albany
     ```
 
-6. Run `./clab.py --file <site>.cyjs` to create a Containerlab topology file from the CYJS graph you exported in the previous step.
+6. Run `./clab.py --file <site>.cyjs` to create a Containerlab topology file from the CYJS graph you exported in the previous step. To keep following the example, run:
+
+    ```Shell
+    ./clab.py --file DM-Albany.cyjs
+    ```
 
 7. Now you're ready to start the Containerlab topology. Here is the example for "DM-Albany" site
 
