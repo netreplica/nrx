@@ -132,24 +132,21 @@ class NB_Factory:
 
 
 def load_config(filename):
-    config = {}
+    config = {
+        'nb_api_url': '',
+        'nb_api_token': '',
+        'export_device_roles': ["router", "core-switch", "access-switch", "distribution-switch", "tor-switch"],
+        'export_site': '',
+    }
     with open(filename, 'r') as f:
         nb_config = toml.load(f)
+        for k in config.keys():
+            if k in nb_config:
+                config[k] = nb_config[k]
 
-    if 'export_site' in nb_config:
-        config['export_site'] = nb_config['export_site']
+    config['nb_api_url'] = os.getenv('NB_API_URL', config['nb_api_url'])
+    config['nb_api_token'] = os.getenv('NB_API_TOKEN', config['nb_api_token'])
 
-    if 'export_device_roles' in nb_config:
-        config['export_device_roles'] = nb_config['export_device_roles']
-    else:
-        config['export_device_roles'] = ["router", "core-switch", "access-switch", "distribution-switch", "tor-switch"]
-    
-    nb_api_url = ''
-    if 'nb_api_url' in nb_config:
-        nb_api_url = nb_config['nb_api_url']
-    config['nb_api_url'] = os.getenv('NB_API_URL', nb_api_url)
-
-    config['nb_api_token'] = os.getenv('NB_API_TOKEN', nb_config['nb_api_token'])
     return config
 
 def main():
