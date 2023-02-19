@@ -152,9 +152,12 @@ def load_config(filename):
 
 def main():
 
+    # Defaults
+    default_config = 'ntopex.conf'
+
     # CLI arguments parser
     parser = argparse.ArgumentParser(prog='netopex.py', description='Network Topology Exporter')
-    parser.add_argument('-c', '--config', required=False, default='ntopex.conf', help='configuration file')
+    parser.add_argument('-c', '--config', required=False, default=default_config, help=f"configuration file (default {default_config})")
     parser.add_argument('-a', '--api', required=False, help='NetBox API URL')
     parser.add_argument('-s', '--site', required=False, help='NetBox Site to export')
     parser.add_argument('-d', '--debug', required=False, help='enable debug output', action=argparse.BooleanOptionalAction)
