@@ -135,25 +135,29 @@ def load_config(filename):
     config = {}
     with open(filename, 'r') as f:
         nb_config = toml.load(f)
+
     if 'export_site' in nb_config:
         config['export_site'] = nb_config['export_site']
+
     if 'export_device_roles' in nb_config:
         config['export_device_roles'] = nb_config['export_device_roles']
     else:
         config['export_device_roles'] = ["router", "core-switch", "access-switch", "distribution-switch", "tor-switch"]
     
-    config['nb_api_url'] = os.getenv('NB_API_URL', nb_config['nb_api_url'])
+    nb_api_url = ''
+    if 'nb_api_url' in nb_config:
+        nb_api_url = nb_config['nb_api_url']
+    config['nb_api_url'] = os.getenv('NB_API_URL', nb_api_url)
+
     config['nb_api_token'] = os.getenv('NB_API_TOKEN', nb_config['nb_api_token'])
     return config
-
-
-
 
 def main():
 
     # CLI arguments parser
     parser = argparse.ArgumentParser(prog='netopex.py', description='Network Topology Exporter')
-    parser.add_argument('-s', '--site', required=False, help='site to export')
+    parser.add_argument('-a', '--api', required=False, help='NetBox API URL')
+    parser.add_argument('-s', '--site', required=False, help='NetBox Site to export')
     parser.add_argument('-d', '--debug', required=False, help='enable debug output', action=argparse.BooleanOptionalAction)
 
     # Common parameters
@@ -164,6 +168,13 @@ def main():
     debug(f"arguments {args}")
 
     config = load_config('config.toml')
+
+    if args.api is not None and len(args.api) > 0:
+        config['nb_api_url'] = args.api
+    if len(config['nb_api_url']) == 0:
+        print(f"Error: need a NetBox API URL to export, but none was provided")
+        return 1
+    
     if args.site is not None and len(args.site) > 0:
         config['export_site'] = args.site
     elif 'export_site' not in config:
