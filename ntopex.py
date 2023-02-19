@@ -138,11 +138,12 @@ def load_config(filename):
         'export_device_roles': ["router", "core-switch", "access-switch", "distribution-switch", "tor-switch"],
         'export_site': '',
     }
-    with open(filename, 'r') as f:
-        nb_config = toml.load(f)
-        for k in config.keys():
-            if k in nb_config:
-                config[k] = nb_config[k]
+    if filename is not None and len(filename) > 0:
+        with open(filename, 'r') as f:
+            nb_config = toml.load(f)
+            for k in config.keys():
+                if k in nb_config:
+                    config[k] = nb_config[k]
 
     config['nb_api_url'] = os.getenv('NB_API_URL', config['nb_api_url'])
     config['nb_api_token'] = os.getenv('NB_API_TOKEN', config['nb_api_token'])
@@ -153,6 +154,7 @@ def main():
 
     # CLI arguments parser
     parser = argparse.ArgumentParser(prog='netopex.py', description='Network Topology Exporter')
+    parser.add_argument('-c', '--config', required=False, default='ntopex.conf', help='configuration file')
     parser.add_argument('-a', '--api', required=False, help='NetBox API URL')
     parser.add_argument('-s', '--site', required=False, help='NetBox Site to export')
     parser.add_argument('-d', '--debug', required=False, help='enable debug output', action=argparse.BooleanOptionalAction)
@@ -164,7 +166,7 @@ def main():
     debug_on = (args.debug == True)
     debug(f"arguments {args}")
 
-    config = load_config('config.toml')
+    config = load_config(args.config)
 
     if args.api is not None and len(args.api) > 0:
         config['nb_api_url'] = args.api
