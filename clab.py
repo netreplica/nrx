@@ -33,7 +33,7 @@ def debug(*args, **kwargs):
   if debug_on:
     errlog(*args, **kwargs)
 
-class NetworkGraph:
+class NetworkTopology:
     def __init__(self, file):
         self.graph_file = file
         self._read_network_graph()
@@ -145,8 +145,8 @@ def main():
 
     graph_file = args.file
 
-    ng = NetworkGraph(graph_file)
-    ng.export_clab()
+    topo = NetworkTopology(graph_file)
+    topo.export_clab()
 
     return 0
 
