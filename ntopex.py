@@ -29,11 +29,18 @@ import networkx as nx
 debug_on = False
 
 def errlog(*args, **kwargs):
-  print(*args, file=sys.stderr, **kwargs)
+    print(*args, file=sys.stderr, **kwargs)
+  
+def error(*args, **kwargs):
+    errlog("Error:", *args, **kwargs)
+    sys.exit(1)
+
+def warning(*args, **kwargs):
+    errlog("Warning:", *args, **kwargs)
 
 def debug(*args, **kwargs):
-  if debug_on:
-    errlog("DEBUG:", *args, **kwargs)
+    if debug_on:
+        errlog("Debug:", *args, **kwargs)
 
 class NB_Network:
     def __init__(self):
@@ -139,11 +146,16 @@ def load_config(filename):
         'export_site': '',
     }
     if filename is not None and len(filename) > 0:
-        with open(filename, 'r') as f:
-            nb_config = toml.load(f)
-            for k in config.keys():
-                if k in nb_config:
-                    config[k] = nb_config[k]
+        try:
+            with open(filename, 'r') as f:
+                nb_config = toml.load(f)
+                for k in config.keys():
+                    if k.upper() in nb_config:
+                        config[k] = nb_config[k.upper()]
+        except OSError as e:
+            error(f"Unable to open configuration file {filename}: {e}")
+        except toml.decoder.TomlDecodeError as e:
+            error(f"Unable to parse configuration file {filename}: {e}")
 
     config['nb_api_url'] = os.getenv('NB_API_URL', config['nb_api_url'])
     config['nb_api_token'] = os.getenv('NB_API_TOKEN', config['nb_api_token'])
@@ -152,12 +164,9 @@ def load_config(filename):
 
 def main():
 
-    # Defaults
-    default_config = 'ntopex.conf'
-
     # CLI arguments parser
     parser = argparse.ArgumentParser(prog='netopex.py', description='Network Topology Exporter')
-    parser.add_argument('-c', '--config', required=False, default=default_config, help=f"configuration file (default {default_config})")
+    parser.add_argument('-c', '--config', required=False, help=f"configuration file")
     parser.add_argument('-a', '--api', required=False, help='NetBox API URL')
     parser.add_argument('-s', '--site', required=False, help='NetBox Site to export')
     parser.add_argument('-d', '--debug', required=False, help='enable debug output', action=argparse.BooleanOptionalAction)
@@ -174,14 +183,15 @@ def main():
     if args.api is not None and len(args.api) > 0:
         config['nb_api_url'] = args.api
     if len(config['nb_api_url']) == 0:
-        print(f"Error: need a NetBox API URL to export, but none was provided")
-        return 1
+        error(f"Need an API URL to connect to NetBox. Use --api argument, NB_API_URL environment variable or key in --config file")
+    
+    if len(config['nb_api_token']) == 0:
+        error(f"Need an API token to connect to NetBox. Use NB_API_TOKEN environment variable or key in --config file")
     
     if args.site is not None and len(args.site) > 0:
         config['export_site'] = args.site
-    elif 'export_site' not in config:
-        print(f"Error: need a site to export, but none was provided")
-        return 1
+    elif len(config['export_site']) == 0:
+        error(f"Need a Site name to export. Use --site argument, or EXPORT_SITE key in --config file")
 
     nb_network = NB_Factory(config)
     nb_network.export_graph_gml()
