@@ -59,40 +59,110 @@ Conversion capabilities:
     bash -c "$(curl -sL https://get.containerlab.dev)"
     ```
 
-## How to use
+## How to install
 
-1. Create venv environment (adjust path to `.venv` folder if needed)
+1. Create venv environment (adjust path to `.venv` folder if needed) 
 
     ```Shell
-    mkdir -p ~/.venv
-    cd ~/.venv
-    export PYENV=ntopex-py39
-    python3.9 -m venv $PYENV; cd $PYENV; export PYENV_DIR=`pwd`; cd $HOME
-    source "$PYENV_DIR/bin/activate"
+    CUR_DIR="${PWD}"
+    VENV_DIR="${HOME}/.venv"
+    mkdir -p "${VENV_DIR}" && cd "${VENV_DIR}"
+    PYENV="ntopex"
+    python3.9 -m venv "${PYENV}"
+    cd "${CUR_DIR}"
     ```
 
-2. Clone this repository and install required modules
+2. Active venv environment
+
+    ```Shell
+    VENV_DIR="${HOME}/.venv"
+    PYENV="ntopex"
+    source "${VENV_DIR}/${PYENV}/bin/activate"
+    ```
+
+3. Clone this repository and install required modules
 
     ```Shell
     git clone https://github.com/netreplica/ntopex.git
     cd ntopex
-    pip3 install -r requirements.txt -r requirements_jupyter.txt
+    pip3 install -r requirements.txt
     ```
 
-4. Launch a Jupyter server (we're working on CLI-only programs) and connect to its web interface using one of the URLs that will be presented to you
+## How to configure
+
+`ntopex` accepts the following configuration options, in the order of precedence:
+
+1. Command-line arguments
+2. Environmental variables
+3. Configuration file
+
+* Command-line arguments. Note: NB_API_TOKEN is not supported as an argument for security reasons
 
     ```Shell
-    jupyter notebook
+    ./ntopex.py -h
+    usage: ntopex.py [-h] [-c CONFIG] [-o OUTPUT] [-a API] [-s SITE] [-d | --debug | --no-debug]
+
+    Network Topology Exporter
+
+    optional arguments:
+    -h, --help            show this help message and exit
+    -c CONFIG, --config CONFIG
+                            configuration file
+    -o OUTPUT, --output OUTPUT
+                            export format: gml | cyjs
+    -a API, --api API     NetBox API URL
+    -s SITE, --site SITE  NetBox Site to export
+    -d, --debug, --no-debug
+                            enable debug output
     ```
 
-5. Open and run [`ntopex.ipynb`](ntopex.ipynb) to export topology graph. Change initial parameters in the first code block to use NetBox instance you have and export the site you need
-
-6. Open and run [`clab.ipynb`](clab.ipynb) to create a Containerlab topology. Change initial parameters in the first code block to match the site name you used in the previous stop
-
-7. Now you're ready to start the Containerlab topology:
+* Environmental variables support NetBox API connection parameters, as an alternative to a configuration file
 
     ```Shell
-    sudo -E containerlab deploy -t <site_name>.clab.yml --reconfigure
+    # NetBox API URL
+    export NB_API_URL           = 'https://demo.netbox.dev'
+    # NetBox API Token
+    export NB_API_TOKEN         = ''
+    ```
+
+* Configuration file, use `--config <filename>` argument to specify the file to use. Example configuration file is provided as [`ntopex.conf`](ntopex.conf)
+
+    ```TOML
+    # NetBox API URL. Alternatively, use --api argument or NB_API_URL environmental variable
+    NB_API_URL           = 'https://demo.netbox.dev'
+    # NetBox API Token. Alternatively, use NB_API_TOKEN environmental variable
+    NB_API_TOKEN         = ''
+    # Output format to use for export: 'gml' | 'cyjs'. Alternatively, use --output argument
+    OUTPUT_FORMAT        = 'cyjs'
+    # List of NetBox Device Roles to export
+    EXPORT_DEVICE_ROLES  = ['router', 'core-switch', 'access-switch', 'distribution-switch', 'tor-switch']
+    # NetBox Site to export. Alternatively, use --site argument
+    EXPORT_SITE          = 'DM-Akron'
+    ```
+
+## How to use
+
+1. Active venv environment
+
+    ```Shell
+    VENV_DIR="${HOME}/.venv"
+    PYENV="ntopex"
+    source "${VENV_DIR}/${PYENV}/bin/activate"
+    ```
+
+2. Run `./ntopex.py` to export a topology graph from NetBox. See How to configure for details. Note, you need to use `cyjs` output format for the next step to work. Here is an example of running `ntopex.py` to export a graph for NetBox Site "DM-Albany" from [NetBox Demo](https://demo.netbox.dev) instance:
+
+    ```Shell
+    export NB_API_TOKEN='replace_with_valid_API_token'
+    ./ntopex.py --api https://demo.netbox.dev --site DM-Albany
+    ```
+
+6. Run `./clab.py --file <site>.cyjs` to create a Containerlab topology file from the CYJS graph you exported in the previous step.
+
+7. Now you're ready to start the Containerlab topology. Here is the example for "DM-Albany" site
+
+    ```Shell
+    sudo -E containerlab deploy -t DM-Albany.clab.yml --reconfigure
     ```
 
 # Credits
