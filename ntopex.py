@@ -129,19 +129,20 @@ class NB_Factory:
 
     def export_graph_gml(self):
         nx.write_gml(self.G, self.config['export_site'] + ".gml")
-        print(f'Graph GML saved to {self.config["export_site"]}.gml')
+        print(f'GML graph saved to {self.config["export_site"]}.gml')
 
     def export_graph_json(self):
         cyjs = nx.cytoscape_data(self.G)
         with open(self.config['export_site'] + ".cyjs", 'w', encoding='utf-8') as f:
             json.dump(cyjs, f, indent=4)
-        print(f'Graph JSON saved to {self.config["export_site"]}.cyjs')
+        print(f'CYJS graph saved to {self.config["export_site"]}.cyjs')
 
 
 def load_config(filename):
     config = {
         'nb_api_url': '',
         'nb_api_token': '',
+        'output_format': 'cyjs',
         'export_device_roles': ["router", "core-switch", "access-switch", "distribution-switch", "tor-switch"],
         'export_site': '',
     }
@@ -152,6 +153,8 @@ def load_config(filename):
                 for k in config.keys():
                     if k.upper() in nb_config:
                         config[k] = nb_config[k.upper()]
+                if len(config['output_format']) > 0:
+                        arg_output_check(config['output_format'])
         except OSError as e:
             error(f"Unable to open configuration file {filename}: {e}")
         except toml.decoder.TomlDecodeError as e:
@@ -162,11 +165,19 @@ def load_config(filename):
 
     return config
 
+def arg_output_check(s):
+    allowed_values = ['gml', 'cyjs']
+    if s in allowed_values:
+        return s
+    else:
+        raise argparse.ArgumentTypeError(f"output format has to be one of {allowed_values}")
+
 def main():
 
     # CLI arguments parser
-    parser = argparse.ArgumentParser(prog='netopex.py', description='Network Topology Exporter')
-    parser.add_argument('-c', '--config', required=False, help=f"configuration file")
+    parser = argparse.ArgumentParser(prog='ntopex.py', description='Network Topology Exporter')
+    parser.add_argument('-c', '--config', required=False, help='configuration file')
+    parser.add_argument('-o', '--output', required=False, type=arg_output_check, help='export format: gml | cyjs')
     parser.add_argument('-a', '--api', required=False, help='NetBox API URL')
     parser.add_argument('-s', '--site', required=False, help='NetBox Site to export')
     parser.add_argument('-d', '--debug', required=False, help='enable debug output', action=argparse.BooleanOptionalAction)
@@ -178,7 +189,10 @@ def main():
     debug_on = (args.debug == True)
     debug(f"arguments {args}")
 
-    config = load_config(args.config)
+    try:
+        config = load_config(args.config)
+    except argparse.ArgumentTypeError as e:
+        error(f"Unsupported configuration: {e}")
 
     if args.api is not None and len(args.api) > 0:
         config['nb_api_url'] = args.api
@@ -193,9 +207,14 @@ def main():
     elif len(config['export_site']) == 0:
         error(f"Need a Site name to export. Use --site argument, or EXPORT_SITE key in --config file")
 
+    if args.output is not None and len(args.output) > 0:
+        config['output_format'] = args.output
+
     nb_network = NB_Factory(config)
-    nb_network.export_graph_gml()
-    nb_network.export_graph_json()
+    if config['output_format'] == 'gml':
+        nb_network.export_graph_gml()
+    else:
+        nb_network.export_graph_json()
 
     return 0
 
