@@ -18,11 +18,29 @@
 
 import os
 import sys
+import argparse
 import json
 import toml
 import pynetbox
 import networkx as nx
 
+# DEFINE GLOBAL VARs HERE
+
+debug_on = False
+
+def errlog(*args, **kwargs):
+    print(*args, file=sys.stderr, **kwargs)
+  
+def error(*args, **kwargs):
+    errlog("Error:", *args, **kwargs)
+    sys.exit(1)
+
+def warning(*args, **kwargs):
+    errlog("Warning:", *args, **kwargs)
+
+def debug(*args, **kwargs):
+    if debug_on:
+        errlog("Debug:", *args, **kwargs)
 
 class NB_Network:
     def __init__(self):
@@ -42,9 +60,13 @@ class NB_Factory:
         self.G = nx.Graph(name=config['export_site'])
         self.nb_session = pynetbox.api(self.config['nb_api_url'], token=self.config['nb_api_token'], threading=True)
         self.nb_site = self.nb_session.dcim.sites.get(name=config['export_site'])
-        print(f"Exporting {config['export_site']} site from NetBox at {config['nb_api_url']}")
-        self._get_nb_device_info()
-        self._build_network_graph()
+        debug(f"returned site data {self.nb_site}")
+        if self.nb_site is None:
+            print(f"No data found for a site {config['export_site']}")
+        else:
+            print(f"Exporting {config['export_site']} site from NetBox at {config['nb_api_url']}")
+            self._get_nb_device_info()
+            self._build_network_graph()
 
 
     def _get_nb_device_info(self):
@@ -63,7 +85,7 @@ class NB_Factory:
 
             for interface in list(self.nb_session.dcim.interfaces.filter(device_id=device.id)):
                 if "base" in interface.type.value and interface.cable:  # only connected ethernet interfaces
-                    #print(device.name, ":", interface, ":", interface.type.value)
+                    debug(device.name, ":", interface, ":", interface.type.value)
                     i = {
                         "id": interface.id,
                         "type": "interface",
@@ -84,7 +106,7 @@ class NB_Factory:
                 int_b = cable.b_terminations[0]
                 if isinstance(int_a, pynetbox.models.dcim.Interfaces) and isinstance(int_b,
                                                                                      pynetbox.models.dcim.Interfaces):
-                    print("{}:{} <> {}:{}".format(int_a.device, int_a, int_b.device, int_b))
+                    debug("{}:{} <> {}:{}".format(int_a.device, int_a, int_b.device, int_b))
                     d_a = self.nb_net.devices[self.nb_net.device_ids.index(int_a.device.id)]
                     d_b = self.nb_net.devices[self.nb_net.device_ids.index(int_b.device.id)]
                     self.G.add_nodes_from([
@@ -107,34 +129,92 @@ class NB_Factory:
 
     def export_graph_gml(self):
         nx.write_gml(self.G, self.config['export_site'] + ".gml")
-        print(f'Graph GML saved to {self.config["export_site"]}.gml')
+        print(f'GML graph saved to {self.config["export_site"]}.gml')
 
     def export_graph_json(self):
         cyjs = nx.cytoscape_data(self.G)
         with open(self.config['export_site'] + ".cyjs", 'w', encoding='utf-8') as f:
             json.dump(cyjs, f, indent=4)
-        print(f'Graph JSON saved to {self.config["export_site"]}.cyjs')
+        print(f'CYJS graph saved to {self.config["export_site"]}.cyjs')
 
 
 def load_config(filename):
-    config = {}
-    with open(filename, 'r') as f:
-        nb_config = toml.load(f)
-    config['export_site'] = os.getenv('EXPORT_SITE', nb_config['export_site'])
-    config['nb_api_url'] = os.getenv('NB_API_URL', nb_config['nb_api_url'])
-    config['nb_api_token'] = os.getenv('NB_API_TOKEN', nb_config['nb_api_token'])
-    config['export_device_roles'] = os.getenv('EXPORT_DEVICE_ROLES', nb_config['export_device_roles'])
+    config = {
+        'nb_api_url': '',
+        'nb_api_token': '',
+        'output_format': 'cyjs',
+        'export_device_roles': ["router", "core-switch", "access-switch", "distribution-switch", "tor-switch"],
+        'export_site': '',
+    }
+    if filename is not None and len(filename) > 0:
+        try:
+            with open(filename, 'r') as f:
+                nb_config = toml.load(f)
+                for k in config.keys():
+                    if k.upper() in nb_config:
+                        config[k] = nb_config[k.upper()]
+                if len(config['output_format']) > 0:
+                        arg_output_check(config['output_format'])
+        except OSError as e:
+            error(f"Unable to open configuration file {filename}: {e}")
+        except toml.decoder.TomlDecodeError as e:
+            error(f"Unable to parse configuration file {filename}: {e}")
+
+    config['nb_api_url'] = os.getenv('NB_API_URL', config['nb_api_url'])
+    config['nb_api_token'] = os.getenv('NB_API_TOKEN', config['nb_api_token'])
+
     return config
 
-
-
+def arg_output_check(s):
+    allowed_values = ['gml', 'cyjs']
+    if s in allowed_values:
+        return s
+    else:
+        raise argparse.ArgumentTypeError(f"output format has to be one of {allowed_values}")
 
 def main():
 
-    config = load_config('config.toml')
+    # CLI arguments parser
+    parser = argparse.ArgumentParser(prog='ntopex.py', description='Network Topology Exporter')
+    parser.add_argument('-c', '--config', required=False, help='configuration file')
+    parser.add_argument('-o', '--output', required=False, type=arg_output_check, help='export format: gml | cyjs')
+    parser.add_argument('-a', '--api', required=False, help='NetBox API URL')
+    parser.add_argument('-s', '--site', required=False, help='NetBox Site to export')
+    parser.add_argument('-d', '--debug', required=False, help='enable debug output', action=argparse.BooleanOptionalAction)
+
+    # Common parameters
+    args = parser.parse_args()
+
+    global debug_on
+    debug_on = (args.debug == True)
+    debug(f"arguments {args}")
+
+    try:
+        config = load_config(args.config)
+    except argparse.ArgumentTypeError as e:
+        error(f"Unsupported configuration: {e}")
+
+    if args.api is not None and len(args.api) > 0:
+        config['nb_api_url'] = args.api
+    if len(config['nb_api_url']) == 0:
+        error(f"Need an API URL to connect to NetBox. Use --api argument, NB_API_URL environment variable or key in --config file")
+    
+    if len(config['nb_api_token']) == 0:
+        error(f"Need an API token to connect to NetBox. Use NB_API_TOKEN environment variable or key in --config file")
+    
+    if args.site is not None and len(args.site) > 0:
+        config['export_site'] = args.site
+    elif len(config['export_site']) == 0:
+        error(f"Need a Site name to export. Use --site argument, or EXPORT_SITE key in --config file")
+
+    if args.output is not None and len(args.output) > 0:
+        config['output_format'] = args.output
+
     nb_network = NB_Factory(config)
-    nb_network.export_graph_gml()
-    nb_network.export_graph_json()
+    if config['output_format'] == 'gml':
+        nb_network.export_graph_gml()
+    else:
+        nb_network.export_graph_json()
 
     return 0
 
