@@ -13,8 +13,8 @@ Ntopex helps you export network topology graphs from [NetBox](https://docs.netbo
 
 Ntopex works in two steps:
 
-1. **Export step**: A graph is exported from NetBox into a file using [CYJS](http://manual.cytoscape.org/en/stable/index.html) format: `<site_name.cyjs>`
-2. **Conversion step**: A separate program reads the graph from the CYJS file and creates a Containerlab topology file: `<site_name>.clab.yml`
+1. **Export step**: `ntopex.py` exports a topology graph from NetBox into a file using [CYJS](http://manual.cytoscape.org/en/stable/index.html) format: `<site_name>.cyjs`
+2. **Conversion step**: `clab.py` reads the graph from the CYJS file and creates a Containerlab topology file: `<site_name>.clab.yml`
 
 ## Capabilities
 
@@ -64,23 +64,16 @@ Conversion capabilities:
 1. Create venv environment (adjust path to `.venv` folder if needed) 
 
     ```Shell
+    PYENV="ntopex"
     CUR_DIR="${PWD}"
     VENV_DIR="${HOME}/.venv"
     mkdir -p "${VENV_DIR}" && cd "${VENV_DIR}"
-    PYENV="ntopex"
     python3.9 -m venv "${PYENV}"
+    source "${VENV_DIR}/${PYENV}/bin/activate"
     cd "${CUR_DIR}"
     ```
 
-2. Active venv environment
-
-    ```Shell
-    VENV_DIR="${HOME}/.venv"
-    PYENV="ntopex"
-    source "${VENV_DIR}/${PYENV}/bin/activate"
-    ```
-
-3. Clone this repository and install required modules
+2. Clone this repository and install required modules
 
     ```Shell
     git clone https://github.com/netreplica/ntopex.git
@@ -92,15 +85,15 @@ Conversion capabilities:
 
 `ntopex` accepts the following configuration options, in the order of precedence:
 
-1. Command-line arguments
-2. Environmental variables
-3. Configuration file
+1. [Command-line arguments](#command-line-arguments)
+2. [Environmental variables](#environmental-variables)
+3. [Configuration file](#configuration-file)
 
 ### Command-line arguments
 
-Note: NB_API_TOKEN is not supported as an argument for security reasons
+Command-line arguments take the highest priority.
 
-```Shell
+```
 ./ntopex.py -h
 usage: ntopex.py [-h] [-c CONFIG] [-o OUTPUT] [-a API] [-s SITE] [-d | --debug | --no-debug]
 
@@ -118,33 +111,22 @@ optional arguments:
                         enable debug output
 ```
 
+Note: `NB_API_TOKEN` is not supported as an argument for security reasons.
+
 ### Environmental variables 
 
-Environmental variables support NetBox API connection parameters, as an alternative to a configuration file.
+As an alternative to a configuration file, use environmental variables to provide NetBox API connection parameters.
 
 ```Shell
 # NetBox API URL
 export NB_API_URL           = 'https://demo.netbox.dev'
 # NetBox API Token
-export NB_API_TOKEN         = ''
+export NB_API_TOKEN         = 'replace_with_valid_API_token'
 ```
 
 ### Configuration file
 
-Use `--config <filename>` argument to specify the file to use. Example configuration file is provided as [`ntopex.conf`](ntopex.conf)
-
-```TOML
-# NetBox API URL. Alternatively, use --api argument or NB_API_URL environmental variable
-NB_API_URL           = 'https://demo.netbox.dev'
-# NetBox API Token. Alternatively, use NB_API_TOKEN environmental variable
-NB_API_TOKEN         = ''
-# Output format to use for export: 'gml' | 'cyjs'. Alternatively, use --output argument
-OUTPUT_FORMAT        = 'cyjs'
-# List of NetBox Device Roles to export
-EXPORT_DEVICE_ROLES  = ['router', 'core-switch', 'access-switch', 'distribution-switch', 'tor-switch']
-# NetBox Site to export. Alternatively, use --site argument
-EXPORT_SITE          = 'DM-Akron'
-```
+Use `--config <filename>` argument to specify a configuration file to use. Example is provided as [`ntopex.conf`](ntopex.conf).
 
 ## How to use
 
@@ -156,7 +138,7 @@ EXPORT_SITE          = 'DM-Akron'
     source "${VENV_DIR}/${PYENV}/bin/activate"
     ```
 
-2. Run `./ntopex.py` to export a topology graph from NetBox. See How to configure for details. Note, you need to use `cyjs` output format for the next step to work. Here is an example of running `ntopex.py` to export a graph for NetBox Site "DM-Albany" from [NetBox Demo](https://demo.netbox.dev) instance:
+2. Run `./ntopex.py` to export a topology graph from NetBox. See [How to configure](#how-to-configure) for details. Note, you need to use `cyjs` output format for the next step to work. Here is an example of running `ntopex.py` to export a graph for NetBox Site "DM-Albany" from [NetBox Demo](https://demo.netbox.dev) instance:
 
     ```Shell
     export NB_API_TOKEN='replace_with_valid_API_token'
