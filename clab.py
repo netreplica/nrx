@@ -29,12 +29,22 @@ debug_on = False
 def errlog(*args, **kwargs):
   print(*args, file=sys.stderr, **kwargs)
 
+def error(*args, **kwargs):
+    errlog("Error:", *args, **kwargs)
+    sys.exit(1)
+
+def warning(*args, **kwargs):
+    errlog("Warning:", *args, **kwargs)
+
 def debug(*args, **kwargs):
-  if debug_on:
-    errlog(*args, **kwargs)
+    if debug_on:
+        errlog("Debug:", *args, **kwargs)
 
 class NetworkTopology:
-    def __init__(self, file):
+    def __init__(self):
+        self.topology_name = None
+
+    def build_from_file(self, file):
         self.graph_file = file
         self._read_network_graph()
         self.topology_name = self.G.graph["name"]
@@ -86,6 +96,9 @@ class NetworkTopology:
                     })
 
     def export_clab(self):
+
+        if self.topology_name is None:
+            error("cannot export an empty topology")
 
         # Create container-compatible interface names for each device. We assume interface with index `0` is reserved for management, and start with `1`
         for node, map in self.device_interfaces_map.items():
@@ -145,7 +158,8 @@ def main():
 
     graph_file = args.file
 
-    topo = NetworkTopology(graph_file)
+    topo = NetworkTopology()
+    topo.build_from_file(graph_file)
     topo.export_clab()
 
     return 0

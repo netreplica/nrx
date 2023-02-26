@@ -130,7 +130,7 @@ Use `--config <filename>` argument to specify a configuration file to use. Examp
 
 ## How to use
 
-1. Active venv environment
+1. Activate venv environment
 
     ```Shell
     VENV_DIR="${HOME}/.venv"
