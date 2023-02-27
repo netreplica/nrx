@@ -80,12 +80,14 @@ class NB_Factory:
                 "name": device.name,
                 "node_id": -1,
             }
+            debug("Adding device:", d)
             self.nb_net.nodes.append(d)
             d["node_id"] = len(self.nb_net.nodes) - 1
             self.nb_net.devices.append(d)
             self.nb_net.device_ids.append(
                 device.id)  # index of the device in the devices list will match its ID index in device_ids list
 
+            debug(f"{d['name']} Ethernet interfaces:")
             for interface in list(self.nb_session.dcim.interfaces.filter(device_id=device.id)):
                 if "base" in interface.type.value and interface.cable:  # only connected ethernet interfaces
                     debug(device.name, ":", interface, ":", interface.type.value)
@@ -103,32 +105,36 @@ class NB_Factory:
                     self.nb_net.cable_ids.append(interface.cable.id)
 
     def _build_network_graph(self):
-        for cable in list(self.nb_session.dcim.cables.filter(id=self.nb_net.cable_ids)):
-            if len(cable.a_terminations) == 1 and len(cable.b_terminations) == 1:
-                int_a = cable.a_terminations[0]
-                int_b = cable.b_terminations[0]
-                if isinstance(int_a, pynetbox.models.dcim.Interfaces) and isinstance(int_b,
-                                                                                     pynetbox.models.dcim.Interfaces):
-                    debug("{}:{} <> {}:{}".format(int_a.device, int_a, int_b.device, int_b))
-                    d_a = self.nb_net.devices[self.nb_net.device_ids.index(int_a.device.id)]
-                    d_b = self.nb_net.devices[self.nb_net.device_ids.index(int_b.device.id)]
-                    self.G.add_nodes_from([
-                        (d_a["node_id"], {"side": "a", "type": "device", "device": d_a}),
-                        (d_b["node_id"], {"side": "b", "type": "device", "device": d_b}),
-                    ])
-                    i_a = self.nb_net.interfaces[self.nb_net.interface_ids.index(int_a.id)]
-                    i_b = self.nb_net.interfaces[self.nb_net.interface_ids.index(int_b.id)]
-                    self.G.add_nodes_from([
-                        (i_a["node_id"], {"side": "a", "type": "interface", "interface": i_a}),
-                        (i_b["node_id"], {"side": "b", "type": "interface", "interface": i_b}),
-                    ])
-                    self.G.add_edges_from([
-                        (d_a["node_id"], i_a["node_id"]),
-                        (d_b["node_id"], i_b["node_id"]),
-                    ])
-                    self.G.add_edges_from([
-                        (i_a["node_id"], i_b["node_id"]),
-                    ])
+        if len(self.nb_net.cable_ids) > 0:
+            # Making sure there will be a non-empty filter for cables, as otherwise all cables would be returned
+            for cable in list(self.nb_session.dcim.cables.filter(id=self.nb_net.cable_ids)):
+                if len(cable.a_terminations) == 1 and len(cable.b_terminations) == 1:
+                    int_a = cable.a_terminations[0]
+                    int_b = cable.b_terminations[0]
+                    if isinstance(int_a, pynetbox.models.dcim.Interfaces) and isinstance(int_b, pynetbox.models.dcim.Interfaces):
+                        debug("{}:{} <> {}:{}".format(int_a.device, int_a, int_b.device, int_b))
+                        try:
+                            d_a = self.nb_net.devices[self.nb_net.device_ids.index(int_a.device.id)]
+                            d_b = self.nb_net.devices[self.nb_net.device_ids.index(int_b.device.id)]
+                            self.G.add_nodes_from([
+                                (d_a["node_id"], {"side": "a", "type": "device", "device": d_a}),
+                                (d_b["node_id"], {"side": "b", "type": "device", "device": d_b}),
+                            ])
+                            i_a = self.nb_net.interfaces[self.nb_net.interface_ids.index(int_a.id)]
+                            i_b = self.nb_net.interfaces[self.nb_net.interface_ids.index(int_b.id)]
+                            self.G.add_nodes_from([
+                                (i_a["node_id"], {"side": "a", "type": "interface", "interface": i_a}),
+                                (i_b["node_id"], {"side": "b", "type": "interface", "interface": i_b}),
+                            ])
+                            self.G.add_edges_from([
+                                (d_a["node_id"], i_a["node_id"]),
+                                (d_b["node_id"], i_b["node_id"]),
+                            ])
+                            self.G.add_edges_from([
+                                (i_a["node_id"], i_b["node_id"]),
+                            ])
+                        except ValueError as e:
+                            debug("One or both devices for this connection are not in the export graph")
 
     def export_graph_gml(self):
         nx.write_gml(self.G, self.config['export_site'] + ".gml")
