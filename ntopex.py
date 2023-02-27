@@ -59,14 +59,24 @@ class NB_Factory:
         self.nb_net = NB_Network()
         self.G = nx.Graph(name=config['export_site'])
         self.nb_session = pynetbox.api(self.config['nb_api_url'], token=self.config['nb_api_token'], threading=True)
-        self.nb_site = self.nb_session.dcim.sites.get(name=config['export_site'])
+        try:
+            self.nb_site = self.nb_session.dcim.sites.get(name=config['export_site'])
+        except pynetbox.core.query.RequestError as e:
+            error("NetBox API failure at get sites:", e)
         debug(f"returned site data {self.nb_site}")
         if self.nb_site is None:
             print(f"No data found for a site {config['export_site']}")
         else:
             print(f"Exporting {config['export_site']} site from NetBox at {config['nb_api_url']}")
-            self._get_nb_device_info()
-            self._build_network_graph()
+            try:
+                self._get_nb_device_info()
+            except pynetbox.core.query.RequestError as e:
+                error("NetBox API failure at get devices or interfaces:", e)
+
+            try:
+                self._build_network_graph()
+            except pynetbox.core.query.RequestError as e:
+                error("NetBox API failure at get cables:", e)
 
 
     def graph(self):
