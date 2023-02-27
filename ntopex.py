@@ -23,6 +23,7 @@ import json
 import toml
 import pynetbox
 import networkx as nx
+import jinja2
 
 # DEFINE GLOBAL VARs HERE
 
@@ -251,26 +252,47 @@ class NetworkTopology:
         }
 
         # Load Jinja2 template for Containerlab to run the topology through
-        from jinja2 import Environment, FileSystemLoader
-        env = Environment(
-                    loader=FileSystemLoader(f"."),
+        env = jinja2.Environment(
+                    loader=jinja2.FileSystemLoader(f"."),
                     line_statement_prefix='#'
                 )
-        templ = env.get_template(f"clab.j2")
+        try:
+            templ = env.get_template(f"clab.j2")
+        except (OSError, jinja2.TemplateError) as e:
+            error("Opening Containerlab J2 template:", e)
 
         # Run the topology through jinja2 template to get the final result
-        topo = templ.render(self.topology)
-        with open(self.topology_name + ".clab.yml", "w") as f:
-            f.write(topo)
-            print(f"Created Containerlab topology:\t{self.topology_name}.clab.yml")
+        try:
+            topo = templ.render(self.topology)
+        except jinja2.TemplateError as e:
+            error("Rendering Containerlab J2 template:", e)
+
+        clab_file = f"{self.topology_name}.clab.yml"
+        try:
+            with open(clab_file, "w") as f:
+                f.write(topo)
+        except OSError as e:
+            error(f"Can't write into {clab_file}", e)
+
+        print(f"Created Containerlab topology:\t{clab_file}")
 
         # Interface mapping file for cEOS
-        ceos_interfaces_templ = env.get_template(f"interface_maps/ceos.j2")
+        try:
+            ceos_interfaces_templ = env.get_template(f"interface_maps/ceos.j2")
+        except jinja2.TemplateError as e:
+            error("Opening interface map J2 template:", e)
         for d, m in self.device_interfaces_map.items():
-            ceos_interface_map = ceos_interfaces_templ.render({'map': m})
-            with open(d + "_interface_map.json", "w") as f:
-                f.write(ceos_interface_map)
-                print(f"Created interface map file:\t{d}_interface_map.json")
+            try:
+                ceos_interface_map = ceos_interfaces_templ.render({'map': m})
+            except jinja2.TemplateError as e:
+                error("Rendering interface map J2 template:", e)
+            int_map_file = f"{d}_interface_map.json"
+            try:
+                with open(int_map_file, "w") as f:
+                    f.write(ceos_interface_map)
+            except OSError as e:
+                error(f"Can't write into {int_map_file}", e)
+            print(f"Created interface map file:\t{int_map_file}")
 
 def load_config(filename):
     config = {
