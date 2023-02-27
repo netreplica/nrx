@@ -148,14 +148,22 @@ class NB_Factory:
                             debug("One or both devices for this connection are not in the export graph")
 
     def export_graph_gml(self):
-        nx.write_gml(self.G, self.config['export_site'] + ".gml")
-        print(f'GML graph saved to {self.config["export_site"]}.gml')
+        export_file = self.config['export_site'] + ".gml"
+        try:
+            nx.write_gml(self.G, export_file)
+        except OSError as e:
+            error(f"Writing to {export_file}:", e)
+        print(f"GML graph saved to {export_file}")
 
     def export_graph_json(self):
         cyjs = nx.cytoscape_data(self.G)
-        with open(self.config['export_site'] + ".cyjs", 'w', encoding='utf-8') as f:
-            json.dump(cyjs, f, indent=4)
-        print(f'CYJS graph saved to {self.config["export_site"]}.cyjs')
+        export_file = self.config['export_site'] + ".cyjs"
+        try:
+            with open(export_file, 'w', encoding='utf-8') as f:
+                json.dump(cyjs, f, indent=4)
+        except OSError as e:
+            error(f"Writing to {export_file}:", e)
+        print(f"CYJS graph saved to {export_file}")
 
 class NetworkTopology:
     def __init__(self):
