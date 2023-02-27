@@ -69,6 +69,9 @@ class NB_Factory:
             self._build_network_graph()
 
 
+    def graph(self):
+        return self.G
+    
     def _get_nb_device_info(self):
         for device in list(self.nb_session.dcim.devices.filter(site_id=self.nb_site.id, role=self.config['export_device_roles'])):
             d = {
@@ -144,6 +147,11 @@ class NetworkTopology:
     def build_from_file(self, file):
         self.graph_file = file
         self._read_network_graph()
+        self.topology_name = self.G.graph["name"]
+        self._build_topology()
+
+    def build_from_graph(self, graph):
+        self.G = graph
         self.topology_name = self.G.graph["name"]
         self._build_topology()
 
@@ -335,7 +343,7 @@ def main():
             error(f"Need a Site name to export. Use --site argument, or EXPORT_SITE key in --config file")
 
         nb_network = NB_Factory(config)
-
+        topo.build_from_graph(nb_network.graph())
 
     if config['output_format'] == 'clab':
         topo.export_clab()
