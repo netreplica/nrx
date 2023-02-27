@@ -174,8 +174,11 @@ class NetworkTopology:
     def _read_network_graph(self):
         print(f"Reading CYJS topology graph:\t{self.graph_file}")
         cyjs = {}
-        with open(self.graph_file, 'r', encoding='utf-8') as f:
-            cyjs = json.load(f)
+        try:
+            with open(self.graph_file, 'r', encoding='utf-8') as f:
+                cyjs = json.load(f)
+        except OSError as e:
+            error("Can't read CYJS topology graph:", e)
         self.G = nx.cytoscape_graph(cyjs)
 
     def _build_topology(self):
