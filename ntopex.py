@@ -358,7 +358,10 @@ def main():
         elif len(config['export_site']) == 0:
             error(f"Need a Site name to export. Use --site argument, or EXPORT_SITE key in --config file")
 
-        nb_network = NB_Factory(config)
+        try:
+            nb_network = NB_Factory(config)
+        except Exception as e:
+            error("Exporting from NetBox:", e)
         topo.build_from_graph(nb_network.graph())
 
     if config['output_format'] == 'clab':
