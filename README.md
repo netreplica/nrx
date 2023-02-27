@@ -10,7 +10,7 @@ Network Topology Exporter
 Ntopex reads a network topology graph from [NetBox](https://docs.netbox.dev/en/stable/) DCIM system and exports it in one of the following formats:
 
 * Topology file for [Containerlab](https://containerlab.dev) network emulation tool
-* Graph data as a JSON file in Cytoscape format [CYJS](http://manual.cytoscape.org/en/stable/Supported_Network_File_Formats.html#cytoscape-js-json)
+* Graph data as a JSON file in [Cytoscape](https://cytoscape.org/) format [CYJS](http://manual.cytoscape.org/en/stable/Supported_Network_File_Formats.html#cytoscape-js-json)
 
 It can also read the topology graph previously saved as a CYJS file to convert it into Containerlab format.
 
@@ -33,6 +33,7 @@ Export capabilities:
 * Creates mapping between real interface names and interface names used by Containerlab
 * Supported mapping formats: Arista cEOSLab
 * Containerlab `kind` and `image` values for all the nodes are statically defined in the Jinja2 template `clab.j2` and currently are set for `ceos`
+* Exports the graph into CYJS format that can be later converted into a Containerlab topology, or used by 3rd party software
 
 ## Prerequisites
 
@@ -139,7 +140,7 @@ Use `--config <filename>` argument to specify a configuration file to use. Examp
     source "${VENV_DIR}/${PYENV}/bin/activate"
     ```
 
-2. Run `./ntopex.py` to export a topology graph from NetBox in a Containerlab format: `--output clab`. See [How to configure](#how-to-configure) for details. Here is an example of running `ntopex.py` to export a graph for NetBox Site "DM-Albany" from [NetBox Demo](https://demo.netbox.dev) instance:
+2. Run `./ntopex.py --output clab` to export a topology graph from NetBox in a Containerlab format. See [How to configure](#how-to-configure) for details. Here is an example of running `ntopex.py` to export a graph for NetBox Site "DM-Albany" from [NetBox Demo](https://demo.netbox.dev) instance:
 
     ```Shell
     export NB_API_TOKEN='replace_with_valid_API_token'
