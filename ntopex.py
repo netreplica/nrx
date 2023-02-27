@@ -137,6 +137,106 @@ class NB_Factory:
             json.dump(cyjs, f, indent=4)
         print(f'CYJS graph saved to {self.config["export_site"]}.cyjs')
 
+class NetworkTopology:
+    def __init__(self):
+        self.topology_name = None
+
+    def build_from_file(self, file):
+        self.graph_file = file
+        self._read_network_graph()
+        self.topology_name = self.G.graph["name"]
+        self._build_topology()
+
+    def _read_network_graph(self):
+        print(f"Reading CYJS topology graph:\t{self.graph_file}")
+        cyjs = {}
+        with open(self.graph_file, 'r', encoding='utf-8') as f:
+            cyjs = json.load(f)
+        self.G = nx.cytoscape_graph(cyjs)
+
+    def _build_topology(self):
+        # Parse graph G into lists of: nodes and links. Keep a list of interfaces per device in `device_interfaces_map`.
+        self.nodes, self.links = [], []
+        self.device_interfaces_map = {}
+        for n in self.G.nodes:
+            if self.G.nodes[n]['type'] == 'device':
+                dev = self.G.nodes[n]['device']
+                self.nodes.append(dev)
+                self.device_interfaces_map[dev['name']] = {}
+            elif self.G.nodes[n]['type'] == 'interface':
+                int_name = self.G.nodes[n]['interface']['name']
+                dev_name, dev_node_id = None, None
+                peer_name, peer_dev_name, peer_dev_node_id = None, None, None
+                for a_adj in self.G.adj[n].items():
+                    if self.G.nodes[a_adj[0]]['type'] == 'device':
+                        dev_name = self.G.nodes[a_adj[0]]['device']['name']
+                        dev_node_id = self.G.nodes[a_adj[0]]['device']['node_id']
+                        self.device_interfaces_map[dev_name][int_name] = ""
+                    elif self.G.nodes[a_adj[0]]['type'] == 'interface' and self.G.nodes[n]['side'] == 'a':
+                        peer_name = self.G.nodes[a_adj[0]]['interface']['name']
+                        for b_adj in self.G.adj[a_adj[0]].items():
+                            if self.G.nodes[b_adj[0]]['type'] == 'device':
+                                peer_dev_name = self.G.nodes[b_adj[0]]['device']['name']
+                                peer_dev_node_id = self.G.nodes[b_adj[0]]['device']['node_id']
+                if self.G.nodes[n]['side'] == 'a':
+                    self.links.append({
+                        'a': {
+                            'node': dev_name,
+                            'node_id': dev_node_id,
+                            'interface': int_name,
+                        },
+                        'b': {
+                            'node': peer_dev_name,
+                            'node_id': peer_dev_node_id,
+                            'interface': peer_name,
+                        },
+                    })
+
+    def export_clab(self):
+
+        if self.topology_name is None:
+            error("cannot export an empty topology")
+
+        # Create container-compatible interface names for each device. We assume interface with index `0` is reserved for management, and start with `1`
+        for node, map in self.device_interfaces_map.items():
+            # sort keys (interface names) in the map
+            map_keys = list(map.keys())
+            map_keys.sort()
+            sorted_map = {k: f"eth{map_keys.index(k)+1}" for k in map_keys}
+            self.device_interfaces_map[node] = sorted_map
+
+        for l in self.links:
+            l['a']['c_interface'] = self.device_interfaces_map[l['a']['node']][l['a']['interface']]
+            l['b']['c_interface'] = self.device_interfaces_map[l['b']['node']][l['b']['interface']]
+
+        # Generate topology data structure for clab
+        self.topology = {
+            'name': self.G.name,
+            'nodes': [f"{n['name']}" for n in self.nodes],
+            'links': [f"[\"{l['a']['node']}:{l['a']['c_interface']}\", \"{l['b']['node']}:{l['b']['c_interface']}\"]" for l in self.links],
+        }
+
+        # Load Jinja2 template for Containerlab to run the topology through
+        from jinja2 import Environment, FileSystemLoader
+        env = Environment(
+                    loader=FileSystemLoader(f"."),
+                    line_statement_prefix='#'
+                )
+        templ = env.get_template(f"clab.j2")
+
+        # Run the topology through jinja2 template to get the final result
+        topo = templ.render(self.topology)
+        with open(self.topology_name + ".clab.yml", "w") as f:
+            f.write(topo)
+            print(f"Created Containerlab topology:\t{self.topology_name}.clab.yml")
+
+        # Interface mapping file for cEOS
+        ceos_interfaces_templ = env.get_template(f"interface_maps/ceos.j2")
+        for d, m in self.device_interfaces_map.items():
+            ceos_interface_map = ceos_interfaces_templ.render({'map': m})
+            with open(d + "_interface_map.json", "w") as f:
+                f.write(ceos_interface_map)
+                print(f"Created interface map file:\t{d}_interface_map.json")
 
 def load_config(filename):
     config = {
@@ -165,8 +265,15 @@ def load_config(filename):
 
     return config
 
+def arg_input_check(s):
+    allowed_values = ['netbox', 'cyjs']
+    if s in allowed_values:
+        return s
+    else:
+        raise argparse.ArgumentTypeError(f"input source has to be one of {allowed_values}")
+
 def arg_output_check(s):
-    allowed_values = ['gml', 'cyjs']
+    allowed_values = ['gml', 'cyjs', 'clab']
     if s in allowed_values:
         return s
     else:
@@ -177,10 +284,12 @@ def main():
     # CLI arguments parser
     parser = argparse.ArgumentParser(prog='ntopex.py', description='Network Topology Exporter')
     parser.add_argument('-c', '--config', required=False, help='configuration file')
-    parser.add_argument('-o', '--output', required=False, type=arg_output_check, help='export format: gml | cyjs')
-    parser.add_argument('-a', '--api', required=False, help='NetBox API URL')
-    parser.add_argument('-s', '--site', required=False, help='NetBox Site to export')
-    parser.add_argument('-d', '--debug', required=False, help='enable debug output', action=argparse.BooleanOptionalAction)
+    parser.add_argument('-i', '--input',  required=False, default='netbox', type=arg_input_check,  help='input source: netbox (default) | cyjs')
+    parser.add_argument('-o', '--output', required=False, default='cyjs',   type=arg_output_check, help='output format: cyjs (default) | gml | clab')
+    parser.add_argument('-a', '--api',    required=False, help='NetBox API URL')
+    parser.add_argument('-s', '--site',   required=False, help='NetBox Site to export')
+    parser.add_argument('-d', '--debug',  required=False, help='enable debug output', action=argparse.BooleanOptionalAction)
+    parser.add_argument('-f', '--file',   required=False, help='file with the network graph to import')
 
     # Common parameters
     args = parser.parse_args()
@@ -194,27 +303,49 @@ def main():
     except argparse.ArgumentTypeError as e:
         error(f"Unsupported configuration: {e}")
 
-    if args.api is not None and len(args.api) > 0:
-        config['nb_api_url'] = args.api
-    if len(config['nb_api_url']) == 0:
-        error(f"Need an API URL to connect to NetBox. Use --api argument, NB_API_URL environment variable or key in --config file")
-    
-    if len(config['nb_api_token']) == 0:
-        error(f"Need an API token to connect to NetBox. Use NB_API_TOKEN environment variable or key in --config file")
-    
-    if args.site is not None and len(args.site) > 0:
-        config['export_site'] = args.site
-    elif len(config['export_site']) == 0:
-        error(f"Need a Site name to export. Use --site argument, or EXPORT_SITE key in --config file")
+    if args.input is not None and len(args.input) > 0:
+        config['input_source'] = args.input
 
     if args.output is not None and len(args.output) > 0:
         config['output_format'] = args.output
 
-    nb_network = NB_Factory(config)
-    if config['output_format'] == 'gml':
-        nb_network.export_graph_gml()
+    nb_network = None
+    topo = NetworkTopology()
+
+    if config['input_source'] == 'cyjs':
+        if config['output_format'] == 'cyjs':
+            error("Specify export format different from CYJS with --output")
+        elif args.file is not None and len(args.file) > 0:
+            # Load graph from file
+            topo.build_from_file(args.file)
+        else:
+            error("Provide a path to CYJS graph using --file")
+    elif config['input_source'] == 'netbox':
+        if args.api is not None and len(args.api) > 0:
+            config['nb_api_url'] = args.api
+        if len(config['nb_api_url']) == 0:
+            error(f"Need an API URL to connect to NetBox. Use --api argument, NB_API_URL environment variable or key in --config file")
+        
+        if len(config['nb_api_token']) == 0:
+            error(f"Need an API token to connect to NetBox. Use NB_API_TOKEN environment variable or key in --config file")
+
+        if args.site is not None and len(args.site) > 0:
+            config['export_site'] = args.site
+        elif len(config['export_site']) == 0:
+            error(f"Need a Site name to export. Use --site argument, or EXPORT_SITE key in --config file")
+
+        nb_network = NB_Factory(config)
+
+
+    if config['output_format'] == 'clab':
+        topo.export_clab()
     else:
-        nb_network.export_graph_json()
+        if nb_network is None:
+            error(f"Only --input netbox is supported for this type of export format: {config['output_format']}")
+        if config['output_format'] == 'gml':
+            nb_network.export_graph_gml()
+        else:
+            nb_network.export_graph_json()
 
     return 0
 
