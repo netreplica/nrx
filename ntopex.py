@@ -61,7 +61,7 @@ class NB_Factory:
         self.nb_session = pynetbox.api(self.config['nb_api_url'], token=self.config['nb_api_token'], threading=True)
         try:
             self.nb_site = self.nb_session.dcim.sites.get(name=config['export_site'])
-        except pynetbox.core.query.RequestError as e:
+        except (pynetbox.core.query.RequestError, pynetbox.core.query.ContentError) as e:
             error("NetBox API failure at get sites:", e)
         debug(f"returned site data {self.nb_site}")
         if self.nb_site is None:
@@ -70,12 +70,12 @@ class NB_Factory:
             print(f"Exporting {config['export_site']} site from NetBox at {config['nb_api_url']}")
             try:
                 self._get_nb_device_info()
-            except pynetbox.core.query.RequestError as e:
+            except (pynetbox.core.query.RequestError, pynetbox.core.query.ContentError) as e:
                 error("NetBox API failure at get devices or interfaces:", e)
 
             try:
                 self._build_network_graph()
-            except pynetbox.core.query.RequestError as e:
+            except (pynetbox.core.query.RequestError, pynetbox.core.query.ContentError) as e:
                 error("NetBox API failure at get cables:", e)
 
 
