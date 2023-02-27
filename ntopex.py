@@ -163,12 +163,14 @@ class NetworkTopology:
     def build_from_file(self, file):
         self.graph_file = file
         self._read_network_graph()
-        self.topology_name = self.G.graph["name"]
+        if "name" in self.G.graph.keys():
+            self.topology_name = self.G.graph["name"]
         self._build_topology()
 
     def build_from_graph(self, graph):
         self.G = graph
-        self.topology_name = self.G.graph["name"]
+        if "name" in self.G.graph.keys():
+            self.topology_name = self.G.graph["name"]
         self._build_topology()
 
     def _read_network_graph(self):
@@ -179,50 +181,55 @@ class NetworkTopology:
                 cyjs = json.load(f)
         except OSError as e:
             error("Can't read CYJS topology graph:", e)
+        except json.decoder.JSONDecodeError as e:
+            error("Can't parse CYJS topology graph:", e)
         self.G = nx.cytoscape_graph(cyjs)
 
     def _build_topology(self):
         # Parse graph G into lists of: nodes and links. Keep a list of interfaces per device in `device_interfaces_map`.
         self.nodes, self.links = [], []
         self.device_interfaces_map = {}
-        for n in self.G.nodes:
-            if self.G.nodes[n]['type'] == 'device':
-                dev = self.G.nodes[n]['device']
-                self.nodes.append(dev)
-                self.device_interfaces_map[dev['name']] = {}
-            elif self.G.nodes[n]['type'] == 'interface':
-                int_name = self.G.nodes[n]['interface']['name']
-                dev_name, dev_node_id = None, None
-                peer_name, peer_dev_name, peer_dev_node_id = None, None, None
-                for a_adj in self.G.adj[n].items():
-                    if self.G.nodes[a_adj[0]]['type'] == 'device':
-                        dev_name = self.G.nodes[a_adj[0]]['device']['name']
-                        dev_node_id = self.G.nodes[a_adj[0]]['device']['node_id']
-                        self.device_interfaces_map[dev_name][int_name] = ""
-                    elif self.G.nodes[a_adj[0]]['type'] == 'interface' and self.G.nodes[n]['side'] == 'a':
-                        peer_name = self.G.nodes[a_adj[0]]['interface']['name']
-                        for b_adj in self.G.adj[a_adj[0]].items():
-                            if self.G.nodes[b_adj[0]]['type'] == 'device':
-                                peer_dev_name = self.G.nodes[b_adj[0]]['device']['name']
-                                peer_dev_node_id = self.G.nodes[b_adj[0]]['device']['node_id']
-                if self.G.nodes[n]['side'] == 'a':
-                    self.links.append({
-                        'a': {
-                            'node': dev_name,
-                            'node_id': dev_node_id,
-                            'interface': int_name,
-                        },
-                        'b': {
-                            'node': peer_dev_name,
-                            'node_id': peer_dev_node_id,
-                            'interface': peer_name,
-                        },
-                    })
+        try:
+            for n in self.G.nodes:
+                if self.G.nodes[n]['type'] == 'device':
+                    dev = self.G.nodes[n]['device']
+                    self.nodes.append(dev)
+                    self.device_interfaces_map[dev['name']] = {}
+                elif self.G.nodes[n]['type'] == 'interface':
+                    int_name = self.G.nodes[n]['interface']['name']
+                    dev_name, dev_node_id = None, None
+                    peer_name, peer_dev_name, peer_dev_node_id = None, None, None
+                    for a_adj in self.G.adj[n].items():
+                        if self.G.nodes[a_adj[0]]['type'] == 'device':
+                            dev_name = self.G.nodes[a_adj[0]]['device']['name']
+                            dev_node_id = self.G.nodes[a_adj[0]]['device']['node_id']
+                            self.device_interfaces_map[dev_name][int_name] = ""
+                        elif self.G.nodes[a_adj[0]]['type'] == 'interface' and self.G.nodes[n]['side'] == 'a':
+                            peer_name = self.G.nodes[a_adj[0]]['interface']['name']
+                            for b_adj in self.G.adj[a_adj[0]].items():
+                                if self.G.nodes[b_adj[0]]['type'] == 'device':
+                                    peer_dev_name = self.G.nodes[b_adj[0]]['device']['name']
+                                    peer_dev_node_id = self.G.nodes[b_adj[0]]['device']['node_id']
+                    if self.G.nodes[n]['side'] == 'a':
+                        self.links.append({
+                            'a': {
+                                'node': dev_name,
+                                'node_id': dev_node_id,
+                                'interface': int_name,
+                            },
+                            'b': {
+                                'node': peer_dev_name,
+                                'node_id': peer_dev_node_id,
+                                'interface': peer_name,
+                            },
+                        })
+        except KeyError as e:
+            error(f"Incomplete data to build topology, {e} key is missing")
 
     def export_clab(self):
 
-        if self.topology_name is None:
-            error("cannot export an empty topology")
+        if self.topology_name is None or len(self.topology_name) == 0:
+            error("Cannot export a topology: missing a name")
 
         # Create container-compatible interface names for each device. We assume interface with index `0` is reserved for management, and start with `1`
         for node, map in self.device_interfaces_map.items():
