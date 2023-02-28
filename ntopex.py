@@ -23,6 +23,7 @@ import json
 import toml
 import pynetbox
 import networkx as nx
+import jinja2
 
 # DEFINE GLOBAL VARs HERE
 
@@ -59,14 +60,24 @@ class NB_Factory:
         self.nb_net = NB_Network()
         self.G = nx.Graph(name=config['export_site'])
         self.nb_session = pynetbox.api(self.config['nb_api_url'], token=self.config['nb_api_token'], threading=True)
-        self.nb_site = self.nb_session.dcim.sites.get(name=config['export_site'])
+        try:
+            self.nb_site = self.nb_session.dcim.sites.get(name=config['export_site'])
+        except (pynetbox.core.query.RequestError, pynetbox.core.query.ContentError) as e:
+            error("NetBox API failure at get sites:", e)
         debug(f"returned site data {self.nb_site}")
         if self.nb_site is None:
             print(f"No data found for a site {config['export_site']}")
         else:
             print(f"Exporting {config['export_site']} site from NetBox at {config['nb_api_url']}")
-            self._get_nb_device_info()
-            self._build_network_graph()
+            try:
+                self._get_nb_device_info()
+            except (pynetbox.core.query.RequestError, pynetbox.core.query.ContentError) as e:
+                error("NetBox API failure at get devices or interfaces:", e)
+
+            try:
+                self._build_network_graph()
+            except (pynetbox.core.query.RequestError, pynetbox.core.query.ContentError) as e:
+                error("NetBox API failure at get cables:", e)
 
 
     def graph(self):
@@ -80,12 +91,14 @@ class NB_Factory:
                 "name": device.name,
                 "node_id": -1,
             }
+            debug("Adding device:", d)
             self.nb_net.nodes.append(d)
             d["node_id"] = len(self.nb_net.nodes) - 1
             self.nb_net.devices.append(d)
             self.nb_net.device_ids.append(
                 device.id)  # index of the device in the devices list will match its ID index in device_ids list
 
+            debug(f"{d['name']} Ethernet interfaces:")
             for interface in list(self.nb_session.dcim.interfaces.filter(device_id=device.id)):
                 if "base" in interface.type.value and interface.cable:  # only connected ethernet interfaces
                     debug(device.name, ":", interface, ":", interface.type.value)
@@ -103,42 +116,54 @@ class NB_Factory:
                     self.nb_net.cable_ids.append(interface.cable.id)
 
     def _build_network_graph(self):
-        for cable in list(self.nb_session.dcim.cables.filter(id=self.nb_net.cable_ids)):
-            if len(cable.a_terminations) == 1 and len(cable.b_terminations) == 1:
-                int_a = cable.a_terminations[0]
-                int_b = cable.b_terminations[0]
-                if isinstance(int_a, pynetbox.models.dcim.Interfaces) and isinstance(int_b,
-                                                                                     pynetbox.models.dcim.Interfaces):
-                    debug("{}:{} <> {}:{}".format(int_a.device, int_a, int_b.device, int_b))
-                    d_a = self.nb_net.devices[self.nb_net.device_ids.index(int_a.device.id)]
-                    d_b = self.nb_net.devices[self.nb_net.device_ids.index(int_b.device.id)]
-                    self.G.add_nodes_from([
-                        (d_a["node_id"], {"side": "a", "type": "device", "device": d_a}),
-                        (d_b["node_id"], {"side": "b", "type": "device", "device": d_b}),
-                    ])
-                    i_a = self.nb_net.interfaces[self.nb_net.interface_ids.index(int_a.id)]
-                    i_b = self.nb_net.interfaces[self.nb_net.interface_ids.index(int_b.id)]
-                    self.G.add_nodes_from([
-                        (i_a["node_id"], {"side": "a", "type": "interface", "interface": i_a}),
-                        (i_b["node_id"], {"side": "b", "type": "interface", "interface": i_b}),
-                    ])
-                    self.G.add_edges_from([
-                        (d_a["node_id"], i_a["node_id"]),
-                        (d_b["node_id"], i_b["node_id"]),
-                    ])
-                    self.G.add_edges_from([
-                        (i_a["node_id"], i_b["node_id"]),
-                    ])
+        if len(self.nb_net.cable_ids) > 0:
+            # Making sure there will be a non-empty filter for cables, as otherwise all cables would be returned
+            for cable in list(self.nb_session.dcim.cables.filter(id=self.nb_net.cable_ids)):
+                if len(cable.a_terminations) == 1 and len(cable.b_terminations) == 1:
+                    int_a = cable.a_terminations[0]
+                    int_b = cable.b_terminations[0]
+                    if isinstance(int_a, pynetbox.models.dcim.Interfaces) and isinstance(int_b, pynetbox.models.dcim.Interfaces):
+                        debug("{}:{} <> {}:{}".format(int_a.device, int_a, int_b.device, int_b))
+                        try:
+                            d_a = self.nb_net.devices[self.nb_net.device_ids.index(int_a.device.id)]
+                            d_b = self.nb_net.devices[self.nb_net.device_ids.index(int_b.device.id)]
+                            self.G.add_nodes_from([
+                                (d_a["node_id"], {"side": "a", "type": "device", "device": d_a}),
+                                (d_b["node_id"], {"side": "b", "type": "device", "device": d_b}),
+                            ])
+                            i_a = self.nb_net.interfaces[self.nb_net.interface_ids.index(int_a.id)]
+                            i_b = self.nb_net.interfaces[self.nb_net.interface_ids.index(int_b.id)]
+                            self.G.add_nodes_from([
+                                (i_a["node_id"], {"side": "a", "type": "interface", "interface": i_a}),
+                                (i_b["node_id"], {"side": "b", "type": "interface", "interface": i_b}),
+                            ])
+                            self.G.add_edges_from([
+                                (d_a["node_id"], i_a["node_id"]),
+                                (d_b["node_id"], i_b["node_id"]),
+                            ])
+                            self.G.add_edges_from([
+                                (i_a["node_id"], i_b["node_id"]),
+                            ])
+                        except ValueError as e:
+                            debug("One or both devices for this connection are not in the export graph")
 
     def export_graph_gml(self):
-        nx.write_gml(self.G, self.config['export_site'] + ".gml")
-        print(f'GML graph saved to {self.config["export_site"]}.gml')
+        export_file = self.config['export_site'] + ".gml"
+        try:
+            nx.write_gml(self.G, export_file)
+        except OSError as e:
+            error(f"Writing to {export_file}:", e)
+        print(f"GML graph saved to {export_file}")
 
     def export_graph_json(self):
         cyjs = nx.cytoscape_data(self.G)
-        with open(self.config['export_site'] + ".cyjs", 'w', encoding='utf-8') as f:
-            json.dump(cyjs, f, indent=4)
-        print(f'CYJS graph saved to {self.config["export_site"]}.cyjs')
+        export_file = self.config['export_site'] + ".cyjs"
+        try:
+            with open(export_file, 'w', encoding='utf-8') as f:
+                json.dump(cyjs, f, indent=4)
+        except OSError as e:
+            error(f"Writing to {export_file}:", e)
+        print(f"CYJS graph saved to {export_file}")
 
 class NetworkTopology:
     def __init__(self):
@@ -147,63 +172,73 @@ class NetworkTopology:
     def build_from_file(self, file):
         self.graph_file = file
         self._read_network_graph()
-        self.topology_name = self.G.graph["name"]
+        if "name" in self.G.graph.keys():
+            self.topology_name = self.G.graph["name"]
         self._build_topology()
 
     def build_from_graph(self, graph):
         self.G = graph
-        self.topology_name = self.G.graph["name"]
+        if "name" in self.G.graph.keys():
+            self.topology_name = self.G.graph["name"]
         self._build_topology()
 
     def _read_network_graph(self):
         print(f"Reading CYJS topology graph:\t{self.graph_file}")
         cyjs = {}
-        with open(self.graph_file, 'r', encoding='utf-8') as f:
-            cyjs = json.load(f)
+        try:
+            with open(self.graph_file, 'r', encoding='utf-8') as f:
+                cyjs = json.load(f)
+        except OSError as e:
+            error("Can't read CYJS topology graph:", e)
+        except json.decoder.JSONDecodeError as e:
+            error("Can't parse CYJS topology graph:", e)
         self.G = nx.cytoscape_graph(cyjs)
 
     def _build_topology(self):
         # Parse graph G into lists of: nodes and links. Keep a list of interfaces per device in `device_interfaces_map`.
         self.nodes, self.links = [], []
         self.device_interfaces_map = {}
-        for n in self.G.nodes:
-            if self.G.nodes[n]['type'] == 'device':
-                dev = self.G.nodes[n]['device']
-                self.nodes.append(dev)
-                self.device_interfaces_map[dev['name']] = {}
-            elif self.G.nodes[n]['type'] == 'interface':
-                int_name = self.G.nodes[n]['interface']['name']
-                dev_name, dev_node_id = None, None
-                peer_name, peer_dev_name, peer_dev_node_id = None, None, None
-                for a_adj in self.G.adj[n].items():
-                    if self.G.nodes[a_adj[0]]['type'] == 'device':
-                        dev_name = self.G.nodes[a_adj[0]]['device']['name']
-                        dev_node_id = self.G.nodes[a_adj[0]]['device']['node_id']
-                        self.device_interfaces_map[dev_name][int_name] = ""
-                    elif self.G.nodes[a_adj[0]]['type'] == 'interface' and self.G.nodes[n]['side'] == 'a':
-                        peer_name = self.G.nodes[a_adj[0]]['interface']['name']
-                        for b_adj in self.G.adj[a_adj[0]].items():
-                            if self.G.nodes[b_adj[0]]['type'] == 'device':
-                                peer_dev_name = self.G.nodes[b_adj[0]]['device']['name']
-                                peer_dev_node_id = self.G.nodes[b_adj[0]]['device']['node_id']
-                if self.G.nodes[n]['side'] == 'a':
-                    self.links.append({
-                        'a': {
-                            'node': dev_name,
-                            'node_id': dev_node_id,
-                            'interface': int_name,
-                        },
-                        'b': {
-                            'node': peer_dev_name,
-                            'node_id': peer_dev_node_id,
-                            'interface': peer_name,
-                        },
-                    })
+        try:
+            for n in self.G.nodes:
+                if self.G.nodes[n]['type'] == 'device':
+                    dev = self.G.nodes[n]['device']
+                    self.nodes.append(dev)
+                    self.device_interfaces_map[dev['name']] = {}
+                elif self.G.nodes[n]['type'] == 'interface':
+                    int_name = self.G.nodes[n]['interface']['name']
+                    dev_name, dev_node_id = None, None
+                    peer_name, peer_dev_name, peer_dev_node_id = None, None, None
+                    for a_adj in self.G.adj[n].items():
+                        if self.G.nodes[a_adj[0]]['type'] == 'device':
+                            dev_name = self.G.nodes[a_adj[0]]['device']['name']
+                            dev_node_id = self.G.nodes[a_adj[0]]['device']['node_id']
+                            self.device_interfaces_map[dev_name][int_name] = ""
+                        elif self.G.nodes[a_adj[0]]['type'] == 'interface' and self.G.nodes[n]['side'] == 'a':
+                            peer_name = self.G.nodes[a_adj[0]]['interface']['name']
+                            for b_adj in self.G.adj[a_adj[0]].items():
+                                if self.G.nodes[b_adj[0]]['type'] == 'device':
+                                    peer_dev_name = self.G.nodes[b_adj[0]]['device']['name']
+                                    peer_dev_node_id = self.G.nodes[b_adj[0]]['device']['node_id']
+                    if self.G.nodes[n]['side'] == 'a':
+                        self.links.append({
+                            'a': {
+                                'node': dev_name,
+                                'node_id': dev_node_id,
+                                'interface': int_name,
+                            },
+                            'b': {
+                                'node': peer_dev_name,
+                                'node_id': peer_dev_node_id,
+                                'interface': peer_name,
+                            },
+                        })
+        except KeyError as e:
+            error(f"Incomplete data to build topology, {e} key is missing")
 
     def export_clab(self):
 
-        if self.topology_name is None:
-            error("cannot export an empty topology")
+        if self.topology_name is None or len(self.topology_name) == 0:
+            error("Cannot export a topology: missing a name")
 
         # Create container-compatible interface names for each device. We assume interface with index `0` is reserved for management, and start with `1`
         for node, map in self.device_interfaces_map.items():
@@ -225,26 +260,47 @@ class NetworkTopology:
         }
 
         # Load Jinja2 template for Containerlab to run the topology through
-        from jinja2 import Environment, FileSystemLoader
-        env = Environment(
-                    loader=FileSystemLoader(f"."),
+        env = jinja2.Environment(
+                    loader=jinja2.FileSystemLoader(f"."),
                     line_statement_prefix='#'
                 )
-        templ = env.get_template(f"clab.j2")
+        try:
+            templ = env.get_template(f"clab.j2")
+        except (OSError, jinja2.TemplateError) as e:
+            error("Opening Containerlab J2 template:", e)
 
         # Run the topology through jinja2 template to get the final result
-        topo = templ.render(self.topology)
-        with open(self.topology_name + ".clab.yml", "w") as f:
-            f.write(topo)
-            print(f"Created Containerlab topology:\t{self.topology_name}.clab.yml")
+        try:
+            topo = templ.render(self.topology)
+        except jinja2.TemplateError as e:
+            error("Rendering Containerlab J2 template:", e)
+
+        clab_file = f"{self.topology_name}.clab.yml"
+        try:
+            with open(clab_file, "w") as f:
+                f.write(topo)
+        except OSError as e:
+            error(f"Can't write into {clab_file}", e)
+
+        print(f"Created Containerlab topology:\t{clab_file}")
 
         # Interface mapping file for cEOS
-        ceos_interfaces_templ = env.get_template(f"interface_maps/ceos.j2")
+        try:
+            ceos_interfaces_templ = env.get_template(f"interface_maps/ceos.j2")
+        except jinja2.TemplateError as e:
+            error("Opening interface map J2 template:", e)
         for d, m in self.device_interfaces_map.items():
-            ceos_interface_map = ceos_interfaces_templ.render({'map': m})
-            with open(d + "_interface_map.json", "w") as f:
-                f.write(ceos_interface_map)
-                print(f"Created interface map file:\t{d}_interface_map.json")
+            try:
+                ceos_interface_map = ceos_interfaces_templ.render({'map': m})
+            except jinja2.TemplateError as e:
+                error("Rendering interface map J2 template:", e)
+            int_map_file = f"{d}_interface_map.json"
+            try:
+                with open(int_map_file, "w") as f:
+                    f.write(ceos_interface_map)
+            except OSError as e:
+                error(f"Can't write into {int_map_file}", e)
+            print(f"Created interface map file:\t{int_map_file}")
 
 def load_config(filename):
     config = {
@@ -342,7 +398,10 @@ def main():
         elif len(config['export_site']) == 0:
             error(f"Need a Site name to export. Use --site argument, or EXPORT_SITE key in --config file")
 
-        nb_network = NB_Factory(config)
+        try:
+            nb_network = NB_Factory(config)
+        except Exception as e:
+            error("Exporting from NetBox:", e)
         topo.build_from_graph(nb_network.graph())
 
     if config['output_format'] == 'clab':
