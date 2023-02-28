@@ -85,11 +85,21 @@ class NB_Factory:
     
     def _get_nb_device_info(self):
         for device in list(self.nb_session.dcim.devices.filter(site_id=self.nb_site.id, role=self.config['export_device_roles'])):
+            platform, vendor, model = "Unknown", "Unknown", "Unknown"
+            if device.platform is not None:
+                platform = device.platform.name
+                if device.platform.manufacturer is not None:
+                    vendor = device.platform.manufacturer.name
+            if device.device_type is not None:
+                model = device.device_type.model
             d = {
                 "id": device.id,
                 "type": "device",
                 "name": device.name,
                 "node_id": -1,
+                "platform": platform,
+                "vendor": vendor,
+                "model": model,
             }
             debug("Adding device:", d)
             self.nb_net.nodes.append(d)
@@ -153,6 +163,8 @@ class NB_Factory:
             nx.write_gml(self.G, export_file)
         except OSError as e:
             error(f"Writing to {export_file}:", e)
+        except nx.exception.NetworkXError as e:
+            error("Can't export as GML:", e)
         print(f"GML graph saved to {export_file}")
 
     def export_graph_json(self):
@@ -163,6 +175,8 @@ class NB_Factory:
                 json.dump(cyjs, f, indent=4)
         except OSError as e:
             error(f"Writing to {export_file}:", e)
+        except TypeError as e:
+            error("Can't export as JSON:", e)
         print(f"CYJS graph saved to {export_file}")
 
 class NetworkTopology:
