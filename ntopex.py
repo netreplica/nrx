@@ -254,6 +254,19 @@ class NetworkTopology:
         if self.topology_name is None or len(self.topology_name) == 0:
             error("Cannot export a topology: missing a name")
 
+        self._map_interface_names()
+        
+        # Generate topology data structure for clab
+        self.topology = {
+            'name': self.G.name,
+            'nodes': [],
+            'links': [f"[\"{l['a']['node']}:{l['a']['c_interface']}\", \"{l['b']['node']}:{l['b']['c_interface']}\"]" for l in self.links],
+        }
+
+        self._render_clab_nodes()
+        self._render_clab_topology()
+
+    def _map_interface_names(self):
         # Create container-compatible interface names for each device. We assume interface with index `0` is reserved for management, and start with `1`
         for node, map in self.device_interfaces_map.items():
             # sort keys (interface names) in the map
@@ -266,14 +279,8 @@ class NetworkTopology:
             l['a']['c_interface'] = self.device_interfaces_map[l['a']['node']][l['a']['interface']]
             l['b']['c_interface'] = self.device_interfaces_map[l['b']['node']][l['b']['interface']]
 
-        # Generate topology data structure for clab
-        self.topology = {
-            'name': self.G.name,
-            'nodes': [],
-            'links': [f"[\"{l['a']['node']}:{l['a']['c_interface']}\", \"{l['b']['node']}:{l['b']['c_interface']}\"]" for l in self.links],
-        }
-
-        # Load Jinja2 template for Containerlab to run the topology through
+    def _render_clab_nodes(self):
+        # Load Jinja2 template for Containerlab kinds
         env = jinja2.Environment(
                     loader=jinja2.FileSystemLoader(f"."),
                     line_statement_prefix='#'
@@ -294,8 +301,14 @@ class NetworkTopology:
 
                 self._create_interface_map(n)
 
-        debug("Topology data to render:", json.dumps(self.topology))
 
+    def _render_clab_topology(self):
+        debug("Topology data to render:", json.dumps(self.topology))
+        # Load Jinja2 template for Containerlab to run the topology through
+        env = jinja2.Environment(
+                    loader=jinja2.FileSystemLoader(f"."),
+                    line_statement_prefix='#'
+                )
         try:
             templ = env.get_template(f"clab/topology.j2")
         except (OSError, jinja2.TemplateError) as e:
