@@ -254,19 +254,16 @@ class NetworkTopology:
         if self.topology_name is None or len(self.topology_name) == 0:
             error("Cannot export a topology: missing a name")
 
-        self._map_interface_names()
-        
         # Generate topology data structure for clab
         self.topology = {
             'name': self.G.name,
-            'nodes': [],
-            'links': [f"[\"{l['a']['node']}:{l['a']['c_interface']}\", \"{l['b']['node']}:{l['b']['c_interface']}\"]" for l in self.links],
+            'nodes': self._render_clab_nodes(),
+            'links': self._render_clab_links(),
         }
 
-        self._render_clab_nodes()
         self._render_clab_topology()
 
-    def _map_interface_names(self):
+    def _render_clab_links(self):
         # Create container-compatible interface names for each device. We assume interface with index `0` is reserved for management, and start with `1`
         for node, map in self.device_interfaces_map.items():
             # sort keys (interface names) in the map
@@ -279,6 +276,8 @@ class NetworkTopology:
             l['a']['c_interface'] = self.device_interfaces_map[l['a']['node']][l['a']['interface']]
             l['b']['c_interface'] = self.device_interfaces_map[l['b']['node']][l['b']['interface']]
 
+        return [f"[\"{l['a']['node']}:{l['a']['c_interface']}\", \"{l['b']['node']}:{l['b']['c_interface']}\"]" for l in self.links]
+
     def _render_clab_nodes(self):
         # Load Jinja2 template for Containerlab kinds
         env = jinja2.Environment(
@@ -286,6 +285,7 @@ class NetworkTopology:
                     line_statement_prefix='#'
                 )
         
+        topo_nodes = []
         for n in self.nodes:
             if 'platform' in n.keys():
                 p = n['platform']
@@ -295,11 +295,13 @@ class NetworkTopology:
                     error(f"Opening Containerlab J2 template for platform {p}:", e)
                 # Run the topology through jinja2 template to get the final result
                 try:
-                    self.topology['nodes'].append(templ.render(n))
+                    topo_nodes.append(templ.render(n))
                 except jinja2.TemplateError as e:
                     error(f"Rendering Containerlab J2 template for platform {p}:", e)
 
                 self._create_interface_map(n)
+
+        return topo_nodes
 
 
     def _render_clab_topology(self):
