@@ -269,18 +269,35 @@ class NetworkTopology:
         # Generate topology data structure for clab
         self.topology = {
             'name': self.G.name,
-            'nodes': self.nodes,
+            'nodes': [],
             'links': [f"[\"{l['a']['node']}:{l['a']['c_interface']}\", \"{l['b']['node']}:{l['b']['c_interface']}\"]" for l in self.links],
         }
-        debug("Topology data to render:", json.dumps(self.topology))
 
         # Load Jinja2 template for Containerlab to run the topology through
         env = jinja2.Environment(
                     loader=jinja2.FileSystemLoader(f"."),
                     line_statement_prefix='#'
                 )
+        
+        for n in self.nodes:
+            if 'platform' in n.keys():
+                p = n['platform']
+                try:
+                    templ = env.get_template(f"clab/kinds/{p}.j2")
+                except (OSError, jinja2.TemplateError) as e:
+                    error(f"Opening Containerlab J2 template for platform {p}:", e)
+                # Run the topology through jinja2 template to get the final result
+                try:
+                    self.topology['nodes'].append(templ.render(n))
+                except jinja2.TemplateError as e:
+                    error(f"Rendering Containerlab J2 template for platform {p}:", e)
+
+                self._create_interface_map(n)
+
+        debug("Topology data to render:", json.dumps(self.topology))
+
         try:
-            templ = env.get_template(f"clab.j2")
+            templ = env.get_template(f"clab/topology.j2")
         except (OSError, jinja2.TemplateError) as e:
             error("Opening Containerlab J2 template:", e)
 
@@ -299,23 +316,25 @@ class NetworkTopology:
 
         print(f"Created Containerlab topology:\t{clab_file}")
 
-        # Interface mapping file for cEOS
-        try:
-            ceos_interfaces_templ = env.get_template(f"interface_maps/ceos.j2")
-        except jinja2.TemplateError as e:
-            error("Opening interface map J2 template:", e)
-        for d, m in self.device_interfaces_map.items():
+    def _create_interface_map(self, node):
+        if 'platform' in node.keys() and node['platform'] == 'ceos': # replace by patten matching
+            # Interface mapping file for cEOS
             try:
-                ceos_interface_map = ceos_interfaces_templ.render({'map': m})
+                ceos_interfaces_templ = env.get_template(f"interface_maps/ceos.j2")
             except jinja2.TemplateError as e:
-                error("Rendering interface map J2 template:", e)
-            int_map_file = f"{d}_interface_map.json"
-            try:
-                with open(int_map_file, "w") as f:
-                    f.write(ceos_interface_map)
-            except OSError as e:
-                error(f"Can't write into {int_map_file}", e)
-            print(f"Created interface map file:\t{int_map_file}")
+                error("Opening interface map J2 template:", e)
+            for d, m in self.device_interfaces_map.items():
+                try:
+                    ceos_interface_map = ceos_interfaces_templ.render({'map': m})
+                except jinja2.TemplateError as e:
+                    error("Rendering interface map J2 template:", e)
+                int_map_file = f"{d}_interface_map.json"
+                try:
+                    with open(int_map_file, "w") as f:
+                        f.write(ceos_interface_map)
+                except OSError as e:
+                    error(f"Can't write into {int_map_file}", e)
+                print(f"Created interface map file:\t{int_map_file}")
 
 def load_config(filename):
     config = {

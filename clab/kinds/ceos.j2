@@ -1,0 +1,5 @@
+        {{ name }}:
+            kind: ceos
+            image: ceos:latest
+            binds:
+                - {{ name }}_interface_map.json:/mnt/flash/EosIntfMapping.json:ro
