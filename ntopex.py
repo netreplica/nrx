@@ -269,9 +269,10 @@ class NetworkTopology:
         # Generate topology data structure for clab
         self.topology = {
             'name': self.G.name,
-            'nodes': [f"{n['name']}" for n in self.nodes],
+            'nodes': self.nodes,
             'links': [f"[\"{l['a']['node']}:{l['a']['c_interface']}\", \"{l['b']['node']}:{l['b']['c_interface']}\"]" for l in self.links],
         }
+        debug("Topology data to render:", json.dumps(self.topology))
 
         # Load Jinja2 template for Containerlab to run the topology through
         env = jinja2.Environment(
