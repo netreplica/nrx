@@ -180,8 +180,13 @@ class NB_Factory:
         print(f"CYJS graph saved to {export_file}")
 
 class NetworkTopology:
-    def __init__(self):
+    def __init__(self, config):
         self.topology_name = None
+        self.config = config
+        self.j2env = jinja2.Environment(
+                    loader=jinja2.FileSystemLoader(self.config['templates_path'], followlinks=True),
+                    line_statement_prefix='#'
+                )
 
     def build_from_file(self, file):
         self.graph_file = file
@@ -250,7 +255,6 @@ class NetworkTopology:
             error(f"Incomplete data to build topology, {e} key is missing")
 
     def export_clab(self):
-
         if self.topology_name is None or len(self.topology_name) == 0:
             error("Cannot export a topology: missing a name")
 
@@ -280,24 +284,19 @@ class NetworkTopology:
 
     def _render_clab_nodes(self):
         # Load Jinja2 template for Containerlab kinds
-        env = jinja2.Environment(
-                    loader=jinja2.FileSystemLoader(f"."),
-                    line_statement_prefix='#'
-                )
-        
         topo_nodes = []
         for n in self.nodes:
             if 'platform' in n.keys():
                 p = n['platform']
                 try:
-                    templ = env.get_template(f"clab/kinds/{p}.j2")
+                    templ = self.j2env.get_template(f"clab/kinds/{p}.j2")
                 except (OSError, jinja2.TemplateError) as e:
-                    error(f"Opening Containerlab J2 template for platform {p}:", e)
+                    error(f"Opening Containerlab J2 template '{e}' for platform '{p}' with path {self.config['templates_path']}")
                 # Run the topology through jinja2 template to get the final result
                 try:
                     topo_nodes.append(templ.render(n))
                 except jinja2.TemplateError as e:
-                    error(f"Rendering Containerlab J2 template for platform {p}:", e)
+                    error(f"Rendering Containerlab J2 template '{e}' for platform '{p}'")
 
                 self._create_interface_map(n)
 
@@ -307,14 +306,10 @@ class NetworkTopology:
     def _render_clab_topology(self):
         debug("Topology data to render:", json.dumps(self.topology))
         # Load Jinja2 template for Containerlab to run the topology through
-        env = jinja2.Environment(
-                    loader=jinja2.FileSystemLoader(f"."),
-                    line_statement_prefix='#'
-                )
         try:
-            templ = env.get_template(f"clab/topology.j2")
+            templ = self.j2env.get_template(f"clab/topology.j2")
         except (OSError, jinja2.TemplateError) as e:
-            error("Opening Containerlab J2 template:", e)
+            error(f"Opening Containerlab J2 template '{e}' with path {self.config['templates_path']}")
 
         # Run the topology through jinja2 template to get the final result
         try:
@@ -335,9 +330,9 @@ class NetworkTopology:
         if 'platform' in node.keys() and node['platform'] == 'ceos': # replace by patten matching
             # Interface mapping file for cEOS
             try:
-                ceos_interfaces_templ = env.get_template(f"interface_maps/ceos.j2")
+                ceos_interfaces_templ = self.j2env.get_template(f"interface_maps/ceos.j2")
             except jinja2.TemplateError as e:
-                error("Opening interface map J2 template:", e)
+                error(f"Opening interface map J2 template '{e}' with path {self.config['templates_path']}")
             for d, m in self.device_interfaces_map.items():
                 try:
                     ceos_interface_map = ceos_interfaces_templ.render({'map': m})
@@ -358,6 +353,7 @@ def load_config(filename):
         'output_format': 'cyjs',
         'export_device_roles': ["router", "core-switch", "access-switch", "distribution-switch", "tor-switch"],
         'export_site': '',
+        'templates_path': ['.'],
     }
     if filename is not None and len(filename) > 0:
         try:
@@ -423,7 +419,7 @@ def main():
         config['output_format'] = args.output
 
     nb_network = None
-    topo = NetworkTopology()
+    topo = NetworkTopology(config)
 
     if config['input_source'] == 'cyjs':
         if config['output_format'] == 'cyjs':
