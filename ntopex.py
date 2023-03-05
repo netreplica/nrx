@@ -406,7 +406,7 @@ def main():
     parser = argparse.ArgumentParser(prog='ntopex.py', description='Network Topology Exporter')
     parser.add_argument('-c', '--config',    required=False, help='configuration file')
     parser.add_argument('-i', '--input',     required=False, default='netbox', type=arg_input_check,  help='input source: netbox (default) | cyjs')
-    parser.add_argument('-o', '--output',    required=False, default='cyjs',   type=arg_output_check, help='output format: cyjs (default) | gml | clab')
+    parser.add_argument('-o', '--output',    required=False, type=arg_output_check, help='output format: cyjs | gml | clab')
     parser.add_argument('-a', '--api',       required=False, help='NetBox API URL')
     parser.add_argument('-s', '--site',      required=False, help='NetBox Site to export')
     parser.add_argument('-d', '--debug',     required=False, help='enable debug output', action=argparse.BooleanOptionalAction)
