@@ -85,21 +85,29 @@ class NB_Factory:
     
     def _get_nb_device_info(self):
         for device in list(self.nb_session.dcim.devices.filter(site_id=self.nb_site.id, role=self.config['export_device_roles'])):
-            platform, vendor, model = "Unknown", "Unknown", "Unknown"
+            platform, platform_name = "unknown", "unknown"
+            vendor, vendor_name = "unknown", "unknown"
+            model, model_name = "unknown", "unknown"
             if device.platform is not None:
-                platform = device.platform.name
+                platform = device.platform.slug
+                platform_name = device.platform.name
                 if device.platform.manufacturer is not None:
-                    vendor = device.platform.manufacturer.name
+                    vendor = device.platform.manufacturer.slug
+                    vendor_name = device.platform.manufacturer.name
             if device.device_type is not None:
-                model = device.device_type.model
+                model = device.device_type.slug
+                model_name = device.device_type.model
             d = {
                 "id": device.id,
                 "type": "device",
                 "name": device.name,
                 "node_id": -1,
                 "platform": platform,
+                "platform_name": platform_name,
                 "vendor": vendor,
+                "vendor_name": vendor_name,
                 "model": model,
+                "model_name": model_name,
             }
             debug("Adding device:", d)
             self.nb_net.nodes.append(d)
@@ -288,15 +296,19 @@ class NetworkTopology:
         for n in self.nodes:
             if 'platform' in n.keys():
                 p = n['platform']
+                if 'platform_name' in n.keys():
+                    pn = n['platform_name']
+                else:
+                    pn = p
                 try:
                     templ = self.j2env.get_template(f"clab/kinds/{p}.j2")
                 except (OSError, jinja2.TemplateError) as e:
-                    error(f"Opening Containerlab J2 template '{e}' for platform '{p}' with path {self.config['templates_path']}")
+                    error(f"Opening Containerlab J2 template '{e}' for platform '{pn}' with path {self.config['templates_path']}")
                 # Run the topology through jinja2 template to get the final result
                 try:
                     topo_nodes.append(templ.render(n))
                 except jinja2.TemplateError as e:
-                    error(f"Rendering Containerlab J2 template '{e}' for platform '{p}'")
+                    error(f"Rendering Containerlab J2 template '{e}' for platform '{pn}'")
 
                 self._create_interface_map(n)
 
