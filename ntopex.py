@@ -301,6 +301,9 @@ class NetworkTopology:
                     pn = n['platform_name']
                 else:
                     pn = p
+                map = self._create_interface_map(n)
+                if map is not None:
+                    n['interface_map'] = map
                 try:
                     templ = self.j2env.get_template(f"clab/kinds/{p}.j2")
                 except (OSError, jinja2.TemplateError) as e:
@@ -311,7 +314,6 @@ class NetworkTopology:
                 except jinja2.TemplateError as e:
                     error(f"Rendering Containerlab J2 template '{e}' for platform '{pn}'")
 
-                self._create_interface_map(n)
 
         return topo_nodes
 
@@ -371,6 +373,7 @@ class NetworkTopology:
             except OSError as e:
                 error(f"Can't write into {int_map_file}", e)
             print(f"Created '{pn}' interface map:\t\t{int_map_file}")
+            return int_map_file
 
 def load_config(filename):
     config = {
