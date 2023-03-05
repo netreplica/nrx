@@ -392,13 +392,14 @@ def main():
 
     # CLI arguments parser
     parser = argparse.ArgumentParser(prog='ntopex.py', description='Network Topology Exporter')
-    parser.add_argument('-c', '--config', required=False, help='configuration file')
-    parser.add_argument('-i', '--input',  required=False, default='netbox', type=arg_input_check,  help='input source: netbox (default) | cyjs')
-    parser.add_argument('-o', '--output', required=False, default='cyjs',   type=arg_output_check, help='output format: cyjs (default) | gml | clab')
-    parser.add_argument('-a', '--api',    required=False, help='NetBox API URL')
-    parser.add_argument('-s', '--site',   required=False, help='NetBox Site to export')
-    parser.add_argument('-d', '--debug',  required=False, help='enable debug output', action=argparse.BooleanOptionalAction)
-    parser.add_argument('-f', '--file',   required=False, help='file with the network graph to import')
+    parser.add_argument('-c', '--config',    required=False, help='configuration file')
+    parser.add_argument('-i', '--input',     required=False, default='netbox', type=arg_input_check,  help='input source: netbox (default) | cyjs')
+    parser.add_argument('-o', '--output',    required=False, default='cyjs',   type=arg_output_check, help='output format: cyjs (default) | gml | clab')
+    parser.add_argument('-a', '--api',       required=False, help='NetBox API URL')
+    parser.add_argument('-s', '--site',      required=False, help='NetBox Site to export')
+    parser.add_argument('-d', '--debug',     required=False, help='enable debug output', action=argparse.BooleanOptionalAction)
+    parser.add_argument('-f', '--file',      required=False, help='file with the network graph to import')
+    parser.add_argument('-t', '--templates', required=False, help='directory with template files, will be prepended to TEMPLATES_PATH list in the configuration file')
 
     # Common parameters
     args = parser.parse_args()
@@ -417,6 +418,9 @@ def main():
 
     if args.output is not None and len(args.output) > 0:
         config['output_format'] = args.output
+
+    if args.templates is not None and len(args.templates) > 0:
+        config['templates_path'].insert(0, args.templates)
 
     nb_network = None
     topo = NetworkTopology(config)
