@@ -68,7 +68,7 @@ class NB_Factory:
         if self.nb_site is None:
             print(f"No data found for a site {config['export_site']}")
         else:
-            print(f"Exporting {config['export_site']} site from NetBox at {config['nb_api_url']}")
+            print(f"Exporting NetBox '{config['export_site']}' site from:\t\t{config['nb_api_url']}")
             try:
                 self._get_nb_device_info()
             except (pynetbox.core.query.RequestError, pynetbox.core.query.ContentError) as e:
@@ -173,7 +173,7 @@ class NB_Factory:
             error(f"Writing to {export_file}:", e)
         except nx.exception.NetworkXError as e:
             error("Can't export as GML:", e)
-        print(f"GML graph saved to {export_file}")
+        print(f"GML graph saved to:\t\t\t{export_file}")
 
     def export_graph_json(self):
         cyjs = nx.cytoscape_data(self.G)
@@ -185,7 +185,7 @@ class NB_Factory:
             error(f"Writing to {export_file}:", e)
         except TypeError as e:
             error("Can't export as JSON:", e)
-        print(f"CYJS graph saved to {export_file}")
+        print(f"CYJS graph saved to:\t\t\t{export_file}")
 
 class NetworkTopology:
     def __init__(self, config):
@@ -210,7 +210,7 @@ class NetworkTopology:
         self._build_topology()
 
     def _read_network_graph(self):
-        print(f"Reading CYJS topology graph:\t{self.graph_file}")
+        print(f"Reading CYJS topology graph:\t\t\t{self.graph_file}")
         cyjs = {}
         try:
             with open(self.graph_file, 'r', encoding='utf-8') as f:
@@ -230,7 +230,8 @@ class NetworkTopology:
                 if self.G.nodes[n]['type'] == 'device':
                     dev = self.G.nodes[n]['device']
                     self.nodes.append(dev)
-                    self.device_interfaces_map[dev['name']] = {}
+                    if dev['name'] not in self.device_interfaces_map:
+                        self.device_interfaces_map[dev['name']] = {}
                 elif self.G.nodes[n]['type'] == 'interface':
                     int_name = self.G.nodes[n]['interface']['name']
                     dev_name, dev_node_id = None, None
@@ -269,8 +270,8 @@ class NetworkTopology:
         # Generate topology data structure for clab
         self.topology = {
             'name': self.G.name,
+            'links': self._render_clab_links(), # render links first, to complete device_interfaces_map
             'nodes': self._render_clab_nodes(),
-            'links': self._render_clab_links(),
         }
 
         self._render_clab_topology()
@@ -336,27 +337,37 @@ class NetworkTopology:
         except OSError as e:
             error(f"Can't write into {clab_file}", e)
 
-        print(f"Created Containerlab topology:\t{clab_file}")
+        print(f"Created Containerlab topology:\t\t\t{clab_file}")
 
     def _create_interface_map(self, node):
+        if 'name' in node.keys() and node['name'] in self.device_interfaces_map.keys():
+            d = node['name']
+        else:
+            return
         if 'platform' in node.keys() and node['platform'] == 'ceos': # replace by patten matching
+            if 'platform_name' in node.keys():
+                pn = node['platform_name']
+            else:
+                pn = node['platform']
+            debug(f"Creating interface map for {node}")
             # Interface mapping file for cEOS
             try:
                 ceos_interfaces_templ = self.j2env.get_template(f"interface_maps/ceos.j2")
             except jinja2.TemplateError as e:
                 error(f"Opening interface map J2 template '{e}' with path {self.config['templates_path']}")
-            for d, m in self.device_interfaces_map.items():
-                try:
-                    ceos_interface_map = ceos_interfaces_templ.render({'map': m})
-                except jinja2.TemplateError as e:
-                    error("Rendering interface map J2 template:", e)
-                int_map_file = f"{d}_interface_map.json"
-                try:
-                    with open(int_map_file, "w") as f:
-                        f.write(ceos_interface_map)
-                except OSError as e:
-                    error(f"Can't write into {int_map_file}", e)
-                print(f"Created interface map file:\t{int_map_file}")
+            m = self.device_interfaces_map[node['name']]
+            debug(f"{d} inteface map:", m)
+            try:
+                ceos_interface_map = ceos_interfaces_templ.render({'map': m})
+            except jinja2.TemplateError as e:
+                error("Rendering interface map J2 template:", e)
+            int_map_file = f"{d}_interface_map.json"
+            try:
+                with open(int_map_file, "w") as f:
+                    f.write(ceos_interface_map)
+            except OSError as e:
+                error(f"Can't write into {int_map_file}", e)
+            print(f"Created '{pn}' interface map:\t\t{int_map_file}")
 
 def load_config(filename):
     config = {

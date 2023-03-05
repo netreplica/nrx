@@ -1,0 +1,2 @@
+name,device_role,manufacturer,device_type,status,site,platform
+dm-tor-01,ToR Switch,Arista,DCS-7048-T,active,DM-Akron,Arista EOS
