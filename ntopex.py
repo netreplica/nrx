@@ -173,7 +173,7 @@ class NB_Factory:
             error(f"Writing to {export_file}:", e)
         except nx.exception.NetworkXError as e:
             error("Can't export as GML:", e)
-        print(f"GML graph saved to:\t\t\t{export_file}")
+        print(f"GML graph saved to:\t\t\t\t{export_file}")
 
     def export_graph_json(self):
         cyjs = nx.cytoscape_data(self.G)
@@ -185,7 +185,7 @@ class NB_Factory:
             error(f"Writing to {export_file}:", e)
         except TypeError as e:
             error("Can't export as JSON:", e)
-        print(f"CYJS graph saved to:\t\t\t{export_file}")
+        print(f"CYJS graph saved to:\t\t\t\t{export_file}")
 
 class NetworkTopology:
     def __init__(self, config):
@@ -344,7 +344,8 @@ class NetworkTopology:
             d = node['name']
         else:
             return
-        if 'platform' in node.keys() and node['platform'] == 'ceos': # replace by patten matching
+        if 'platform' in node.keys():
+            p = node['platform']
             if 'platform_name' in node.keys():
                 pn = node['platform_name']
             else:
@@ -352,19 +353,21 @@ class NetworkTopology:
             debug(f"Creating interface map for {node}")
             # Interface mapping file for cEOS
             try:
-                ceos_interfaces_templ = self.j2env.get_template(f"interface_maps/ceos.j2")
+                interfaces_templ = self.j2env.get_template(f"interface_maps/{p}.j2")
             except jinja2.TemplateError as e:
-                error(f"Opening interface map J2 template '{e}' with path {self.config['templates_path']}")
+                debug(f"Failed to open interface map J2 template '{e}' with path {self.config['templates_path']}, skipping")
+                pass
+                return
             m = self.device_interfaces_map[node['name']]
-            debug(f"{d} inteface map:", m)
+            debug(f"Interface map to render for {d}:", m)
             try:
-                ceos_interface_map = ceos_interfaces_templ.render({'map': m})
+                interface_map = interfaces_templ.render({'map': m})
             except jinja2.TemplateError as e:
                 error("Rendering interface map J2 template:", e)
             int_map_file = f"{d}_interface_map.json"
             try:
                 with open(int_map_file, "w") as f:
-                    f.write(ceos_interface_map)
+                    f.write(interface_map)
             except OSError as e:
                 error(f"Can't write into {int_map_file}", e)
             print(f"Created '{pn}' interface map:\t\t{int_map_file}")
