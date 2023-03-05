@@ -109,12 +109,12 @@ class NB_Factory:
                 "model": model,
                 "model_name": model_name,
             }
-            debug("Adding device:", d)
             self.nb_net.nodes.append(d)
             d["node_id"] = len(self.nb_net.nodes) - 1
             self.nb_net.devices.append(d)
             self.nb_net.device_ids.append(
                 device.id)  # index of the device in the devices list will match its ID index in device_ids list
+            debug("Added device:", d)
 
             debug(f"{d['name']} Ethernet interfaces:")
             for interface in list(self.nb_session.dcim.interfaces.filter(device_id=device.id)):
