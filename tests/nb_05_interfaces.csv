@@ -1,0 +1,5 @@
+device,name,type
+dm-tor-01,Ethernet1/1,1000base-t
+dm-tor-01,Ethernet1/2,1000base-t
+dm-tor-01,Ethernet1/3,1000base-t
+dm-tor-01,Ethernet1/4,1000base-t

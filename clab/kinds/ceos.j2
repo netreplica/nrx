@@ -1,0 +1,7 @@
+        {{ name }}:
+            kind: ceos
+            image: ceos:latest
+            # if interface_map is defined
+            binds:
+                - {{ interface_map }}:/mnt/flash/EosIntfMapping.json:ro
+            # endif

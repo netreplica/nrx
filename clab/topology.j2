@@ -17,11 +17,7 @@ topology:
                 graph-hide: yes
 
 # for node in nodes:
-        {{ node }}:
-            kind: ceos
-            image: ceos
-            binds:
-                - {{node}}_interface_map.json:/mnt/flash/EosIntfMapping.json:ro
+{{ node }}
 # endfor
     links:
 # for link in links:
