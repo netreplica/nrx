@@ -211,11 +211,8 @@ class NBFactory:
 class NetworkTopology:
     """Class to create network topology artifacts"""
     def __init__(self, config):
-        self.topology_name = None
         self.config = config
-        self.graph_file = None
         self.G = None
-        self.nodes, self.links = [], [] # TODO duplication with self.topology
         self.device_interfaces_map = {}
         self.topology = {
             'name': None,
@@ -228,23 +225,22 @@ class NetworkTopology:
                 )
 
     def build_from_file(self, file):
-        self.graph_file = file
-        self._read_network_graph()
+        self._read_network_graph(file)
         if "name" in self.G.graph.keys():
-            self.topology_name = self.G.graph["name"]
+            self.topology['name'] = self.G.graph["name"]
         self._build_topology()
 
     def build_from_graph(self, graph):
         self.G = graph
         if "name" in self.G.graph.keys():
-            self.topology_name = self.G.graph["name"]
+            self.topology['name'] = self.G.graph["name"]
         self._build_topology()
 
-    def _read_network_graph(self):
-        print(f"Reading CYJS topology graph:\t\t\t{self.graph_file}")
+    def _read_network_graph(self, file):
+        print(f"Reading CYJS topology graph:\t\t\t{file}")
         cyjs = {}
         try:
-            with open(self.graph_file, 'r', encoding='utf-8') as f:
+            with open(file, 'r', encoding='utf-8') as f:
                 cyjs = json.load(f)
         except OSError as e:
             error("Can't read CYJS topology graph:", e)
@@ -255,7 +251,7 @@ class NetworkTopology:
     def _append_if_node_is_device(self, n):
         if self.G.nodes[n]['type'] == 'device':
             dev = self.G.nodes[n]['device']
-            self.nodes.append(dev)
+            self.topology['nodes'].append(dev)
             if dev['name'] not in self.device_interfaces_map:
                 self.device_interfaces_map[dev['name']] = {}
             return True
@@ -278,7 +274,7 @@ class NetworkTopology:
                             peer_dev_name = self.G.nodes[b_adj[0]]['device']['name']
                             peer_dev_node_id = self.G.nodes[b_adj[0]]['device']['node_id']
             if self.G.nodes[n]['side'] == 'a':
-                self.links.append({
+                self.topology['links'].append({
                     'a': {
                         'node': dev_name,
                         'node_id': dev_node_id,
@@ -303,7 +299,7 @@ class NetworkTopology:
             error(f"Incomplete data to build topology, {e} key is missing")
 
     def export_clab(self):
-        if self.topology_name is None or len(self.topology_name) == 0:
+        if self.topology['name'] is None or len(self.topology['name']) == 0:
             error("Cannot export a topology: missing a name")
 
         # Generate topology data structure for clab
@@ -323,17 +319,17 @@ class NetworkTopology:
             sorted_map = {k: f"eth{map_keys.index(k)+1}" for k in map_keys}
             self.device_interfaces_map[node] = sorted_map
 
-        for l in self.links:
+        for l in self.topology['links']:
             l['a']['c_interface'] = self.device_interfaces_map[l['a']['node']][l['a']['interface']]
             l['b']['c_interface'] = self.device_interfaces_map[l['b']['node']][l['b']['interface']]
 
         return [f"[\"{l['a']['node']}:{l['a']['c_interface']}\", \"{l['b']['node']}:{l['b']['c_interface']}\"]"
-                for l in self.links]
+                for l in self.topology['links']]
 
     def _render_clab_nodes(self):
         # Load Jinja2 template for Containerlab kinds
         topo_nodes = []
-        for n in self.nodes:
+        for n in self.topology['nodes']:
             if 'platform' in n.keys():
                 p = n['platform']
                 if 'platform_name' in n.keys():
@@ -371,7 +367,7 @@ class NetworkTopology:
         except jinja2.TemplateError as e:
             error("Rendering Containerlab J2 template:", e)
 
-        clab_file = f"{self.topology_name}.clab.yml"
+        clab_file = f"{self.topology['name']}.clab.yml"
         try:
             with open(clab_file, "w", encoding="utf-8") as f:
                 f.write(topo)
