@@ -404,7 +404,44 @@ class NetworkTopology:
             return int_map_file
         return None
 
-def load_config(filename):
+def arg_input_check(s):
+    allowed_values = ['netbox', 'cyjs']
+    if s in allowed_values:
+        return s
+    raise argparse.ArgumentTypeError(f"input source has to be one of {allowed_values}")
+
+def arg_output_check(s):
+    allowed_values = ['gml', 'cyjs', 'clab']
+    if s in allowed_values:
+        return s
+    raise argparse.ArgumentTypeError(f"output format has to be one of {allowed_values}")
+
+def parse_args():
+    """CLI arguments parser"""
+    parser = argparse.ArgumentParser(prog='ntopex.py', description='Network Topology Exporter')
+    parser.add_argument('-c', '--config',    required=False, help='configuration file')
+    parser.add_argument('-i', '--input',     required=False, help='input source: netbox (default) | cyjs',
+                                             default='netbox', type=arg_input_check,)
+    parser.add_argument('-o', '--output',    required=False, help='output format: cyjs | gml | clab',
+                                             type=arg_output_check, )
+    parser.add_argument('-a', '--api',       required=False, help='NetBox API URL')
+    parser.add_argument('-s', '--site',      required=False, help='NetBox Site to export')
+    parser.add_argument('-d', '--debug',     required=False, help='enable debug output',
+                                             action=argparse.BooleanOptionalAction)
+    parser.add_argument('-f', '--file',      required=False, help='file with the network graph to import')
+    parser.add_argument('-t', '--templates', required=False, help='directory with template files, \
+                                                                   will be prepended to TEMPLATES_PATH list \
+                                                                   in the configuration file')
+
+    args = parser.parse_args()
+    global DEBUG_ON
+    DEBUG_ON = args.debug is True
+    debug(f"arguments {args}")
+
+    return args
+
+def load_toml_config(filename):
+    """Load configuration from a config file in TOML format"""
     config = {
         'nb_api_url': '',
         'nb_api_token': '',
@@ -426,88 +463,58 @@ def load_config(filename):
             error(f"Unable to open configuration file {filename}: {e}")
         except toml.decoder.TomlDecodeError as e:
             error(f"Unable to parse configuration file {filename}: {e}")
+        except argparse.ArgumentTypeError as e:
+            # config['output_format'] has unsupported value
+            error(f"Unsupported configuration: {e}")
+    return config
 
+def load_config(args):
+    """Load, consolidate and validate configuration"""
+    config = load_toml_config(args.config)
     config['nb_api_url'] = os.getenv('NB_API_URL', config['nb_api_url'])
     config['nb_api_token'] = os.getenv('NB_API_TOKEN', config['nb_api_token'])
 
-    return config
-
-def arg_input_check(s):
-    allowed_values = ['netbox', 'cyjs']
-    if s in allowed_values:
-        return s
-    raise argparse.ArgumentTypeError(f"input source has to be one of {allowed_values}")
-
-def arg_output_check(s):
-    allowed_values = ['gml', 'cyjs', 'clab']
-    if s in allowed_values:
-        return s
-    raise argparse.ArgumentTypeError(f"output format has to be one of {allowed_values}")
-
-def main():
-
-    # CLI arguments parser
-    parser = argparse.ArgumentParser(prog='ntopex.py', description='Network Topology Exporter')
-    parser.add_argument('-c', '--config',    required=False, help='configuration file')
-    parser.add_argument('-i', '--input',     required=False, help='input source: netbox (default) | cyjs',
-                                             default='netbox', type=arg_input_check,)
-    parser.add_argument('-o', '--output',    required=False, help='output format: cyjs | gml | clab',
-                                             type=arg_output_check, )
-    parser.add_argument('-a', '--api',       required=False, help='NetBox API URL')
-    parser.add_argument('-s', '--site',      required=False, help='NetBox Site to export')
-    parser.add_argument('-d', '--debug',     required=False, help='enable debug output',
-                                             action=argparse.BooleanOptionalAction)
-    parser.add_argument('-f', '--file',      required=False, help='file with the network graph to import')
-    parser.add_argument('-t', '--templates', required=False, help='directory with template files, \
-                                                                   will be prepended to TEMPLATES_PATH list \
-                                                                   in the configuration file')
-
-    # Common parameters
-    args = parser.parse_args()
-
-    global DEBUG_ON
-    DEBUG_ON = args.debug is True
-    debug(f"arguments {args}")
-
-    try:
-        config = load_config(args.config)
-    except argparse.ArgumentTypeError as e:
-        error(f"Unsupported configuration: {e}")
-
+    # Override config values with arguments
     if args.input is not None and len(args.input) > 0:
         config['input_source'] = args.input
+        if config['input_source'] == 'cyjs' and (args.file is None or len(args.file) == 0):
+            error("Provide a path to CYJS graph using --file")
+
+        if config['input_source'] == 'netbox':
+            if args.api is not None and len(args.api) > 0:
+                config['nb_api_url'] = args.api
+            if len(config['nb_api_url']) == 0:
+                error("Need an API URL to connect to NetBox.\nUse --api argument, NB_API_URL environment variable or key in --config file")
+            if len(config['nb_api_token']) == 0:
+                error("Need an API token to connect to NetBox.\nUse NB_API_TOKEN environment variable or key in --config file")
+            if args.site is not None and len(args.site) > 0:
+                config['export_site'] = args.site
+            if len(config['export_site']) == 0:
+                error("Need a Site name to export. Use --site argument, or EXPORT_SITE key in --config file")
 
     if args.output is not None and len(args.output) > 0:
         config['output_format'] = args.output
 
+    if config['input_source'] == config['output_format']:
+        error(f"Input and output formats must be different, got '{config['output_format']}'")
+
     if args.templates is not None and len(args.templates) > 0:
         config['templates_path'].insert(0, args.templates)
+
+    return config
+
+def main():
+    """Main"""
+    # Parameters
+    args = parse_args()
+    config = load_config(args)
 
     nb_network = None
     topo = NetworkTopology(config)
 
     if config['input_source'] == 'cyjs':
-        if config['output_format'] == 'cyjs':
-            error("Specify export format different from CYJS with --output")
-        elif args.file is not None and len(args.file) > 0:
-            # Load graph from file
-            topo.build_from_file(args.file)
-        else:
-            error("Provide a path to CYJS graph using --file")
+        topo.build_from_file(args.file)
     elif config['input_source'] == 'netbox':
-        if args.api is not None and len(args.api) > 0:
-            config['nb_api_url'] = args.api
-        if len(config['nb_api_url']) == 0:
-            error("Need an API URL to connect to NetBox.\nUse --api argument, NB_API_URL environment variable or key in --config file")
-
-        if len(config['nb_api_token']) == 0:
-            error("Need an API token to connect to NetBox.\nUse NB_API_TOKEN environment variable or key in --config file")
-
-        if args.site is not None and len(args.site) > 0:
-            config['export_site'] = args.site
-        elif len(config['export_site']) == 0:
-            error("Need a Site name to export. Use --site argument, or EXPORT_SITE key in --config file")
-
         try:
             nb_network = NBFactory(config)
         except Exception as e:
