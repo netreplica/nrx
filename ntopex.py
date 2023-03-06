@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
 # Copyright 2023 Netreplica Team
-# 
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 #    http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,6 +15,17 @@
 # limitations under the License.
 
 # Export network topology from NetBox as a graph
+
+"""
+Network Topology Exporter
+
+Ntopex reads a network topology graph from NetBox DCIM system and exports it in one of the following formats:
+
+* Topology file for Containerlab network emulation tool
+* Graph data as a JSON file in Cytoscape format CYJS
+
+It can also read the topology graph previously saved as a CYJS file to convert it into Containerlab format.
+"""
 
 import os
 import sys
@@ -27,23 +38,28 @@ import jinja2
 
 # DEFINE GLOBAL VARs HERE
 
-debug_on = False
+DEBUG_ON = False
 
 def errlog(*args, **kwargs):
+    """print message on STDERR"""
     print(*args, file=sys.stderr, **kwargs)
-  
+
 def error(*args, **kwargs):
+    """log as error and exit"""
     errlog("Error:", *args, **kwargs)
     sys.exit(1)
 
 def warning(*args, **kwargs):
+    """log as warning"""
     errlog("Warning:", *args, **kwargs)
 
 def debug(*args, **kwargs):
-    if debug_on:
+    """log as debug"""
+    if DEBUG_ON:
         errlog("Debug:", *args, **kwargs)
 
-class NB_Network:
+class NBNetwork:
+    """Class to hold network topology data exported from NetBox"""
     def __init__(self):
         self.config = {}
         self.nodes = []
@@ -54,12 +70,15 @@ class NB_Network:
         self.interface_ids = []
 
 
-class NB_Factory:
+class NBFactory:
+    """Class to export network topology data from NetBox"""
     def __init__(self, config):
         self.config = config
-        self.nb_net = NB_Network()
+        self.nb_net = NBNetwork()
         self.G = nx.Graph(name=config['export_site'])
-        self.nb_session = pynetbox.api(self.config['nb_api_url'], token=self.config['nb_api_token'], threading=True)
+        self.nb_session = pynetbox.api(self.config['nb_api_url'],
+                                       token=self.config['nb_api_token'],
+                                       threading=True)
         try:
             self.nb_site = self.nb_session.dcim.sites.get(name=config['export_site'])
         except (pynetbox.core.query.RequestError, pynetbox.core.query.ContentError) as e:
@@ -82,9 +101,10 @@ class NB_Factory:
 
     def graph(self):
         return self.G
-    
+
     def _get_nb_device_info(self):
-        for device in list(self.nb_session.dcim.devices.filter(site_id=self.nb_site.id, role=self.config['export_device_roles'])):
+        for device in list(self.nb_session.dcim.devices.filter(site_id=self.nb_site.id,
+                                                               role=self.config['export_device_roles'])):
             platform, platform_name = "unknown", "unknown"
             vendor, vendor_name = "unknown", "unknown"
             model, model_name = "unknown", "unknown"
@@ -129,8 +149,8 @@ class NB_Factory:
                     self.nb_net.nodes.append(i)
                     i["node_id"] = len(self.nb_net.nodes) - 1
                     self.nb_net.interfaces.append(i)
-                    self.nb_net.interface_ids.append(
-                        interface.id)  # index of the interface in the interfaces list will match its ID index in interface_ids list
+                    # index of the interface in the interfaces list will match its ID index in interface_ids list
+                    self.nb_net.interface_ids.append(interface.id)
                     self.nb_net.cable_ids.append(interface.cable.id)
 
     def _build_network_graph(self):
@@ -140,8 +160,9 @@ class NB_Factory:
                 if len(cable.a_terminations) == 1 and len(cable.b_terminations) == 1:
                     int_a = cable.a_terminations[0]
                     int_b = cable.b_terminations[0]
-                    if isinstance(int_a, pynetbox.models.dcim.Interfaces) and isinstance(int_b, pynetbox.models.dcim.Interfaces):
-                        debug("{}:{} <> {}:{}".format(int_a.device, int_a, int_b.device, int_b))
+                    if isinstance(int_a, pynetbox.models.dcim.Interfaces) and \
+                        isinstance(int_b, pynetbox.models.dcim.Interfaces):
+                        debug(f"{int_a.device}:{int_a} <> {int_b.device}:{int_b}")
                         try:
                             d_a = self.nb_net.devices[self.nb_net.device_ids.index(int_a.device.id)]
                             d_b = self.nb_net.devices[self.nb_net.device_ids.index(int_b.device.id)]
@@ -162,7 +183,7 @@ class NB_Factory:
                             self.G.add_edges_from([
                                 (i_a["node_id"], i_b["node_id"]),
                             ])
-                        except ValueError as e:
+                        except ValueError:
                             debug("One or both devices for this connection are not in the export graph")
 
     def export_graph_gml(self):
@@ -188,9 +209,19 @@ class NB_Factory:
         print(f"CYJS graph saved to:\t\t\t\t{export_file}")
 
 class NetworkTopology:
+    """Class to create network topology artifacts"""
     def __init__(self, config):
         self.topology_name = None
         self.config = config
+        self.graph_file = None
+        self.G = None
+        self.nodes, self.links = [], [] # TODO duplication with self.topology
+        self.device_interfaces_map = {}
+        self.topology = {
+            'name': None,
+            'links': [],
+            'nodes': [],
+        }
         self.j2env = jinja2.Environment(
                     loader=jinja2.FileSystemLoader(self.config['templates_path'], followlinks=True),
                     line_statement_prefix='#'
@@ -223,8 +254,6 @@ class NetworkTopology:
 
     def _build_topology(self):
         # Parse graph G into lists of: nodes and links. Keep a list of interfaces per device in `device_interfaces_map`.
-        self.nodes, self.links = [], []
-        self.device_interfaces_map = {}
         try:
             for n in self.G.nodes:
                 if self.G.nodes[n]['type'] == 'device':
@@ -268,19 +297,18 @@ class NetworkTopology:
             error("Cannot export a topology: missing a name")
 
         # Generate topology data structure for clab
-        self.topology = {
-            'name': self.G.name,
-            'links': self._render_clab_links(), # render links first, to complete device_interfaces_map
-            'nodes': self._render_clab_nodes(),
-        }
+        self.topology['name'] = self.G.name
+        self.topology['links'] = self._render_clab_links() # render links first, to complete device_interfaces_map
+        self.topology['nodes'] = self._render_clab_nodes()
 
         self._render_clab_topology()
 
     def _render_clab_links(self):
-        # Create container-compatible interface names for each device. We assume interface with index `0` is reserved for management, and start with `1`
-        for node, map in self.device_interfaces_map.items():
+        # Create container-compatible interface names for each device.
+        # We assume interface with index `0` is reserved for management, and start with `1`
+        for node, int_map in self.device_interfaces_map.items():
             # sort keys (interface names) in the map
-            map_keys = list(map.keys())
+            map_keys = list(int_map.keys())
             map_keys.sort()
             sorted_map = {k: f"eth{map_keys.index(k)+1}" for k in map_keys}
             self.device_interfaces_map[node] = sorted_map
@@ -289,7 +317,8 @@ class NetworkTopology:
             l['a']['c_interface'] = self.device_interfaces_map[l['a']['node']][l['a']['interface']]
             l['b']['c_interface'] = self.device_interfaces_map[l['b']['node']][l['b']['interface']]
 
-        return [f"[\"{l['a']['node']}:{l['a']['c_interface']}\", \"{l['b']['node']}:{l['b']['c_interface']}\"]" for l in self.links]
+        return [f"[\"{l['a']['node']}:{l['a']['c_interface']}\", \"{l['b']['node']}:{l['b']['c_interface']}\"]"
+                for l in self.links]
 
     def _render_clab_nodes(self):
         # Load Jinja2 template for Containerlab kinds
@@ -301,9 +330,9 @@ class NetworkTopology:
                     pn = n['platform_name']
                 else:
                     pn = p
-                map = self._create_interface_map(n)
-                if map is not None:
-                    n['interface_map'] = map
+                int_map = self._create_interface_map(n)
+                if int_map is not None:
+                    n['interface_map'] = int_map
                 try:
                     templ = self.j2env.get_template(f"clab/kinds/{p}.j2")
                 except (OSError, jinja2.TemplateError) as e:
@@ -322,7 +351,7 @@ class NetworkTopology:
         debug("Topology data to render:", json.dumps(self.topology))
         # Load Jinja2 template for Containerlab to run the topology through
         try:
-            templ = self.j2env.get_template(f"clab/topology.j2")
+            templ = self.j2env.get_template("clab/topology.j2")
         except (OSError, jinja2.TemplateError) as e:
             error(f"Opening Containerlab J2 template '{e}' with path {self.config['templates_path']}")
 
@@ -334,7 +363,7 @@ class NetworkTopology:
 
         clab_file = f"{self.topology_name}.clab.yml"
         try:
-            with open(clab_file, "w") as f:
+            with open(clab_file, "w", encoding="utf-8") as f:
                 f.write(topo)
         except OSError as e:
             error(f"Can't write into {clab_file}", e)
@@ -342,10 +371,10 @@ class NetworkTopology:
         print(f"Created Containerlab topology:\t\t\t{clab_file}")
 
     def _create_interface_map(self, node):
-        if 'name' in node.keys() and node['name'] in self.device_interfaces_map.keys():
+        if 'name' in node and node['name'] in self.device_interfaces_map:
             d = node['name']
         else:
-            return
+            return None
         if 'platform' in node.keys():
             p = node['platform']
             if 'platform_name' in node.keys():
@@ -358,8 +387,7 @@ class NetworkTopology:
                 interfaces_templ = self.j2env.get_template(f"interface_maps/{p}.j2")
             except jinja2.TemplateError as e:
                 debug(f"Failed to open interface map J2 template '{e}' with path {self.config['templates_path']}, skipping")
-                pass
-                return
+                return None
             m = self.device_interfaces_map[node['name']]
             debug(f"Interface map to render for {d}:", m)
             try:
@@ -368,12 +396,13 @@ class NetworkTopology:
                 error("Rendering interface map J2 template:", e)
             int_map_file = f"{d}_interface_map.json"
             try:
-                with open(int_map_file, "w") as f:
+                with open(int_map_file, "w", encoding="utf-8") as f:
                     f.write(interface_map)
             except OSError as e:
                 error(f"Can't write into {int_map_file}", e)
             print(f"Created '{pn}' interface map:\t\t{int_map_file}")
             return int_map_file
+        return None
 
 def load_config(filename):
     config = {
@@ -386,13 +415,13 @@ def load_config(filename):
     }
     if filename is not None and len(filename) > 0:
         try:
-            with open(filename, 'r') as f:
+            with open(filename, 'r', encoding="utf-8") as f:
                 nb_config = toml.load(f)
-                for k in config.keys():
+                for k in config:
                     if k.upper() in nb_config:
                         config[k] = nb_config[k.upper()]
                 if len(config['output_format']) > 0:
-                        arg_output_check(config['output_format'])
+                    arg_output_check(config['output_format'])
         except OSError as e:
             error(f"Unable to open configuration file {filename}: {e}")
         except toml.decoder.TomlDecodeError as e:
@@ -407,34 +436,37 @@ def arg_input_check(s):
     allowed_values = ['netbox', 'cyjs']
     if s in allowed_values:
         return s
-    else:
-        raise argparse.ArgumentTypeError(f"input source has to be one of {allowed_values}")
+    raise argparse.ArgumentTypeError(f"input source has to be one of {allowed_values}")
 
 def arg_output_check(s):
     allowed_values = ['gml', 'cyjs', 'clab']
     if s in allowed_values:
         return s
-    else:
-        raise argparse.ArgumentTypeError(f"output format has to be one of {allowed_values}")
+    raise argparse.ArgumentTypeError(f"output format has to be one of {allowed_values}")
 
 def main():
 
     # CLI arguments parser
     parser = argparse.ArgumentParser(prog='ntopex.py', description='Network Topology Exporter')
     parser.add_argument('-c', '--config',    required=False, help='configuration file')
-    parser.add_argument('-i', '--input',     required=False, default='netbox', type=arg_input_check,  help='input source: netbox (default) | cyjs')
-    parser.add_argument('-o', '--output',    required=False, type=arg_output_check, help='output format: cyjs | gml | clab')
+    parser.add_argument('-i', '--input',     required=False, help='input source: netbox (default) | cyjs',
+                                             default='netbox', type=arg_input_check,)
+    parser.add_argument('-o', '--output',    required=False, help='output format: cyjs | gml | clab',
+                                             type=arg_output_check, )
     parser.add_argument('-a', '--api',       required=False, help='NetBox API URL')
     parser.add_argument('-s', '--site',      required=False, help='NetBox Site to export')
-    parser.add_argument('-d', '--debug',     required=False, help='enable debug output', action=argparse.BooleanOptionalAction)
+    parser.add_argument('-d', '--debug',     required=False, help='enable debug output',
+                                             action=argparse.BooleanOptionalAction)
     parser.add_argument('-f', '--file',      required=False, help='file with the network graph to import')
-    parser.add_argument('-t', '--templates', required=False, help='directory with template files, will be prepended to TEMPLATES_PATH list in the configuration file')
+    parser.add_argument('-t', '--templates', required=False, help='directory with template files, \
+                                                                   will be prepended to TEMPLATES_PATH list \
+                                                                   in the configuration file')
 
     # Common parameters
     args = parser.parse_args()
 
-    global debug_on
-    debug_on = (args.debug == True)
+    global DEBUG_ON
+    DEBUG_ON = args.debug is True
     debug(f"arguments {args}")
 
     try:
@@ -466,18 +498,18 @@ def main():
         if args.api is not None and len(args.api) > 0:
             config['nb_api_url'] = args.api
         if len(config['nb_api_url']) == 0:
-            error(f"Need an API URL to connect to NetBox. Use --api argument, NB_API_URL environment variable or key in --config file")
-        
+            error("Need an API URL to connect to NetBox.\nUse --api argument, NB_API_URL environment variable or key in --config file")
+
         if len(config['nb_api_token']) == 0:
-            error(f"Need an API token to connect to NetBox. Use NB_API_TOKEN environment variable or key in --config file")
+            error("Need an API token to connect to NetBox.\nUse NB_API_TOKEN environment variable or key in --config file")
 
         if args.site is not None and len(args.site) > 0:
             config['export_site'] = args.site
         elif len(config['export_site']) == 0:
-            error(f"Need a Site name to export. Use --site argument, or EXPORT_SITE key in --config file")
+            error("Need a Site name to export. Use --site argument, or EXPORT_SITE key in --config file")
 
         try:
-            nb_network = NB_Factory(config)
+            nb_network = NBFactory(config)
         except Exception as e:
             error("Exporting from NetBox:", e)
         topo.build_from_graph(nb_network.graph())

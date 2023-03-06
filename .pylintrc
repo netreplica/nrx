@@ -1,0 +1,4 @@
+[MASTER]
+disable=C0103,R0903,C0116,W0603
+[FORMAT]
+max-line-length=140
