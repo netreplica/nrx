@@ -18,7 +18,7 @@ It can also read the topology graph previously saved as a CYJS file to convert i
 
 Ntopex is in a very early, proof-of-concept phase.
 
-Import capabilities:
+Data sourcing capabilities:
 
 * Connects to a NetBox instance over an API using a user-provided authentication token
 * Exports a network topology graph for one Site at a time
@@ -29,10 +29,9 @@ Import capabilities:
 
 Export capabilities:
 
-* Exports the graph into Containerlab topology definition file in YAML format
+* Exports the graph as a Containerlab topology definition file in YAML format
+* Uses NetBox Device Platform to identify Containerlab node settings
 * Creates mapping between real interface names and interface names used by Containerlab
-* Supported mapping formats: Arista cEOSLab
-* Containerlab `kind` and `image` values for all the nodes are statically defined in the Jinja2 template `clab.j2` and currently are set for `ceos`
 * Exports the graph into CYJS format that can be later converted into a Containerlab topology, or used by 3rd party software
 
 ## Prerequisites
@@ -94,7 +93,7 @@ Command-line arguments take the highest priority.
 
 ```
 ./ntopex.py -h
-usage: ntopex.py [-h] [-c CONFIG] [-i INPUT] [-o OUTPUT] [-a API] [-s SITE] [-d | --debug | --no-debug] [-f FILE]
+usage: ntopex.py [-h] [-c CONFIG] [-i INPUT] [-o OUTPUT] [-a API] [-s SITE] [-d | --debug | --no-debug] [-f FILE] [-t TEMPLATES]
 
 Network Topology Exporter
 
@@ -105,12 +104,14 @@ optional arguments:
   -i INPUT, --input INPUT
                         input source: netbox (default) | cyjs
   -o OUTPUT, --output OUTPUT
-                        output format: cyjs (default) | gml | clab
+                        output format: cyjs | gml | clab
   -a API, --api API     NetBox API URL
   -s SITE, --site SITE  NetBox Site to export
   -d, --debug, --no-debug
                         enable debug output
   -f FILE, --file FILE  file with the network graph to import
+  -t TEMPLATES, --templates TEMPLATES
+                        directory with template files, will be prepended to TEMPLATES_PATH list in the configuration file
 ```
 
 Note: `NB_API_TOKEN` is not supported as an argument for security reasons.
@@ -129,6 +130,20 @@ export NB_API_TOKEN         = 'replace_with_valid_API_token'
 ### Configuration file
 
 Use `--config <filename>` argument to specify a configuration file to use. Example is provided as [`ntopex.conf`](ntopex.conf).
+
+## Templates
+
+### Containerlab
+
+All elements of a Containerlab topology file that `ntopex` can produce has to be provided to it as Jinja2 templates:
+
+* `clab/topology.j2`: template for the final Containerlab topology file
+* `clab/kinds/<device.platform.slug>.j2`: templates for Clab node entries, separate file for each `device.platform.slug` exported from NetBox
+* `interface_maps/<device.platform.slug>.j2`: templates for mappings between real interface names and interface names used by Containerlab
+
+This repository provides a small set of such templates as examples. To customize the way Containerlab topology file should be generated, you would need to change these templates as needed. For example, you might want to change `image` values depending on the `kind`. You can also add knew templates, if the platforms you have are not covered by the provided set of templates. In case a template for the needed `kind` already exists, but in NetBox you're using a different `device.platform.slug` value for it, you can either rename the template, or create a symbolic link to it with a new name.
+
+By default, `ntopex` searches for the template files in the current directory. You can provide a list of folders to search for the templates via `TEMPLATES_PATH` parameter in the [configuration file](#configuration-file), or use `--templates` argument.
 
 ## How to use
 
