@@ -252,43 +252,53 @@ class NetworkTopology:
             error("Can't parse CYJS topology graph:", e)
         self.G = nx.cytoscape_graph(cyjs)
 
+    def _append_if_node_is_device(self, n):
+        if self.G.nodes[n]['type'] == 'device':
+            dev = self.G.nodes[n]['device']
+            self.nodes.append(dev)
+            if dev['name'] not in self.device_interfaces_map:
+                self.device_interfaces_map[dev['name']] = {}
+            return True
+        return False
+
+    def _append_if_node_is_interface(self, n):
+        if self.G.nodes[n]['type'] == 'interface':
+            int_name = self.G.nodes[n]['interface']['name']
+            dev_name, dev_node_id = None, None
+            peer_name, peer_dev_name, peer_dev_node_id = None, None, None
+            for a_adj in self.G.adj[n].items():
+                if self.G.nodes[a_adj[0]]['type'] == 'device':
+                    dev_name = self.G.nodes[a_adj[0]]['device']['name']
+                    dev_node_id = self.G.nodes[a_adj[0]]['device']['node_id']
+                    self.device_interfaces_map[dev_name][int_name] = ""
+                elif self.G.nodes[a_adj[0]]['type'] == 'interface' and self.G.nodes[n]['side'] == 'a':
+                    peer_name = self.G.nodes[a_adj[0]]['interface']['name']
+                    for b_adj in self.G.adj[a_adj[0]].items():
+                        if self.G.nodes[b_adj[0]]['type'] == 'device':
+                            peer_dev_name = self.G.nodes[b_adj[0]]['device']['name']
+                            peer_dev_node_id = self.G.nodes[b_adj[0]]['device']['node_id']
+            if self.G.nodes[n]['side'] == 'a':
+                self.links.append({
+                    'a': {
+                        'node': dev_name,
+                        'node_id': dev_node_id,
+                        'interface': int_name,
+                    },
+                    'b': {
+                        'node': peer_dev_name,
+                        'node_id': peer_dev_node_id,
+                        'interface': peer_name,
+                    },
+                })
+            return True
+        return False
+
     def _build_topology(self):
         # Parse graph G into lists of: nodes and links. Keep a list of interfaces per device in `device_interfaces_map`.
         try:
             for n in self.G.nodes:
-                if self.G.nodes[n]['type'] == 'device':
-                    dev = self.G.nodes[n]['device']
-                    self.nodes.append(dev)
-                    if dev['name'] not in self.device_interfaces_map:
-                        self.device_interfaces_map[dev['name']] = {}
-                elif self.G.nodes[n]['type'] == 'interface':
-                    int_name = self.G.nodes[n]['interface']['name']
-                    dev_name, dev_node_id = None, None
-                    peer_name, peer_dev_name, peer_dev_node_id = None, None, None
-                    for a_adj in self.G.adj[n].items():
-                        if self.G.nodes[a_adj[0]]['type'] == 'device':
-                            dev_name = self.G.nodes[a_adj[0]]['device']['name']
-                            dev_node_id = self.G.nodes[a_adj[0]]['device']['node_id']
-                            self.device_interfaces_map[dev_name][int_name] = ""
-                        elif self.G.nodes[a_adj[0]]['type'] == 'interface' and self.G.nodes[n]['side'] == 'a':
-                            peer_name = self.G.nodes[a_adj[0]]['interface']['name']
-                            for b_adj in self.G.adj[a_adj[0]].items():
-                                if self.G.nodes[b_adj[0]]['type'] == 'device':
-                                    peer_dev_name = self.G.nodes[b_adj[0]]['device']['name']
-                                    peer_dev_node_id = self.G.nodes[b_adj[0]]['device']['node_id']
-                    if self.G.nodes[n]['side'] == 'a':
-                        self.links.append({
-                            'a': {
-                                'node': dev_name,
-                                'node_id': dev_node_id,
-                                'interface': int_name,
-                            },
-                            'b': {
-                                'node': peer_dev_name,
-                                'node_id': peer_dev_node_id,
-                                'interface': peer_name,
-                            },
-                        })
+                if not self._append_if_node_is_device(n):
+                    self._append_if_node_is_interface(n)
         except KeyError as e:
             error(f"Incomplete data to build topology, {e} key is missing")
 
