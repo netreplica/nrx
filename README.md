@@ -37,7 +37,7 @@ Export capabilities:
 
 ## Prerequisites
 
-* Python 3.9
+* Python 3.9+
 * PIP
 
     ```Shell
@@ -60,7 +60,7 @@ Export capabilities:
 
 ## How to install
 
-1. Create venv environment (adjust path to `.venv` folder if needed) 
+1. Create venv environment (adjust path to `.venv` folder if needed)
 
     ```Shell
     PYENV="ntopex"
@@ -115,7 +115,7 @@ optional arguments:
 
 Note: `NB_API_TOKEN` is not supported as an argument for security reasons.
 
-### Environmental variables 
+### Environmental variables
 
 As an alternative to a configuration file, use environmental variables to provide NetBox API connection parameters.
 
