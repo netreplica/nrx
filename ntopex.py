@@ -536,6 +536,8 @@ def main():
     elif config['input_source'] == 'netbox':
         try:
             nb_network = NBFactory(config)
+        except requests.exceptions.SSLError:
+            error("TLS validation failed when connecting to NetBox. To skip validation, use --insecure")
         except Exception as e:
             error("Exporting from NetBox:", e)
         topo.build_from_graph(nb_network.graph())
