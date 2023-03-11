@@ -432,17 +432,19 @@ def arg_output_check(s):
 def parse_args():
     """CLI arguments parser"""
     parser = argparse.ArgumentParser(prog='ntopex.py', description='Network Topology Exporter')
-    parser.add_argument('-c', '--config',    required=False, help='configuration file')
-    parser.add_argument('-i', '--input',     required=False, help='input source: netbox (default) | cyjs',
+    parser.add_argument('-c', '--config',    required=False, help='Configuration file')
+    parser.add_argument('-i', '--input',     required=False, help='Input source: netbox (default) | cyjs',
                                              default='netbox', type=arg_input_check,)
-    parser.add_argument('-o', '--output',    required=False, help='output format: cyjs | gml | clab',
+    parser.add_argument('-o', '--output',    required=False, help='Output format: cyjs | gml | clab',
                                              type=arg_output_check, )
     parser.add_argument('-a', '--api',       required=False, help='NetBox API URL')
     parser.add_argument('-s', '--site',      required=False, help='NetBox Site to export')
-    parser.add_argument('-d', '--debug',     required=False, help='enable debug output',
+    parser.add_argument('-k', '--insecure',  required=False, help='Allow insecure server connections when using TLS',
                                              action=argparse.BooleanOptionalAction)
-    parser.add_argument('-f', '--file',      required=False, help='file with the network graph to import')
-    parser.add_argument('-t', '--templates', required=False, help='directory with template files, \
+    parser.add_argument('-d', '--debug',     required=False, help='Enable debug output',
+                                             action=argparse.BooleanOptionalAction)
+    parser.add_argument('-f', '--file',      required=False, help='File with the network graph to import')
+    parser.add_argument('-t', '--templates', required=False, help='Directory with template files, \
                                                                    will be prepended to TEMPLATES_PATH list \
                                                                    in the configuration file')
 
@@ -505,6 +507,9 @@ def load_config(args):
                 config['export_site'] = args.site
             if len(config['export_site']) == 0:
                 error("Need a Site name to export. Use --site argument, or EXPORT_SITE key in --config file")
+
+    if args.insecure:
+        config['tls_validate'] = False
 
     if args.output is not None and len(args.output) > 0:
         config['output_format'] = args.output
