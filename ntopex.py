@@ -33,6 +33,8 @@ import argparse
 import json
 import toml
 import pynetbox
+import requests
+import urllib3
 import networkx as nx
 import jinja2
 
@@ -79,6 +81,11 @@ class NBFactory:
         self.nb_session = pynetbox.api(self.config['nb_api_url'],
                                        token=self.config['nb_api_token'],
                                        threading=True)
+        if not config['tls_validate']:
+            session = requests.Session()
+            session.verify = False
+            urllib3.disable_warnings()
+            self.nb_session.http_session = session
         try:
             self.nb_site = self.nb_session.dcim.sites.get(name=config['export_site'])
         except (pynetbox.core.query.RequestError, pynetbox.core.query.ContentError) as e:
@@ -451,6 +458,7 @@ def load_toml_config(filename):
     config = {
         'nb_api_url': '',
         'nb_api_token': '',
+        'tls_validate': True,
         'output_format': 'cyjs',
         'export_device_roles': ["router", "core-switch", "access-switch", "distribution-switch", "tor-switch"],
         'export_site': '',
