@@ -93,25 +93,27 @@ Command-line arguments take the highest priority.
 
 ```
 ./ntopex.py -h
-usage: ntopex.py [-h] [-c CONFIG] [-i INPUT] [-o OUTPUT] [-a API] [-s SITE] [-d | --debug | --no-debug] [-f FILE] [-t TEMPLATES]
+usage: ntopex.py [-h] [-c CONFIG] [-i INPUT] [-o OUTPUT] [-a API] [-s SITE] [-k | --insecure | --no-insecure] [-d | --debug | --no-debug] [-f FILE] [-t TEMPLATES]
 
 Network Topology Exporter
 
 optional arguments:
   -h, --help            show this help message and exit
   -c CONFIG, --config CONFIG
-                        configuration file
+                        Configuration file
   -i INPUT, --input INPUT
-                        input source: netbox (default) | cyjs
+                        Input source: netbox (default) | cyjs
   -o OUTPUT, --output OUTPUT
-                        output format: cyjs | gml | clab
+                        Output format: cyjs | gml | clab
   -a API, --api API     NetBox API URL
   -s SITE, --site SITE  NetBox Site to export
+  -k, --insecure, --no-insecure
+                        Allow insecure server connections when using TLS
   -d, --debug, --no-debug
-                        enable debug output
-  -f FILE, --file FILE  file with the network graph to import
+                        Enable debug output
+  -f FILE, --file FILE  File with the network graph to import
   -t TEMPLATES, --templates TEMPLATES
-                        directory with template files, will be prepended to TEMPLATES_PATH list in the configuration file
+                        Directory with template files, will be prepended to TEMPLATES_PATH list in the configuration file
 ```
 
 Note: `NB_API_TOKEN` is not supported as an argument for security reasons.
@@ -129,7 +131,7 @@ export NB_API_TOKEN         = 'replace_with_valid_API_token'
 
 ### Configuration file
 
-Use `--config <filename>` argument to specify a configuration file to use. Example is provided as [`ntopex.conf`](ntopex.conf).
+Use `--config <filename>` argument to specify a configuration file to use. The sample configuration file is provided as [`ntopex.conf`](ntopex.conf).
 
 ## Templates
 
