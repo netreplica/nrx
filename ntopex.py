@@ -60,6 +60,13 @@ def debug(*args, **kwargs):
     if DEBUG_ON:
         errlog("Debug:", *args, **kwargs)
 
+def error_debug(err, d):
+    if not DEBUG_ON:
+        err += " Use --debug to see the full error message."
+    debug(d)
+    error(err)
+
+
 class NBNetwork:
     """Class to hold network topology data exported from NetBox"""
     def __init__(self):
@@ -534,8 +541,15 @@ def main():
     elif config['input_source'] == 'netbox':
         try:
             nb_network = NBFactory(config)
-        except requests.exceptions.SSLError:
-            error(f"TLS validation failed when connecting to {config['nb_api_url']}. To skip validation, use --insecure")
+        except (requests.exceptions.SSLError, requests.exceptions.ConnectionError) as e:
+            if "SSL: WRONG_VERSION_NUMBER" in str(e):
+                error_debug(f"Unable to negotiate TLS version when connecting to {config['nb_api_url']}. "
+                             "Could the server be using unencrypted HTTP?", e)
+            elif "SSL: CERTIFICATE_VERIFY_FAILED" in str(e):
+                error_debug(f"Server certificate validation failed when connecting to {config['nb_api_url']}. "
+                             "To skip validation, use --insecure.", e)
+            else:
+                error_debug(f"Can't connect to {config['nb_api_url']}.", e)
         except Exception as e:
             error("Exporting from NetBox:", e)
         topo.build_from_graph(nb_network.graph())
