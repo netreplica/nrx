@@ -1,9 +1,9 @@
-<p align=center><img src="https://github.com/netreplica/ntopex/raw/main/images/ntopex_concept_diagram.png" width="500px"/></p>
+<p align=center><img src="https://github.com/netreplica/ntopex/raw/main/images/concept_diagram.png" width="500px"/></p>
 
 ---
 [![Discord](https://img.shields.io/discord/1075106069862416525?label=discord)](https://discord.gg/M2SkgSdKht)
 
-# **nrx**: netreplica exporter
+# nrx - network topology exporter by netreplica
 
 **nrx** reads a network topology graph from [NetBox](https://docs.netbox.dev/en/stable/) DCIM system and exports it in one of the following formats:
 
