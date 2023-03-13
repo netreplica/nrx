@@ -1,4 +1,4 @@
-<p align=center><img src="https://github.com/netreplica/ntopex/raw/main/images/concept_diagram.png" width="500px"/></p>
+<p align=center><img src="https://github.com/netreplica/nrx/raw/main/images/concept_diagram.png" width="500px"/></p>
 
 ---
 [![Discord](https://img.shields.io/discord/1075106069862416525?label=discord)](https://discord.gg/M2SkgSdKht)
