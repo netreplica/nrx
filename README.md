@@ -1,13 +1,11 @@
-<p align=center><img src="https://github.com/netreplica/ntopex/raw/main/images/ntopex_concept_diagram.png" width="500px"/></p>
+<p align=center><img src="https://github.com/netreplica/ntopex/raw/main/images/concept_diagram.png" width="500px"/></p>
 
 ---
 [![Discord](https://img.shields.io/discord/1075106069862416525?label=discord)](https://discord.gg/M2SkgSdKht)
 
-# Netreplica ntopex
+# nrx - network topology exporter by netreplica
 
-Network Topology Exporter
-
-Ntopex reads a network topology graph from [NetBox](https://docs.netbox.dev/en/stable/) DCIM system and exports it in one of the following formats:
+**nrx** reads a network topology graph from [NetBox](https://docs.netbox.dev/en/stable/) DCIM system and exports it in one of the following formats:
 
 * Topology file for [Containerlab](https://containerlab.dev) network emulation tool
 * Graph data as a JSON file in [Cytoscape](https://cytoscape.org/) format [CYJS](http://manual.cytoscape.org/en/stable/Supported_Network_File_Formats.html#cytoscape-js-json)
@@ -16,7 +14,7 @@ It can also read the topology graph previously saved as a CYJS file to convert i
 
 ## Capabilities
 
-Ntopex is in a very early, proof-of-concept phase.
+**nrx** is in a very early, proof-of-concept phase.
 
 Data sourcing capabilities:
 
@@ -51,7 +49,7 @@ Export capabilities:
     pip install virtualenv
     ```
 
-* Containerlab – not required for `ntopex`, but needed to deploy the topology created
+* Containerlab – not required for **nrx**, but needed to deploy the topology created
 
     ```Shell
     bash -c "$(curl -sL https://get.containerlab.dev)"
@@ -59,29 +57,24 @@ Export capabilities:
 
 ## How to install
 
-1. Create venv environment (adjust path to `.venv` folder if needed)
+1. Clone this repository and create Python virtual environment
 
     ```Shell
-    PYENV="ntopex"
-    CUR_DIR="${PWD}"
-    VENV_DIR="${HOME}/.venv"
-    mkdir -p "${VENV_DIR}" && cd "${VENV_DIR}"
-    python3.9 -m venv "${PYENV}"
-    source "${VENV_DIR}/${PYENV}/bin/activate"
-    cd "${CUR_DIR}"
+    git clone https://github.com/netreplica/nrx.git
+    cd nrx
+    python3.9 -m venv nrx39
+    source nrx39/bin/activate
     ```
 
-2. Clone this repository and install required modules
+2. Install required modules
 
     ```Shell
-    git clone https://github.com/netreplica/ntopex.git
-    cd ntopex
     pip3 install -r requirements.txt
     ```
 
 ## How to configure
 
-`ntopex` accepts the following configuration options, in the order of precedence:
+**nrx** accepts the following configuration options, in the order of precedence:
 
 1. [Command-line arguments](#command-line-arguments)
 2. [Environmental variables](#environmental-variables)
@@ -92,28 +85,28 @@ Export capabilities:
 Command-line arguments take the highest priority.
 
 ```
-./ntopex.py -h
-usage: ntopex.py [-h] [-c CONFIG] [-i INPUT] [-o OUTPUT] [-a API] [-s SITE] [-k | --insecure | --no-insecure] [-d | --debug | --no-debug] [-f FILE] [-t TEMPLATES]
+./nrx.sh --help
+usage: nrx [-h] [-c CONFIG] [-i INPUT] [-o OUTPUT] [-a API] [-s SITE] [-k | --insecure | --no-insecure] [-d | --debug | --no-debug] [-f FILE] [-t TEMPLATES]
 
-Network Topology Exporter
+nrx - network topology exporter by netreplica
 
 optional arguments:
   -h, --help            show this help message and exit
   -c CONFIG, --config CONFIG
-                        Configuration file
+                        configuration file
   -i INPUT, --input INPUT
-                        Input source: netbox (default) | cyjs
+                        input source: netbox (default) | cyjs
   -o OUTPUT, --output OUTPUT
-                        Output format: cyjs | gml | clab
-  -a API, --api API     NetBox API URL
-  -s SITE, --site SITE  NetBox Site to export
+                        output format: cyjs | gml | clab
+  -a API, --api API     netbox API URL
+  -s SITE, --site SITE  netbox site to export
   -k, --insecure, --no-insecure
-                        Allow insecure server connections when using TLS
+                        allow insecure server connections when using TLS
   -d, --debug, --no-debug
-                        Enable debug output
-  -f FILE, --file FILE  File with the network graph to import
+                        enable debug output
+  -f FILE, --file FILE  file with the network graph to import
   -t TEMPLATES, --templates TEMPLATES
-                        Directory with template files, will be prepended to TEMPLATES_PATH list in the configuration file
+                        directory with template files, will be prepended to TEMPLATES_PATH list in the configuration file
 ```
 
 Note: `NB_API_TOKEN` is not supported as an argument for security reasons.
@@ -131,13 +124,13 @@ export NB_API_TOKEN         = 'replace_with_valid_API_token'
 
 ### Configuration file
 
-Use `--config <filename>` argument to specify a configuration file to use. The sample configuration file is provided as [`ntopex.conf`](ntopex.conf).
+Use `--config <filename>` argument to specify a configuration file to use. The sample configuration file is provided as [`nrx.conf`](nrx.conf).
 
 ## Templates
 
 ### Containerlab
 
-All elements of a Containerlab topology file that `ntopex` can produce has to be provided to it as Jinja2 templates:
+All elements of a Containerlab topology file that **nrx** can produce has to be provided to it as Jinja2 templates:
 
 * `clab/topology.j2`: template for the final Containerlab topology file
 * `clab/kinds/<device.platform.slug>.j2`: templates for Clab node entries, separate file for each `device.platform.slug` exported from NetBox
@@ -145,23 +138,21 @@ All elements of a Containerlab topology file that `ntopex` can produce has to be
 
 This repository provides a small set of such templates as examples. To customize the way Containerlab topology file should be generated, you would need to change these templates as needed. For example, you might want to change `image` values depending on the `kind`. You can also add new templates, if the platforms you have are not covered by the provided set of templates. In case a template for the needed `kind` already exists, but in NetBox you're using a different `device.platform.slug` value for it, you can either rename the template, or create a symbolic link to it with a new name.
 
-By default, `ntopex` searches for the template files in the current directory. You can provide a list of folders to search for the templates via `TEMPLATES_PATH` parameter in the [configuration file](#configuration-file), or use `--templates` argument.
+By default, **nrx** searches for the template files in the current directory. You can provide a list of folders to search for the templates via `TEMPLATES_PATH` parameter in the [configuration file](#configuration-file), or use `--templates` argument.
 
 ## How to use
 
 1. Activate venv environment
 
     ```Shell
-    VENV_DIR="${HOME}/.venv"
-    PYENV="ntopex"
-    source "${VENV_DIR}/${PYENV}/bin/activate"
+    source nrx39/bin/activate
     ```
 
-2. Run `./ntopex.py --output clab` to export a topology graph from NetBox in a Containerlab format. See [How to configure](#how-to-configure) for details. Here is an example of running `ntopex.py` to export a graph for NetBox Site "DM-Albany" from [NetBox Demo](https://demo.netbox.dev) instance:
+2. Run `./nrx.sh --output clab` to export a topology graph from NetBox in a Containerlab format. See [How to configure](#how-to-configure) for details. Here is an example of running `nrx.py` to export a graph for NetBox Site "DM-Albany" from [NetBox Demo](https://demo.netbox.dev) instance:
 
     ```Shell
     export NB_API_TOKEN='replace_with_valid_API_token'
-    ./ntopex.py --api https://demo.netbox.dev --site DM-Albany --output clab
+    ./nrx.sh --api https://demo.netbox.dev --site DM-Albany --output clab
     ```
 
 3. Now you're ready to start the Containerlab topology. Here is the example for "DM-Albany" site
@@ -170,17 +161,17 @@ By default, `ntopex` searches for the template files in the current directory. Y
     sudo -E containerlab deploy -t DM-Albany.clab.yml --reconfigure
     ```
 
-4. Without `--output clab` argument, `ntopex.py` will save data from NetBox as a CYJS file `<site_name>.cyjs`
+4. Without `--output clab` argument, `nrx.py` will save data from NetBox as a CYJS file `<site_name>.cyjs`
 
     ```Shell
     export NB_API_TOKEN='replace_with_valid_API_token'
-    ./ntopex.py --api https://demo.netbox.dev --site DM-Albany
+    ./nrx.sh --api https://demo.netbox.dev --site DM-Albany
     ```
 
-5. If you have a CYJS file, run `./ntopex.py --input cyjs --file <site>.cyjs --output clab` to create a Containerlab topology file from the CYJS graph you exported in the previous step. For example, run:
+5. If you have a CYJS file, run `./nrx.sh --input cyjs --file <site>.cyjs --output clab` to create a Containerlab topology file from the CYJS graph you exported in the previous step. For example, run:
 
     ```Shell
-    ./ntopex.py --input cyjs --file DM-Albany.cyjs --output clab
+    ./nrx.sh --input cyjs --file DM-Albany.cyjs --output clab
     ```
 
 # Credits
