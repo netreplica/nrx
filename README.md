@@ -85,7 +85,7 @@ Export capabilities:
 Command-line arguments take the highest priority.
 
 ```
-./nrx.sh --help
+./nrx.py --help
 usage: nrx [-h] [-c CONFIG] [-i INPUT] [-o OUTPUT] [-a API] [-s SITE] [-k | --insecure | --no-insecure] [-d | --debug | --no-debug] [-f FILE] [-t TEMPLATES]
 
 nrx - network topology exporter by netreplica
@@ -148,11 +148,11 @@ By default, **nrx** searches for the template files in the current directory. Yo
     source nrx39/bin/activate
     ```
 
-2. Run `./nrx.sh --output clab` to export a topology graph from NetBox in a Containerlab format. See [How to configure](#how-to-configure) for details. Here is an example of running `nrx.py` to export a graph for NetBox Site "DM-Albany" from [NetBox Demo](https://demo.netbox.dev) instance:
+2. Run `./nrx.py --output clab` to export a topology graph from NetBox in a Containerlab format. See [How to configure](#how-to-configure) for details. Here is an example of running `nrx.py` to export a graph for NetBox Site "DM-Albany" from [NetBox Demo](https://demo.netbox.dev) instance:
 
     ```Shell
     export NB_API_TOKEN='replace_with_valid_API_token'
-    ./nrx.sh --api https://demo.netbox.dev --site DM-Albany --output clab
+    ./nrx.py --api https://demo.netbox.dev --site DM-Albany --output clab
     ```
 
 3. Now you're ready to start the Containerlab topology. Here is the example for "DM-Albany" site
@@ -165,13 +165,13 @@ By default, **nrx** searches for the template files in the current directory. Yo
 
     ```Shell
     export NB_API_TOKEN='replace_with_valid_API_token'
-    ./nrx.sh --api https://demo.netbox.dev --site DM-Albany
+    ./nrx.py --api https://demo.netbox.dev --site DM-Albany
     ```
 
-5. If you have a CYJS file, run `./nrx.sh --input cyjs --file <site>.cyjs --output clab` to create a Containerlab topology file from the CYJS graph you exported in the previous step. For example, run:
+5. If you have a CYJS file, run `./nrx.py --input cyjs --file <site>.cyjs --output clab` to create a Containerlab topology file from the CYJS graph you exported in the previous step. For example, run:
 
     ```Shell
-    ./nrx.sh --input cyjs --file DM-Albany.cyjs --output clab
+    ./nrx.py --input cyjs --file DM-Albany.cyjs --output clab
     ```
 
 # Credits
