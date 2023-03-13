@@ -85,28 +85,28 @@ Export capabilities:
 Command-line arguments take the highest priority.
 
 ```
-./nrx.py -h
-usage: nrx.py [-h] [-c CONFIG] [-i INPUT] [-o OUTPUT] [-a API] [-s SITE] [-k | --insecure | --no-insecure] [-d | --debug | --no-debug] [-f FILE] [-t TEMPLATES]
+./nrx.sh --help
+usage: nrx [-h] [-c CONFIG] [-i INPUT] [-o OUTPUT] [-a API] [-s SITE] [-k | --insecure | --no-insecure] [-d | --debug | --no-debug] [-f FILE] [-t TEMPLATES]
 
-Network Topology Exporter
+nrx - network topology exporter by netreplica
 
 optional arguments:
   -h, --help            show this help message and exit
   -c CONFIG, --config CONFIG
-                        Configuration file
+                        configuration file
   -i INPUT, --input INPUT
-                        Input source: netbox (default) | cyjs
+                        input source: netbox (default) | cyjs
   -o OUTPUT, --output OUTPUT
-                        Output format: cyjs | gml | clab
-  -a API, --api API     NetBox API URL
-  -s SITE, --site SITE  NetBox Site to export
+                        output format: cyjs | gml | clab
+  -a API, --api API     netbox API URL
+  -s SITE, --site SITE  netbox site to export
   -k, --insecure, --no-insecure
-                        Allow insecure server connections when using TLS
+                        allow insecure server connections when using TLS
   -d, --debug, --no-debug
-                        Enable debug output
-  -f FILE, --file FILE  File with the network graph to import
+                        enable debug output
+  -f FILE, --file FILE  file with the network graph to import
   -t TEMPLATES, --templates TEMPLATES
-                        Directory with template files, will be prepended to TEMPLATES_PATH list in the configuration file
+                        directory with template files, will be prepended to TEMPLATES_PATH list in the configuration file
 ```
 
 Note: `NB_API_TOKEN` is not supported as an argument for security reasons.
@@ -145,16 +145,14 @@ By default, **nrx** searches for the template files in the current directory. Yo
 1. Activate venv environment
 
     ```Shell
-    VENV_DIR="${HOME}/.venv"
-    PYENV="nrx"
-    source "${VENV_DIR}/${PYENV}/bin/activate"
+    source nrx39/bin/activate
     ```
 
-2. Run `./nrx.py --output clab` to export a topology graph from NetBox in a Containerlab format. See [How to configure](#how-to-configure) for details. Here is an example of running `nrx.py` to export a graph for NetBox Site "DM-Albany" from [NetBox Demo](https://demo.netbox.dev) instance:
+2. Run `./nrx.sh --output clab` to export a topology graph from NetBox in a Containerlab format. See [How to configure](#how-to-configure) for details. Here is an example of running `nrx.py` to export a graph for NetBox Site "DM-Albany" from [NetBox Demo](https://demo.netbox.dev) instance:
 
     ```Shell
     export NB_API_TOKEN='replace_with_valid_API_token'
-    ./nrx.py --api https://demo.netbox.dev --site DM-Albany --output clab
+    ./nrx.sh --api https://demo.netbox.dev --site DM-Albany --output clab
     ```
 
 3. Now you're ready to start the Containerlab topology. Here is the example for "DM-Albany" site
@@ -167,13 +165,13 @@ By default, **nrx** searches for the template files in the current directory. Yo
 
     ```Shell
     export NB_API_TOKEN='replace_with_valid_API_token'
-    ./nrx.py --api https://demo.netbox.dev --site DM-Albany
+    ./nrx.sh --api https://demo.netbox.dev --site DM-Albany
     ```
 
-5. If you have a CYJS file, run `./nrx.py --input cyjs --file <site>.cyjs --output clab` to create a Containerlab topology file from the CYJS graph you exported in the previous step. For example, run:
+5. If you have a CYJS file, run `./nrx.sh --input cyjs --file <site>.cyjs --output clab` to create a Containerlab topology file from the CYJS graph you exported in the previous step. For example, run:
 
     ```Shell
-    ./nrx.py --input cyjs --file DM-Albany.cyjs --output clab
+    ./nrx.sh --input cyjs --file DM-Albany.cyjs --output clab
     ```
 
 # Credits
