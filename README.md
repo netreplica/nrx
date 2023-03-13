@@ -3,9 +3,9 @@
 ---
 [![Discord](https://img.shields.io/discord/1075106069862416525?label=discord)](https://discord.gg/M2SkgSdKht)
 
-# `nrx`: netreplica exporter
+# **nrx**: netreplica exporter
 
-`nrx` reads a network topology graph from [NetBox](https://docs.netbox.dev/en/stable/) DCIM system and exports it in one of the following formats:
+**nrx** reads a network topology graph from [NetBox](https://docs.netbox.dev/en/stable/) DCIM system and exports it in one of the following formats:
 
 * Topology file for [Containerlab](https://containerlab.dev) network emulation tool
 * Graph data as a JSON file in [Cytoscape](https://cytoscape.org/) format [CYJS](http://manual.cytoscape.org/en/stable/Supported_Network_File_Formats.html#cytoscape-js-json)
@@ -14,7 +14,7 @@ It can also read the topology graph previously saved as a CYJS file to convert i
 
 ## Capabilities
 
-`nrx` is in a very early, proof-of-concept phase.
+**nrx** is in a very early, proof-of-concept phase.
 
 Data sourcing capabilities:
 
@@ -49,7 +49,7 @@ Export capabilities:
     pip install virtualenv
     ```
 
-* Containerlab – not required for `nrx`, but needed to deploy the topology created
+* Containerlab – not required for **nrx**, but needed to deploy the topology created
 
     ```Shell
     bash -c "$(curl -sL https://get.containerlab.dev)"
@@ -79,7 +79,7 @@ Export capabilities:
 
 ## How to configure
 
-`nrx` accepts the following configuration options, in the order of precedence:
+**nrx** accepts the following configuration options, in the order of precedence:
 
 1. [Command-line arguments](#command-line-arguments)
 2. [Environmental variables](#environmental-variables)
@@ -135,7 +135,7 @@ Use `--config <filename>` argument to specify a configuration file to use. The s
 
 ### Containerlab
 
-All elements of a Containerlab topology file that `nrx` can produce has to be provided to it as Jinja2 templates:
+All elements of a Containerlab topology file that **nrx** can produce has to be provided to it as Jinja2 templates:
 
 * `clab/topology.j2`: template for the final Containerlab topology file
 * `clab/kinds/<device.platform.slug>.j2`: templates for Clab node entries, separate file for each `device.platform.slug` exported from NetBox
@@ -143,7 +143,7 @@ All elements of a Containerlab topology file that `nrx` can produce has to be pr
 
 This repository provides a small set of such templates as examples. To customize the way Containerlab topology file should be generated, you would need to change these templates as needed. For example, you might want to change `image` values depending on the `kind`. You can also add new templates, if the platforms you have are not covered by the provided set of templates. In case a template for the needed `kind` already exists, but in NetBox you're using a different `device.platform.slug` value for it, you can either rename the template, or create a symbolic link to it with a new name.
 
-By default, `nrx` searches for the template files in the current directory. You can provide a list of folders to search for the templates via `TEMPLATES_PATH` parameter in the [configuration file](#configuration-file), or use `--templates` argument.
+By default, **nrx** searches for the template files in the current directory. You can provide a list of folders to search for the templates via `TEMPLATES_PATH` parameter in the [configuration file](#configuration-file), or use `--templates` argument.
 
 ## How to use
 
