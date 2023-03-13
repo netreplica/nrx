@@ -57,23 +57,18 @@ Export capabilities:
 
 ## How to install
 
-1. Create venv environment (adjust path to `.venv` folder if needed)
-
-    ```Shell
-    PYENV="nrx"
-    CUR_DIR="${PWD}"
-    VENV_DIR="${HOME}/.venv"
-    mkdir -p "${VENV_DIR}" && cd "${VENV_DIR}"
-    python3.9 -m venv "${PYENV}"
-    source "${VENV_DIR}/${PYENV}/bin/activate"
-    cd "${CUR_DIR}"
-    ```
-
-2. Clone this repository and install required modules
+1. Clone this repository and create Python virtual environment
 
     ```Shell
     git clone https://github.com/netreplica/nrx.git
     cd nrx
+    python3.9 -m venv nrx39
+    source nrx39/bin/activate
+    ```
+
+2. Install required modules
+
+    ```Shell
     pip3 install -r requirements.txt
     ```
 
