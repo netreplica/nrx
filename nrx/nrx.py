@@ -235,7 +235,8 @@ class NetworkTopology:
                     line_statement_prefix='#'
                 )
         self.templates = {
-            'interface_names': {}
+            'interface_names': {},
+            'kinds': {}
         }
 
     def build_from_file(self, file):
@@ -366,16 +367,24 @@ class NetworkTopology:
                 int_map = self._create_interface_map(n)
                 if int_map is not None:
                     n['interface_map'] = int_map
-                try:
-                    templ = self.j2env.get_template(f"clab/kinds/{p}.j2")
-                except (OSError, jinja2.TemplateError) as e:
-                    error(f"Opening Containerlab J2 template '{e}' for platform '{pn}' with path {self.config['templates_path']}")
-                # Run the topology through jinja2 template to get the final result
-                try:
-                    topo_nodes.append(templ.render(n))
-                except jinja2.TemplateError as e:
-                    error(f"Rendering Containerlab J2 template '{e}' for platform '{pn}'")
 
+                if p not in self.templates['kinds']:
+                    try:
+                        j2file = f"clab/kinds/{p}.j2"
+                        templ = self.j2env.get_template(j2file)
+                        debug(f"Found node kind template {j2file} for platform {p}")
+                    except (OSError, jinja2.TemplateError) as e:
+                        error(f"Opening Containerlab J2 template '{e}' for platform '{pn}' with path {self.config['templates_path']}")
+                        templ = None
+                    self.templates['kinds'][p] = templ
+                else:
+                    templ = self.templates['kinds'][p]
+
+                if templ is not None:
+                    try:
+                        topo_nodes.append(templ.render(n))
+                    except jinja2.TemplateError as e:
+                        error(f"Rendering Containerlab J2 template '{e}' for platform '{pn}'")
 
         return topo_nodes
 
@@ -387,7 +396,7 @@ class NetworkTopology:
                 j2file = f"interface_names/{platform}.j2"
                 templ = self.j2env.get_template(j2file)
                 debug(f"Found interface naming template {j2file} for platform {platform}")
-            except jinja2.TemplateError as e:
+            except (OSError, jinja2.TemplateError) as e:
                 debug(f"Failed to open interface naming J2 template '{e}' with path {self.config['templates_path']}, using default naming")
                 templ = None
             self.templates['interface_names'][platform] = templ
