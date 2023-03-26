@@ -225,7 +225,7 @@ class NetworkTopology:
     def __init__(self, config):
         self.config = config
         self.G = None
-        self.device_interfaces_map = {}
+        self.device_interfaces_map = {} # For each device we will store a list of {'nos_inteface_name': 'emulated_interface_name'} tuples here
         self.topology = {
             'name': None,
             'links': [],
@@ -265,6 +265,8 @@ class NetworkTopology:
             dev = self.G.nodes[n]['device']
             self.topology['nodes'].append(dev)
             if dev['name'] not in self.device_interfaces_map:
+                # Initialize an empty map. There is a similar initialization in _append_if_node_is_interface,
+                # but we need one here in case the device has no interfaces
                 self.device_interfaces_map[dev['name']] = {}
             return True
         return False
@@ -278,6 +280,9 @@ class NetworkTopology:
                 if self.G.nodes[a_adj[0]]['type'] == 'device':
                     dev_name = self.G.nodes[a_adj[0]]['device']['name']
                     dev_node_id = self.G.nodes[a_adj[0]]['device']['node_id']
+                    if dev_name not in self.device_interfaces_map:
+                        # Initialize an empty map if we don't have one yet for this device
+                        self.device_interfaces_map[dev_name] = {}
                     self.device_interfaces_map[dev_name][int_name] = ""
                 elif self.G.nodes[a_adj[0]]['type'] == 'interface' and self.G.nodes[n]['side'] == 'a':
                     peer_name = self.G.nodes[a_adj[0]]['interface']['name']
@@ -301,12 +306,30 @@ class NetworkTopology:
             return True
         return False
 
+    def _initialize_emulated_interface_names(self):
+        # Initialize emulated interface names for each NOS interface name
+        for node in self.topology['nodes']:
+            if 'name' in node.keys():
+                name = node['name']
+                if name in self.device_interfaces_map:
+                    node_interfaces = self.device_interfaces_map[name]
+                    # Sort nos interface names in the map
+                    nos_interfaces = list(node_interfaces.keys())
+                    nos_interfaces.sort()
+                    # Add emulated interface name for each nos interface name we got from the imported graph.
+                    # We assume interface with index `0` is reserved for management, and start with `1`
+                    sorted_map = {i: f"eth{nos_interfaces.index(i)+1}" for i in nos_interfaces}
+                    self.device_interfaces_map[name] = sorted_map
+                    # Append entries from device_interfaces_map to each device under self.topology['nodes']
+                    node['interfaces'] = self.device_interfaces_map[name]
+
     def _build_topology(self):
-        # Parse graph G into lists of: nodes and links. Keep a list of interfaces per device in `device_interfaces_map`.
+        # Parse graph G into lists of: nodes and links. Keep list of interfaces per device in `device_interfaces_map`, and then add them to each device
         try:
             for n in self.G.nodes:
                 if not self._append_if_node_is_device(n):
                     self._append_if_node_is_interface(n)
+            self._initialize_emulated_interface_names()
         except KeyError as e:
             error(f"Incomplete data to build topology, {e} key is missing")
 
@@ -316,21 +339,12 @@ class NetworkTopology:
 
         # Generate topology data structure for clab
         self.topology['name'] = self.G.name
-        self.topology['links'] = self._render_clab_links() # render links first, to complete device_interfaces_map
+        self.topology['links'] = self._render_clab_links()
         self.topology['nodes'] = self._render_clab_nodes()
 
         self._render_clab_topology()
 
     def _render_clab_links(self):
-        # Create container-compatible interface names for each device.
-        # We assume interface with index `0` is reserved for management, and start with `1`
-        for node, int_map in self.device_interfaces_map.items():
-            # sort keys (interface names) in the map
-            map_keys = list(int_map.keys())
-            map_keys.sort()
-            sorted_map = {k: f"eth{map_keys.index(k)+1}" for k in map_keys}
-            self.device_interfaces_map[node] = sorted_map
-
         for l in self.topology['links']:
             l['a']['c_interface'] = self.device_interfaces_map[l['a']['node']][l['a']['interface']]
             l['b']['c_interface'] = self.device_interfaces_map[l['b']['node']][l['b']['interface']]
