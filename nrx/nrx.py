@@ -66,7 +66,6 @@ def error_debug(err, d):
     debug(d)
     error(err)
 
-
 class NBNetwork:
     """Class to hold network topology data exported from NetBox"""
     def __init__(self):
@@ -317,8 +316,7 @@ class NetworkTopology:
                     nos_interfaces = list(node_interfaces.keys())
                     nos_interfaces.sort()
                     # Add emulated interface name for each nos interface name we got from the imported graph.
-                    # We assume interface with index `0` is reserved for management, and start with `1`
-                    sorted_map = {i: f"eth{nos_interfaces.index(i)+1}" for i in nos_interfaces}
+                    sorted_map = {i: f"{self._platform_emulated_interface_name(node['platform'], i, nos_interfaces.index(i))}" for i in nos_interfaces}
                     self.device_interfaces_map[name] = sorted_map
                     # Append entries from device_interfaces_map to each device under self.topology['nodes']
                     node['interfaces'] = self.device_interfaces_map[name]
@@ -378,6 +376,19 @@ class NetworkTopology:
 
         return topo_nodes
 
+    def _platform_emulated_interface_name(self, platform, interface, index):
+        # We assume interface with index `0` is reserved for management, and start with `1`
+        default_name = f"eth{index+1}"
+        try:
+            templ = self.j2env.get_template(f"interface_names/{platform}.j2")
+        except jinja2.TemplateError as e:
+            debug(f"Failed to open interface naming J2 template '{e}' with path {self.config['templates_path']}, using default naming")
+            return default_name
+        try:
+            return templ.render({'interface': interface, 'index': index})
+        except jinja2.TemplateError as e:
+            error("Rendering interface naming J2 template:", e)
+            return default_name
 
     def _render_clab_topology(self):
         debug("Topology data to render:", json.dumps(self.topology))
