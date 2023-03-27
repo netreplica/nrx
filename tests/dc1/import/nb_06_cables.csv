@@ -1,0 +1,9 @@
+side_a_device,side_a_type,side_a_name,side_b_device,side_b_type,side_b_name
+dc1-leaf-1,dcim.interface,ethernet-1/49,dc1-spine-1,dcim.interface,Ethernet1/1
+dc1-leaf-1,dcim.interface,ethernet-1/50,dc1-spine-2,dcim.interface,Ethernet1/1
+dc1-leaf-2,dcim.interface,ethernet-1/49,dc1-spine-1,dcim.interface,Ethernet2/1
+dc1-leaf-2,dcim.interface,ethernet-1/50,dc1-spine-2,dcim.interface,Ethernet2/1
+dc1-leaf-3,dcim.interface,ethernet-1/49,dc1-spine-1,dcim.interface,Ethernet3/1
+dc1-leaf-3,dcim.interface,ethernet-1/50,dc1-spine-2,dcim.interface,Ethernet3/1
+dc1-leaf-4,dcim.interface,ethernet-1/49,dc1-spine-1,dcim.interface,Ethernet4/1
+dc1-leaf-4,dcim.interface,ethernet-1/50,dc1-spine-2,dcim.interface,Ethernet4/1

@@ -43,11 +43,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-*.gml
-*.cyjs
 *.bak
-*.clab.yml
-*_interface_map.json
 clab-*
 .idea/
 .ipynb_checkpoints
@@ -56,3 +52,4 @@ clab-*
 .DS_Store
 nrx39
 nrx39-dev
+tests/*/test/*

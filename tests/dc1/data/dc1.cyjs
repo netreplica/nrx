@@ -1,0 +1,526 @@
+{
+    "data": [
+        [
+            "name",
+            "dc1"
+        ]
+    ],
+    "directed": false,
+    "multigraph": false,
+    "elements": {
+        "nodes": [
+            {
+                "data": {
+                    "side": "a",
+                    "type": "device",
+                    "device": {
+                        "id": 15,
+                        "type": "device",
+                        "name": "dc1-leaf-1",
+                        "node_id": 0,
+                        "platform": "sr-linux",
+                        "platform_name": "Nokia SR-Linux",
+                        "vendor": "nokia",
+                        "vendor_name": "Nokia",
+                        "model": "7220-ixr-d2",
+                        "model_name": "7220 IXR-D2"
+                    },
+                    "id": "0",
+                    "value": 0,
+                    "name": "0"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "device",
+                    "device": {
+                        "id": 13,
+                        "type": "device",
+                        "name": "dc1-spine-1",
+                        "node_id": 12,
+                        "platform": "eos",
+                        "platform_name": "Arista EOS",
+                        "vendor": "arista",
+                        "vendor_name": "Arista",
+                        "model": "dcs-7280cr3-32p4",
+                        "model_name": "DCS-7280CR3-32P4"
+                    },
+                    "id": "12",
+                    "value": 12,
+                    "name": "12"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "interface",
+                    "interface": {
+                        "id": 671,
+                        "type": "interface",
+                        "name": "ethernet-1/49",
+                        "node_id": 1
+                    },
+                    "id": "1",
+                    "value": 1,
+                    "name": "1"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "interface",
+                    "interface": {
+                        "id": 549,
+                        "type": "interface",
+                        "name": "Ethernet1/1",
+                        "node_id": 13
+                    },
+                    "id": "13",
+                    "value": 13,
+                    "name": "13"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "device",
+                    "device": {
+                        "id": 14,
+                        "type": "device",
+                        "name": "dc1-spine-2",
+                        "node_id": 17,
+                        "platform": "eos",
+                        "platform_name": "Arista EOS",
+                        "vendor": "arista",
+                        "vendor_name": "Arista",
+                        "model": "dcs-7280cr3-32p4",
+                        "model_name": "DCS-7280CR3-32P4"
+                    },
+                    "id": "17",
+                    "value": 17,
+                    "name": "17"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "interface",
+                    "interface": {
+                        "id": 672,
+                        "type": "interface",
+                        "name": "ethernet-1/50",
+                        "node_id": 2
+                    },
+                    "id": "2",
+                    "value": 2,
+                    "name": "2"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "interface",
+                    "interface": {
+                        "id": 586,
+                        "type": "interface",
+                        "name": "Ethernet1/1",
+                        "node_id": 18
+                    },
+                    "id": "18",
+                    "value": 18,
+                    "name": "18"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "device",
+                    "device": {
+                        "id": 16,
+                        "type": "device",
+                        "name": "dc1-leaf-2",
+                        "node_id": 3,
+                        "platform": "sr-linux",
+                        "platform_name": "Nokia SR-Linux",
+                        "vendor": "nokia",
+                        "vendor_name": "Nokia",
+                        "model": "7220-ixr-d2",
+                        "model_name": "7220 IXR-D2"
+                    },
+                    "id": "3",
+                    "value": 3,
+                    "name": "3"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "interface",
+                    "interface": {
+                        "id": 727,
+                        "type": "interface",
+                        "name": "ethernet-1/49",
+                        "node_id": 4
+                    },
+                    "id": "4",
+                    "value": 4,
+                    "name": "4"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "interface",
+                    "interface": {
+                        "id": 550,
+                        "type": "interface",
+                        "name": "Ethernet2/1",
+                        "node_id": 14
+                    },
+                    "id": "14",
+                    "value": 14,
+                    "name": "14"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "interface",
+                    "interface": {
+                        "id": 728,
+                        "type": "interface",
+                        "name": "ethernet-1/50",
+                        "node_id": 5
+                    },
+                    "id": "5",
+                    "value": 5,
+                    "name": "5"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "interface",
+                    "interface": {
+                        "id": 587,
+                        "type": "interface",
+                        "name": "Ethernet2/1",
+                        "node_id": 19
+                    },
+                    "id": "19",
+                    "value": 19,
+                    "name": "19"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "device",
+                    "device": {
+                        "id": 17,
+                        "type": "device",
+                        "name": "dc1-leaf-3",
+                        "node_id": 6,
+                        "platform": "sr-linux",
+                        "platform_name": "Nokia SR-Linux",
+                        "vendor": "nokia",
+                        "vendor_name": "Nokia",
+                        "model": "7220-ixr-d2",
+                        "model_name": "7220 IXR-D2"
+                    },
+                    "id": "6",
+                    "value": 6,
+                    "name": "6"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "interface",
+                    "interface": {
+                        "id": 783,
+                        "type": "interface",
+                        "name": "ethernet-1/49",
+                        "node_id": 7
+                    },
+                    "id": "7",
+                    "value": 7,
+                    "name": "7"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "interface",
+                    "interface": {
+                        "id": 551,
+                        "type": "interface",
+                        "name": "Ethernet3/1",
+                        "node_id": 15
+                    },
+                    "id": "15",
+                    "value": 15,
+                    "name": "15"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "interface",
+                    "interface": {
+                        "id": 784,
+                        "type": "interface",
+                        "name": "ethernet-1/50",
+                        "node_id": 8
+                    },
+                    "id": "8",
+                    "value": 8,
+                    "name": "8"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "interface",
+                    "interface": {
+                        "id": 588,
+                        "type": "interface",
+                        "name": "Ethernet3/1",
+                        "node_id": 20
+                    },
+                    "id": "20",
+                    "value": 20,
+                    "name": "20"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "device",
+                    "device": {
+                        "id": 18,
+                        "type": "device",
+                        "name": "dc1-leaf-4",
+                        "node_id": 9,
+                        "platform": "sr-linux",
+                        "platform_name": "Nokia SR-Linux",
+                        "vendor": "nokia",
+                        "vendor_name": "Nokia",
+                        "model": "7220-ixr-d2",
+                        "model_name": "7220 IXR-D2"
+                    },
+                    "id": "9",
+                    "value": 9,
+                    "name": "9"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "interface",
+                    "interface": {
+                        "id": 839,
+                        "type": "interface",
+                        "name": "ethernet-1/49",
+                        "node_id": 10
+                    },
+                    "id": "10",
+                    "value": 10,
+                    "name": "10"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "interface",
+                    "interface": {
+                        "id": 552,
+                        "type": "interface",
+                        "name": "Ethernet4/1",
+                        "node_id": 16
+                    },
+                    "id": "16",
+                    "value": 16,
+                    "name": "16"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "interface",
+                    "interface": {
+                        "id": 840,
+                        "type": "interface",
+                        "name": "ethernet-1/50",
+                        "node_id": 11
+                    },
+                    "id": "11",
+                    "value": 11,
+                    "name": "11"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "interface",
+                    "interface": {
+                        "id": 589,
+                        "type": "interface",
+                        "name": "Ethernet4/1",
+                        "node_id": 21
+                    },
+                    "id": "21",
+                    "value": 21,
+                    "name": "21"
+                }
+            }
+        ],
+        "edges": [
+            {
+                "data": {
+                    "source": 0,
+                    "target": 1
+                }
+            },
+            {
+                "data": {
+                    "source": 0,
+                    "target": 2
+                }
+            },
+            {
+                "data": {
+                    "source": 12,
+                    "target": 13
+                }
+            },
+            {
+                "data": {
+                    "source": 12,
+                    "target": 14
+                }
+            },
+            {
+                "data": {
+                    "source": 12,
+                    "target": 15
+                }
+            },
+            {
+                "data": {
+                    "source": 12,
+                    "target": 16
+                }
+            },
+            {
+                "data": {
+                    "source": 1,
+                    "target": 13
+                }
+            },
+            {
+                "data": {
+                    "source": 17,
+                    "target": 18
+                }
+            },
+            {
+                "data": {
+                    "source": 17,
+                    "target": 19
+                }
+            },
+            {
+                "data": {
+                    "source": 17,
+                    "target": 20
+                }
+            },
+            {
+                "data": {
+                    "source": 17,
+                    "target": 21
+                }
+            },
+            {
+                "data": {
+                    "source": 2,
+                    "target": 18
+                }
+            },
+            {
+                "data": {
+                    "source": 3,
+                    "target": 4
+                }
+            },
+            {
+                "data": {
+                    "source": 3,
+                    "target": 5
+                }
+            },
+            {
+                "data": {
+                    "source": 4,
+                    "target": 14
+                }
+            },
+            {
+                "data": {
+                    "source": 5,
+                    "target": 19
+                }
+            },
+            {
+                "data": {
+                    "source": 6,
+                    "target": 7
+                }
+            },
+            {
+                "data": {
+                    "source": 6,
+                    "target": 8
+                }
+            },
+            {
+                "data": {
+                    "source": 7,
+                    "target": 15
+                }
+            },
+            {
+                "data": {
+                    "source": 8,
+                    "target": 20
+                }
+            },
+            {
+                "data": {
+                    "source": 9,
+                    "target": 10
+                }
+            },
+            {
+                "data": {
+                    "source": 9,
+                    "target": 11
+                }
+            },
+            {
+                "data": {
+                    "source": 10,
+                    "target": 16
+                }
+            },
+            {
+                "data": {
+                    "source": 11,
+                    "target": 21
+                }
+            }
+        ]
+    }
+}
