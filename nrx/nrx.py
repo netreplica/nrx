@@ -382,41 +382,26 @@ class NetworkTopology:
         for n in self.topology['nodes']:
             if 'platform' in n.keys():
                 p = n['platform']
-                if 'platform_name' in n.keys():
-                    pn = n['platform_name']
-                else:
-                    pn = p
                 int_map = self._render_interface_map(n)
                 if int_map is not None:
                     n['interface_map'] = int_map
 
-                templ = self._get_template('kinds', p, True)
-                if templ is not None:
+                template = self._get_template('kinds', p, True)
+                if template is not None:
                     try:
-                        topo_nodes.append(templ.render(n))
+                        topo_nodes.append(template.render(n))
                     except jinja2.TemplateError as e:
-                        error(f"Rendering {self.templates[type]['_description_']} template '{e}' for platform '{pn}'")
+                        error(f"Rendering {self.templates[type]['_description_']} template '{e}' for platform '{p}'")
 
         return topo_nodes
 
     def _render_emulated_interface_name(self, platform, interface, index):
         # We assume interface with index `0` is reserved for management, and start with `1`
         default_name = f"eth{index+1}"
-        if platform not in self.templates['interface_names']:
+        template = self._get_template('interface_names', platform)
+        if template is not None:
             try:
-                j2file = f"interface_names/{platform}.j2"
-                templ = self.j2env.get_template(j2file)
-                debug(f"Found interface naming template {j2file} for platform {platform}")
-            except (OSError, jinja2.TemplateError) as e:
-                debug(f"Failed to open interface naming J2 template '{e}' with path {self.config['templates_path']}, using default naming")
-                templ = None
-            self.templates['interface_names'][platform] = templ
-        else:
-            templ = self.templates['interface_names'][platform]
-
-        if templ is not None:
-            try:
-                return templ.render({'interface': interface, 'index': index})
+                return template.render({'interface': interface, 'index': index})
             except jinja2.TemplateError as e:
                 error("Rendering interface naming J2 template:", e)
         return default_name
@@ -451,31 +436,22 @@ class NetworkTopology:
             return None
         if 'platform' in node.keys():
             p = node['platform']
-            if 'platform_name' in node.keys():
-                pn = node['platform_name']
-            else:
-                pn = node['platform']
-            debug(f"Creating interface map for {node}")
             # Interface mapping file for cEOS
-            try:
-                interfaces_templ = self.j2env.get_template(f"interface_maps/{p}.j2")
-            except jinja2.TemplateError as e:
-                debug(f"Failed to open interface map J2 template '{e}' with path {self.config['templates_path']}, skipping")
-                return None
-            m = self.device_interfaces_map[node['name']]
-            debug(f"Interface map to render for {d}:", m)
-            try:
-                interface_map = interfaces_templ.render({'map': m})
-            except jinja2.TemplateError as e:
-                error("Rendering interface map J2 template:", e)
-            int_map_file = f"{d}_interface_map.json"
-            try:
-                with open(int_map_file, "w", encoding="utf-8") as f:
-                    f.write(interface_map)
-            except OSError as e:
-                error(f"Can't write into {int_map_file}", e)
-            print(f"Created '{pn}' interface map:\t\t{int_map_file}")
-            return int_map_file
+            template = self._get_template('interface_maps', p)
+            if template is not None:
+                m = self.device_interfaces_map[node['name']]
+                try:
+                    interface_map = template.render({'map': m})
+                except jinja2.TemplateError as e:
+                    error("Rendering interface map J2 template:", e)
+                int_map_file = f"{d}_interface_map.json"
+                try:
+                    with open(int_map_file, "w", encoding="utf-8") as f:
+                        f.write(interface_map)
+                except OSError as e:
+                    error(f"Can't write into {int_map_file}", e)
+                print(f"Created '{p}' interface map:\t\t\t{int_map_file}")
+                return int_map_file
         return None
 
 def arg_input_check(s):
