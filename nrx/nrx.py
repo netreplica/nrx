@@ -235,8 +235,9 @@ class NetworkTopology:
                     line_statement_prefix='#'
                 )
         self.templates = {
-            'interface_names': {},
-            'kinds': {}
+            'interface_names': {'_path_': 'interface_names', '_description_': 'interface name'},
+            'interface_maps':  {'_path_': 'interface_maps',  '_description_': 'interface map'},
+            'kinds':           {'_path_': 'clab/kinds',      '_description_': 'Containerlab kind'}
         }
 
     def build_from_file(self, file):
@@ -354,6 +355,27 @@ class NetworkTopology:
         return [f"[\"{l['a']['node']}:{l['a']['c_interface']}\", \"{l['b']['node']}:{l['b']['c_interface']}\"]"
                 for l in self.topology['links']]
 
+    def _get_template(self, type, platform, is_required = False):
+        template = None
+        if type in self.templates and '_path_' in self.templates[type]:
+            if platform not in self.templates[type]:
+                try:
+                    j2file = f"{self.templates[type]['_path_']}/{platform}.j2"
+                    template = self.j2env.get_template(j2file)
+                    debug(f"Found {self.templates[type]['_description_']} template {j2file} for platform {platform}")
+                except (OSError, jinja2.TemplateError) as e:
+                    m = f"Unable to open {self.templates[type]['_description_']} template '{e}' for platform '{platform}' with path {self.config['templates_path']}"
+                    if is_required:
+                        error(m)
+                    else:
+                        debug(m)
+                self.templates[type][platform] = template
+            else:
+                template = self.templates[type][platform]
+        elif is_required:
+            error(f"No such template type as {type}")
+        return template
+
     def _render_clab_nodes(self):
         # Load Jinja2 template for Containerlab kinds
         topo_nodes = []
@@ -364,27 +386,16 @@ class NetworkTopology:
                     pn = n['platform_name']
                 else:
                     pn = p
-                int_map = self._create_interface_map(n)
+                int_map = self._render_interface_map(n)
                 if int_map is not None:
                     n['interface_map'] = int_map
 
-                if p not in self.templates['kinds']:
-                    try:
-                        j2file = f"clab/kinds/{p}.j2"
-                        templ = self.j2env.get_template(j2file)
-                        debug(f"Found node kind template {j2file} for platform {p}")
-                    except (OSError, jinja2.TemplateError) as e:
-                        error(f"Opening Containerlab J2 template '{e}' for platform '{pn}' with path {self.config['templates_path']}")
-                        templ = None
-                    self.templates['kinds'][p] = templ
-                else:
-                    templ = self.templates['kinds'][p]
-
+                templ = self._get_template('kinds', p, True)
                 if templ is not None:
                     try:
                         topo_nodes.append(templ.render(n))
                     except jinja2.TemplateError as e:
-                        error(f"Rendering Containerlab J2 template '{e}' for platform '{pn}'")
+                        error(f"Rendering {self.templates[type]['_description_']} template '{e}' for platform '{pn}'")
 
         return topo_nodes
 
@@ -411,7 +422,7 @@ class NetworkTopology:
         return default_name
 
     def _render_clab_topology(self):
-        debug("Topology data to render:", json.dumps(self.topology))
+        #debug("Topology data to render:", json.dumps(self.topology))
         # Load Jinja2 template for Containerlab to run the topology through
         try:
             templ = self.j2env.get_template("clab/topology.j2")
@@ -433,7 +444,7 @@ class NetworkTopology:
 
         print(f"Created Containerlab topology:\t\t\t{clab_file}")
 
-    def _create_interface_map(self, node):
+    def _render_interface_map(self, node):
         if 'name' in node and node['name'] in self.device_interfaces_map:
             d = node['name']
         else:
