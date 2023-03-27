@@ -224,7 +224,8 @@ class NetworkTopology:
     def __init__(self, config):
         self.config = config
         self.G = None
-        self.device_interfaces_map = {} # For each device we will store a list of {'nos_inteface_name': 'emulated_interface_name'} tuples here
+        # For each device we will store a list of {'nos_inteface_name': 'emulated_interface_name'} tuples here
+        self.device_interfaces_map = {}
         self.topology = {
             'name': None,
             'links': [],
@@ -316,18 +317,19 @@ class NetworkTopology:
             if 'name' in node.keys():
                 name = node['name']
                 if name in self.device_interfaces_map:
-                    node_interfaces = self.device_interfaces_map[name]
+                    int_map = self.device_interfaces_map[name]
                     # Sort nos interface names in the map
-                    nos_interfaces = list(node_interfaces.keys())
-                    nos_interfaces.sort()
+                    int_list = list(int_map.keys())
+                    int_list.sort()
                     # Add emulated interface name for each nos interface name we got from the imported graph.
-                    sorted_map = {i: f"{self._render_emulated_interface_name(node['platform'], i, nos_interfaces.index(i))}" for i in nos_interfaces}
+                    sorted_map = {i: f"{self._render_emulated_interface_name(node['platform'], i, int_list.index(i))}" for i in int_list}
                     self.device_interfaces_map[name] = sorted_map
                     # Append entries from device_interfaces_map to each device under self.topology['nodes']
                     node['interfaces'] = self.device_interfaces_map[name]
 
     def _build_topology(self):
-        # Parse graph G into lists of: nodes and links. Keep list of interfaces per device in `device_interfaces_map`, and then add them to each device
+        # Parse graph G into lists of: nodes and links.
+        # Keep list of interfaces per device in `device_interfaces_map`, and then add them to each device
         try:
             for n in self.G.nodes:
                 if not self._append_if_node_is_device(n):
@@ -355,25 +357,26 @@ class NetworkTopology:
         return [f"[\"{l['a']['node']}:{l['a']['c_interface']}\", \"{l['b']['node']}:{l['b']['c_interface']}\"]"
                 for l in self.topology['links']]
 
-    def _get_template(self, type, platform, is_required = False):
+    def _get_template(self, ttype, platform, is_required = False):
         template = None
-        if type in self.templates and '_path_' in self.templates[type]:
-            if platform not in self.templates[type]:
+        if ttype in self.templates and '_path_' in self.templates[ttype]:
+            desc = self.templates[ttype]['_description_']
+            if platform not in self.templates[ttype]:
                 try:
-                    j2file = f"{self.templates[type]['_path_']}/{platform}.j2"
+                    j2file = f"{self.templates[ttype]['_path_']}/{platform}.j2"
                     template = self.j2env.get_template(j2file)
-                    debug(f"Found {self.templates[type]['_description_']} template {j2file} for platform {platform}")
+                    debug(f"Found {desc} template {j2file} for platform {platform}")
                 except (OSError, jinja2.TemplateError) as e:
-                    m = f"Unable to open {self.templates[type]['_description_']} template '{e}' for platform '{platform}' with path {self.config['templates_path']}"
+                    m = f"Unable to open {desc} template '{e}' for platform '{platform}' with path {self.config['templates_path']}"
                     if is_required:
                         error(m)
                     else:
                         debug(m)
-                self.templates[type][platform] = template
+                self.templates[ttype][platform] = template
             else:
-                template = self.templates[type][platform]
+                template = self.templates[ttype][platform]
         elif is_required:
-            error(f"No such template type as {type}")
+            error(f"No such template type as {ttype}")
         return template
 
     def _render_clab_nodes(self):
