@@ -12,7 +12,23 @@
 
 It can also read the topology graph previously saved as a CYJS file to convert it into Containerlab format.
 
-## Capabilities
+# Table of contents
+
+* [Capabilities](#capabilities)
+* [Prerequisites](#prerequisites)
+* [How to install](#how-to-install)
+* [How to configure](#how-to-configure)
+   * [Command-line arguments](#command-line-arguments)
+   * [Environmental variables](#environmental-variables)
+   * [Configuration file](#configuration-file)
+* [Templates](#templates)
+   * [Containerlab](#containerlab)
+* [How to use](#how-to-use)
+* [Credits](#credits)
+   * [Original idea and implementation](#original-idea-and-implementation)
+   * [Copyright notice](#copyright-notice)
+
+# Capabilities
 
 **nrx** is in a very early, proof-of-concept phase.
 
@@ -32,7 +48,7 @@ Export capabilities:
 * Creates mapping between real interface names and interface names used by Containerlab
 * Exports the graph into CYJS format that can be later converted into a Containerlab topology, or used by 3rd party software
 
-## Prerequisites
+# Prerequisites
 
 * Python 3.9+
 * PIP
@@ -53,7 +69,7 @@ Export capabilities:
     bash -c "$(curl -sL https://get.containerlab.dev)"
     ```
 
-## How to install
+# How to install
 
 1. Clone this repository and create Python virtual environment
 
@@ -70,7 +86,7 @@ Export capabilities:
     pip3 install -r requirements.txt
     ```
 
-## How to configure
+# How to configure
 
 **nrx** accepts the following configuration options, in the order of precedence:
 
@@ -78,7 +94,7 @@ Export capabilities:
 2. [Environmental variables](#environmental-variables)
 3. [Configuration file](#configuration-file)
 
-### Command-line arguments
+## Command-line arguments
 
 Command-line arguments take the highest priority.
 
@@ -103,7 +119,7 @@ optional arguments:
 
 Note: `NB_API_TOKEN` is not supported as an argument for security reasons.
 
-### Environmental variables
+## Environmental variables
 
 As an alternative to a configuration file, use environmental variables to provide NetBox API connection parameters.
 
@@ -114,13 +130,13 @@ export NB_API_URL           = 'https://demo.netbox.dev'
 export NB_API_TOKEN         = 'replace_with_valid_API_token'
 ```
 
-### Configuration file
+## Configuration file
 
 Use `--config <filename>` argument to specify a configuration file to use. The sample configuration file is provided as [`nrx.conf`](nrx.conf).
 
-## Templates
+# Templates
 
-### Containerlab
+## Containerlab
 
 **nrx** renders all Containerlab artifacts from [Jinja2](https://jinja.palletsprojects.com/en/3.1.x/) templates. Most templates are unique for each node `kind`. Value of `kind` is taken from NetBox `device.platform.slug` field.
 
@@ -133,7 +149,7 @@ This repository includes a set of [netreplica/templates](https://github.com/netr
 
 By default, **nrx** searches for the template files in the current directory. You can provide a list of folders to search for the templates via `TEMPLATES_PATH` parameter in the [configuration file](#configuration-file), or use `--templates` argument.
 
-## How to use
+# How to use
 
 1. Activate venv environment
 
