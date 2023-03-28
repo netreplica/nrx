@@ -130,13 +130,14 @@ Use `--config <filename>` argument to specify a configuration file to use. The s
 
 ### Containerlab
 
-All elements of a Containerlab topology file that **nrx** can produce has to be provided to it as Jinja2 templates:
+**nrx** renders all Containerlab artifacts from Jinja2 templates:
 
 * `clab/topology.j2`: template for the final Containerlab topology file
-* `clab/kinds/<device.platform.slug>.j2`: templates for Clab node entries, separate file for each `device.platform.slug` exported from NetBox
-* `interface_maps/<device.platform.slug>.j2`: templates for mappings between real interface names and interface names used by Containerlab
+* `clab/kinds/<kind>.j2`: templates for individual node entries, for each `kind`. Value of `kind` taken from NetBix `device.platform.slug` field.
+* `interface_names/<device.platform.slug>.j2`: templates for generating emulated interface names used by Containerlab, for each `kind`.
+* `interface_maps/<device.platform.slug>.j2`: templates for mappings between real interface names and emulated interface names used by Containerlab, for each `kind`.
 
-This repository provides a small set of such templates as examples. To customize the way Containerlab topology file should be generated, you would need to change these templates as needed. For example, you might want to change `image` values depending on the `kind`. You can also add new templates, if the platforms you have are not covered by the provided set of templates. In case a template for the needed `kind` already exists, but in NetBox you're using a different `device.platform.slug` value for it, you can either rename the template, or create a symbolic link to it with a new name.
+This repository includes [netreplica/templates](https://github.com/netreplica/templates) as a submodule. See more details about available templates in the [templates/README.md](https://github.com/netreplica/templates).
 
 By default, **nrx** searches for the template files in the current directory. You can provide a list of folders to search for the templates via `TEMPLATES_PATH` parameter in the [configuration file](#configuration-file), or use `--templates` argument.
 
