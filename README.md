@@ -84,27 +84,21 @@ Command-line arguments take the highest priority.
 
 ```
 ./nrx.py --help
-usage: nrx [-h] [-c CONFIG] [-i INPUT] [-o OUTPUT] [-a API] [-s SITE] [-k | --insecure | --no-insecure] [-d | --debug | --no-debug] [-f FILE] [-t TEMPLATES]
+usage: nrx [-h] [-c CONFIG] [-i INPUT] [-o OUTPUT] [-a API] [-s SITE] [-k] [-d] [-f FILE] [-t TEMPLATES]
 
 nrx - network topology exporter by netreplica
 
 optional arguments:
-  -h, --help            show this help message and exit
-  -c CONFIG, --config CONFIG
-                        configuration file
-  -i INPUT, --input INPUT
-                        input source: netbox (default) | cyjs
-  -o OUTPUT, --output OUTPUT
-                        output format: cyjs | gml | clab
-  -a API, --api API     netbox API URL
-  -s SITE, --site SITE  netbox site to export
-  -k, --insecure, --no-insecure
-                        allow insecure server connections when using TLS
-  -d, --debug, --no-debug
-                        enable debug output
-  -f FILE, --file FILE  file with the network graph to import
-  -t TEMPLATES, --templates TEMPLATES
-                        directory with template files, will be prepended to TEMPLATES_PATH list in the configuration file
+  -h, --help                show this help message and exit
+  -c, --config CONFIG       configuration file
+  -i, --input INPUT         input source: netbox (default) | cyjs
+  -o, --output OUTPUT       output format: cyjs | gml | clab
+  -a, --api API             netbox API URL
+  -s, --site SITE           netbox site to export
+  -k, --insecure            allow insecure server connections when using TLS
+  -d, --debug               enable debug output
+  -f, --file FILE           file with the network graph to import
+  -t, --templates TEMPLATES directory with template files, will be prepended to TEMPLATES_PATH list in the configuration file
 ```
 
 Note: `NB_API_TOKEN` is not supported as an argument for security reasons.
@@ -128,12 +122,12 @@ Use `--config <filename>` argument to specify a configuration file to use. The s
 
 ### Containerlab
 
-**nrx** renders all Containerlab artifacts from [Jinja2](https://jinja.palletsprojects.com/en/3.1.x/) templates. Most templates has to be unique for each node `kind`. Value of `kind` taken from NetBix `device.platform.slug` field.
+**nrx** renders all Containerlab artifacts from [Jinja2](https://jinja.palletsprojects.com/en/3.1.x/) templates. Most templates are unique for each node `kind`. Value of `kind` is taken from NetBox `device.platform.slug` field.
 
 * `clab/topology.j2`: template for the final Containerlab topology file.
-* `clab/kinds/<kind>.j2`: templates for individual node entries.
-* `interface_names/<kind>.j2`: templates for generating emulated interface names used by Containerlab.
-* `interface_maps/<kind>.j2`: templates for mappings between real interface names and emulated interface names used by Containerlab.
+* `clab/kinds/<kind>.j2`: templates for individual Containerlab node entries.
+* `interface_names/<kind>.j2`: templates for generating emulated interface names used by this NOS `kind`.
+* `interface_maps/<kind>.j2`: templates for mappings between real interface names and emulated interface names used by this NOS `kind`.
 
 This repository includes a set of [netreplica/templates](https://github.com/netreplica/templates) as a submodule. See more details about available templates in the [templates/README.md](https://github.com/netreplica/templates).
 
