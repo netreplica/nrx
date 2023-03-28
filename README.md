@@ -38,9 +38,7 @@ Export capabilities:
 * PIP
 
     ```Shell
-    cd /tmp
-    wget https://bootstrap.pypa.io/get-pip.py
-    python3.9 get-pip.py
+    curl -sL https://bootstrap.pypa.io/get-pip.py | python3.9 -
     ```
 
 * Virtualenv (recommended)
@@ -60,7 +58,7 @@ Export capabilities:
 1. Clone this repository and create Python virtual environment
 
     ```Shell
-    git clone https://github.com/netreplica/nrx.git
+    git clone https://github.com/netreplica/nrx.git --recursive
     cd nrx
     python3.9 -m venv nrx39
     source nrx39/bin/activate
@@ -130,14 +128,14 @@ Use `--config <filename>` argument to specify a configuration file to use. The s
 
 ### Containerlab
 
-**nrx** renders all Containerlab artifacts from Jinja2 templates:
+**nrx** renders all Containerlab artifacts from [Jinja2](https://jinja.palletsprojects.com/en/3.1.x/) templates. Most templates has to be unique for each node `kind`. Value of `kind` taken from NetBix `device.platform.slug` field.
 
-* `clab/topology.j2`: template for the final Containerlab topology file
-* `clab/kinds/<kind>.j2`: templates for individual node entries, for each `kind`. Value of `kind` taken from NetBix `device.platform.slug` field.
-* `interface_names/<device.platform.slug>.j2`: templates for generating emulated interface names used by Containerlab, for each `kind`.
-* `interface_maps/<device.platform.slug>.j2`: templates for mappings between real interface names and emulated interface names used by Containerlab, for each `kind`.
+* `clab/topology.j2`: template for the final Containerlab topology file.
+* `clab/kinds/<kind>.j2`: templates for individual node entries.
+* `interface_names/<kind>.j2`: templates for generating emulated interface names used by Containerlab.
+* `interface_maps/<kind>.j2`: templates for mappings between real interface names and emulated interface names used by Containerlab.
 
-This repository includes [netreplica/templates](https://github.com/netreplica/templates) as a submodule. See more details about available templates in the [templates/README.md](https://github.com/netreplica/templates).
+This repository includes a set of [netreplica/templates](https://github.com/netreplica/templates) as a submodule. See more details about available templates in the [templates/README.md](https://github.com/netreplica/templates).
 
 By default, **nrx** searches for the template files in the current directory. You can provide a list of folders to search for the templates via `TEMPLATES_PATH` parameter in the [configuration file](#configuration-file), or use `--templates` argument.
 
