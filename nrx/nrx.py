@@ -66,7 +66,6 @@ def error_debug(err, d):
     debug(d)
     error(err)
 
-
 class NBNetwork:
     """Class to hold network topology data exported from NetBox"""
     def __init__(self):
@@ -225,6 +224,7 @@ class NetworkTopology:
     def __init__(self, config):
         self.config = config
         self.G = None
+        # For each device we will store a list of {'nos_inteface_name': 'emulated_interface_name'} tuples here
         self.device_interfaces_map = {}
         self.topology = {
             'name': None,
@@ -235,6 +235,11 @@ class NetworkTopology:
                     loader=jinja2.FileSystemLoader(self.config['templates_path'], followlinks=True),
                     line_statement_prefix='#'
                 )
+        self.templates = {
+            'interface_names': {'_path_': 'interface_names', '_description_': 'interface name'},
+            'interface_maps':  {'_path_': 'interface_maps',  '_description_': 'interface map'},
+            'kinds':           {'_path_': 'clab/kinds',      '_description_': 'Containerlab kind'}
+        }
 
     def build_from_file(self, file):
         self._read_network_graph(file)
@@ -265,6 +270,8 @@ class NetworkTopology:
             dev = self.G.nodes[n]['device']
             self.topology['nodes'].append(dev)
             if dev['name'] not in self.device_interfaces_map:
+                # Initialize an empty map. There is a similar initialization in _append_if_node_is_interface,
+                # but we need one here in case the device has no interfaces
                 self.device_interfaces_map[dev['name']] = {}
             return True
         return False
@@ -278,6 +285,9 @@ class NetworkTopology:
                 if self.G.nodes[a_adj[0]]['type'] == 'device':
                     dev_name = self.G.nodes[a_adj[0]]['device']['name']
                     dev_node_id = self.G.nodes[a_adj[0]]['device']['node_id']
+                    if dev_name not in self.device_interfaces_map:
+                        # Initialize an empty map if we don't have one yet for this device
+                        self.device_interfaces_map[dev_name] = {}
                     self.device_interfaces_map[dev_name][int_name] = ""
                 elif self.G.nodes[a_adj[0]]['type'] == 'interface' and self.G.nodes[n]['side'] == 'a':
                     peer_name = self.G.nodes[a_adj[0]]['interface']['name']
@@ -301,12 +311,30 @@ class NetworkTopology:
             return True
         return False
 
+    def _initialize_emulated_interface_names(self):
+        # Initialize emulated interface names for each NOS interface name
+        for node in self.topology['nodes']:
+            if 'name' in node.keys():
+                name = node['name']
+                if name in self.device_interfaces_map:
+                    int_map = self.device_interfaces_map[name]
+                    # Sort nos interface names in the map
+                    int_list = list(int_map.keys())
+                    int_list.sort()
+                    # Add emulated interface name for each nos interface name we got from the imported graph.
+                    sorted_map = {i: f"{self._render_emulated_interface_name(node['platform'], i, int_list.index(i))}" for i in int_list}
+                    self.device_interfaces_map[name] = sorted_map
+                    # Append entries from device_interfaces_map to each device under self.topology['nodes']
+                    node['interfaces'] = self.device_interfaces_map[name]
+
     def _build_topology(self):
-        # Parse graph G into lists of: nodes and links. Keep a list of interfaces per device in `device_interfaces_map`.
+        # Parse graph G into lists of: nodes and links.
+        # Keep list of interfaces per device in `device_interfaces_map`, and then add them to each device
         try:
             for n in self.G.nodes:
                 if not self._append_if_node_is_device(n):
                     self._append_if_node_is_interface(n)
+            self._initialize_emulated_interface_names()
         except KeyError as e:
             error(f"Incomplete data to build topology, {e} key is missing")
 
@@ -316,21 +344,12 @@ class NetworkTopology:
 
         # Generate topology data structure for clab
         self.topology['name'] = self.G.name
-        self.topology['links'] = self._render_clab_links() # render links first, to complete device_interfaces_map
+        self.topology['links'] = self._render_clab_links()
         self.topology['nodes'] = self._render_clab_nodes()
 
         self._render_clab_topology()
 
     def _render_clab_links(self):
-        # Create container-compatible interface names for each device.
-        # We assume interface with index `0` is reserved for management, and start with `1`
-        for node, int_map in self.device_interfaces_map.items():
-            # sort keys (interface names) in the map
-            map_keys = list(int_map.keys())
-            map_keys.sort()
-            sorted_map = {k: f"eth{map_keys.index(k)+1}" for k in map_keys}
-            self.device_interfaces_map[node] = sorted_map
-
         for l in self.topology['links']:
             l['a']['c_interface'] = self.device_interfaces_map[l['a']['node']][l['a']['interface']]
             l['b']['c_interface'] = self.device_interfaces_map[l['b']['node']][l['b']['interface']]
@@ -338,35 +357,60 @@ class NetworkTopology:
         return [f"[\"{l['a']['node']}:{l['a']['c_interface']}\", \"{l['b']['node']}:{l['b']['c_interface']}\"]"
                 for l in self.topology['links']]
 
+    def _get_template(self, ttype, platform, is_required = False):
+        template = None
+        if ttype in self.templates and '_path_' in self.templates[ttype]:
+            desc = self.templates[ttype]['_description_']
+            if platform not in self.templates[ttype]:
+                try:
+                    j2file = f"{self.templates[ttype]['_path_']}/{platform}.j2"
+                    template = self.j2env.get_template(j2file)
+                    debug(f"Found {desc} template {j2file} for platform {platform}")
+                except (OSError, jinja2.TemplateError) as e:
+                    m = f"Unable to open {desc} template '{e}' for platform '{platform}' with path {self.config['templates_path']}"
+                    if is_required:
+                        error(m)
+                    else:
+                        debug(m)
+                self.templates[ttype][platform] = template
+            else:
+                template = self.templates[ttype][platform]
+        elif is_required:
+            error(f"No such template type as {ttype}")
+        return template
+
     def _render_clab_nodes(self):
         # Load Jinja2 template for Containerlab kinds
         topo_nodes = []
         for n in self.topology['nodes']:
             if 'platform' in n.keys():
                 p = n['platform']
-                if 'platform_name' in n.keys():
-                    pn = n['platform_name']
-                else:
-                    pn = p
-                int_map = self._create_interface_map(n)
+                int_map = self._render_interface_map(n)
                 if int_map is not None:
                     n['interface_map'] = int_map
-                try:
-                    templ = self.j2env.get_template(f"clab/kinds/{p}.j2")
-                except (OSError, jinja2.TemplateError) as e:
-                    error(f"Opening Containerlab J2 template '{e}' for platform '{pn}' with path {self.config['templates_path']}")
-                # Run the topology through jinja2 template to get the final result
-                try:
-                    topo_nodes.append(templ.render(n))
-                except jinja2.TemplateError as e:
-                    error(f"Rendering Containerlab J2 template '{e}' for platform '{pn}'")
 
+                template = self._get_template('kinds', p, True)
+                if template is not None:
+                    try:
+                        topo_nodes.append(template.render(n))
+                    except jinja2.TemplateError as e:
+                        error(f"Rendering {self.templates[type]['_description_']} template '{e}' for platform '{p}'")
 
         return topo_nodes
 
+    def _render_emulated_interface_name(self, platform, interface, index):
+        # We assume interface with index `0` is reserved for management, and start with `1`
+        default_name = f"eth{index+1}"
+        template = self._get_template('interface_names', platform)
+        if template is not None:
+            try:
+                return template.render({'interface': interface, 'index': index})
+            except jinja2.TemplateError as e:
+                error("Rendering interface naming J2 template:", e)
+        return default_name
 
     def _render_clab_topology(self):
-        debug("Topology data to render:", json.dumps(self.topology))
+        #debug("Topology data to render:", json.dumps(self.topology))
         # Load Jinja2 template for Containerlab to run the topology through
         try:
             templ = self.j2env.get_template("clab/topology.j2")
@@ -388,38 +432,29 @@ class NetworkTopology:
 
         print(f"Created Containerlab topology:\t\t\t{clab_file}")
 
-    def _create_interface_map(self, node):
+    def _render_interface_map(self, node):
         if 'name' in node and node['name'] in self.device_interfaces_map:
             d = node['name']
         else:
             return None
         if 'platform' in node.keys():
             p = node['platform']
-            if 'platform_name' in node.keys():
-                pn = node['platform_name']
-            else:
-                pn = node['platform']
-            debug(f"Creating interface map for {node}")
             # Interface mapping file for cEOS
-            try:
-                interfaces_templ = self.j2env.get_template(f"interface_maps/{p}.j2")
-            except jinja2.TemplateError as e:
-                debug(f"Failed to open interface map J2 template '{e}' with path {self.config['templates_path']}, skipping")
-                return None
-            m = self.device_interfaces_map[node['name']]
-            debug(f"Interface map to render for {d}:", m)
-            try:
-                interface_map = interfaces_templ.render({'map': m})
-            except jinja2.TemplateError as e:
-                error("Rendering interface map J2 template:", e)
-            int_map_file = f"{d}_interface_map.json"
-            try:
-                with open(int_map_file, "w", encoding="utf-8") as f:
-                    f.write(interface_map)
-            except OSError as e:
-                error(f"Can't write into {int_map_file}", e)
-            print(f"Created '{pn}' interface map:\t\t{int_map_file}")
-            return int_map_file
+            template = self._get_template('interface_maps', p)
+            if template is not None:
+                m = self.device_interfaces_map[node['name']]
+                try:
+                    interface_map = template.render({'map': m})
+                except jinja2.TemplateError as e:
+                    error("Rendering interface map J2 template:", e)
+                int_map_file = f"{d}_interface_map.json"
+                try:
+                    with open(int_map_file, "w", encoding="utf-8") as f:
+                        f.write(interface_map)
+                except OSError as e:
+                    error(f"Can't write into {int_map_file}", e)
+                print(f"Created '{p}' interface map:\t\t\t{int_map_file}")
+                return int_map_file
         return None
 
 def arg_input_check(s):

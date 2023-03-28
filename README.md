@@ -12,7 +12,23 @@
 
 It can also read the topology graph previously saved as a CYJS file to convert it into Containerlab format.
 
-## Capabilities
+# Table of contents
+
+* [Capabilities](#capabilities)
+* [Prerequisites](#prerequisites)
+* [How to install](#how-to-install)
+* [How to configure](#how-to-configure)
+   * [Command-line arguments](#command-line-arguments)
+   * [Environmental variables](#environmental-variables)
+   * [Configuration file](#configuration-file)
+* [Templates](#templates)
+   * [Containerlab](#containerlab)
+* [How to use](#how-to-use)
+* [Credits](#credits)
+   * [Original idea and implementation](#original-idea-and-implementation)
+   * [Copyright notice](#copyright-notice)
+
+# Capabilities
 
 **nrx** is in a very early, proof-of-concept phase.
 
@@ -32,15 +48,13 @@ Export capabilities:
 * Creates mapping between real interface names and interface names used by Containerlab
 * Exports the graph into CYJS format that can be later converted into a Containerlab topology, or used by 3rd party software
 
-## Prerequisites
+# Prerequisites
 
 * Python 3.9+
 * PIP
 
     ```Shell
-    cd /tmp
-    wget https://bootstrap.pypa.io/get-pip.py
-    python3.9 get-pip.py
+    curl -sL https://bootstrap.pypa.io/get-pip.py | python3.9 -
     ```
 
 * Virtualenv (recommended)
@@ -55,12 +69,12 @@ Export capabilities:
     bash -c "$(curl -sL https://get.containerlab.dev)"
     ```
 
-## How to install
+# How to install
 
 1. Clone this repository and create Python virtual environment
 
     ```Shell
-    git clone https://github.com/netreplica/nrx.git
+    git clone https://github.com/netreplica/nrx.git --recursive
     cd nrx
     python3.9 -m venv nrx39
     source nrx39/bin/activate
@@ -72,7 +86,7 @@ Export capabilities:
     pip3 install -r requirements.txt
     ```
 
-## How to configure
+# How to configure
 
 **nrx** accepts the following configuration options, in the order of precedence:
 
@@ -80,38 +94,32 @@ Export capabilities:
 2. [Environmental variables](#environmental-variables)
 3. [Configuration file](#configuration-file)
 
-### Command-line arguments
+## Command-line arguments
 
 Command-line arguments take the highest priority.
 
 ```
 ./nrx.py --help
-usage: nrx [-h] [-c CONFIG] [-i INPUT] [-o OUTPUT] [-a API] [-s SITE] [-k | --insecure | --no-insecure] [-d | --debug | --no-debug] [-f FILE] [-t TEMPLATES]
+usage: nrx [-h] [-c CONFIG] [-i INPUT] [-o OUTPUT] [-a API] [-s SITE] [-k] [-d] [-f FILE] [-t TEMPLATES]
 
 nrx - network topology exporter by netreplica
 
 optional arguments:
-  -h, --help            show this help message and exit
-  -c CONFIG, --config CONFIG
-                        configuration file
-  -i INPUT, --input INPUT
-                        input source: netbox (default) | cyjs
-  -o OUTPUT, --output OUTPUT
-                        output format: cyjs | gml | clab
-  -a API, --api API     netbox API URL
-  -s SITE, --site SITE  netbox site to export
-  -k, --insecure, --no-insecure
-                        allow insecure server connections when using TLS
-  -d, --debug, --no-debug
-                        enable debug output
-  -f FILE, --file FILE  file with the network graph to import
-  -t TEMPLATES, --templates TEMPLATES
-                        directory with template files, will be prepended to TEMPLATES_PATH list in the configuration file
+  -h, --help                show this help message and exit
+  -c, --config CONFIG       configuration file
+  -i, --input INPUT         input source: netbox (default) | cyjs
+  -o, --output OUTPUT       output format: cyjs | gml | clab
+  -a, --api API             netbox API URL
+  -s, --site SITE           netbox site to export
+  -k, --insecure            allow insecure server connections when using TLS
+  -d, --debug               enable debug output
+  -f, --file FILE           file with the network graph to import
+  -t, --templates TEMPLATES directory with template files, will be prepended to TEMPLATES_PATH list in the configuration file
 ```
 
 Note: `NB_API_TOKEN` is not supported as an argument for security reasons.
 
-### Environmental variables
+## Environmental variables
 
 As an alternative to a configuration file, use environmental variables to provide NetBox API connection parameters.
 
@@ -122,25 +130,26 @@ export NB_API_URL           = 'https://demo.netbox.dev'
 export NB_API_TOKEN         = 'replace_with_valid_API_token'
 ```
 
-### Configuration file
+## Configuration file
 
 Use `--config <filename>` argument to specify a configuration file to use. The sample configuration file is provided as [`nrx.conf`](nrx.conf).
 
-## Templates
+# Templates
 
-### Containerlab
+## Containerlab
 
-All elements of a Containerlab topology file that **nrx** can produce has to be provided to it as Jinja2 templates:
+**nrx** renders all Containerlab artifacts from [Jinja2](https://jinja.palletsprojects.com/en/3.1.x/) templates. Most templates are unique for each node `kind`. Value of `kind` is taken from NetBox `device.platform.slug` field.
 
-* `clab/topology.j2`: template for the final Containerlab topology file
-* `clab/kinds/<device.platform.slug>.j2`: templates for Clab node entries, separate file for each `device.platform.slug` exported from NetBox
-* `interface_maps/<device.platform.slug>.j2`: templates for mappings between real interface names and interface names used by Containerlab
+* `clab/topology.j2`: template for the final Containerlab topology file.
+* `clab/kinds/<kind>.j2`: templates for individual Containerlab node entries.
+* `interface_names/<kind>.j2`: templates for generating emulated interface names used by this NOS `kind`.
+* `interface_maps/<kind>.j2`: templates for mappings between real interface names and emulated interface names used by this NOS `kind`.
 
-This repository provides a small set of such templates as examples. To customize the way Containerlab topology file should be generated, you would need to change these templates as needed. For example, you might want to change `image` values depending on the `kind`. You can also add new templates, if the platforms you have are not covered by the provided set of templates. In case a template for the needed `kind` already exists, but in NetBox you're using a different `device.platform.slug` value for it, you can either rename the template, or create a symbolic link to it with a new name.
+This repository includes a set of [netreplica/templates](https://github.com/netreplica/templates) as a submodule. See more details about available templates in the [templates/README.md](https://github.com/netreplica/templates).
 
 By default, **nrx** searches for the template files in the current directory. You can provide a list of folders to search for the templates via `TEMPLATES_PATH` parameter in the [configuration file](#configuration-file), or use `--templates` argument.
 
-## How to use
+# How to use
 
 1. Activate venv environment
 
