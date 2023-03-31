@@ -571,9 +571,7 @@ def main():
     nb_network = None
     topo = NetworkTopology(config)
 
-    if config['input_source'] == 'cyjs':
-        topo.build_from_file(args.file)
-    elif config['input_source'] == 'netbox':
+    if config['input_source'] == 'netbox':
         try:
             nb_network = NBFactory(config)
         except (requests.exceptions.SSLError, requests.exceptions.ConnectionError) as e:
@@ -587,6 +585,16 @@ def main():
                 error_debug(f"Can't connect to {config['nb_api_url']}.", e)
         except Exception as e:
             error("Exporting from NetBox:", e)
+        if config['output_format'] == 'gml':
+            nb_network.export_graph_gml()
+            return 0
+        if config['output_format'] == 'cyjs':
+            nb_network.export_graph_json()
+            return 0
+
+    if config['input_source'] == 'cyjs':
+        topo.build_from_file(args.file)
+    else:
         topo.build_from_graph(nb_network.graph())
 
     if config['output_format'] == 'clab':
@@ -594,10 +602,6 @@ def main():
     else:
         if nb_network is None:
             error(f"Only --input netbox is supported for this type of export format: {config['output_format']}")
-        if config['output_format'] == 'gml':
-            nb_network.export_graph_gml()
-        else:
-            nb_network.export_graph_json()
 
     return 0
 
