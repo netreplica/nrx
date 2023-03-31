@@ -1,3 +1,6 @@
+lint:
+	pylint nrx/*.py
+
 test: test-dc1
 
 test-dc1: test-dc1-cyjs-2-clab
