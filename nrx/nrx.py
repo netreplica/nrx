@@ -21,10 +21,10 @@ netreplica exporter
 
 nrx reads a network topology graph from NetBox DCIM system and exports it in one of the following formats:
 
-* Topology file for Containerlab network emulation tool
+* Topology file for one of the supported network emulation tools
 * Graph data as a JSON file in Cytoscape format CYJS
 
-It can also read the topology graph previously saved as a CYJS file to convert it into Containerlab format.
+It can also read the topology graph previously saved as a CYJS file to convert it into the one of supported network emulation formats.
 """
 
 import os
@@ -240,7 +240,7 @@ class NetworkTopology:
         self.templates = {
             'interface_names': {'_path_': 'interface_names', '_description_': 'interface name'},
             'interface_maps':  {'_path_': 'interface_maps',  '_description_': 'interface map'},
-            'kinds':           {'_path_': f"{self.config['output_format']}/kinds", '_description_': 'Containerlab kind'}
+            'kinds':           {'_path_': f"{self.config['output_format']}/kinds", '_description_': 'node kind'}
         }
 
     def build_from_file(self, file):
@@ -341,24 +341,20 @@ class NetworkTopology:
         except KeyError as e:
             error(f"Incomplete data to build topology, {e} key is missing")
 
-    def export_clab(self):
+    def export_topology(self):
         if self.topology['name'] is None or len(self.topology['name']) == 0:
             error("Cannot export a topology: missing a name")
 
-        # Generate topology data structure for clab
+        # Generate topology data structure
         self.topology['name'] = self.G.name
-        self.topology['links'] = self._render_clab_links()
-        self.topology['nodes'] = self._render_clab_nodes()
+        self.topology['nodes'] = self._render_emulated_nodes()
+        self._initialize_emulated_links()
+        self._render_topology()
 
-        self._render_clab_topology()
-
-    def _render_clab_links(self):
+    def _initialize_emulated_links(self):
         for l in self.topology['links']:
-            l['a']['c_interface'] = self.device_interfaces_map[l['a']['node']][l['a']['interface']]['name']
-            l['b']['c_interface'] = self.device_interfaces_map[l['b']['node']][l['b']['interface']]['name']
-
-        return [f"[\"{l['a']['node']}:{l['a']['c_interface']}\", \"{l['b']['node']}:{l['b']['c_interface']}\"]"
-                for l in self.topology['links']]
+            l['a']['e_interface'] = self.device_interfaces_map[l['a']['node']][l['a']['interface']]['name']
+            l['b']['e_interface'] = self.device_interfaces_map[l['b']['node']][l['b']['interface']]['name']
 
     def _get_template(self, ttype, platform, is_required = False):
         template = None
@@ -370,7 +366,8 @@ class NetworkTopology:
                     template = self.j2env.get_template(j2file)
                     debug(f"Found {desc} template {j2file} for platform {platform}")
                 except (OSError, jinja2.TemplateError) as e:
-                    m = f"Unable to open {desc} template '{j2file}' for platform '{platform}' with path {self.config['templates_path']}. Reason: {e}"
+                    m = f"Unable to open {desc} template '{j2file}' for platform '{platform}' with path {self.config['templates_path']}."
+                    m += f" Reason: {e}"
                     if is_required:
                         error(m)
                     else:
@@ -382,11 +379,9 @@ class NetworkTopology:
             error(f"No such template type as {ttype}")
         return template
 
-    def _render_clab_nodes(self):
-        # Load Jinja2 template for Containerlab kinds
+    def _render_emulated_nodes(self):
         topo_nodes = []
         for n in self.topology['nodes']:
-            #inspect(n['interfaces'])
             if 'platform' in n.keys():
                 p = n['platform']
                 int_map = self._render_interface_map(n)
@@ -413,29 +408,29 @@ class NetworkTopology:
                 error("Rendering interface naming J2 template:", e)
         return default_name
 
-    def _render_clab_topology(self):
+    def _render_topology(self):
         #debug("Topology data to render:", json.dumps(self.topology))
-        # Load Jinja2 template for Containerlab to run the topology through
+        # Load Jinja2 template to run the topology through
         try:
             j2file = f"{self.config['output_format']}/topology.j2"
-            templ = self.j2env.get_template(j2file)
+            template = self.j2env.get_template(j2file)
         except (OSError, jinja2.TemplateError) as e:
-            error(f"Opening Containerlab J2 template '{j2file}' with path {self.config['templates_path']}. Reason: {e}")
+            error(f"Opening topology template '{j2file}' with path {self.config['templates_path']}. Reason: {e}")
 
         # Run the topology through jinja2 template to get the final result
         try:
-            topo = templ.render(self.topology)
+            topo = template.render(self.topology)
         except jinja2.TemplateError as e:
-            error("Rendering Containerlab J2 template:", e)
+            error("Rendering topology J2 template:", e)
 
-        clab_file = f"{self.topology['name']}.clab.yml"
+        topo_file = f"{self.topology['name']}.{self.config['output_format']}.yml"
         try:
-            with open(clab_file, "w", encoding="utf-8") as f:
+            with open(topo_file, "w", encoding="utf-8") as f:
                 f.write(topo)
         except OSError as e:
-            error(f"Can't write into {clab_file}", e)
+            error(f"Can't write into {topo_file}", e)
 
-        print(f"Created Containerlab topology:\t\t\t{clab_file}")
+        print(f"Created {self.config['output_format']} topology:\t\t\t{topo_file}")
 
     def _render_interface_map(self, node):
         if 'name' in node and node['name'] in self.device_interfaces_map:
@@ -603,7 +598,7 @@ def main():
         topo.build_from_graph(nb_network.graph())
 
     if config['output_format'] in ['clab', 'cml']:
-        topo.export_clab()
+        topo.export_topology()
     else:
         if nb_network is None:
             error(f"Only --input netbox is supported for this type of export format: {config['output_format']}")
