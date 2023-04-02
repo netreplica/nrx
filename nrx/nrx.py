@@ -352,9 +352,16 @@ class NetworkTopology:
         self._render_topology()
 
     def _initialize_emulated_links(self):
+        id = 0
         for l in self.topology['links']:
+            l['id'] = id
             l['a']['e_interface'] = self.device_interfaces_map[l['a']['node']][l['a']['interface']]['name']
             l['b']['e_interface'] = self.device_interfaces_map[l['b']['node']][l['b']['interface']]['name']
+            l['a']['index'] = self.device_interfaces_map[l['a']['node']][l['a']['interface']]['index']
+            l['b']['index'] = self.device_interfaces_map[l['b']['node']][l['b']['interface']]['index']
+            l['a']['kind'] = self.G.nodes[l['a']['node_id']]['device']['platform']
+            l['b']['kind'] = self.G.nodes[l['b']['node_id']]['device']['platform']
+            id += 1
 
     def _get_template(self, ttype, platform, is_required = False):
         template = None
@@ -423,7 +430,7 @@ class NetworkTopology:
         except jinja2.TemplateError as e:
             error("Rendering topology J2 template:", e)
 
-        topo_file = f"{self.topology['name']}.{self.config['output_format']}.yml"
+        topo_file = f"{self.topology['name']}.{self.config['output_format']}.yaml"
         try:
             with open(topo_file, "w", encoding="utf-8") as f:
                 f.write(topo)
