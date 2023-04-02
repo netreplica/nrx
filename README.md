@@ -108,7 +108,7 @@ optional arguments:
   -h, --help                show this help message and exit
   -c, --config CONFIG       configuration file
   -i, --input INPUT         input source: netbox (default) | cyjs
-  -o, --output OUTPUT       output format: cyjs | gml | clab
+  -o, --output OUTPUT       output format: cyjs | gml | clab | cml
   -a, --api API             netbox API URL
   -s, --site SITE           netbox site to export
   -k, --insecure            allow insecure server connections when using TLS
@@ -140,8 +140,8 @@ Use `--config <filename>` argument to specify a configuration file to use. The s
 
 **nrx** renders all Containerlab artifacts from [Jinja2](https://jinja.palletsprojects.com/en/3.1.x/) templates. Most templates are unique for each node `kind`. Value of `kind` is taken from NetBox `device.platform.slug` field.
 
-* `clab/topology.j2`: template for the final Containerlab topology file.
-* `clab/kinds/<kind>.j2`: templates for individual Containerlab node entries.
+* `<format>/topology.j2`: template for the final Containerlab topology file.
+* `<format>/kinds/<kind>.j2`: templates for individual Containerlab node entries.
 * `interface_names/<kind>.j2`: templates for generating emulated interface names used by this NOS `kind`.
 * `interface_maps/<kind>.j2`: templates for mappings between real interface names and emulated interface names used by this NOS `kind`.
 

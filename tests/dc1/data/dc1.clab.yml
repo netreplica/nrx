@@ -11,13 +11,13 @@ topology:
             image: ceos:latest
             binds:
                 - dc1-spine-1_interface_map.json:/mnt/flash/EosIntfMapping.json:ro
-
+            
         dc1-spine-2:
             kind: ceos
             image: ceos:latest
             binds:
                 - dc1-spine-2_interface_map.json:/mnt/flash/EosIntfMapping.json:ro
-
+            
         dc1-leaf-2:
             kind: nokia_srlinux
             type: ixrd2

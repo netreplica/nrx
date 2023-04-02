@@ -38,6 +38,8 @@ import urllib3
 import networkx as nx
 import jinja2
 
+#from rich import inspect
+
 # DEFINE GLOBAL VARs HERE
 
 DEBUG_ON = False
@@ -224,7 +226,7 @@ class NetworkTopology:
     def __init__(self, config):
         self.config = config
         self.G = None
-        # For each device we will store a list of {'nos_inteface_name': 'emulated_interface_name'} tuples here
+        # For each device we will store a list of {'nos_interface_name': 'emulated_interface_name'} tuples here
         self.device_interfaces_map = {}
         self.topology = {
             'name': None,
@@ -233,12 +235,12 @@ class NetworkTopology:
         }
         self.j2env = jinja2.Environment(
                     loader=jinja2.FileSystemLoader(self.config['templates_path'], followlinks=True),
-                    line_statement_prefix='#'
+                    #line_statement_prefix='#'
                 )
         self.templates = {
             'interface_names': {'_path_': 'interface_names', '_description_': 'interface name'},
             'interface_maps':  {'_path_': 'interface_maps',  '_description_': 'interface map'},
-            'kinds':           {'_path_': 'clab/kinds',      '_description_': 'Containerlab kind'}
+            'kinds':           {'_path_': f"{self.config['output_format']}/kinds", '_description_': 'Containerlab kind'}
         }
 
     def build_from_file(self, file):
@@ -288,7 +290,7 @@ class NetworkTopology:
                     if dev_name not in self.device_interfaces_map:
                         # Initialize an empty map if we don't have one yet for this device
                         self.device_interfaces_map[dev_name] = {}
-                    self.device_interfaces_map[dev_name][int_name] = ""
+                    self.device_interfaces_map[dev_name][int_name] = {}
                 elif self.G.nodes[a_adj[0]]['type'] == 'interface' and self.G.nodes[n]['side'] == 'a':
                     peer_name = self.G.nodes[a_adj[0]]['interface']['name']
                     for b_adj in self.G.adj[a_adj[0]].items():
@@ -322,7 +324,8 @@ class NetworkTopology:
                     int_list = list(int_map.keys())
                     int_list.sort()
                     # Add emulated interface name for each nos interface name we got from the imported graph.
-                    sorted_map = {i: f"{self._render_emulated_interface_name(node['platform'], i, int_list.index(i))}" for i in int_list}
+                    sorted_map = {i: {'name': f"{self._render_emulated_interface_name(node['platform'], i, int_list.index(i))}",
+                                      'index': int_list.index(i)} for i in int_list}
                     self.device_interfaces_map[name] = sorted_map
                     # Append entries from device_interfaces_map to each device under self.topology['nodes']
                     node['interfaces'] = self.device_interfaces_map[name]
@@ -351,8 +354,8 @@ class NetworkTopology:
 
     def _render_clab_links(self):
         for l in self.topology['links']:
-            l['a']['c_interface'] = self.device_interfaces_map[l['a']['node']][l['a']['interface']]
-            l['b']['c_interface'] = self.device_interfaces_map[l['b']['node']][l['b']['interface']]
+            l['a']['c_interface'] = self.device_interfaces_map[l['a']['node']][l['a']['interface']]['name']
+            l['b']['c_interface'] = self.device_interfaces_map[l['b']['node']][l['b']['interface']]['name']
 
         return [f"[\"{l['a']['node']}:{l['a']['c_interface']}\", \"{l['b']['node']}:{l['b']['c_interface']}\"]"
                 for l in self.topology['links']]
@@ -367,7 +370,7 @@ class NetworkTopology:
                     template = self.j2env.get_template(j2file)
                     debug(f"Found {desc} template {j2file} for platform {platform}")
                 except (OSError, jinja2.TemplateError) as e:
-                    m = f"Unable to open {desc} template '{e}' for platform '{platform}' with path {self.config['templates_path']}"
+                    m = f"Unable to open {desc} template '{j2file}' for platform '{platform}' with path {self.config['templates_path']}. Reason: {e}"
                     if is_required:
                         error(m)
                     else:
@@ -383,6 +386,7 @@ class NetworkTopology:
         # Load Jinja2 template for Containerlab kinds
         topo_nodes = []
         for n in self.topology['nodes']:
+            #inspect(n['interfaces'])
             if 'platform' in n.keys():
                 p = n['platform']
                 int_map = self._render_interface_map(n)
@@ -413,9 +417,10 @@ class NetworkTopology:
         #debug("Topology data to render:", json.dumps(self.topology))
         # Load Jinja2 template for Containerlab to run the topology through
         try:
-            templ = self.j2env.get_template("clab/topology.j2")
+            j2file = f"{self.config['output_format']}/topology.j2"
+            templ = self.j2env.get_template(j2file)
         except (OSError, jinja2.TemplateError) as e:
-            error(f"Opening Containerlab J2 template '{e}' with path {self.config['templates_path']}")
+            error(f"Opening Containerlab J2 template '{j2file}' with path {self.config['templates_path']}. Reason: {e}")
 
         # Run the topology through jinja2 template to get the final result
         try:
@@ -464,7 +469,7 @@ def arg_input_check(s):
     raise argparse.ArgumentTypeError(f"input source has to be one of {allowed_values}")
 
 def arg_output_check(s):
-    allowed_values = ['gml', 'cyjs', 'clab']
+    allowed_values = ['gml', 'cyjs', 'clab', 'cml']
     if s in allowed_values:
         return s
     raise argparse.ArgumentTypeError(f"output format has to be one of {allowed_values}")
@@ -475,7 +480,7 @@ def parse_args():
     parser.add_argument('-c', '--config',    required=False, help='configuration file')
     parser.add_argument('-i', '--input',     required=False, help='input source: netbox (default) | cyjs',
                                              default='netbox', type=arg_input_check,)
-    parser.add_argument('-o', '--output',    required=False, help='output format: cyjs | gml | clab',
+    parser.add_argument('-o', '--output',    required=False, help='output format: cyjs | gml | clab | cml',
                                              type=arg_output_check, )
     parser.add_argument('-a', '--api',       required=False, help='netbox API URL')
     parser.add_argument('-s', '--site',      required=False, help='netbox site to export')
@@ -597,7 +602,7 @@ def main():
     else:
         topo.build_from_graph(nb_network.graph())
 
-    if config['output_format'] == 'clab':
+    if config['output_format'] in ['clab', 'cml']:
         topo.export_clab()
     else:
         if nb_network is None:
