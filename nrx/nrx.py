@@ -37,6 +37,7 @@ import requests
 import urllib3
 import networkx as nx
 import jinja2
+import math
 
 #from rich import inspect
 
@@ -235,8 +236,10 @@ class NetworkTopology:
         }
         self.j2env = jinja2.Environment(
                     loader=jinja2.FileSystemLoader(self.config['templates_path'], followlinks=True),
-                    #line_statement_prefix='#'
+                    extensions=['jinja2.ext.do'],
+                    trim_blocks=True, lstrip_blocks=True
                 )
+        self.j2env.filters['ceil'] = math.ceil
         self.templates = {
             'interface_names': {'_path_': 'interface_names', '_description_': 'interface name'},
             'interface_maps':  {'_path_': 'interface_maps',  '_description_': 'interface map'},
@@ -396,6 +399,7 @@ class NetworkTopology:
                 template = self._get_template('kinds', p, True)
                 if template is not None:
                     try:
+                        #inspect(n['interfaces'])
                         topo_nodes.append(template.render(n))
                     except jinja2.TemplateError as e:
                         error(f"Rendering {self.templates[type]['_description_']} template '{e}' for platform '{p}'")
