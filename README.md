@@ -11,7 +11,7 @@
 * Topology file for [Cisco Modeling Labs](https://developer.cisco.com/modeling-labs/) platform for network simulation
 * Graph data as a JSON file in [Cytoscape](https://cytoscape.org/) format [CYJS](http://manual.cytoscape.org/en/stable/Supported_Network_File_Formats.html#cytoscape-js-json)
 
-It can also read the topology graph previously saved as a CYJS file to convert it into Containerlab format.
+It can also read the topology graph previously saved as a CYJS file to convert it into other formats.
 
 # Table of contents
 
@@ -138,7 +138,7 @@ Use `--config <filename>` argument to specify a configuration file to use. The s
 
 # Templates
 
-**nrx** renders all topology artifacts from [Jinja2](https://jinja.palletsprojects.com/en/3.1.x/) templates. Depending on the desired output format, the required templates are taken from a matching subfolder. For example, if output format is `clab` then templates are searched in under `clab` subfolder. For `cml` the subfolder would be `cml`.
+**nrx** renders all topology artifacts from [Jinja2](https://jinja.palletsprojects.com/en/3.1.x/) templates. Depending on the desired output format, the required templates are taken from a matching subfolder. For example, if output format is `clab` then templates are searched under `clab` subfolder. For `cml` the subfolder would be `cml`.
 
 Most templates are unique for each node `kind`. Value of `kind` is taken from NetBox `device.platform.slug` field. Interface mapping templates do not depend on the output format, since they are determined by the NOS images used by each `kind`. Therefore, they is a single dedicated folder for them. The full list of template search rules:
 
