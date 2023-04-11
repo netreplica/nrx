@@ -161,7 +161,7 @@ source nrx39/bin/activate
 
 ## Containerlab example
 
-1. Run `./nrx.py --output clab` to export a topology graph from NetBox in a Containerlab format. See [How to configure](#how-to-configure) for details. Here is an example of running `nrx.py` to export a graph for NetBox Site "DM-Albany" from [NetBox Demo](https://demo.netbox.dev) instance:
+1. Run `./nrx.py --output clab` to export a topology graph from NetBox in Containerlab format. See [How to configure](#how-to-configure) for details. Here is an example of running `nrx.py` to export a graph for NetBox Site "DM-Albany" from [NetBox Demo](https://demo.netbox.dev) instance:
 
     ```Shell
     export NB_API_TOKEN='replace_with_valid_API_token'
@@ -171,7 +171,7 @@ source nrx39/bin/activate
 2. Now you're ready to start the Containerlab topology. Here is the example for "DM-Albany" site
 
     ```Shell
-    sudo -E containerlab deploy -t DM-Albany.clab.yml --reconfigure
+    sudo -E containerlab deploy -t DM-Albany.clab.yaml --reconfigure
     ```
 
 3. Without `--output clab` argument, `nrx.py` will save data from NetBox as a CYJS file `<site_name>.cyjs`
@@ -185,6 +185,36 @@ source nrx39/bin/activate
 
     ```Shell
     ./nrx.py --input cyjs --file DM-Albany.cyjs --templates templates --output clab
+    ```
+
+## Cisco Modeling Labs example
+
+1. Run `./nrx.py --output cml` to export a topology graph from NetBox in CML format. See [How to configure](#how-to-configure) for details. Here is an example of running `nrx.py` to export a graph for NetBox Site "DM-Akron" from [NetBox Demo](https://demo.netbox.dev) instance:
+
+    ```Shell
+    export NB_API_TOKEN='replace_with_valid_API_token'
+    ./nrx.py --api https://demo.netbox.dev --site DM-Akron --templates templates --output cml
+    ```
+
+2. Now you're ready to start the "DM-Akron" topology in CML.
+
+    * Open your CML Dashboard in browser
+    * Choose "IMPORT"
+    * Use `DM-Akron.cml.yaml` as a file to import. The import status should be Imported.
+    * Choose "GO TO LAB". In SIMULATE menu, choose START LAB
+    * Use NODES menu to monitor the status of each node
+
+3. Without `--output cml` argument, `nrx.py` will save data from NetBox as a CYJS file `<site_name>.cyjs`
+
+    ```Shell
+    export NB_API_TOKEN='replace_with_valid_API_token'
+    ./nrx.py --api https://demo.netbox.dev --site DM-Akron
+    ```
+
+4. If you have a CYJS file, run `./nrx.py --input cyjs --file <site>.cyjs --output cml` to create a topology file from the CYJS graph you exported in the previous step. For example, run:
+
+    ```Shell
+    ./nrx.py --input cyjs --file DM-Akron.cyjs --templates templates --output cml
     ```
 
 # Credits
