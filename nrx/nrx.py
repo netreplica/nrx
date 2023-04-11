@@ -146,6 +146,7 @@ class NBFactory:
             self.nb_net.nodes.append(d)
             d["node_id"] = len(self.nb_net.nodes) - 1
             self.nb_net.devices.append(d)
+            d["device_index"] = len(self.nb_net.devices) - 1 # do not use insert with self.nb_net.devices!
             self.nb_net.device_ids.append(
                 device.id)  # index of the device in the devices list will match its ID index in device_ids list
             debug("Added device:", d)
@@ -163,6 +164,7 @@ class NBFactory:
                     self.nb_net.nodes.append(i)
                     i["node_id"] = len(self.nb_net.nodes) - 1
                     self.nb_net.interfaces.append(i)
+                    i["interface_index"] = len(self.nb_net.interfaces) - 1 # do not use insert with self.nb_net.interfaces!
                     # index of the interface in the interfaces list will match its ID index in interface_ids list
                     self.nb_net.interface_ids.append(interface.id)
                     self.nb_net.cable_ids.append(interface.cable.id)
@@ -290,6 +292,7 @@ class NetworkTopology:
                 if self.G.nodes[a_adj[0]]['type'] == 'device':
                     dev_name = self.G.nodes[a_adj[0]]['device']['name']
                     dev_node_id = self.G.nodes[a_adj[0]]['device']['node_id']
+                    dev_index = self.G.nodes[a_adj[0]]['device']['device_index']
                     if dev_name not in self.device_interfaces_map:
                         # Initialize an empty map if we don't have one yet for this device
                         self.device_interfaces_map[dev_name] = {}
@@ -300,16 +303,19 @@ class NetworkTopology:
                         if self.G.nodes[b_adj[0]]['type'] == 'device':
                             peer_dev_name = self.G.nodes[b_adj[0]]['device']['name']
                             peer_dev_node_id = self.G.nodes[b_adj[0]]['device']['node_id']
+                            peer_dev_index = self.G.nodes[b_adj[0]]['device']['device_index']
             if self.G.nodes[n]['side'] == 'a':
                 self.topology['links'].append({
                     'a': {
                         'node': dev_name,
                         'node_id': dev_node_id,
+                        'device_index': dev_index,
                         'interface': int_name,
                     },
                     'b': {
                         'node': peer_dev_name,
                         'node_id': peer_dev_node_id,
+                        'device_index': peer_dev_index,
                         'interface': peer_name,
                     },
                 })
