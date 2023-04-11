@@ -31,13 +31,13 @@ import os
 import sys
 import argparse
 import json
+import math
 import toml
 import pynetbox
 import requests
 import urllib3
 import networkx as nx
 import jinja2
-import math
 
 #from rich import inspect
 
