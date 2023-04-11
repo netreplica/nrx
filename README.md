@@ -66,11 +66,13 @@ Export capabilities:
     pip install virtualenv
     ```
 
-* Containerlab – not required for **nrx**, but needed to deploy the topology created
+* Containerlab – not required for **nrx**, but is needed to deploy Containerlab topologies
 
     ```Shell
     bash -c "$(curl -sL https://get.containerlab.dev)"
     ```
+
+* [Cisco Modeling Labs](https://developer.cisco.com/modeling-labs/) – not required for **nrx**, but is needed to deploy CML topologies
 
 # How to install
 
