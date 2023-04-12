@@ -1,0 +1,13 @@
+side_a_device,side_a_type,side_a_name,side_b_device,side_b_type,side_b_name
+dc2-tor-1,dcim.interface,Ethernet1/49,dc2-spine-1,dcim.interface,Ethernet1/1
+dc2-tor-1,dcim.interface,Ethernet1/50,dc2-spine-2,dcim.interface,Ethernet1/1
+dc2-tor-2,dcim.interface,Ethernet1/49,dc2-spine-1,dcim.interface,Ethernet1/2
+dc2-tor-2,dcim.interface,Ethernet1/50,dc2-spine-2,dcim.interface,Ethernet1/2
+dc2-tor-3,dcim.interface,Ethernet1/49,dc2-spine-1,dcim.interface,Ethernet1/3
+dc2-tor-3,dcim.interface,Ethernet1/50,dc2-spine-2,dcim.interface,Ethernet1/3
+dc2-tor-4,dcim.interface,Ethernet1/49,dc2-spine-1,dcim.interface,Ethernet1/4
+dc2-tor-4,dcim.interface,Ethernet1/50,dc2-spine-2,dcim.interface,Ethernet1/4
+dc2-tor-1,dcim.interface,Ethernet1/1,dc2-srv-1,dcim.interface,Gig-E 1
+dc2-tor-2,dcim.interface,Ethernet1/1,dc2-srv-2,dcim.interface,Gig-E 1
+dc2-tor-3,dcim.interface,Ethernet1/1,dc2-srv-3,dcim.interface,Gig-E 1
+dc2-tor-4,dcim.interface,Ethernet1/1,dc2-srv-4,dcim.interface,Gig-E 1

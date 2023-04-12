@@ -1,0 +1,5 @@
+name,slug,manufacturer
+Cisco IOS,cisco-ios,Cisco
+Cisco Catalyst,cisco-catalyst-ios,Cisco
+Cisco NX-OS,cisco-nxos,Cisco
+Cisco NX-OS 9000,cisco-nxos-9000,Cisco

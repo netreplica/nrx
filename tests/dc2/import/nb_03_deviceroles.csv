@@ -1,0 +1,4 @@
+name,slug,color,vm_role
+Core Switch,core-switch,000044,false
+Distribution Switch,spine-switch,000088,false
+TOR Switch,tor-switch,0000aa,false

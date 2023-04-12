@@ -1,0 +1,11 @@
+name,device_role,manufacturer,device_type,status,site,platform
+dc2-spine-1,Spine,Cisco,Nexus 9336C-FX2,active,dc2,Cisco NX-OS 9000
+dc2-spine-2,Spine,Cisco,Nexus 9336C-FX2,active,dc2,Cisco NX-OS 9000
+dc2-tor-1,TOR Switch,Cisco,Nexus 93108TC-EX,active,dc2,Cisco NX-OS 9000
+dc2-tor-2,TOR Switch,Cisco,Nexus 93108TC-EX,active,dc2,Cisco NX-OS 9000
+dc2-tor-3,TOR Switch,Cisco,Nexus 93108TC-EX,active,dc2,Cisco NX-OS 9000
+dc2-tor-4,TOR Switch,Cisco,Nexus 93108TC-EX,active,dc2,Cisco NX-OS 9000
+dc2-srv-1,server,Dell,PowerEdge R640,active,dc2,Ubuntu
+dc2-srv-2,server,Dell,PowerEdge R640,active,dc2,Ubuntu
+dc2-srv-3,server,Dell,PowerEdge R640,active,dc2,Ubuntu
+dc2-srv-4,server,Dell,PowerEdge R640,active,dc2,Ubuntu
