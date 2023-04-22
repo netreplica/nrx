@@ -5,55 +5,79 @@ lab:
   version: 0.2.0
 links:
   - id: l0
-    n1: n2
+    n1: n6
     n2: n0
-    i1: i2
+    i1: i3
     i2: i2
     label: dc2-tor-1-Ethernet1/49<->dc2-spine-1-Ethernet1/1
   - id: l1
-    n1: n2
+    n1: n6
     n2: n1
-    i1: i3
+    i1: i4
     i2: i2
     label: dc2-tor-1-Ethernet1/50<->dc2-spine-2-Ethernet1/1
   - id: l2
-    n1: n3
+    n1: n7
     n2: n0
-    i1: i2
+    i1: i3
     i2: i3
     label: dc2-tor-2-Ethernet1/49<->dc2-spine-1-Ethernet1/2
   - id: l3
-    n1: n3
+    n1: n7
     n2: n1
-    i1: i3
+    i1: i4
     i2: i3
     label: dc2-tor-2-Ethernet1/50<->dc2-spine-2-Ethernet1/2
   - id: l4
-    n1: n4
+    n1: n8
     n2: n0
-    i1: i2
+    i1: i3
     i2: i4
     label: dc2-tor-3-Ethernet1/49<->dc2-spine-1-Ethernet1/3
   - id: l5
-    n1: n4
+    n1: n8
     n2: n1
-    i1: i3
+    i1: i4
     i2: i4
     label: dc2-tor-3-Ethernet1/50<->dc2-spine-2-Ethernet1/3
   - id: l6
-    n1: n5
+    n1: n9
     n2: n0
-    i1: i2
+    i1: i3
     i2: i5
     label: dc2-tor-4-Ethernet1/49<->dc2-spine-1-Ethernet1/4
   - id: l7
-    n1: n5
+    n1: n9
     n2: n1
-    i1: i3
+    i1: i4
     i2: i5
     label: dc2-tor-4-Ethernet1/50<->dc2-spine-2-Ethernet1/4
+  - id: l8
+    n1: n6
+    n2: n2
+    i1: i2
+    i2: ens2
+    label: dc2-tor-1-Ethernet1/1<->dc2-srv-1-Gig-E 1
+  - id: l9
+    n1: n7
+    n2: n3
+    i1: i2
+    i2: ens2
+    label: dc2-tor-2-Ethernet1/1<->dc2-srv-2-Gig-E 1
+  - id: l10
+    n1: n8
+    n2: n4
+    i1: i2
+    i2: ens2
+    label: dc2-tor-3-Ethernet1/1<->dc2-srv-3-Gig-E 1
+  - id: l11
+    n1: n9
+    n2: n5
+    i1: i2
+    i2: ens2
+    label: dc2-tor-4-Ethernet1/1<->dc2-srv-4-Gig-E 1
 nodes:
-  - id: n2
+  - id: n6
     label: dc2-tor-1
     node_definition: nxosv9000
     image_definition: null
@@ -64,8 +88,8 @@ nodes:
     ram: null
     hide_links: false
     tags: []
-    x: 1000
-    y: 1000
+    x: 1800
+    y: 1800
     configuration: |-
       hostname dc2-tor-1
       # workaround for booting to loader> prompt
@@ -102,10 +126,14 @@ nodes:
         slot: 0
         type: physical
       - id: i2
+        label: Ethernet1/1
+        slot: 1
+        type: physical
+      - id: i3
         label: Ethernet1/49
         slot: 49
         type: physical
-      - id: i3
+      - id: i4
         label: Ethernet1/50
         slot: 50
         type: physical
@@ -240,7 +268,7 @@ nodes:
         slot: 4
         type: physical
 
-  - id: n3
+  - id: n7
     label: dc2-tor-2
     node_definition: nxosv9000
     image_definition: null
@@ -251,8 +279,8 @@ nodes:
     ram: null
     hide_links: false
     tags: []
-    x: 1400
-    y: 1400
+    x: 2200
+    y: 2200
     configuration: |-
       hostname dc2-tor-2
       # workaround for booting to loader> prompt
@@ -289,15 +317,19 @@ nodes:
         slot: 0
         type: physical
       - id: i2
+        label: Ethernet1/1
+        slot: 1
+        type: physical
+      - id: i3
         label: Ethernet1/49
         slot: 49
         type: physical
-      - id: i3
+      - id: i4
         label: Ethernet1/50
         slot: 50
         type: physical
 
-  - id: n4
+  - id: n8
     label: dc2-tor-3
     node_definition: nxosv9000
     image_definition: null
@@ -308,8 +340,8 @@ nodes:
     ram: null
     hide_links: false
     tags: []
-    x: 1800
-    y: 1800
+    x: 2600
+    y: 2600
     configuration: |-
       hostname dc2-tor-3
       # workaround for booting to loader> prompt
@@ -346,15 +378,19 @@ nodes:
         slot: 0
         type: physical
       - id: i2
+        label: Ethernet1/1
+        slot: 1
+        type: physical
+      - id: i3
         label: Ethernet1/49
         slot: 49
         type: physical
-      - id: i3
+      - id: i4
         label: Ethernet1/50
         slot: 50
         type: physical
 
-  - id: n5
+  - id: n9
     label: dc2-tor-4
     node_definition: nxosv9000
     image_definition: null
@@ -365,8 +401,8 @@ nodes:
     ram: null
     hide_links: false
     tags: []
-    x: 2200
-    y: 2200
+    x: 3000
+    y: 3000
     configuration: |-
       hostname dc2-tor-4
       # workaround for booting to loader> prompt
@@ -403,12 +439,140 @@ nodes:
         slot: 0
         type: physical
       - id: i2
+        label: Ethernet1/1
+        slot: 1
+        type: physical
+      - id: i3
         label: Ethernet1/49
         slot: 49
         type: physical
-      - id: i3
+      - id: i4
         label: Ethernet1/50
         slot: 50
+        type: physical
+
+  - id: n2
+    label: dc2-srv-1
+    node_definition: ubuntu
+    image_definition: null
+    boot_disk_size: null
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    ram: null
+    hide_links: false
+    tags: []
+    x: 1000
+    y: 1000
+    configuration: |-
+      #cloud-config
+      hostname: dc2-srv-1
+      manage_etc_hosts: True
+      system_info:
+        default_user:
+          name: cisco
+      password: cisco
+      chpasswd: { expire: False }
+      ssh_pwauth: True
+      ssh_authorized_keys:
+         - your-ssh-pubkey-line-goes-here
+    interfaces:
+      - id: ens2
+        label: Gig-E 1
+        slot: 0
+        type: physical
+
+  - id: n3
+    label: dc2-srv-2
+    node_definition: ubuntu
+    image_definition: null
+    boot_disk_size: null
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    ram: null
+    hide_links: false
+    tags: []
+    x: 1200
+    y: 1200
+    configuration: |-
+      #cloud-config
+      hostname: dc2-srv-2
+      manage_etc_hosts: True
+      system_info:
+        default_user:
+          name: cisco
+      password: cisco
+      chpasswd: { expire: False }
+      ssh_pwauth: True
+      ssh_authorized_keys:
+         - your-ssh-pubkey-line-goes-here
+    interfaces:
+      - id: ens2
+        label: Gig-E 1
+        slot: 0
+        type: physical
+
+  - id: n4
+    label: dc2-srv-3
+    node_definition: ubuntu
+    image_definition: null
+    boot_disk_size: null
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    ram: null
+    hide_links: false
+    tags: []
+    x: 1400
+    y: 1400
+    configuration: |-
+      #cloud-config
+      hostname: dc2-srv-3
+      manage_etc_hosts: True
+      system_info:
+        default_user:
+          name: cisco
+      password: cisco
+      chpasswd: { expire: False }
+      ssh_pwauth: True
+      ssh_authorized_keys:
+         - your-ssh-pubkey-line-goes-here
+    interfaces:
+      - id: ens2
+        label: Gig-E 1
+        slot: 0
+        type: physical
+
+  - id: n5
+    label: dc2-srv-4
+    node_definition: ubuntu
+    image_definition: null
+    boot_disk_size: null
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    ram: null
+    hide_links: false
+    tags: []
+    x: 1600
+    y: 1600
+    configuration: |-
+      #cloud-config
+      hostname: dc2-srv-4
+      manage_etc_hosts: True
+      system_info:
+        default_user:
+          name: cisco
+      password: cisco
+      chpasswd: { expire: False }
+      ssh_pwauth: True
+      ssh_authorized_keys:
+         - your-ssh-pubkey-line-goes-here
+    interfaces:
+      - id: ens2
+        label: Gig-E 1
+        slot: 0
         type: physical
 
 annotations: []
