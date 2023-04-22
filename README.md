@@ -141,14 +141,14 @@ Use `--config <filename>` argument to specify a configuration file to use. The s
 
 # Templates
 
-**nrx** renders all topology artifacts from [Jinja2](https://jinja.palletsprojects.com/en/3.1.x/) templates. Depending on the desired output format, the required templates are taken from a matching subfolder. For example, if output format is `clab` then templates are searched under `clab` subfolder. For `cml` the subfolder would be `cml`.
+**nrx** renders all topology artifacts from [Jinja2](https://jinja.palletsprojects.com/en/3.1.x/) templates. Depending on the desired output format, the required templates are taken from a matching subfolder. For example, if the output format is `clab` for Containerlab, then templates are searched under `clab` subfolder. For Cisco Modelling Labs `cml` format the subfolder would be `cml`.
 
-Most templates are unique for each node `kind`. Value of `kind` is taken from NetBox `device.platform.slug` field. Interface mapping templates do not depend on the output format, since they are determined by the NOS images used by each `kind`. Therefore, they is a single dedicated folder for them. The full list of template search rules:
+Most templates are unique for each node `kind`. Value of `kind` is taken from NetBox `device.platform.slug` field. Interface mapping templates do not depend on the output format, since they are determined by the NOS images used by each `kind`. Therefore, there is a single dedicated folder for them. The full list of template search rules:
 
 * `<format>/topology.j2`: template for the final topology file.
 * `<format>/kinds/<kind>.j2`: templates for individual node entries in the topology file.
 * `<format>/interface_names/<kind>.j2`: templates for generating emulated interface names used by this NOS `kind`.
-* `interface_maps/<kind>.j2`: templates for mappings between real interface names and emulated interface names used by this NOS `kind`.
+* `interface_maps/<kind>.j2`: templates for mappings between real interface names and emulated interface names used by this NOS `kind`. Not all `kinds` support such mappings.
 
 This repository includes a set of [netreplica/templates](https://github.com/netreplica/templates) as a submodule. See more details about available templates in the [templates/README.md](https://github.com/netreplica/templates).
 
@@ -201,7 +201,7 @@ source nrx39/bin/activate
 
 2. Now you're ready to start the "DM-Akron" topology in CML.
 
-    * Open your CML Dashboard in browser
+    * Open your CML Dashboard in a browser
     * Choose "IMPORT"
     * Use `DM-Akron.cml.yaml` as a file to import. The import status should be Imported.
     * Choose "GO TO LAB". In SIMULATE menu, choose START LAB
