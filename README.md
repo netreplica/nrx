@@ -41,19 +41,19 @@ Data sourcing capabilities:
 * Only Devices with Roles from a customizable list will be exported
 * Only connections (Cables) between Devices will be exported. Connections to Circuits will be excluded
 * Only Ethernet connections will be exported
-* Instead of querying live data from NetBox, import the graph from a file in CYJS format
+* As an alternative to sourcing live data from NetBox, imports a graph from a previously exported file in CYJS format
 
 Export capabilities:
 
 * Exports the graph as a Containerlab topology definition file in YAML format
 * Exports the graph as a Cisco Modeling Labs topology definition file in YAML format
-* Uses NetBox Device Platform to identify node settings in the topology definition file
+* Uses NetBox Device Platform `slug` field to identify node templates when rendering the topology definition file
 * Creates mapping between real interface names and interface names used by the supported lab tools
 * Exports the graph into CYJS format that can be later converted into a topology definition file, or used by 3rd party software
 
 # Prerequisites
 
-* Python 3.9+
+* Python 3.9+. In the commands below we assume use have `python3.9` executable. If you have a different name, change accordingly.
 * PIP
 
     ```Shell
@@ -66,7 +66,7 @@ Export capabilities:
     pip install virtualenv
     ```
 
-* Containerlab – not required for **nrx**, but is needed to deploy Containerlab topologies
+* [Containerlab](https://containerlab.dev/) – not required for **nrx**, but is needed to deploy Containerlab topologies
 
     ```Shell
     bash -c "$(curl -sL https://get.containerlab.dev)"
