@@ -3,7 +3,7 @@
 ---
 [![Discord](https://img.shields.io/discord/1075106069862416525?label=discord)](https://discord.gg/M2SkgSdKht)
 
-# nrx - network topology exporter by netreplica
+# nrx - network replica exporter
 
 **nrx** reads a network topology graph from [NetBox](https://docs.netbox.dev/en/stable/) DCIM system and exports it in one of the following formats:
 
@@ -12,6 +12,8 @@
 * Graph data as a JSON file in [Cytoscape](https://cytoscape.org/) format [CYJS](http://manual.cytoscape.org/en/stable/Supported_Network_File_Formats.html#cytoscape-js-json)
 
 It can also read the topology graph previously saved as a CYJS file to convert it into other formats.
+
+This project is in a proof-of-concept phase. We're experimenting with the best ways to automate software network lab orchestration. If you have any feedback, questions or suggestions, please reach out to us via the Netreplica Discord server linked above, [#netreplica](https://netdev-community.slack.com/archives/C054GKBC4LB) channel in NetDev Community on Slack, or open a github issue in this repository.
 
 # Table of contents
 
@@ -31,8 +33,6 @@ It can also read the topology graph previously saved as a CYJS file to convert i
    * [Copyright notice](#copyright-notice)
 
 # Capabilities
-
-**nrx** is in a very early, proof-of-concept phase.
 
 Data sourcing capabilities:
 
