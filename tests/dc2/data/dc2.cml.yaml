@@ -5,55 +5,55 @@ lab:
   version: 0.2.0
 links:
   - id: l0
-    n1: n6
+    n1: n2
     n2: n0
-    i1: i3
+    i1: i2
     i2: i2
     label: dc2-tor-1-Ethernet1/49<->dc2-spine-1-Ethernet1/1
   - id: l1
-    n1: n6
+    n1: n2
     n2: n1
-    i1: i4
+    i1: i3
     i2: i2
     label: dc2-tor-1-Ethernet1/50<->dc2-spine-2-Ethernet1/1
   - id: l2
-    n1: n7
+    n1: n3
     n2: n0
-    i1: i3
+    i1: i2
     i2: i3
     label: dc2-tor-2-Ethernet1/49<->dc2-spine-1-Ethernet1/2
   - id: l3
-    n1: n7
+    n1: n3
     n2: n1
-    i1: i4
+    i1: i3
     i2: i3
     label: dc2-tor-2-Ethernet1/50<->dc2-spine-2-Ethernet1/2
   - id: l4
-    n1: n8
+    n1: n4
     n2: n0
-    i1: i3
+    i1: i2
     i2: i4
     label: dc2-tor-3-Ethernet1/49<->dc2-spine-1-Ethernet1/3
   - id: l5
-    n1: n8
+    n1: n4
     n2: n1
-    i1: i4
+    i1: i3
     i2: i4
     label: dc2-tor-3-Ethernet1/50<->dc2-spine-2-Ethernet1/3
   - id: l6
-    n1: n9
+    n1: n5
     n2: n0
-    i1: i3
+    i1: i2
     i2: i5
     label: dc2-tor-4-Ethernet1/49<->dc2-spine-1-Ethernet1/4
   - id: l7
-    n1: n9
+    n1: n5
     n2: n1
-    i1: i4
+    i1: i3
     i2: i5
     label: dc2-tor-4-Ethernet1/50<->dc2-spine-2-Ethernet1/4
 nodes:
-  - id: n6
+  - id: n2
     label: dc2-tor-1
     node_definition: nxosv9000
     image_definition: null
@@ -64,8 +64,8 @@ nodes:
     ram: null
     hide_links: false
     tags: []
-    x: 1800
-    y: 1800
+    x: 1000
+    y: 1000
     configuration: |-
       hostname dc2-tor-1
       # workaround for booting to loader> prompt
@@ -102,14 +102,10 @@ nodes:
         slot: 0
         type: physical
       - id: i2
-        label: Ethernet1/1
-        slot: 1
-        type: physical
-      - id: i3
         label: Ethernet1/49
         slot: 49
         type: physical
-      - id: i4
+      - id: i3
         label: Ethernet1/50
         slot: 50
         type: physical
@@ -244,7 +240,7 @@ nodes:
         slot: 4
         type: physical
 
-  - id: n7
+  - id: n3
     label: dc2-tor-2
     node_definition: nxosv9000
     image_definition: null
@@ -255,8 +251,8 @@ nodes:
     ram: null
     hide_links: false
     tags: []
-    x: 2200
-    y: 2200
+    x: 1400
+    y: 1400
     configuration: |-
       hostname dc2-tor-2
       # workaround for booting to loader> prompt
@@ -293,19 +289,15 @@ nodes:
         slot: 0
         type: physical
       - id: i2
-        label: Ethernet1/1
-        slot: 1
-        type: physical
-      - id: i3
         label: Ethernet1/49
         slot: 49
         type: physical
-      - id: i4
+      - id: i3
         label: Ethernet1/50
         slot: 50
         type: physical
 
-  - id: n8
+  - id: n4
     label: dc2-tor-3
     node_definition: nxosv9000
     image_definition: null
@@ -316,8 +308,8 @@ nodes:
     ram: null
     hide_links: false
     tags: []
-    x: 2600
-    y: 2600
+    x: 1800
+    y: 1800
     configuration: |-
       hostname dc2-tor-3
       # workaround for booting to loader> prompt
@@ -354,19 +346,15 @@ nodes:
         slot: 0
         type: physical
       - id: i2
-        label: Ethernet1/1
-        slot: 1
-        type: physical
-      - id: i3
         label: Ethernet1/49
         slot: 49
         type: physical
-      - id: i4
+      - id: i3
         label: Ethernet1/50
         slot: 50
         type: physical
 
-  - id: n9
+  - id: n5
     label: dc2-tor-4
     node_definition: nxosv9000
     image_definition: null
@@ -377,8 +365,8 @@ nodes:
     ram: null
     hide_links: false
     tags: []
-    x: 3000
-    y: 3000
+    x: 2200
+    y: 2200
     configuration: |-
       hostname dc2-tor-4
       # workaround for booting to loader> prompt
@@ -415,14 +403,10 @@ nodes:
         slot: 0
         type: physical
       - id: i2
-        label: Ethernet1/1
-        slot: 1
-        type: physical
-      - id: i3
         label: Ethernet1/49
         slot: 49
         type: physical
-      - id: i4
+      - id: i3
         label: Ethernet1/50
         slot: 50
         type: physical
