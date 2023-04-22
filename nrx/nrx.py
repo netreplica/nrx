@@ -39,8 +39,6 @@ import urllib3
 import networkx as nx
 import jinja2
 
-#from rich import inspect
-
 # DEFINE GLOBAL VARs HERE
 
 DEBUG_ON = False
@@ -405,7 +403,6 @@ class NetworkTopology:
                 template = self._get_template('kinds', p, True)
                 if template is not None:
                     try:
-                        #inspect(n['interfaces'])
                         topo_nodes.append(template.render(n))
                     except jinja2.TemplateError as e:
                         error(f"Rendering {self.templates[type]['_description_']} template '{e}' for platform '{p}'")
