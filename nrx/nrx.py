@@ -120,6 +120,7 @@ class NBFactory:
             platform, platform_name = "unknown", "unknown"
             vendor, vendor_name = "unknown", "unknown"
             model, model_name = "unknown", "unknown"
+            role = "unknown"
             if device.platform is not None:
                 platform = device.platform.slug
                 platform_name = device.platform.name
@@ -129,6 +130,8 @@ class NBFactory:
             if device.device_type is not None:
                 model = device.device_type.slug
                 model_name = device.device_type.model
+            if device.device_role is not None:
+                role = device.device_role.slug
             d = {
                 "id": device.id,
                 "type": "device",
@@ -140,6 +143,7 @@ class NBFactory:
                 "vendor_name": vendor_name,
                 "model": model,
                 "model_name": model_name,
+                "role": role,
             }
             self.nb_net.nodes.append(d)
             d["node_id"] = len(self.nb_net.nodes) - 1
@@ -233,6 +237,8 @@ class NetworkTopology:
             'name': None,
             'links': [],
             'nodes': [],
+            # lists of device_index values grouped by role (e.g. {'spine': [1, 2], 'leaf': [3, 4]})
+            'roles': {},
         }
         self.j2env = jinja2.Environment(
                     loader=jinja2.FileSystemLoader(self.config['templates_path'], followlinks=True),
@@ -274,6 +280,15 @@ class NetworkTopology:
         if self.G.nodes[n]['type'] == 'device':
             dev = self.G.nodes[n]['device']
             self.topology['nodes'].append(dev)
+            if 'role' in dev:
+                role = dev['role']
+                if role in self.topology['roles']:
+                    self.topology['roles'][role].append(dev['device_index'])
+                else:
+                    self.topology['roles'][role] = [dev['device_index']]
+                if role in self.config['device_role_levels']:
+                    dev['level'] = self.config['device_role_levels'][role]
+
             if dev['name'] not in self.device_interfaces_map:
                 # Initialize an empty map. There is a similar initialization in _append_if_node_is_interface,
                 # but we need one here in case the device has no interfaces
@@ -337,6 +352,16 @@ class NetworkTopology:
                     # Append entries from device_interfaces_map to each device under self.topology['nodes']
                     node['interfaces'] = self.device_interfaces_map[name]
 
+    def _rank_nodes(self):
+        for device_indexes in self.topology['roles'].values():
+            device_indexes.sort()
+        for n in self.topology['nodes']:
+            role_size = len(self.topology['roles'][n['role']])
+            if role_size > 1:
+                n['rank'] = self.topology['roles'][n['role']].index(n['device_index']) / (role_size - 1)
+            else:
+                n['rank'] = 0.5
+
     def _build_topology(self):
         # Parse graph G into lists of: nodes and links.
         # Keep list of interfaces per device in `device_interfaces_map`, and then add them to each device
@@ -348,10 +373,13 @@ class NetworkTopology:
         except KeyError as e:
             error(f"Incomplete data to build topology, {e} key is missing")
 
+        self._rank_nodes()
+
     def export_topology(self):
         if self.topology['name'] is None or len(self.topology['name']) == 0:
             error("Cannot export a topology: missing a name")
 
+        debug(f"Exporting topology. Device role groups: {self.topology['roles']}")
         # Generate topology data structure
         self.topology['name'] = self.G.name
         self.topology['nodes'] = self._render_emulated_nodes()
@@ -405,7 +433,7 @@ class NetworkTopology:
                     try:
                         topo_nodes.append(template.render(n))
                     except jinja2.TemplateError as e:
-                        error(f"Rendering {self.templates[type]['_description_']} template '{e}' for platform '{p}'")
+                        error(f"Rendering {self.templates['kinds']['_description_']} template for platform '{p}': {e}")
 
         return topo_nodes
 
@@ -514,7 +542,19 @@ def load_toml_config(filename):
         'nb_api_token': '',
         'tls_validate': True,
         'output_format': 'cyjs',
-        'export_device_roles': ["router", "core-switch", "access-switch", "distribution-switch", "tor-switch"],
+        'export_device_roles': ["router", "core-switch", "access-switch", "distribution-switch", "tor-switch", "server"],
+        'device_role_levels': {
+            'unknown':              0,
+            'server':               0,
+            'tor-switch':           1,
+            'access-switch':        1,
+            'leaf':                 1,
+            'distribution-switch':  2,
+            'spine':                2,
+            'core-switch':          3,
+            'super-spine':          3,
+            'router':               4,
+        },
         'export_site': '',
         'templates_path': ['.'],
     }
