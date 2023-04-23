@@ -1,32 +1,89 @@
 name: dc1
 topology:
     nodes:
+        graphite:
+            kind: linux
+            image: netreplica/graphite:nanog86
+            env:
+                CLAB_SSH_CONNECTION: ${SSH_CONNECTION}
+            binds:
+                - __clabDir__/topology-data.json:/htdocs/lab/default/topology-data.json:ro
+                - __clabDir__/ansible-inventory.yml:/htdocs/lab/default/ansible-inventory.yml:ro
+            ports:
+                - 8080:80
+            exec:
+                - sh -c 'graphite_motd.sh 8080'
+            labels:
+                graph-hide: yes
+
         dc1-leaf-1:
             kind: nokia_srlinux
             type: ixrd2
             image: ghcr.io/nokia/srlinux:latest
+            labels:
+                graph-icon: switch
+                graph-level: 9
         dc1-spine-1:
             kind: ceos
             image: ceos:latest
             binds:
                 - dc1-spine-1_interface_map.json:/mnt/flash/EosIntfMapping.json:ro
+            labels:
+                graph-icon: router
+                graph-level: 8
         dc1-spine-2:
             kind: ceos
             image: ceos:latest
             binds:
                 - dc1-spine-2_interface_map.json:/mnt/flash/EosIntfMapping.json:ro
+            labels:
+                graph-icon: router
+                graph-level: 8
         dc1-leaf-2:
             kind: nokia_srlinux
             type: ixrd2
             image: ghcr.io/nokia/srlinux:latest
+            labels:
+                graph-icon: switch
+                graph-level: 9
         dc1-leaf-3:
             kind: nokia_srlinux
             type: ixrd2
             image: ghcr.io/nokia/srlinux:latest
+            labels:
+                graph-icon: switch
+                graph-level: 9
         dc1-leaf-4:
             kind: nokia_srlinux
             type: ixrd2
             image: ghcr.io/nokia/srlinux:latest
+            labels:
+                graph-icon: switch
+                graph-level: 9
+        dc1-srv-1:
+            kind: linux
+            image: netreplica/ubuntu-host:latest
+            labels:
+                graph-icon: server
+                graph-level: 10
+        dc1-srv-2:
+            kind: linux
+            image: netreplica/ubuntu-host:latest
+            labels:
+                graph-icon: server
+                graph-level: 10
+        dc1-srv-3:
+            kind: linux
+            image: netreplica/ubuntu-host:latest
+            labels:
+                graph-icon: server
+                graph-level: 10
+        dc1-srv-4:
+            kind: linux
+            image: netreplica/ubuntu-host:latest
+            labels:
+                graph-icon: server
+                graph-level: 10
     links:
         - endpoints: ["dc1-leaf-1:e1-49", "dc1-spine-1:eth1"]
         - endpoints: ["dc1-leaf-1:e1-50", "dc1-spine-2:eth1"]
@@ -36,3 +93,7 @@ topology:
         - endpoints: ["dc1-leaf-3:e1-50", "dc1-spine-2:eth3"]
         - endpoints: ["dc1-leaf-4:e1-49", "dc1-spine-1:eth4"]
         - endpoints: ["dc1-leaf-4:e1-50", "dc1-spine-2:eth4"]
+        - endpoints: ["dc1-leaf-1:e1-1", "dc1-srv-1:eth1"]
+        - endpoints: ["dc1-leaf-2:e1-1", "dc1-srv-2:eth1"]
+        - endpoints: ["dc1-leaf-3:e1-1", "dc1-srv-3:eth1"]
+        - endpoints: ["dc1-leaf-4:e1-1", "dc1-srv-4:eth1"]

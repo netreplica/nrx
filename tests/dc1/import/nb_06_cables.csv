@@ -7,3 +7,7 @@ dc1-leaf-3,dcim.interface,ethernet-1/49,dc1-spine-1,dcim.interface,Ethernet3/1
 dc1-leaf-3,dcim.interface,ethernet-1/50,dc1-spine-2,dcim.interface,Ethernet3/1
 dc1-leaf-4,dcim.interface,ethernet-1/49,dc1-spine-1,dcim.interface,Ethernet4/1
 dc1-leaf-4,dcim.interface,ethernet-1/50,dc1-spine-2,dcim.interface,Ethernet4/1
+dc1-leaf-1,dcim.interface,ethernet-1/1,dc1-srv-1,dcim.interface,Gig-E 1
+dc1-leaf-2,dcim.interface,ethernet-1/1,dc1-srv-2,dcim.interface,Gig-E 1
+dc1-leaf-3,dcim.interface,ethernet-1/1,dc1-srv-3,dcim.interface,Gig-E 1
+dc1-leaf-4,dcim.interface,ethernet-1/1,dc1-srv-4,dcim.interface,Gig-E 1

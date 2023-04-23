@@ -5,3 +5,7 @@ dc1-leaf-1,Leaf,Nokia,7220 IXR-D2,active,dc1,Nokia SR-Linux
 dc1-leaf-2,Leaf,Nokia,7220 IXR-D2,active,dc1,Nokia SR-Linux
 dc1-leaf-3,Leaf,Nokia,7220 IXR-D2,active,dc1,Nokia SR-Linux
 dc1-leaf-4,Leaf,Nokia,7220 IXR-D2,active,dc1,Nokia SR-Linux
+dc1-srv-1,server,Dell,PowerEdge R640,active,dc1,Linux
+dc1-srv-2,server,Dell,PowerEdge R640,active,dc1,Linux
+dc1-srv-3,server,Dell,PowerEdge R640,active,dc1,Linux
+dc1-srv-4,server,Dell,PowerEdge R640,active,dc1,Linux
