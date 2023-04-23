@@ -2,15 +2,19 @@
 
 ---
 [![Discord](https://img.shields.io/discord/1075106069862416525?label=discord)](https://discord.gg/M2SkgSdKht)
+[![CI](https://github.com/netreplica/nrx/actions/workflows/systest.yml/badge.svg)](https://github.com/netreplica/nrx/actions/workflows/systest.yml)
 
-# nrx - network topology exporter by netreplica
+# nrx - network replica exporter
 
 **nrx** reads a network topology graph from [NetBox](https://docs.netbox.dev/en/stable/) DCIM system and exports it in one of the following formats:
 
-* Topology file for [Containerlab](https://containerlab.dev) network emulation tool
+* Topology file for [Containerlab](https://containerlab.dev) tool for container-based networking labs
+* Topology file for [Cisco Modeling Labs](https://developer.cisco.com/modeling-labs/) platform for network simulation
 * Graph data as a JSON file in [Cytoscape](https://cytoscape.org/) format [CYJS](http://manual.cytoscape.org/en/stable/Supported_Network_File_Formats.html#cytoscape-js-json)
 
-It can also read the topology graph previously saved as a CYJS file to convert it into Containerlab format.
+It can also read the topology graph previously saved as a CYJS file to convert it into other formats.
+
+This project is in a proof-of-concept phase. We're experimenting with the best ways to automate software network lab orchestration. If you have any feedback, questions or suggestions, please reach out to us via the Netreplica Discord server linked above, [#netreplica](https://netdev-community.slack.com/archives/C054GKBC4LB) channel in NetDev Community on Slack, or open a github issue in this repository.
 
 # Table of contents
 
@@ -22,15 +26,14 @@ It can also read the topology graph previously saved as a CYJS file to convert i
    * [Environmental variables](#environmental-variables)
    * [Configuration file](#configuration-file)
 * [Templates](#templates)
-   * [Containerlab](#containerlab)
 * [How to use](#how-to-use)
+   * [Containerlab example](#containerlab-example)
+   * [Cisco Modeling Labs example](#cisco-modeling-labs-example)
 * [Credits](#credits)
    * [Original idea and implementation](#original-idea-and-implementation)
    * [Copyright notice](#copyright-notice)
 
 # Capabilities
-
-**nrx** is in a very early, proof-of-concept phase.
 
 Data sourcing capabilities:
 
@@ -39,18 +42,20 @@ Data sourcing capabilities:
 * Only Devices with Roles from a customizable list will be exported
 * Only connections (Cables) between Devices will be exported. Connections to Circuits will be excluded
 * Only Ethernet connections will be exported
-* Instead of querying live data from NetBox, import the graph from a file in CYJS format
+* As an alternative to sourcing live data from NetBox, imports a graph from a previously exported file in CYJS format
 
 Export capabilities:
 
 * Exports the graph as a Containerlab topology definition file in YAML format
-* Uses NetBox Device Platform to identify Containerlab node settings
-* Creates mapping between real interface names and interface names used by Containerlab
-* Exports the graph into CYJS format that can be later converted into a Containerlab topology, or used by 3rd party software
+* Exports the graph as a Cisco Modeling Labs topology definition file in YAML format
+* Uses NetBox Device Platform `slug` field to identify node templates when rendering the topology definition file
+* Creates mapping between real interface names and interface names used by the supported lab tools
+* Calculates `level` and `rank` values for each node based on Device Role to help visualize the topology
+* Exports the graph into CYJS format that can be later converted into a topology definition file, or used by 3rd party software
 
 # Prerequisites
 
-* Python 3.9+
+* Python 3.9+. In the commands below we assume use have `python3.9` executable. If you have a different name, change accordingly.
 * PIP
 
     ```Shell
@@ -63,11 +68,13 @@ Export capabilities:
     pip install virtualenv
     ```
 
-* Containerlab – not required for **nrx**, but needed to deploy the topology created
+* [Containerlab](https://containerlab.dev/) – not required for **nrx**, but is needed to deploy Containerlab topologies
 
     ```Shell
     bash -c "$(curl -sL https://get.containerlab.dev)"
     ```
+
+* [Cisco Modeling Labs](https://developer.cisco.com/modeling-labs/) – not required for **nrx**, but is needed to deploy CML topologies
 
 # How to install
 
@@ -108,7 +115,7 @@ optional arguments:
   -h, --help                show this help message and exit
   -c, --config CONFIG       configuration file
   -i, --input INPUT         input source: netbox (default) | cyjs
-  -o, --output OUTPUT       output format: cyjs | gml | clab
+  -o, --output OUTPUT       output format: cyjs | gml | clab | cml
   -a, --api API             netbox API URL
   -s, --site SITE           netbox site to export
   -k, --insecure            allow insecure server connections when using TLS
@@ -136,14 +143,14 @@ Use `--config <filename>` argument to specify a configuration file to use. The s
 
 # Templates
 
-## Containerlab
+**nrx** renders all topology artifacts from [Jinja2](https://jinja.palletsprojects.com/en/3.1.x/) templates. Depending on the desired output format, the required templates are taken from a matching subfolder. For example, if the output format is `clab` for Containerlab, then templates are searched under `clab` subfolder. For Cisco Modelling Labs `cml` format the subfolder would be `cml`.
 
-**nrx** renders all Containerlab artifacts from [Jinja2](https://jinja.palletsprojects.com/en/3.1.x/) templates. Most templates are unique for each node `kind`. Value of `kind` is taken from NetBox `device.platform.slug` field.
+Most templates are unique for each node `kind`. Value of `kind` is taken from NetBox `device.platform.slug` field. Interface mapping templates do not depend on the output format, since they are determined by the NOS images used by each `kind`. Therefore, there is a single dedicated folder for them. The full list of template search rules:
 
-* `clab/topology.j2`: template for the final Containerlab topology file.
-* `clab/kinds/<kind>.j2`: templates for individual Containerlab node entries.
-* `interface_names/<kind>.j2`: templates for generating emulated interface names used by this NOS `kind`.
-* `interface_maps/<kind>.j2`: templates for mappings between real interface names and emulated interface names used by this NOS `kind`.
+* `<format>/topology.j2`: template for the final topology file.
+* `<format>/kinds/<kind>.j2`: templates for individual node entries in the topology file.
+* `<format>/interface_names/<kind>.j2`: templates for generating emulated interface names used by this NOS `kind`.
+* `interface_maps/<kind>.j2`: templates for mappings between real interface names and emulated interface names used by this NOS `kind`. Not all `kinds` support such mappings.
 
 This repository includes a set of [netreplica/templates](https://github.com/netreplica/templates) as a submodule. See more details about available templates in the [templates/README.md](https://github.com/netreplica/templates).
 
@@ -151,26 +158,28 @@ By default, **nrx** searches for the template files in the current directory. Yo
 
 # How to use
 
-1. Activate venv environment
+Start with activating venv environment
 
-    ```Shell
-    source nrx39/bin/activate
-    ```
+```Shell
+source nrx39/bin/activate
+```
 
-2. Run `./nrx.py --output clab` to export a topology graph from NetBox in a Containerlab format. See [How to configure](#how-to-configure) for details. Here is an example of running `nrx.py` to export a graph for NetBox Site "DM-Albany" from [NetBox Demo](https://demo.netbox.dev) instance:
+## Containerlab example
+
+1. Run `./nrx.py --output clab` to export a topology graph from NetBox in Containerlab format. See [How to configure](#how-to-configure) for details. Here is an example of running `nrx.py` to export a graph for NetBox Site "DM-Albany" from [NetBox Demo](https://demo.netbox.dev) instance:
 
     ```Shell
     export NB_API_TOKEN='replace_with_valid_API_token'
-    ./nrx.py --api https://demo.netbox.dev --site DM-Albany --output clab
+    ./nrx.py --api https://demo.netbox.dev --site DM-Albany --templates templates --output clab
     ```
 
-3. Now you're ready to start the Containerlab topology. Here is the example for "DM-Albany" site
+2. Now you're ready to start the Containerlab topology. Here is the example for "DM-Albany" site
 
     ```Shell
-    sudo -E containerlab deploy -t DM-Albany.clab.yml --reconfigure
+    sudo -E containerlab deploy -t DM-Albany.clab.yaml --reconfigure
     ```
 
-4. Without `--output clab` argument, `nrx.py` will save data from NetBox as a CYJS file `<site_name>.cyjs`
+3. Without `--output clab` argument, `nrx.py` will save data from NetBox as a CYJS file `<site_name>.cyjs`
 
     ```Shell
     export NB_API_TOKEN='replace_with_valid_API_token'
@@ -180,7 +189,37 @@ By default, **nrx** searches for the template files in the current directory. Yo
 5. If you have a CYJS file, run `./nrx.py --input cyjs --file <site>.cyjs --output clab` to create a Containerlab topology file from the CYJS graph you exported in the previous step. For example, run:
 
     ```Shell
-    ./nrx.py --input cyjs --file DM-Albany.cyjs --output clab
+    ./nrx.py --input cyjs --file DM-Albany.cyjs --templates templates --output clab
+    ```
+
+## Cisco Modeling Labs example
+
+1. Run `./nrx.py --output cml` to export a topology graph from NetBox in CML format. See [How to configure](#how-to-configure) for details. Here is an example of running `nrx.py` to export a graph for NetBox Site "DM-Akron" from [NetBox Demo](https://demo.netbox.dev) instance:
+
+    ```Shell
+    export NB_API_TOKEN='replace_with_valid_API_token'
+    ./nrx.py --api https://demo.netbox.dev --site DM-Akron --templates templates --output cml
+    ```
+
+2. Now you're ready to start the "DM-Akron" topology in CML.
+
+    * Open your CML Dashboard in a browser
+    * Choose "IMPORT"
+    * Use `DM-Akron.cml.yaml` as a file to import. The import status should be Imported.
+    * Choose "GO TO LAB". In SIMULATE menu, choose START LAB
+    * Use NODES menu to monitor the status of each node
+
+3. Without `--output cml` argument, `nrx.py` will save data from NetBox as a CYJS file `<site_name>.cyjs`
+
+    ```Shell
+    export NB_API_TOKEN='replace_with_valid_API_token'
+    ./nrx.py --api https://demo.netbox.dev --site DM-Akron
+    ```
+
+4. If you have a CYJS file, run `./nrx.py --input cyjs --file <site>.cyjs --output cml` to create a topology file from the CYJS graph you exported in the previous step. For example, run:
+
+    ```Shell
+    ./nrx.py --input cyjs --file DM-Akron.cyjs --templates templates --output cml
     ```
 
 # Credits

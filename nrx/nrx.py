@@ -21,16 +21,17 @@ netreplica exporter
 
 nrx reads a network topology graph from NetBox DCIM system and exports it in one of the following formats:
 
-* Topology file for Containerlab network emulation tool
+* Topology file for one of the supported network emulation tools
 * Graph data as a JSON file in Cytoscape format CYJS
 
-It can also read the topology graph previously saved as a CYJS file to convert it into Containerlab format.
+It can also read the topology graph previously saved as a CYJS file to convert it into the one of supported network emulation formats.
 """
 
 import os
 import sys
 import argparse
 import json
+import math
 import toml
 import pynetbox
 import requests
@@ -119,6 +120,7 @@ class NBFactory:
             platform, platform_name = "unknown", "unknown"
             vendor, vendor_name = "unknown", "unknown"
             model, model_name = "unknown", "unknown"
+            role = "unknown"
             if device.platform is not None:
                 platform = device.platform.slug
                 platform_name = device.platform.name
@@ -128,6 +130,8 @@ class NBFactory:
             if device.device_type is not None:
                 model = device.device_type.slug
                 model_name = device.device_type.model
+            if device.device_role is not None:
+                role = device.device_role.slug
             d = {
                 "id": device.id,
                 "type": "device",
@@ -139,10 +143,12 @@ class NBFactory:
                 "vendor_name": vendor_name,
                 "model": model,
                 "model_name": model_name,
+                "role": role,
             }
             self.nb_net.nodes.append(d)
             d["node_id"] = len(self.nb_net.nodes) - 1
             self.nb_net.devices.append(d)
+            d["device_index"] = len(self.nb_net.devices) - 1 # do not use insert with self.nb_net.devices!
             self.nb_net.device_ids.append(
                 device.id)  # index of the device in the devices list will match its ID index in device_ids list
             debug("Added device:", d)
@@ -160,6 +166,7 @@ class NBFactory:
                     self.nb_net.nodes.append(i)
                     i["node_id"] = len(self.nb_net.nodes) - 1
                     self.nb_net.interfaces.append(i)
+                    i["interface_index"] = len(self.nb_net.interfaces) - 1 # do not use insert with self.nb_net.interfaces!
                     # index of the interface in the interfaces list will match its ID index in interface_ids list
                     self.nb_net.interface_ids.append(interface.id)
                     self.nb_net.cable_ids.append(interface.cable.id)
@@ -224,21 +231,25 @@ class NetworkTopology:
     def __init__(self, config):
         self.config = config
         self.G = None
-        # For each device we will store a list of {'nos_inteface_name': 'emulated_interface_name'} tuples here
+        # For each device we will store a list of {'nos_interface_name': 'emulated_interface_name'} tuples here
         self.device_interfaces_map = {}
         self.topology = {
             'name': None,
             'links': [],
             'nodes': [],
+            # lists of device_index values grouped by role (e.g. {'spine': [1, 2], 'leaf': [3, 4]})
+            'roles': {},
         }
         self.j2env = jinja2.Environment(
                     loader=jinja2.FileSystemLoader(self.config['templates_path'], followlinks=True),
-                    line_statement_prefix='#'
+                    extensions=['jinja2.ext.do'],
+                    trim_blocks=True, lstrip_blocks=True
                 )
+        self.j2env.filters['ceil'] = math.ceil
         self.templates = {
-            'interface_names': {'_path_': 'interface_names', '_description_': 'interface name'},
+            'interface_names': {'_path_': f"{self.config['output_format']}/interface_names", '_description_': 'interface name'},
             'interface_maps':  {'_path_': 'interface_maps',  '_description_': 'interface map'},
-            'kinds':           {'_path_': 'clab/kinds',      '_description_': 'Containerlab kind'}
+            'kinds':           {'_path_': f"{self.config['output_format']}/kinds", '_description_': 'node kind'}
         }
 
     def build_from_file(self, file):
@@ -269,6 +280,17 @@ class NetworkTopology:
         if self.G.nodes[n]['type'] == 'device':
             dev = self.G.nodes[n]['device']
             self.topology['nodes'].append(dev)
+            if 'role' in dev:
+                role = dev['role']
+                if role in self.topology['roles']:
+                    self.topology['roles'][role].append(dev['device_index'])
+                else:
+                    self.topology['roles'][role] = [dev['device_index']]
+                if role in self.config['device_role_levels']:
+                    dev['level'] = self.config['device_role_levels'][role]
+            if 'level' not in dev:
+                dev['level'] = 0
+
             if dev['name'] not in self.device_interfaces_map:
                 # Initialize an empty map. There is a similar initialization in _append_if_node_is_interface,
                 # but we need one here in case the device has no interfaces
@@ -285,26 +307,30 @@ class NetworkTopology:
                 if self.G.nodes[a_adj[0]]['type'] == 'device':
                     dev_name = self.G.nodes[a_adj[0]]['device']['name']
                     dev_node_id = self.G.nodes[a_adj[0]]['device']['node_id']
+                    dev_index = self.G.nodes[a_adj[0]]['device']['device_index']
                     if dev_name not in self.device_interfaces_map:
                         # Initialize an empty map if we don't have one yet for this device
                         self.device_interfaces_map[dev_name] = {}
-                    self.device_interfaces_map[dev_name][int_name] = ""
+                    self.device_interfaces_map[dev_name][int_name] = {}
                 elif self.G.nodes[a_adj[0]]['type'] == 'interface' and self.G.nodes[n]['side'] == 'a':
                     peer_name = self.G.nodes[a_adj[0]]['interface']['name']
                     for b_adj in self.G.adj[a_adj[0]].items():
                         if self.G.nodes[b_adj[0]]['type'] == 'device':
                             peer_dev_name = self.G.nodes[b_adj[0]]['device']['name']
                             peer_dev_node_id = self.G.nodes[b_adj[0]]['device']['node_id']
+                            peer_dev_index = self.G.nodes[b_adj[0]]['device']['device_index']
             if self.G.nodes[n]['side'] == 'a':
                 self.topology['links'].append({
                     'a': {
                         'node': dev_name,
                         'node_id': dev_node_id,
+                        'device_index': dev_index,
                         'interface': int_name,
                     },
                     'b': {
                         'node': peer_dev_name,
                         'node_id': peer_dev_node_id,
+                        'device_index': peer_dev_index,
                         'interface': peer_name,
                     },
                 })
@@ -322,10 +348,24 @@ class NetworkTopology:
                     int_list = list(int_map.keys())
                     int_list.sort()
                     # Add emulated interface name for each nos interface name we got from the imported graph.
-                    sorted_map = {i: f"{self._render_emulated_interface_name(node['platform'], i, int_list.index(i))}" for i in int_list}
+                    sorted_map = {i: {'name': f"{self._render_emulated_interface_name(node['platform'], i, int_list.index(i))}",
+                                      'index': int_list.index(i)} for i in int_list}
                     self.device_interfaces_map[name] = sorted_map
                     # Append entries from device_interfaces_map to each device under self.topology['nodes']
                     node['interfaces'] = self.device_interfaces_map[name]
+
+    def _rank_nodes(self):
+        for device_indexes in self.topology['roles'].values():
+            device_indexes.sort()
+        for n in self.topology['nodes']:
+            if 'role' in n:
+                role = n['role']
+                if role in self.topology['roles']:
+                    role_size = len(self.topology['roles'][role])
+                    if role_size > 1:
+                        n['rank'] = self.topology['roles'][role].index(n['device_index']) / (role_size - 1)
+            if 'rank' not in n:
+                n['rank'] = 0.5
 
     def _build_topology(self):
         # Parse graph G into lists of: nodes and links.
@@ -338,24 +378,28 @@ class NetworkTopology:
         except KeyError as e:
             error(f"Incomplete data to build topology, {e} key is missing")
 
-    def export_clab(self):
+        self._rank_nodes()
+
+    def export_topology(self):
         if self.topology['name'] is None or len(self.topology['name']) == 0:
             error("Cannot export a topology: missing a name")
 
-        # Generate topology data structure for clab
+        debug(f"Exporting topology. Device role groups: {self.topology['roles']}")
+        # Generate topology data structure
         self.topology['name'] = self.G.name
-        self.topology['links'] = self._render_clab_links()
-        self.topology['nodes'] = self._render_clab_nodes()
+        self.topology['nodes'] = self._render_emulated_nodes()
+        self._initialize_emulated_links()
+        self._render_topology()
 
-        self._render_clab_topology()
-
-    def _render_clab_links(self):
+    def _initialize_emulated_links(self):
+        link_id = 0
         for l in self.topology['links']:
-            l['a']['c_interface'] = self.device_interfaces_map[l['a']['node']][l['a']['interface']]
-            l['b']['c_interface'] = self.device_interfaces_map[l['b']['node']][l['b']['interface']]
-
-        return [f"[\"{l['a']['node']}:{l['a']['c_interface']}\", \"{l['b']['node']}:{l['b']['c_interface']}\"]"
-                for l in self.topology['links']]
+            l['id'] = link_id
+            l['a']['e_interface'] = self.device_interfaces_map[l['a']['node']][l['a']['interface']]['name']
+            l['b']['e_interface'] = self.device_interfaces_map[l['b']['node']][l['b']['interface']]['name']
+            l['a']['index'] = self.device_interfaces_map[l['a']['node']][l['a']['interface']]['index']
+            l['b']['index'] = self.device_interfaces_map[l['b']['node']][l['b']['interface']]['index']
+            link_id += 1
 
     def _get_template(self, ttype, platform, is_required = False):
         template = None
@@ -367,7 +411,8 @@ class NetworkTopology:
                     template = self.j2env.get_template(j2file)
                     debug(f"Found {desc} template {j2file} for platform {platform}")
                 except (OSError, jinja2.TemplateError) as e:
-                    m = f"Unable to open {desc} template '{e}' for platform '{platform}' with path {self.config['templates_path']}"
+                    m = f"Unable to open {desc} template '{j2file}' for platform '{platform}' with path {self.config['templates_path']}."
+                    m += f" Reason: {e}"
                     if is_required:
                         error(m)
                     else:
@@ -379,8 +424,7 @@ class NetworkTopology:
             error(f"No such template type as {ttype}")
         return template
 
-    def _render_clab_nodes(self):
-        # Load Jinja2 template for Containerlab kinds
+    def _render_emulated_nodes(self):
         topo_nodes = []
         for n in self.topology['nodes']:
             if 'platform' in n.keys():
@@ -394,7 +438,7 @@ class NetworkTopology:
                     try:
                         topo_nodes.append(template.render(n))
                     except jinja2.TemplateError as e:
-                        error(f"Rendering {self.templates[type]['_description_']} template '{e}' for platform '{p}'")
+                        error(f"Rendering {self.templates['kinds']['_description_']} template for platform '{p}': {e}")
 
         return topo_nodes
 
@@ -409,28 +453,29 @@ class NetworkTopology:
                 error("Rendering interface naming J2 template:", e)
         return default_name
 
-    def _render_clab_topology(self):
+    def _render_topology(self):
         #debug("Topology data to render:", json.dumps(self.topology))
-        # Load Jinja2 template for Containerlab to run the topology through
+        # Load Jinja2 template to run the topology through
         try:
-            templ = self.j2env.get_template("clab/topology.j2")
+            j2file = f"{self.config['output_format']}/topology.j2"
+            template = self.j2env.get_template(j2file)
         except (OSError, jinja2.TemplateError) as e:
-            error(f"Opening Containerlab J2 template '{e}' with path {self.config['templates_path']}")
+            error(f"Opening topology template '{j2file}' with path {self.config['templates_path']}. Reason: {e}")
 
         # Run the topology through jinja2 template to get the final result
         try:
-            topo = templ.render(self.topology)
+            topo = template.render(self.topology)
         except jinja2.TemplateError as e:
-            error("Rendering Containerlab J2 template:", e)
+            error("Rendering topology J2 template:", e)
 
-        clab_file = f"{self.topology['name']}.clab.yml"
+        topo_file = f"{self.topology['name']}.{self.config['output_format']}.yaml"
         try:
-            with open(clab_file, "w", encoding="utf-8") as f:
+            with open(topo_file, "w", encoding="utf-8") as f:
                 f.write(topo)
         except OSError as e:
-            error(f"Can't write into {clab_file}", e)
+            error(f"Can't write into {topo_file}", e)
 
-        print(f"Created Containerlab topology:\t\t\t{clab_file}")
+        print(f"Created {self.config['output_format']} topology:\t\t\t{topo_file}")
 
     def _render_interface_map(self, node):
         if 'name' in node and node['name'] in self.device_interfaces_map:
@@ -464,7 +509,7 @@ def arg_input_check(s):
     raise argparse.ArgumentTypeError(f"input source has to be one of {allowed_values}")
 
 def arg_output_check(s):
-    allowed_values = ['gml', 'cyjs', 'clab']
+    allowed_values = ['gml', 'cyjs', 'clab', 'cml']
     if s in allowed_values:
         return s
     raise argparse.ArgumentTypeError(f"output format has to be one of {allowed_values}")
@@ -475,7 +520,7 @@ def parse_args():
     parser.add_argument('-c', '--config',    required=False, help='configuration file')
     parser.add_argument('-i', '--input',     required=False, help='input source: netbox (default) | cyjs',
                                              default='netbox', type=arg_input_check,)
-    parser.add_argument('-o', '--output',    required=False, help='output format: cyjs | gml | clab',
+    parser.add_argument('-o', '--output',    required=False, help='output format: cyjs | gml | clab | cml',
                                              type=arg_output_check, )
     parser.add_argument('-a', '--api',       required=False, help='netbox API URL')
     parser.add_argument('-s', '--site',      required=False, help='netbox site to export')
@@ -502,7 +547,19 @@ def load_toml_config(filename):
         'nb_api_token': '',
         'tls_validate': True,
         'output_format': 'cyjs',
-        'export_device_roles': ["router", "core-switch", "access-switch", "distribution-switch", "tor-switch"],
+        'export_device_roles': ["router", "core-switch", "access-switch", "distribution-switch", "tor-switch", "server"],
+        'device_role_levels': {
+            'unknown':              0,
+            'server':               0,
+            'tor-switch':           1,
+            'access-switch':        1,
+            'leaf':                 1,
+            'distribution-switch':  2,
+            'spine':                2,
+            'core-switch':          3,
+            'super-spine':          3,
+            'router':               4,
+        },
         'export_site': '',
         'templates_path': ['.'],
     }
@@ -597,8 +654,8 @@ def main():
     else:
         topo.build_from_graph(nb_network.graph())
 
-    if config['output_format'] == 'clab':
-        topo.export_clab()
+    if config['output_format'] in ['clab', 'cml']:
+        topo.export_topology()
     else:
         if nb_network is None:
             error(f"Only --input netbox is supported for this type of export format: {config['output_format']}")
