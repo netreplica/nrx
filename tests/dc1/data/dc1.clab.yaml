@@ -63,24 +63,36 @@ topology:
         dc1-srv-1:
             kind: linux
             image: netreplica/ubuntu-host:latest
+            cmd: /start.sh -sS
+            exec:
+                - bash -c "echo root:root | chpasswd"
             labels:
                 graph-icon: server
                 graph-level: 10
         dc1-srv-2:
             kind: linux
             image: netreplica/ubuntu-host:latest
+            cmd: /start.sh -sS
+            exec:
+                - bash -c "echo root:root | chpasswd"
             labels:
                 graph-icon: server
                 graph-level: 10
         dc1-srv-3:
             kind: linux
             image: netreplica/ubuntu-host:latest
+            cmd: /start.sh -sS
+            exec:
+                - bash -c "echo root:root | chpasswd"
             labels:
                 graph-icon: server
                 graph-level: 10
         dc1-srv-4:
             kind: linux
             image: netreplica/ubuntu-host:latest
+            cmd: /start.sh -sS
+            exec:
+                - bash -c "echo root:root | chpasswd"
             labels:
                 graph-icon: server
                 graph-level: 10
