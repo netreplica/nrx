@@ -88,8 +88,8 @@ nodes:
     ram: null
     hide_links: false
     tags: []
-    x: 1800
-    y: 1800
+    x: 0
+    y: -200
     configuration: |-
       hostname dc2-tor-1
       # workaround for booting to loader> prompt
@@ -150,7 +150,7 @@ nodes:
     hide_links: false
     tags: []
     x: 0
-    y: 0
+    y: -400
     configuration: |-
       hostname dc2-spine-1
       # workaround for booting to loader> prompt
@@ -214,8 +214,8 @@ nodes:
     ram: null
     hide_links: false
     tags: []
-    x: 500
-    y: 500
+    x: 1000
+    y: -400
     configuration: |-
       hostname dc2-spine-2
       # workaround for booting to loader> prompt
@@ -279,8 +279,8 @@ nodes:
     ram: null
     hide_links: false
     tags: []
-    x: 2200
-    y: 2200
+    x: 333
+    y: -200
     configuration: |-
       hostname dc2-tor-2
       # workaround for booting to loader> prompt
@@ -340,8 +340,8 @@ nodes:
     ram: null
     hide_links: false
     tags: []
-    x: 2600
-    y: 2600
+    x: 666
+    y: -200
     configuration: |-
       hostname dc2-tor-3
       # workaround for booting to loader> prompt
@@ -401,8 +401,8 @@ nodes:
     ram: null
     hide_links: false
     tags: []
-    x: 3000
-    y: 3000
+    x: 1000
+    y: -200
     configuration: |-
       hostname dc2-tor-4
       # workaround for booting to loader> prompt
@@ -462,8 +462,8 @@ nodes:
     ram: null
     hide_links: false
     tags: []
-    x: 1000
-    y: 1000
+    x: 0
+    y: 0
     configuration: |-
       #cloud-config
       hostname: dc2-srv-1
@@ -493,8 +493,8 @@ nodes:
     ram: null
     hide_links: false
     tags: []
-    x: 1200
-    y: 1200
+    x: 333
+    y: 0
     configuration: |-
       #cloud-config
       hostname: dc2-srv-2
@@ -524,8 +524,8 @@ nodes:
     ram: null
     hide_links: false
     tags: []
-    x: 1400
-    y: 1400
+    x: 666
+    y: 0
     configuration: |-
       #cloud-config
       hostname: dc2-srv-3
@@ -555,8 +555,8 @@ nodes:
     ram: null
     hide_links: false
     tags: []
-    x: 1600
-    y: 1600
+    x: 1000
+    y: 0
     configuration: |-
       #cloud-config
       hostname: dc2-srv-4

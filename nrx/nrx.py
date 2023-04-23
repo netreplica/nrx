@@ -288,6 +288,8 @@ class NetworkTopology:
                     self.topology['roles'][role] = [dev['device_index']]
                 if role in self.config['device_role_levels']:
                     dev['level'] = self.config['device_role_levels'][role]
+            if 'level' not in dev:
+                dev['level'] = 0
 
             if dev['name'] not in self.device_interfaces_map:
                 # Initialize an empty map. There is a similar initialization in _append_if_node_is_interface,
@@ -356,10 +358,13 @@ class NetworkTopology:
         for device_indexes in self.topology['roles'].values():
             device_indexes.sort()
         for n in self.topology['nodes']:
-            role_size = len(self.topology['roles'][n['role']])
-            if role_size > 1:
-                n['rank'] = self.topology['roles'][n['role']].index(n['device_index']) / (role_size - 1)
-            else:
+            if 'role' in n:
+                role = n['role']
+                if role in self.topology['roles']:
+                    role_size = len(self.topology['roles'][role])
+                    if role_size > 1:
+                        n['rank'] = self.topology['roles'][role].index(n['device_index']) / (role_size - 1)
+            if 'rank' not in n:
                 n['rank'] = 0.5
 
     def _build_topology(self):
