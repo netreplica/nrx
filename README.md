@@ -50,6 +50,7 @@ Export capabilities:
 * Exports the graph as a Cisco Modeling Labs topology definition file in YAML format
 * Uses NetBox Device Platform `slug` field to identify node templates when rendering the topology definition file
 * Creates mapping between real interface names and interface names used by the supported lab tools
+* Calculates `level` and `rank` values for each node based on Device Role to help visualize the topology
 * Exports the graph into CYJS format that can be later converted into a topology definition file, or used by 3rd party software
 
 # Prerequisites
