@@ -4,7 +4,7 @@
 [![Discord](https://img.shields.io/discord/1075106069862416525?label=discord)](https://discord.gg/M2SkgSdKht)
 [![CI](https://github.com/netreplica/nrx/actions/workflows/systest.yml/badge.svg)](https://github.com/netreplica/nrx/actions/workflows/systest.yml)
 
-# nrx - network replica exporter
+# nrx - netreplica exporter
 
 **nrx** reads a network topology graph from [NetBox](https://docs.netbox.dev/en/stable/) DCIM system and exports it in one of the following formats:
 
