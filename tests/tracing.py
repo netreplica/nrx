@@ -1,6 +1,5 @@
 import os
 import pynetbox
-from rich import inspect
 
 nb_api_url = os.getenv('NB_API_URL')
 nb_api_token = os.getenv('NB_API_TOKEN')
@@ -24,4 +23,8 @@ for device in devices:
             trace = interface.trace()
             if len(trace) > 0:
                 traces.append(trace)
-    inspect(traces)
+                if len(trace[0]) == 1 and len(trace[-1]) == 1:
+                    int_a = trace[0][0]
+                    int_b = trace[-1][0]
+                    if isinstance(int_a, pynetbox.models.dcim.Interfaces) and isinstance(int_b, pynetbox.models.dcim.Interfaces):
+                        print(f"{int_a.device} {int_a.name} <-> {int_b.device} {int_b.name}")

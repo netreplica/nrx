@@ -203,6 +203,9 @@ class NBFactory:
                             ])
                         except ValueError:
                             debug("One or both devices for this connection are not in the export graph")
+                    else:
+                        debug(f"Skipping {int_a} <> {int_b} as one or both terminations are not interfaces")
+
 
     def export_graph_gml(self):
         export_file = self.config['export_site'] + ".gml"
