@@ -171,41 +171,67 @@ class NBFactory:
                     self.nb_net.interface_ids.append(interface.id)
                     self.nb_net.cable_ids.append(interface.cable.id)
 
+    def _trace_cable(self, cable):
+        if len(cable.a_terminations) == 1 and len(cable.b_terminations) == 1:
+            int_a = cable.a_terminations[0]
+            int_b = cable.b_terminations[0]
+            debug(f"Tracing {int_a.device}:{int_a} <> {int_b.device}:{int_b}")
+            if isinstance(int_a, pynetbox.models.dcim.Interfaces) and \
+               isinstance(int_b, pynetbox.models.dcim.Interfaces):
+                debug(f"Direct cable {int_a.device} {int_a.name} <-> {int_b.device} {int_b.name}")
+                return [int_a, int_b]
+            interface = None
+            if isinstance(int_a, pynetbox.models.dcim.Interfaces):
+                interface = int_a
+            elif isinstance(int_b, pynetbox.models.dcim.Interfaces):
+                interface = int_b
+            if interface is not None:
+                trace = interface.trace()
+                if len(trace) > 0:
+                    if len(trace[0]) == 1 and len(trace[-1]) == 1:
+                        int_a = trace[0][0]
+                        int_b = trace[-1][0]
+                        if isinstance(int_a, pynetbox.models.dcim.Interfaces) and isinstance(int_b, pynetbox.models.dcim.Interfaces):
+                            debug(f"Traced {int_a.device} {int_a.name} <-> {int_b.device} {int_b.name}")
+                            return [int_a, int_b]
+            debug(f"Skipping {int_a} <> {int_b} as both terminations are not interfaces or cannot be traced")
+            return []
+        if len(cable.a_terminations) < 1 or len(cable.b_terminations) < 1:
+            debug(f"Skipping {cable} as one or both sides are not connected")
+            return []
+        debug(f"Skipping {cable} as it has more than one termination on one or both sides")
+        return []
+
     def _build_network_graph(self):
         if len(self.nb_net.cable_ids) > 0:
             # Making sure there will be a non-empty filter for cables, as otherwise all cables would be returned
             for cable in list(self.nb_session.dcim.cables.filter(id=self.nb_net.cable_ids)):
-                if len(cable.a_terminations) == 1 and len(cable.b_terminations) == 1:
-                    int_a = cable.a_terminations[0]
-                    int_b = cable.b_terminations[0]
-                    if isinstance(int_a, pynetbox.models.dcim.Interfaces) and \
-                        isinstance(int_b, pynetbox.models.dcim.Interfaces):
-                        debug(f"{int_a.device}:{int_a} <> {int_b.device}:{int_b}")
-                        try:
-                            d_a = self.nb_net.devices[self.nb_net.device_ids.index(int_a.device.id)]
-                            d_b = self.nb_net.devices[self.nb_net.device_ids.index(int_b.device.id)]
-                            self.G.add_nodes_from([
-                                (d_a["node_id"], {"side": "a", "type": "device", "device": d_a}),
-                                (d_b["node_id"], {"side": "b", "type": "device", "device": d_b}),
-                            ])
-                            i_a = self.nb_net.interfaces[self.nb_net.interface_ids.index(int_a.id)]
-                            i_b = self.nb_net.interfaces[self.nb_net.interface_ids.index(int_b.id)]
-                            self.G.add_nodes_from([
-                                (i_a["node_id"], {"side": "a", "type": "interface", "interface": i_a}),
-                                (i_b["node_id"], {"side": "b", "type": "interface", "interface": i_b}),
-                            ])
-                            self.G.add_edges_from([
-                                (d_a["node_id"], i_a["node_id"]),
-                                (d_b["node_id"], i_b["node_id"]),
-                            ])
-                            self.G.add_edges_from([
-                                (i_a["node_id"], i_b["node_id"]),
-                            ])
-                        except ValueError:
-                            debug("One or both devices for this connection are not in the export graph")
-                    else:
-                        debug(f"Skipping {int_a} <> {int_b} as one or both terminations are not interfaces")
-
+                edge = self._trace_cable(cable)
+                if len(edge) == 2:
+                    int_a = edge[0]
+                    int_b = edge[1]
+                    try:
+                        d_a = self.nb_net.devices[self.nb_net.device_ids.index(int_a.device.id)]
+                        d_b = self.nb_net.devices[self.nb_net.device_ids.index(int_b.device.id)]
+                        self.G.add_nodes_from([
+                            (d_a["node_id"], {"side": "a", "type": "device", "device": d_a}),
+                            (d_b["node_id"], {"side": "b", "type": "device", "device": d_b}),
+                        ])
+                        i_a = self.nb_net.interfaces[self.nb_net.interface_ids.index(int_a.id)]
+                        i_b = self.nb_net.interfaces[self.nb_net.interface_ids.index(int_b.id)]
+                        self.G.add_nodes_from([
+                            (i_a["node_id"], {"side": "a", "type": "interface", "interface": i_a}),
+                            (i_b["node_id"], {"side": "b", "type": "interface", "interface": i_b}),
+                        ])
+                        self.G.add_edges_from([
+                            (d_a["node_id"], i_a["node_id"]),
+                            (d_b["node_id"], i_b["node_id"]),
+                        ])
+                        self.G.add_edges_from([
+                            (i_a["node_id"], i_b["node_id"]),
+                        ])
+                    except ValueError:
+                        debug("One or both devices for this connection are not in the export graph")
 
     def export_graph_gml(self):
         export_file = self.config['export_site'] + ".gml"
