@@ -173,28 +173,28 @@ class NBFactory:
 
     def _trace_cable(self, cable):
         if len(cable.a_terminations) == 1 and len(cable.b_terminations) == 1:
-            int_a = cable.a_terminations[0]
-            int_b = cable.b_terminations[0]
-            debug(f"Tracing {int_a.device}:{int_a} <> {int_b.device}:{int_b}")
-            if isinstance(int_a, pynetbox.models.dcim.Interfaces) and \
-               isinstance(int_b, pynetbox.models.dcim.Interfaces):
-                debug(f"Direct cable {int_a.device} {int_a.name} <-> {int_b.device} {int_b.name}")
-                return [int_a, int_b]
+            term_a = cable.a_terminations[0]
+            term_b = cable.b_terminations[0]
+            debug(f"Tracing Cable #{cable.id}: {term_a} <--> {term_b}")
+            if isinstance(term_a, pynetbox.models.dcim.Interfaces) and \
+               isinstance(term_b, pynetbox.models.dcim.Interfaces):
+                debug(f"Direct cable {term_a.device} {term_a.name} <-> {term_b.device} {term_b.name}")
+                return [term_a, term_b]
             interface = None
-            if isinstance(int_a, pynetbox.models.dcim.Interfaces):
-                interface = int_a
-            elif isinstance(int_b, pynetbox.models.dcim.Interfaces):
-                interface = int_b
+            if isinstance(term_a, pynetbox.models.dcim.Interfaces):
+                interface = term_a
+            elif isinstance(term_b, pynetbox.models.dcim.Interfaces):
+                interface = term_b
             if interface is not None:
                 trace = interface.trace()
                 if len(trace) > 0:
                     if len(trace[0]) == 1 and len(trace[-1]) == 1:
-                        int_a = trace[0][0]
-                        int_b = trace[-1][0]
-                        if isinstance(int_a, pynetbox.models.dcim.Interfaces) and isinstance(int_b, pynetbox.models.dcim.Interfaces):
-                            debug(f"Traced {int_a.device} {int_a.name} <-> {int_b.device} {int_b.name}")
-                            return [int_a, int_b]
-            debug(f"Skipping {int_a} <> {int_b} as both terminations are not interfaces or cannot be traced")
+                        side_a = trace[0][0]
+                        side_b = trace[-1][0]
+                        if isinstance(side_a, pynetbox.models.dcim.Interfaces) and isinstance(side_b, pynetbox.models.dcim.Interfaces):
+                            debug(f"Traced {side_a.device} {side_a.name} <-> {side_b.device} {side_b.name}")
+                            return [side_a, side_b]
+            debug(f"Skipping {cable} as both terminations are not interfaces or cannot be traced")
             return []
         if len(cable.a_terminations) < 1 or len(cable.b_terminations) < 1:
             debug(f"Skipping {cable} as one or both sides are not connected")
