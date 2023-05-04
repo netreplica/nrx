@@ -1,11 +1,12 @@
 lint:
 	pylint nrx/*.py
 
-test-local: test-dc1 test-dc2
+test-local: test-dc1 test-dc2 test-colo
 test: test-dc1-cyjs-2-clab test-dc2-cyjs-2-cml
 
 test-dc1: test-dc1-nb-2-cyjs test-dc1-cyjs-2-clab
 test-dc2: test-dc2-nb-2-cyjs test-dc2-cyjs-2-cml
+test-colo: test-colo-nb-2-cyjs
 
 test-dc1-nb-2-cyjs:
 	@echo "#################################################################"
@@ -44,3 +45,14 @@ test-dc2-cyjs-2-cml:
 	../../../nrx.py -c ../nrx.conf -i cyjs -f ../data/dc2.cyjs -d && \
 	for f in *; do echo Comparing file $$f ...; diff $$f ../data/$$f || exit 1; done
 	@echo
+
+test-colo-nb-2-cyjs:
+	@echo "#################################################################"
+	@echo "# Colo: read from NetBox and export as CYJS"
+	@echo "#################################################################"
+	mkdir -p tests/colo/test && cd tests/colo/test && rm -f * && \
+	source ../.env && \
+	../../../nrx.py -c ../nrx.conf -o cyjs -d && \
+	diff colo.cyjs ../data/colo.cyjs
+	@echo
+
