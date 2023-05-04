@@ -54,3 +54,4 @@ nrx39
 nrx39-dev
 tests/*/test/*
 tests/main.conf
+tmp

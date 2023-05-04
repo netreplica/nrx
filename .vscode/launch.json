@@ -5,12 +5,13 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "main",
+            "name": "dc1",
             "type": "python",
             "request": "launch",
-            "program": "nrx.py",
+            "cwd": "tmp",
+            "program": "../nrx.py",
             "args": [
-                "-c", "./tests/main.conf", "-s", "colo", "-o", "cyjs", "-d"
+                "-c", "../tests/main.conf", "-s", "dc1", "-o", "cyjs", "-d"
             ],
             "console": "integratedTerminal",
             "justMyCode": true
@@ -19,9 +20,10 @@
             "name": "demo",
             "type": "python",
             "request": "launch",
-            "program": "nrx.py",
+            "cwd": "tmp",
+            "program": "../nrx.py",
             "args": [
-                "-c", "./nrx.conf", "-o", "cyjs", "-d"
+                "-c", "../nrx.conf", "-o", "cyjs", "-d"
             ],
             "console": "integratedTerminal",
             "justMyCode": true
