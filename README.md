@@ -40,7 +40,8 @@ Data sourcing capabilities:
 * Connects to a NetBox instance over an API using a user-provided authentication token
 * Exports a network topology graph for one Site at a time
 * Only Devices with Roles from a customizable list will be exported
-* Only connections (Cables) between Devices will be exported. Connections to Circuits will be excluded
+* Direct connections between Devices via Cables will be exported as topology edges
+* Connections via patch panels and circuits will be exported as edges as well using NetBox tracing API
 * Only Ethernet connections will be exported
 * As an alternative to sourcing live data from NetBox, imports a graph from a previously exported file in CYJS format
 
