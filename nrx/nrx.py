@@ -193,7 +193,7 @@ class NBFactory:
                         side_a = trace[0][0]
                         side_b = trace[-1][0]
                         if isinstance(side_a, pynetbox.models.dcim.Interfaces) and isinstance(side_b, pynetbox.models.dcim.Interfaces):
-                            debug(f"Traced {side_a.device} {side_a.name} <-> {side_b.device} {side_b.name}")
+                            debug(f"Traced {side_a.device} {side_a.name} <-> {side_b.device} {side_b.name}: {trace}")
                             return [side_a, side_b]
             debug(f"Skipping {cable} as both terminations are not interfaces or cannot be traced")
             return []
