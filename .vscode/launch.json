@@ -5,12 +5,23 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "nrx",
+            "name": "main",
             "type": "python",
             "request": "launch",
             "program": "nrx.py",
             "args": [
                 "-c", "./tests/main.conf", "-s", "colo", "-o", "cyjs", "-d"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "demo",
+            "type": "python",
+            "request": "launch",
+            "program": "nrx.py",
+            "args": [
+                "-c", "./nrx.conf", "-o", "cyjs", "-d"
             ],
             "console": "integratedTerminal",
             "justMyCode": true

@@ -172,6 +172,7 @@ class NBFactory:
                     self.nb_net.cable_ids.append(interface.cable.id)
 
     def _trace_cable(self, cable):
+        debug(f"Tracing {cable}")
         if len(cable.a_terminations) == 1 and len(cable.b_terminations) == 1:
             term_a = cable.a_terminations[0]
             term_b = cable.b_terminations[0]
