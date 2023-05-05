@@ -1,0 +1,44 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "colo",
+            "type": "python",
+            "request": "launch",
+            "cwd": "tmp",
+            "program": "../nrx.py",
+            "args": [
+                "-c", "../tests/main.conf", "-s", "colo", "-o", "cyjs", "-d"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "dc1",
+            "type": "python",
+            "request": "launch",
+            "cwd": "tmp",
+            "program": "../nrx.py",
+            "args": [
+                "-c", "../tests/main.conf", "-s", "dc1", "-o", "cyjs", "-d"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "demo",
+            "type": "python",
+            "request": "launch",
+            "cwd": "tmp",
+            "program": "../nrx.py",
+            "args": [
+                "-c", "../nrx.conf", "-o", "cyjs", "-d"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        }
+    ]
+}

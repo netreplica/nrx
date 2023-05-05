@@ -19,6 +19,7 @@ This project is in a proof-of-concept phase. We're experimenting with the best w
 # Table of contents
 
 * [Capabilities](#capabilities)
+* [Compatibility](#compatibility)
 * [Prerequisites](#prerequisites)
 * [How to install](#how-to-install)
 * [How to configure](#how-to-configure)
@@ -40,7 +41,8 @@ Data sourcing capabilities:
 * Connects to a NetBox instance over an API using a user-provided authentication token
 * Exports a network topology graph for one Site at a time
 * Only Devices with Roles from a customizable list will be exported
-* Only connections (Cables) between Devices will be exported. Connections to Circuits will be excluded
+* Direct connections between Devices via Cables will be exported as topology edges
+* Connections via Patch Panels and Circuits will be exported as well with help of NetBox [Cable Tracing API](https://docs.netbox.dev/en/stable/models/dcim/cable/#tracing-cables)
 * Only Ethernet connections will be exported
 * As an alternative to sourcing live data from NetBox, imports a graph from a previously exported file in CYJS format
 
@@ -52,6 +54,14 @@ Export capabilities:
 * Creates mapping between real interface names and interface names used by the supported lab tools
 * Calculates `level` and `rank` values for each node based on Device Role to help visualize the topology
 * Exports the graph into CYJS format that can be later converted into a topology definition file, or used by 3rd party software
+
+# Compatibility
+
+The following minimum software versions were tested for compatibility with `nrx`:
+
+* NetBox `v3.4`
+* Containerlab `v0.39`
+* Cisco Modeling Labs `v2.5`
 
 # Prerequisites
 

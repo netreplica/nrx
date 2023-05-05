@@ -1,0 +1,212 @@
+{
+    "data": [
+        [
+            "name",
+            "colo"
+        ]
+    ],
+    "directed": false,
+    "multigraph": false,
+    "elements": {
+        "nodes": [
+            {
+                "data": {
+                    "side": "b",
+                    "type": "device",
+                    "device": {
+                        "id": 35,
+                        "type": "device",
+                        "name": "sw1",
+                        "node_id": 0,
+                        "platform": "eos",
+                        "platform_name": "Arista EOS",
+                        "vendor": "arista",
+                        "vendor_name": "Arista",
+                        "model": "ccs-720xp-24y6",
+                        "model_name": "CCS-720XP-24Y6",
+                        "role": "access-switch",
+                        "device_index": 0
+                    },
+                    "id": "0",
+                    "value": 0,
+                    "name": "0"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "device",
+                    "device": {
+                        "id": 36,
+                        "type": "device",
+                        "name": "sw2",
+                        "node_id": 5,
+                        "platform": "eos",
+                        "platform_name": "Arista EOS",
+                        "vendor": "arista",
+                        "vendor_name": "Arista",
+                        "model": "ccs-720xp-24y6",
+                        "model_name": "CCS-720XP-24Y6",
+                        "role": "access-switch",
+                        "device_index": 1
+                    },
+                    "id": "5",
+                    "value": 5,
+                    "name": "5"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "interface",
+                    "interface": {
+                        "id": 1181,
+                        "type": "interface",
+                        "name": "Ethernet1",
+                        "node_id": 1,
+                        "interface_index": 0
+                    },
+                    "id": "1",
+                    "value": 1,
+                    "name": "1"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "interface",
+                    "interface": {
+                        "id": 1212,
+                        "type": "interface",
+                        "name": "Ethernet1",
+                        "node_id": 6,
+                        "interface_index": 4
+                    },
+                    "id": "6",
+                    "value": 6,
+                    "name": "6"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "interface",
+                    "interface": {
+                        "id": 1182,
+                        "type": "interface",
+                        "name": "Ethernet2",
+                        "node_id": 2,
+                        "interface_index": 1
+                    },
+                    "id": "2",
+                    "value": 2,
+                    "name": "2"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "interface",
+                    "interface": {
+                        "id": 1213,
+                        "type": "interface",
+                        "name": "Ethernet2",
+                        "node_id": 7,
+                        "interface_index": 5
+                    },
+                    "id": "7",
+                    "value": 7,
+                    "name": "7"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "interface",
+                    "interface": {
+                        "id": 1183,
+                        "type": "interface",
+                        "name": "Ethernet3",
+                        "node_id": 3,
+                        "interface_index": 2
+                    },
+                    "id": "3",
+                    "value": 3,
+                    "name": "3"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "interface",
+                    "interface": {
+                        "id": 1214,
+                        "type": "interface",
+                        "name": "Ethernet3",
+                        "node_id": 8,
+                        "interface_index": 6
+                    },
+                    "id": "8",
+                    "value": 8,
+                    "name": "8"
+                }
+            }
+        ],
+        "edges": [
+            {
+                "data": {
+                    "source": 0,
+                    "target": 1
+                }
+            },
+            {
+                "data": {
+                    "source": 0,
+                    "target": 2
+                }
+            },
+            {
+                "data": {
+                    "source": 0,
+                    "target": 3
+                }
+            },
+            {
+                "data": {
+                    "source": 5,
+                    "target": 6
+                }
+            },
+            {
+                "data": {
+                    "source": 5,
+                    "target": 7
+                }
+            },
+            {
+                "data": {
+                    "source": 5,
+                    "target": 8
+                }
+            },
+            {
+                "data": {
+                    "source": 1,
+                    "target": 6
+                }
+            },
+            {
+                "data": {
+                    "source": 2,
+                    "target": 7
+                }
+            },
+            {
+                "data": {
+                    "source": 3,
+                    "target": 8
+                }
+            }
+        ]
+    }
+}
