@@ -59,9 +59,9 @@ Export capabilities:
 
 The following minimum software versions were tested for compatibility with `nrx`:
 
-    * NetBox `v3.4`
-    * Containerlab `v0.39`
-    * Cisco Modeling Labs `v2.5`
+* NetBox `v3.4`
+* Containerlab `v0.39`
+* Cisco Modeling Labs `v2.5`
 
 # Prerequisites
 
