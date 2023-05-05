@@ -54,6 +54,14 @@ Export capabilities:
 * Calculates `level` and `rank` values for each node based on Device Role to help visualize the topology
 * Exports the graph into CYJS format that can be later converted into a topology definition file, or used by 3rd party software
 
+# Compatibility
+
+The following minimum software versions were tested for compatibility with `nrx`:
+
+    * NetBox `v3.4`
+    * Containerlab `v0.39`
+    * Cisco Modeling Labs `v2.5`
+
 # Prerequisites
 
 * Python 3.9+. In the commands below we assume use have `python3.9` executable. If you have a different name, change accordingly.
