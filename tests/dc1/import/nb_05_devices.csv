@@ -1,6 +1,6 @@
 name,device_role,manufacturer,device_type,status,site,platform
-dc1-spine-1,Spine,Arista,DCS-7280CR3-32P4,active,dc1,Arista EOS
-dc1-spine-2,Spine,Arista,DCS-7280CR3-32P4,active,dc1,Arista EOS
+dc1-spine-1,Spine,Arista,DCS-7280CR3-32P4,active,dc1,Arista EOS,"wan,primary"
+dc1-spine-2,Spine,Arista,DCS-7280CR3-32P4,active,dc1,Arista EOS,"wan,backup"
 dc1-leaf-1,Leaf,Nokia,7220 IXR-D2,active,dc1,Nokia SR-Linux
 dc1-leaf-2,Leaf,Nokia,7220 IXR-D2,active,dc1,Nokia SR-Linux
 dc1-leaf-3,Leaf,Nokia,7220 IXR-D2,active,dc1,Nokia SR-Linux

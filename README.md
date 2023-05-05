@@ -128,10 +128,11 @@ optional arguments:
   -o, --output OUTPUT       output format: cyjs | gml | clab | cml
   -a, --api API             netbox API URL
   -s, --site SITE           netbox site to export
+  -t, --tags TAGS           netbox tags to export, for multiple tags use a comma-separated list: tag1,tag2,tag3
   -k, --insecure            allow insecure server connections when using TLS
   -d, --debug               enable debug output
   -f, --file FILE           file with the network graph to import
-  -t, --templates TEMPLATES directory with template files, will be prepended to TEMPLATES_PATH list in the configuration file
+  -T, --templates TEMPLATES directory with template files, will be prepended to TEMPLATES_PATH list in the configuration file
 ```
 
 Note: `NB_API_TOKEN` is not supported as an argument for security reasons.
