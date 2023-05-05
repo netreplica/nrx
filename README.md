@@ -19,6 +19,7 @@ This project is in a proof-of-concept phase. We're experimenting with the best w
 # Table of contents
 
 * [Capabilities](#capabilities)
+* [Compatibility](#compatibility)
 * [Prerequisites](#prerequisites)
 * [How to install](#how-to-install)
 * [How to configure](#how-to-configure)
