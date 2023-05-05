@@ -104,7 +104,7 @@ class NBFactory:
             else:
                 print(f"Fetching devices from site: {config['export_site']}")
                 try:
-                    self._get_nb_device_info()
+                    self._get_nb_devices()
                 except (pynetbox.core.query.RequestError, pynetbox.core.query.ContentError) as e:
                     error("NetBox API failure at get devices or interfaces:", e)
 
@@ -117,9 +117,12 @@ class NBFactory:
     def graph(self):
         return self.G
 
-    def _get_nb_device_info(self):
-        for device in list(self.nb_session.dcim.devices.filter(site_id=self.nb_site.id,
-                                                               role=self.config['export_device_roles'])):
+    def _get_nb_devices(self):
+        """Get device list from NetBox filtered by site, tags and device roles"""
+        devices = self.nb_session.dcim.devices.filter(site_id=self.nb_site.id,
+                                                      tag=self.config['export_tags'],
+                                                      role=self.config['export_device_roles'])
+        for device in list(devices):
             platform, platform_name = "unknown", "unknown"
             vendor, vendor_name = "unknown", "unknown"
             model, model_name = "unknown", "unknown"
