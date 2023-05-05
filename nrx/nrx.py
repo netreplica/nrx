@@ -84,7 +84,11 @@ class NBFactory:
     def __init__(self, config):
         self.config = config
         self.nb_net = NBNetwork()
-        self.G = nx.Graph(name=config['export_site']) # TODO fix when no site is specified
+        if len(config['export_site']) > 0:
+            self.topology_name = config['export_site']
+        elif len(config['export_tags']) > 0:
+            self.topology_name = "-".join(config['export_tags'])
+        self.G = nx.Graph(name=self.topology_name)
         self.nb_session = pynetbox.api(self.config['nb_api_url'],
                                        token=self.config['nb_api_token'],
                                        threading=True)
@@ -103,15 +107,18 @@ class NBFactory:
                 error(f"Site not found: {config['export_site']}")
             else:
                 print(f"Fetching devices from site: {config['export_site']}")
-                try:
-                    self._get_nb_devices()
-                except (pynetbox.core.query.RequestError, pynetbox.core.query.ContentError) as e:
-                    error("NetBox API failure at get devices or interfaces:", e)
+        else:
+            print(f"Fetching devices with tags: {','.join(config['export_tags'])}")
 
-                try:
-                    self._build_network_graph()
-                except (pynetbox.core.query.RequestError, pynetbox.core.query.ContentError) as e:
-                    error("NetBox API failure at get cables:", e)
+        try:
+            self._get_nb_devices()
+        except (pynetbox.core.query.RequestError, pynetbox.core.query.ContentError) as e:
+            error("NetBox API failure at get devices or interfaces:", e)
+
+        try:
+            self._build_network_graph()
+        except (pynetbox.core.query.RequestError, pynetbox.core.query.ContentError) as e:
+            error("NetBox API failure at get cables:", e)
 
 
     def graph(self):
@@ -119,9 +126,14 @@ class NBFactory:
 
     def _get_nb_devices(self):
         """Get device list from NetBox filtered by site, tags and device roles"""
-        devices = self.nb_session.dcim.devices.filter(site_id=self.nb_site.id,
-                                                      tag=self.config['export_tags'],
-                                                      role=self.config['export_device_roles'])
+        devices = None
+        if self.nb_site is None:
+            devices = self.nb_session.dcim.devices.filter(tag=self.config['export_tags'],
+                                                          role=self.config['export_device_roles'])
+        else:
+            devices = self.nb_session.dcim.devices.filter(site_id=self.nb_site.id,
+                                                          tag=self.config['export_tags'],
+                                                          role=self.config['export_device_roles'])
         for device in list(devices):
             platform, platform_name = "unknown", "unknown"
             vendor, vendor_name = "unknown", "unknown"
@@ -240,7 +252,7 @@ class NBFactory:
                         debug("One or both devices for this connection are not in the export graph")
 
     def export_graph_gml(self):
-        export_file = self.config['export_site'] + ".gml"
+        export_file = self.topology_name + ".gml"
         try:
             nx.write_gml(self.G, export_file)
         except OSError as e:
@@ -251,7 +263,7 @@ class NBFactory:
 
     def export_graph_json(self):
         cyjs = nx.cytoscape_data(self.G)
-        export_file = self.config['export_site'] + ".cyjs"
+        export_file = self.topology_name + ".cyjs"
         try:
             with open(export_file, 'w', encoding='utf-8') as f:
                 json.dump(cyjs, f, indent=4)
