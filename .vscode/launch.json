@@ -5,6 +5,18 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "colo",
+            "type": "python",
+            "request": "launch",
+            "cwd": "tmp",
+            "program": "../nrx.py",
+            "args": [
+                "-c", "../tests/main.conf", "-s", "colo", "-o", "cyjs", "-d"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
             "name": "dc1",
             "type": "python",
             "request": "launch",

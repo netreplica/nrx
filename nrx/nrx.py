@@ -176,7 +176,6 @@ class NBFactory:
         if len(cable.a_terminations) == 1 and len(cable.b_terminations) == 1:
             term_a = cable.a_terminations[0]
             term_b = cable.b_terminations[0]
-            debug(f"Tracing Cable #{cable.id}: {term_a} <--> {term_b}")
             if isinstance(term_a, pynetbox.models.dcim.Interfaces) and \
                isinstance(term_b, pynetbox.models.dcim.Interfaces):
                 debug(f"Direct cable {term_a.device} {term_a.name} <-> {term_b.device} {term_b.name}")
