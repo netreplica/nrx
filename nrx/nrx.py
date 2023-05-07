@@ -135,10 +135,13 @@ class NBFactory:
                                                           tag=self.config['export_tags'],
                                                           role=self.config['export_device_roles'])
         for device in list(devices):
+            device_name = None
             platform, platform_name = "unknown", "unknown"
             vendor, vendor_name = "unknown", "unknown"
             model, model_name = "unknown", "unknown"
             role = "unknown"
+            if device.name is not None and len(device.name) > 0:
+                device_name = device.name
             if device.platform is not None:
                 platform = device.platform.slug
                 platform_name = device.platform.name
@@ -150,10 +153,12 @@ class NBFactory:
                 model_name = device.device_type.model
             if device.device_role is not None:
                 role = device.device_role.slug
+                if device_name is None:
+                    device_name = f"{role}-{device.id}"
             d = {
                 "id": device.id,
                 "type": "device",
-                "name": device.name,
+                "name": device_name,
                 "node_id": -1,
                 "platform": platform,
                 "platform_name": platform_name,
