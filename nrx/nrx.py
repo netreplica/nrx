@@ -635,32 +635,37 @@ def load_toml_config(filename):
             error(f"Unsupported configuration: {e}")
     return config
 
+def config_apply_netbox_args(config, args):
+    """Apply netbox-related arguments to the configuration and validate it"""
+    if args.api is not None and len(args.api) > 0:
+        config['nb_api_url'] = args.api
+    if len(config['nb_api_url']) == 0:
+        error("Need an API URL to connect to NetBox.\nUse --api argument, NB_API_URL environment variable or key in --config file")
+    if len(config['nb_api_token']) == 0:
+        error("Need an API token to connect to NetBox.\nUse NB_API_TOKEN environment variable or key in --config file")
+    if args.site is not None and len(args.site) > 0:
+        config['export_site'] = args.site
+    if args.tags is not None and len(args.tags) > 0:
+        config['export_tags'] = args.tags.split(',')
+        debug(f"List of tags to filter devices for export: {config['export_tags']}")
+    if len(config['export_site']) == 0 and len(config['export_tags']) == 0:
+        error("Need a Site name or Tags to export. Use --site/--tags arguments, or EXPORT_SITE/EXPORT_TAGS key in --config file")
+
+    return config
+
 def load_config(args):
     """Load, consolidate and validate configuration"""
     config = load_toml_config(args.config)
     config['nb_api_url'] = os.getenv('NB_API_URL', config['nb_api_url'])
     config['nb_api_token'] = os.getenv('NB_API_TOKEN', config['nb_api_token'])
 
-    # Override config values with arguments
+    # Override config values with arguments and validate
     if args.input is not None and len(args.input) > 0:
         config['input_source'] = args.input
         if config['input_source'] == 'cyjs' and (args.file is None or len(args.file) == 0):
             error("Provide a path to CYJS graph using --file")
-
         if config['input_source'] == 'netbox':
-            if args.api is not None and len(args.api) > 0:
-                config['nb_api_url'] = args.api
-            if len(config['nb_api_url']) == 0:
-                error("Need an API URL to connect to NetBox.\nUse --api argument, NB_API_URL environment variable or key in --config file")
-            if len(config['nb_api_token']) == 0:
-                error("Need an API token to connect to NetBox.\nUse NB_API_TOKEN environment variable or key in --config file")
-            if args.site is not None and len(args.site) > 0:
-                config['export_site'] = args.site
-            if args.tags is not None and len(args.tags) > 0:
-                config['export_tags'] = args.tags.split(',')
-                debug(f"List of tags to filter devices for export: {config['export_tags']}")
-            if len(config['export_site']) == 0 and len(config['export_tags']) == 0:
-                error("Need a Site name to export. Use --site argument, or EXPORT_SITE key in --config file")
+            config = config_apply_netbox_args(config, args)
 
     if args.insecure:
         config['tls_validate'] = False
