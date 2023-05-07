@@ -84,43 +84,64 @@ class NBFactory:
     def __init__(self, config):
         self.config = config
         self.nb_net = NBNetwork()
-        self.G = nx.Graph(name=config['export_site'])
+        if len(config['export_site']) > 0:
+            self.topology_name = config['export_site']
+        elif len(config['export_tags']) > 0:
+            self.topology_name = "-".join(config['export_tags'])
+        self.G = nx.Graph(name=self.topology_name)
         self.nb_session = pynetbox.api(self.config['nb_api_url'],
                                        token=self.config['nb_api_token'],
                                        threading=True)
+        self.nb_site = None
         if not config['tls_validate']:
             self.nb_session.http_session.verify = False
             urllib3.disable_warnings()
-        try:
-            self.nb_site = self.nb_session.dcim.sites.get(name=config['export_site'])
-        except (pynetbox.core.query.RequestError, pynetbox.core.query.ContentError) as e:
-            error("NetBox API failure at get sites:", e)
-        debug(f"returned site data {self.nb_site}")
-        if self.nb_site is None:
-            print(f"No data found for a site {config['export_site']}")
+        print(f"Connecting to NetBox at: {config['nb_api_url']}")
+        if len(config['export_site']) > 0:
+            debug(f"Fetching site: {config['export_site']}")
+            try:
+                self.nb_site = self.nb_session.dcim.sites.get(name=config['export_site'])
+            except (pynetbox.core.query.RequestError, pynetbox.core.query.ContentError) as e:
+                error("NetBox API failure at get site:", e)
+            if self.nb_site is None:
+                error(f"Site not found: {config['export_site']}")
+            else:
+                print(f"Fetching devices from site: {config['export_site']}")
         else:
-            print(f"Exporting NetBox '{config['export_site']}' site from:\t\t{config['nb_api_url']}")
-            try:
-                self._get_nb_device_info()
-            except (pynetbox.core.query.RequestError, pynetbox.core.query.ContentError) as e:
-                error("NetBox API failure at get devices or interfaces:", e)
+            print(f"Fetching devices with tags: {','.join(config['export_tags'])}")
 
-            try:
-                self._build_network_graph()
-            except (pynetbox.core.query.RequestError, pynetbox.core.query.ContentError) as e:
-                error("NetBox API failure at get cables:", e)
+        try:
+            self._get_nb_devices()
+        except (pynetbox.core.query.RequestError, pynetbox.core.query.ContentError) as e:
+            error("NetBox API failure at get devices or interfaces:", e)
+
+        try:
+            self._build_network_graph()
+        except (pynetbox.core.query.RequestError, pynetbox.core.query.ContentError) as e:
+            error("NetBox API failure at get cables:", e)
 
 
     def graph(self):
         return self.G
 
-    def _get_nb_device_info(self):
-        for device in list(self.nb_session.dcim.devices.filter(site_id=self.nb_site.id,
-                                                               role=self.config['export_device_roles'])):
+    def _get_nb_devices(self):
+        """Get device list from NetBox filtered by site, tags and device roles"""
+        devices = None
+        if self.nb_site is None:
+            devices = self.nb_session.dcim.devices.filter(tag=self.config['export_tags'],
+                                                          role=self.config['export_device_roles'])
+        else:
+            devices = self.nb_session.dcim.devices.filter(site_id=self.nb_site.id,
+                                                          tag=self.config['export_tags'],
+                                                          role=self.config['export_device_roles'])
+        for device in list(devices):
+            device_name = None
             platform, platform_name = "unknown", "unknown"
             vendor, vendor_name = "unknown", "unknown"
             model, model_name = "unknown", "unknown"
             role = "unknown"
+            if device.name is not None and len(device.name) > 0:
+                device_name = device.name
             if device.platform is not None:
                 platform = device.platform.slug
                 platform_name = device.platform.name
@@ -132,10 +153,12 @@ class NBFactory:
                 model_name = device.device_type.model
             if device.device_role is not None:
                 role = device.device_role.slug
+                if device_name is None:
+                    device_name = f"{role}-{device.id}"
             d = {
                 "id": device.id,
                 "type": "device",
-                "name": device.name,
+                "name": device_name,
                 "node_id": -1,
                 "platform": platform,
                 "platform_name": platform_name,
@@ -234,18 +257,18 @@ class NBFactory:
                         debug("One or both devices for this connection are not in the export graph")
 
     def export_graph_gml(self):
-        export_file = self.config['export_site'] + ".gml"
+        export_file = self.topology_name + ".gml"
         try:
             nx.write_gml(self.G, export_file)
         except OSError as e:
             error(f"Writing to {export_file}:", e)
         except nx.exception.NetworkXError as e:
             error("Can't export as GML:", e)
-        print(f"GML graph saved to:\t\t\t\t{export_file}")
+        print(f"GML graph saved to: {export_file}")
 
     def export_graph_json(self):
         cyjs = nx.cytoscape_data(self.G)
-        export_file = self.config['export_site'] + ".cyjs"
+        export_file = self.topology_name + ".cyjs"
         try:
             with open(export_file, 'w', encoding='utf-8') as f:
                 json.dump(cyjs, f, indent=4)
@@ -253,7 +276,7 @@ class NBFactory:
             error(f"Writing to {export_file}:", e)
         except TypeError as e:
             error("Can't export as JSON:", e)
-        print(f"CYJS graph saved to:\t\t\t\t{export_file}")
+        print(f"CYJS graph saved to: {export_file}")
 
 class NetworkTopology:
     """Class to create network topology artifacts"""
@@ -294,7 +317,7 @@ class NetworkTopology:
         self._build_topology()
 
     def _read_network_graph(self, file):
-        print(f"Reading CYJS topology graph:\t\t\t{file}")
+        print(f"Reading CYJS topology graph: {file}")
         cyjs = {}
         try:
             with open(file, 'r', encoding='utf-8') as f:
@@ -504,7 +527,7 @@ class NetworkTopology:
         except OSError as e:
             error(f"Can't write into {topo_file}", e)
 
-        print(f"Created {self.config['output_format']} topology:\t\t\t{topo_file}")
+        print(f"Created {self.config['output_format']} topology: {topo_file}")
 
     def _render_interface_map(self, node):
         if 'name' in node and node['name'] in self.device_interfaces_map:
@@ -527,7 +550,7 @@ class NetworkTopology:
                         f.write(interface_map)
                 except OSError as e:
                     error(f"Can't write into {int_map_file}", e)
-                print(f"Created '{p}' interface map:\t\t\t{int_map_file}")
+                print(f"Created '{p}' interface map: {int_map_file}")
                 return int_map_file
         return None
 
@@ -553,12 +576,13 @@ def parse_args():
                                              type=arg_output_check, )
     parser.add_argument('-a', '--api',       required=False, help='netbox API URL')
     parser.add_argument('-s', '--site',      required=False, help='netbox site to export')
+    parser.add_argument('-t', '--tags',      required=False, help='netbox tags to export, for multiple tags use a comma-separated list: tag1,tag2,tag3 (uses AND logic)')
     parser.add_argument('-k', '--insecure',  required=False, help='allow insecure server connections when using TLS',
                                              action=argparse.BooleanOptionalAction)
     parser.add_argument('-d', '--debug',     required=False, help='enable debug output',
                                              action=argparse.BooleanOptionalAction)
     parser.add_argument('-f', '--file',      required=False, help='file with the network graph to import')
-    parser.add_argument('-t', '--templates', required=False, help='directory with template files, \
+    parser.add_argument('-T', '--templates', required=False, help='directory with template files, \
                                                                    will be prepended to TEMPLATES_PATH list \
                                                                    in the configuration file')
 
@@ -590,6 +614,7 @@ def load_toml_config(filename):
             'router':               4,
         },
         'export_site': '',
+        'export_tags': [],
         'templates_path': ['.'],
     }
     if filename is not None and len(filename) > 0:
@@ -610,29 +635,37 @@ def load_toml_config(filename):
             error(f"Unsupported configuration: {e}")
     return config
 
+def config_apply_netbox_args(config, args):
+    """Apply netbox-related arguments to the configuration and validate it"""
+    if args.api is not None and len(args.api) > 0:
+        config['nb_api_url'] = args.api
+    if len(config['nb_api_url']) == 0:
+        error("Need an API URL to connect to NetBox.\nUse --api argument, NB_API_URL environment variable or key in --config file")
+    if len(config['nb_api_token']) == 0:
+        error("Need an API token to connect to NetBox.\nUse NB_API_TOKEN environment variable or key in --config file")
+    if args.site is not None and len(args.site) > 0:
+        config['export_site'] = args.site
+    if args.tags is not None and len(args.tags) > 0:
+        config['export_tags'] = args.tags.split(',')
+        debug(f"List of tags to filter devices for export: {config['export_tags']}")
+    if len(config['export_site']) == 0 and len(config['export_tags']) == 0:
+        error("Need a Site name or Tags to export. Use --site/--tags arguments, or EXPORT_SITE/EXPORT_TAGS key in --config file")
+
+    return config
+
 def load_config(args):
     """Load, consolidate and validate configuration"""
     config = load_toml_config(args.config)
     config['nb_api_url'] = os.getenv('NB_API_URL', config['nb_api_url'])
     config['nb_api_token'] = os.getenv('NB_API_TOKEN', config['nb_api_token'])
 
-    # Override config values with arguments
+    # Override config values with arguments and validate
     if args.input is not None and len(args.input) > 0:
         config['input_source'] = args.input
         if config['input_source'] == 'cyjs' and (args.file is None or len(args.file) == 0):
             error("Provide a path to CYJS graph using --file")
-
         if config['input_source'] == 'netbox':
-            if args.api is not None and len(args.api) > 0:
-                config['nb_api_url'] = args.api
-            if len(config['nb_api_url']) == 0:
-                error("Need an API URL to connect to NetBox.\nUse --api argument, NB_API_URL environment variable or key in --config file")
-            if len(config['nb_api_token']) == 0:
-                error("Need an API token to connect to NetBox.\nUse NB_API_TOKEN environment variable or key in --config file")
-            if args.site is not None and len(args.site) > 0:
-                config['export_site'] = args.site
-            if len(config['export_site']) == 0:
-                error("Need a Site name to export. Use --site argument, or EXPORT_SITE key in --config file")
+            config = config_apply_netbox_args(config, args)
 
     if args.insecure:
         config['tls_validate'] = False

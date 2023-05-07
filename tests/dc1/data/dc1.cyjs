@@ -95,7 +95,7 @@
                         "id": 14,
                         "type": "device",
                         "name": "dc1-spine-2",
-                        "node_id": 21,
+                        "node_id": 22,
                         "platform": "eos",
                         "platform_name": "Arista EOS",
                         "vendor": "arista",
@@ -105,9 +105,9 @@
                         "role": "spine",
                         "device_index": 5
                     },
-                    "id": "21",
-                    "value": 21,
-                    "name": "21"
+                    "id": "22",
+                    "value": 22,
+                    "name": "22"
                 }
             },
             {
@@ -134,12 +134,12 @@
                         "id": 586,
                         "type": "interface",
                         "name": "Ethernet1/1",
-                        "node_id": 22,
-                        "interface_index": 16
+                        "node_id": 23,
+                        "interface_index": 17
                     },
-                    "id": "22",
-                    "value": 22,
-                    "name": "22"
+                    "id": "23",
+                    "value": 23,
+                    "name": "23"
                 }
             },
             {
@@ -221,12 +221,12 @@
                         "id": 587,
                         "type": "interface",
                         "name": "Ethernet2/1",
-                        "node_id": 23,
-                        "interface_index": 17
+                        "node_id": 24,
+                        "interface_index": 18
                     },
-                    "id": "23",
-                    "value": 23,
-                    "name": "23"
+                    "id": "24",
+                    "value": 24,
+                    "name": "24"
                 }
             },
             {
@@ -308,12 +308,12 @@
                         "id": 588,
                         "type": "interface",
                         "name": "Ethernet3/1",
-                        "node_id": 24,
-                        "interface_index": 18
+                        "node_id": 25,
+                        "interface_index": 19
                     },
-                    "id": "24",
-                    "value": 24,
-                    "name": "24"
+                    "id": "25",
+                    "value": 25,
+                    "name": "25"
                 }
             },
             {
@@ -395,12 +395,12 @@
                         "id": 589,
                         "type": "interface",
                         "name": "Ethernet4/1",
-                        "node_id": 25,
-                        "interface_index": 19
+                        "node_id": 26,
+                        "interface_index": 20
                     },
-                    "id": "25",
-                    "value": 25,
-                    "name": "25"
+                    "id": "26",
+                    "value": 26,
+                    "name": "26"
                 }
             },
             {
@@ -411,7 +411,7 @@
                         "id": 29,
                         "type": "device",
                         "name": "dc1-srv-1",
-                        "node_id": 26,
+                        "node_id": 27,
                         "platform": "linux",
                         "platform_name": "Linux",
                         "vendor": "unknown",
@@ -421,9 +421,9 @@
                         "role": "server",
                         "device_index": 6
                     },
-                    "id": "26",
-                    "value": 26,
-                    "name": "26"
+                    "id": "27",
+                    "value": 27,
+                    "name": "27"
                 }
             },
             {
@@ -450,12 +450,12 @@
                         "id": 1161,
                         "type": "interface",
                         "name": "Gig-E 1",
-                        "node_id": 27,
-                        "interface_index": 20
+                        "node_id": 28,
+                        "interface_index": 21
                     },
-                    "id": "27",
-                    "value": 27,
-                    "name": "27"
+                    "id": "28",
+                    "value": 28,
+                    "name": "28"
                 }
             },
             {
@@ -466,7 +466,7 @@
                         "id": 30,
                         "type": "device",
                         "name": "dc1-srv-2",
-                        "node_id": 28,
+                        "node_id": 29,
                         "platform": "linux",
                         "platform_name": "Linux",
                         "vendor": "unknown",
@@ -476,9 +476,9 @@
                         "role": "server",
                         "device_index": 7
                     },
-                    "id": "28",
-                    "value": 28,
-                    "name": "28"
+                    "id": "29",
+                    "value": 29,
+                    "name": "29"
                 }
             },
             {
@@ -505,12 +505,12 @@
                         "id": 1166,
                         "type": "interface",
                         "name": "Gig-E 1",
-                        "node_id": 29,
-                        "interface_index": 21
+                        "node_id": 30,
+                        "interface_index": 22
                     },
-                    "id": "29",
-                    "value": 29,
-                    "name": "29"
+                    "id": "30",
+                    "value": 30,
+                    "name": "30"
                 }
             },
             {
@@ -521,7 +521,7 @@
                         "id": 31,
                         "type": "device",
                         "name": "dc1-srv-3",
-                        "node_id": 30,
+                        "node_id": 31,
                         "platform": "linux",
                         "platform_name": "Linux",
                         "vendor": "unknown",
@@ -531,9 +531,9 @@
                         "role": "server",
                         "device_index": 8
                     },
-                    "id": "30",
-                    "value": 30,
-                    "name": "30"
+                    "id": "31",
+                    "value": 31,
+                    "name": "31"
                 }
             },
             {
@@ -560,12 +560,12 @@
                         "id": 1171,
                         "type": "interface",
                         "name": "Gig-E 1",
-                        "node_id": 31,
-                        "interface_index": 22
+                        "node_id": 32,
+                        "interface_index": 23
                     },
-                    "id": "31",
-                    "value": 31,
-                    "name": "31"
+                    "id": "32",
+                    "value": 32,
+                    "name": "32"
                 }
             },
             {
@@ -576,7 +576,7 @@
                         "id": 32,
                         "type": "device",
                         "name": "dc1-srv-4",
-                        "node_id": 32,
+                        "node_id": 33,
                         "platform": "linux",
                         "platform_name": "Linux",
                         "vendor": "unknown",
@@ -586,9 +586,9 @@
                         "role": "server",
                         "device_index": 9
                     },
-                    "id": "32",
-                    "value": 32,
-                    "name": "32"
+                    "id": "33",
+                    "value": 33,
+                    "name": "33"
                 }
             },
             {
@@ -615,12 +615,12 @@
                         "id": 1176,
                         "type": "interface",
                         "name": "Gig-E 1",
-                        "node_id": 33,
-                        "interface_index": 23
+                        "node_id": 34,
+                        "interface_index": 24
                     },
-                    "id": "33",
-                    "value": 33,
-                    "name": "33"
+                    "id": "34",
+                    "value": 34,
+                    "name": "34"
                 }
             }
         ],
@@ -675,32 +675,32 @@
             },
             {
                 "data": {
-                    "source": 21,
-                    "target": 22
-                }
-            },
-            {
-                "data": {
-                    "source": 21,
+                    "source": 22,
                     "target": 23
                 }
             },
             {
                 "data": {
-                    "source": 21,
+                    "source": 22,
                     "target": 24
                 }
             },
             {
                 "data": {
-                    "source": 21,
+                    "source": 22,
                     "target": 25
                 }
             },
             {
                 "data": {
+                    "source": 22,
+                    "target": 26
+                }
+            },
+            {
+                "data": {
                     "source": 3,
-                    "target": 22
+                    "target": 23
                 }
             },
             {
@@ -730,7 +730,7 @@
             {
                 "data": {
                     "source": 7,
-                    "target": 23
+                    "target": 24
                 }
             },
             {
@@ -760,7 +760,7 @@
             {
                 "data": {
                     "source": 11,
-                    "target": 24
+                    "target": 25
                 }
             },
             {
@@ -790,55 +790,55 @@
             {
                 "data": {
                     "source": 15,
-                    "target": 25
+                    "target": 26
                 }
             },
             {
                 "data": {
-                    "source": 26,
-                    "target": 27
+                    "source": 27,
+                    "target": 28
                 }
             },
             {
                 "data": {
                     "source": 1,
-                    "target": 27
+                    "target": 28
                 }
             },
             {
                 "data": {
-                    "source": 28,
-                    "target": 29
+                    "source": 29,
+                    "target": 30
                 }
             },
             {
                 "data": {
                     "source": 5,
-                    "target": 29
+                    "target": 30
                 }
             },
             {
                 "data": {
-                    "source": 30,
-                    "target": 31
+                    "source": 31,
+                    "target": 32
                 }
             },
             {
                 "data": {
                     "source": 9,
-                    "target": 31
+                    "target": 32
                 }
             },
             {
                 "data": {
-                    "source": 32,
-                    "target": 33
+                    "source": 33,
+                    "target": 34
                 }
             },
             {
                 "data": {
                     "source": 13,
-                    "target": 33
+                    "target": 34
                 }
             }
         ]

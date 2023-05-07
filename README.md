@@ -39,8 +39,11 @@ This project is in a proof-of-concept phase. We're experimenting with the best w
 Data sourcing capabilities:
 
 * Connects to a NetBox instance over an API using a user-provided authentication token
-* Exports a network topology graph for one Site at a time
+* Exports a network topology graph for
+    * a specific Site
+    * multiple Sites interconnected via point-2-point Circuits
 * Only Devices with Roles from a customizable list will be exported
+* Uses Tags to further narrow down a list of Devices for export
 * Direct connections between Devices via Cables will be exported as topology edges
 * Connections via Patch Panels and Circuits will be exported as well with help of NetBox [Cable Tracing API](https://docs.netbox.dev/en/stable/models/dcim/cable/#tracing-cables)
 * Only Ethernet connections will be exported
@@ -117,7 +120,7 @@ Command-line arguments take the highest priority.
 
 ```
 ./nrx.py --help
-usage: nrx [-h] [-c CONFIG] [-i INPUT] [-o OUTPUT] [-a API] [-s SITE] [-k] [-d] [-f FILE] [-t TEMPLATES]
+usage: nrx [-h] [-c CONFIG] [-i INPUT] [-o OUTPUT] [-a API] [-s SITE] [-k] [-d] [-f FILE] [-T TEMPLATES]
 
 nrx - network topology exporter by netreplica
 
@@ -128,10 +131,11 @@ optional arguments:
   -o, --output OUTPUT       output format: cyjs | gml | clab | cml
   -a, --api API             netbox API URL
   -s, --site SITE           netbox site to export
+  -t, --tags TAGS           netbox tags to export, for multiple tags use a comma-separated list: tag1,tag2,tag3 (uses AND logic)
   -k, --insecure            allow insecure server connections when using TLS
   -d, --debug               enable debug output
   -f, --file FILE           file with the network graph to import
-  -t, --templates TEMPLATES directory with template files, will be prepended to TEMPLATES_PATH list in the configuration file
+  -T, --templates TEMPLATES directory with template files, will be prepended to TEMPLATES_PATH list in the configuration file
 ```
 
 Note: `NB_API_TOKEN` is not supported as an argument for security reasons.

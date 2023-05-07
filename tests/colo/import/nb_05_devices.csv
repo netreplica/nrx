@@ -1,5 +1,5 @@
-name,device_role,manufacturer,device_type,status,site,platform
-pp1,Patch Panel,Generic,24-port UTP Patch Panel,active,colo,
-pp2,Patch Panel,Generic,24-port UTP Patch Panel,active,colo,
-sw1,Access Switch,Arista,CCS-720XP-24Y6,active,colo,Arista EOS
-sw2,Access Switch,Arista,CCS-720XP-24Y6,active,colo,Arista EOS
+name,device_role,manufacturer,device_type,status,site,platform,tags
+pp1,Patch Panel,Generic,24-port UTP Patch Panel,active,colo,,""
+pp2,Patch Panel,Generic,24-port UTP Patch Panel,active,colo,,""
+sw1,Access Switch,Arista,CCS-720XP-24Y6,active,colo,Arista EOS,"wan,primary"
+sw2,Access Switch,Arista,CCS-720XP-24Y6,active,colo,Arista EOS,"wan,backup"
