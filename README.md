@@ -120,7 +120,7 @@ Command-line arguments take the highest priority.
 
 ```
 ./nrx.py --help
-usage: nrx [-h] [-c CONFIG] [-i INPUT] [-o OUTPUT] [-a API] [-s SITE] [-k] [-d] [-f FILE] [-t TEMPLATES]
+usage: nrx [-h] [-c CONFIG] [-i INPUT] [-o OUTPUT] [-a API] [-s SITE] [-k] [-d] [-f FILE] [-T TEMPLATES]
 
 nrx - network topology exporter by netreplica
 
