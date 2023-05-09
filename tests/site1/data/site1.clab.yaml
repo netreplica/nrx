@@ -1,0 +1,45 @@
+name: site1
+topology:
+    nodes:
+        graphite:
+            kind: linux
+            image: netreplica/graphite:nanog86
+            env:
+                CLAB_SSH_CONNECTION: ${SSH_CONNECTION}
+            binds:
+                - __clabDir__/topology-data.json:/htdocs/lab/default/topology-data.json:ro
+                - __clabDir__/ansible-inventory.yml:/htdocs/lab/default/ansible-inventory.yml:ro
+            ports:
+                - 8080:80
+            exec:
+                - sh -c 'graphite_motd.sh 8080'
+            labels:
+                graph-hide: yes
+
+        site1-r1:
+            kind: sonic-vs
+            image: netreplica/docker-sonic-vs:latest
+            labels:
+                graph-icon: switch
+                graph-level: 6
+        site1-h1:
+            kind: linux
+            image: netreplica/ubuntu-host:latest
+            cmd: /start.sh -sS
+            exec:
+                - bash -c "echo root:root | chpasswd"
+            labels:
+                graph-icon: server
+                graph-level: 10
+        site1-h2:
+            kind: linux
+            image: netreplica/ubuntu-host:latest
+            cmd: /start.sh -sS
+            exec:
+                - bash -c "echo root:root | chpasswd"
+            labels:
+                graph-icon: server
+                graph-level: 10
+    links:
+        - endpoints: ["site1-r1:eth1", "site1-h1:eth1"]
+        - endpoints: ["site1-r1:eth2", "site1-h2:eth1"]
