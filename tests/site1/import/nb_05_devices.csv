@@ -1,0 +1,4 @@
+name,device_role,manufacturer,device_type,status,site,platform
+site1-r1,Router,Edgecore,5912-54X-O-AC-F,active,site1,SONiC
+site1-h1,server,Dell,PowerEdge R640,active,site1,Linux
+site1-h2,server,Dell,PowerEdge R640,active,site1,Linux

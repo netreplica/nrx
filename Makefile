@@ -56,3 +56,13 @@ test-colo-nb-2-cyjs:
 	diff colo.cyjs ../data/colo.cyjs
 	@echo
 
+test-site1-nb-2-cyjs:
+	@echo "#################################################################"
+	@echo "# Site1: read from NetBox and export as CYJS"
+	@echo "#################################################################"
+	mkdir -p tests/site1/test && cd tests/site1/test && rm -f * && \
+	source ../.env && \
+	../../../nrx.py -c ../nrx.conf -o cyjs -d && \
+	diff site1.cyjs ../data/site1.cyjs
+	@echo
+

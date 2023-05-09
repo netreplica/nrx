@@ -1,0 +1,185 @@
+{
+    "data": [
+        [
+            "name",
+            "site1"
+        ]
+    ],
+    "directed": false,
+    "multigraph": false,
+    "elements": {
+        "nodes": [
+            {
+                "data": {
+                    "side": "a",
+                    "type": "device",
+                    "device": {
+                        "id": 37,
+                        "type": "device",
+                        "name": "site1-r1",
+                        "node_id": 4,
+                        "platform": "sonic",
+                        "platform_name": "SONiC",
+                        "vendor": "unknown",
+                        "vendor_name": "unknown",
+                        "model": "5912-54x-o-ac-f",
+                        "model_name": "5912-54X-O-AC-F",
+                        "role": "router",
+                        "device_index": 2
+                    },
+                    "id": "4",
+                    "value": 4,
+                    "name": "4"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "device",
+                    "device": {
+                        "id": 38,
+                        "type": "device",
+                        "name": "site1-h1",
+                        "node_id": 0,
+                        "platform": "linux",
+                        "platform_name": "Linux",
+                        "vendor": "unknown",
+                        "vendor_name": "unknown",
+                        "model": "dell_poweredge_r640",
+                        "model_name": "PowerEdge R640",
+                        "role": "server",
+                        "device_index": 0
+                    },
+                    "id": "0",
+                    "value": 0,
+                    "name": "0"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "interface",
+                    "interface": {
+                        "id": 1250,
+                        "type": "interface",
+                        "name": "xe1",
+                        "node_id": 5,
+                        "interface_index": 2
+                    },
+                    "id": "5",
+                    "value": 5,
+                    "name": "5"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "interface",
+                    "interface": {
+                        "id": 1298,
+                        "type": "interface",
+                        "name": "Gig-E 1",
+                        "node_id": 1,
+                        "interface_index": 0
+                    },
+                    "id": "1",
+                    "value": 1,
+                    "name": "1"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "device",
+                    "device": {
+                        "id": 39,
+                        "type": "device",
+                        "name": "site1-h2",
+                        "node_id": 2,
+                        "platform": "linux",
+                        "platform_name": "Linux",
+                        "vendor": "unknown",
+                        "vendor_name": "unknown",
+                        "model": "dell_poweredge_r640",
+                        "model_name": "PowerEdge R640",
+                        "role": "server",
+                        "device_index": 1
+                    },
+                    "id": "2",
+                    "value": 2,
+                    "name": "2"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "interface",
+                    "interface": {
+                        "id": 1251,
+                        "type": "interface",
+                        "name": "xe2",
+                        "node_id": 6,
+                        "interface_index": 3
+                    },
+                    "id": "6",
+                    "value": 6,
+                    "name": "6"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "interface",
+                    "interface": {
+                        "id": 1303,
+                        "type": "interface",
+                        "name": "Gig-E 1",
+                        "node_id": 3,
+                        "interface_index": 1
+                    },
+                    "id": "3",
+                    "value": 3,
+                    "name": "3"
+                }
+            }
+        ],
+        "edges": [
+            {
+                "data": {
+                    "source": 4,
+                    "target": 5
+                }
+            },
+            {
+                "data": {
+                    "source": 4,
+                    "target": 6
+                }
+            },
+            {
+                "data": {
+                    "source": 0,
+                    "target": 1
+                }
+            },
+            {
+                "data": {
+                    "source": 5,
+                    "target": 1
+                }
+            },
+            {
+                "data": {
+                    "source": 2,
+                    "target": 3
+                }
+            },
+            {
+                "data": {
+                    "source": 6,
+                    "target": 3
+                }
+            }
+        ]
+    }
+}
