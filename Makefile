@@ -76,3 +76,13 @@ test-site1-cyjs-2-clab:
 	for f in *; do echo Comparing file $$f ...; diff $$f ../data/$$f || exit 1; done
 	@echo
 
+test-site1-cyjs-template-2-clab:
+	@echo "#################################################################"
+	@echo "# Site1: replace Platform in the template, read from CYJS and export as Containerlab"
+	@echo "#################################################################"
+	mkdir -p tests/site1/test && cd tests/site1/test && rm -f * && \
+	cat ../data/site1.cyjs.template | envsubst > site1.sonic-vs.cyjs && \
+	../../../nrx.py -c ../nrx.conf -i cyjs -f site1.sonic-vs.cyjs -o clab -d && \
+	for f in *.yaml; do echo Comparing file $$f ...; diff $$f ../data/$$f || exit 1; done
+	@echo
+
