@@ -1,0 +1,3 @@
+side_a_device,side_a_type,side_a_name,side_b_device,side_b_type,side_b_name
+site1-r1,dcim.interface,xe1,site1-h1,dcim.interface,Gig-E 1
+site1-r1,dcim.interface,xe2,site1-h2,dcim.interface,Gig-E 1
