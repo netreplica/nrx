@@ -3,5 +3,8 @@
   "extends": [
     "config:base",
     ":dependencyDashboard"
-  ]
+  ],
+  "pip_requirements": {
+    "fileMatch": ["requirements.txt", "requirements-dev.txt"]
+  }
 }
