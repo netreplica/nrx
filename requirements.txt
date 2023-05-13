@@ -1,10 +1,10 @@
 certifi==2022.12.7
-charset-normalizer==3.0.1
+charset-normalizer==3.1.0
 idna==3.4
 Jinja2==3.1.2
 MarkupSafe==2.1.2
-networkx==3.0
+networkx==3.1
 pynetbox==7.0.1
 requests==2.30.0
 toml==0.10.2
-urllib3==1.26.14
+urllib3==1.26.15
