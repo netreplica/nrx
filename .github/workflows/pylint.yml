@@ -5,10 +5,12 @@ on:
     branches: [ "main" ]
     paths:
       - '**.py'
+      - '.github/workflows/pylint.yml'
   pull_request:
     branches: [ "main" ]
     paths:
       - '**.py'
+      - '.github/workflows/pylint.yml'
   workflow_dispatch:
 
 jobs:
