@@ -146,9 +146,9 @@ As an alternative to a configuration file, use environmental variables to provid
 
 ```Shell
 # NetBox API URL
-export NB_API_URL           = 'https://demo.netbox.dev'
+export NB_API_URL='https://demo.netbox.dev'
 # NetBox API Token
-export NB_API_TOKEN         = 'replace_with_valid_API_token'
+export NB_API_TOKEN='replace_with_valid_API_token'
 ```
 
 ## Configuration file
