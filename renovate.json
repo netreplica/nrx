@@ -5,6 +5,6 @@
     ":dependencyDashboard"
   ],
   "pip_requirements": {
-    "fileMatch": ["requirements-dev.txt", "\\.requirements$"]
+    "fileMatch": ["requirements.txt", "requirements-dev.txt"]
   }
 }
