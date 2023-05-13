@@ -7,4 +7,4 @@ networkx==3.1
 pynetbox==7.0.1
 requests==2.30.0
 toml==0.10.2
-urllib3==1.26.15
+urllib3==2.0.2
