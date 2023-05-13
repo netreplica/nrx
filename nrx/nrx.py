@@ -466,7 +466,12 @@ class NetworkTopology:
                     m = f"Unable to open {desc} template '{j2file}' for platform '{platform}' with path {self.config['templates_path']}."
                     m += f" Reason: {e}"
                     if is_required:
-                        error(m)
+                        if platform == 'default':
+                            error(m)
+                        else:
+                            # Render a default template
+                            warning(f"{m}, rendering a default template")
+                            return self._get_template(ttype, "default", True)
                     else:
                         debug(m)
                 self.templates[ttype][platform] = template
