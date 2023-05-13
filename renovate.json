@@ -4,6 +4,9 @@
     "config:base",
     ":dependencyDashboard"
   ],
+  "git-submodules": {
+    "enabled": true
+  },
   "pip_requirements": {
     "fileMatch": ["requirements.txt", "requirements-dev.txt"]
   }
