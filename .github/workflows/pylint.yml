@@ -5,10 +5,12 @@ on:
     branches: [ "main" ]
     paths:
       - '**.py'
+      - '.github/workflows/pylint.yml'
   pull_request:
     branches: [ "main" ]
     paths:
       - '**.py'
+      - '.github/workflows/pylint.yml'
   workflow_dispatch:
 
 jobs:
@@ -20,7 +22,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
