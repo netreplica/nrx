@@ -128,7 +128,7 @@ optional arguments:
   -h, --help                show this help message and exit
   -c, --config CONFIG       configuration file
   -i, --input INPUT         input source: netbox (default) | cyjs
-  -o, --output OUTPUT       output format: cyjs | gml | clab | cml
+  -o, --output OUTPUT       output format: cyjs | gml | clab | cml | graphite
   -a, --api API             netbox API URL
   -s, --site SITE           netbox site to export
   -t, --tags TAGS           netbox tags to export, for multiple tags use a comma-separated list: tag1,tag2,tag3 (uses AND logic)

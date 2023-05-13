@@ -555,13 +555,15 @@ class NetworkTopology:
         return None
 
 def arg_input_check(s):
+    """Check if input source is supported"""
     allowed_values = ['netbox', 'cyjs']
     if s in allowed_values:
         return s
     raise argparse.ArgumentTypeError(f"input source has to be one of {allowed_values}")
 
 def arg_output_check(s):
-    allowed_values = ['gml', 'cyjs', 'clab', 'cml']
+    """Check if output format is supported"""
+    allowed_values = ['gml', 'cyjs', 'clab', 'cml', 'graphite']
     if s in allowed_values:
         return s
     raise argparse.ArgumentTypeError(f"output format has to be one of {allowed_values}")
@@ -572,7 +574,7 @@ def parse_args():
     parser.add_argument('-c', '--config',    required=False, help='configuration file')
     parser.add_argument('-i', '--input',     required=False, help='input source: netbox (default) | cyjs',
                                              default='netbox', type=arg_input_check,)
-    parser.add_argument('-o', '--output',    required=False, help='output format: cyjs | gml | clab | cml',
+    parser.add_argument('-o', '--output',    required=False, help='output format: cyjs | gml | clab | cml | graphite',
                                              type=arg_output_check, )
     parser.add_argument('-a', '--api',       required=False, help='netbox API URL')
     parser.add_argument('-s', '--site',      required=False, help='netbox site to export')
@@ -716,7 +718,7 @@ def main():
     else:
         topo.build_from_graph(nb_network.graph())
 
-    if config['output_format'] in ['clab', 'cml']:
+    if config['output_format'] in ['clab', 'cml', 'graphite']:
         topo.export_topology()
     else:
         if nb_network is None:
