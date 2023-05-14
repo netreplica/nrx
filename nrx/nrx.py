@@ -549,6 +549,10 @@ class NetworkTopology:
         print(f"Created {self.config['output_format']} topology: {topo_file}")
 
     def _render_interface_map(self, node):
+        """Render interface mapping file for a node"""
+        if self.config['output_format'] == 'graphite':
+            # No need to render interface maps for Graphite
+            return None
         if 'name' in node and node['name'] in self.device_interfaces_map:
             d = node['name']
         else:
