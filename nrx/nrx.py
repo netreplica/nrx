@@ -528,7 +528,16 @@ class NetworkTopology:
         self._write_topology(topo)
 
     def _write_topology(self, topo):
-        topo_file = f"{self.topology['name']}.{self.config['output_format']}.yaml"
+        if self.config['output_format'] == 'graphite':
+            # Temporary use containerlab file layout: clab-<topology-name>/topology-data.json
+            try:
+                directory = f"clab-{self.topology['name']}"
+                os.mkdir(directory)
+            except OSError as e:
+                error(f"Can't create directory {directory}", e)
+            topo_file = f"{directory}/topology-data.json"
+        else:
+            topo_file = f"{self.topology['name']}.{self.config['output_format']}.yaml"
         try:
             with open(topo_file, "w", encoding="utf-8") as f:
                 f.write(topo)
