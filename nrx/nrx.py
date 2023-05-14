@@ -525,6 +525,9 @@ class NetworkTopology:
         except jinja2.TemplateError as e:
             error("Rendering topology J2 template:", e)
 
+        self._write_topology(topo)
+
+    def _write_topology(self, topo):
         topo_file = f"{self.topology['name']}.{self.config['output_format']}.yaml"
         try:
             with open(topo_file, "w", encoding="utf-8") as f:
