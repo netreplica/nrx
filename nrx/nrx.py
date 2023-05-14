@@ -470,7 +470,7 @@ class NetworkTopology:
                             error(m)
                         else:
                             # Render a default template
-                            warning(f"{m}, rendering a default template")
+                            debug(f"{m}. Rendering a default template instead.")
                             return self._get_template(ttype, "default", True)
                     else:
                         debug(m)
@@ -532,7 +532,9 @@ class NetworkTopology:
             # Temporary use containerlab file layout: clab-<topology-name>/topology-data.json
             try:
                 directory = f"clab-{self.topology['name']}"
-                os.mkdir(directory)
+                # check if directory exists
+                if not os.path.exists(directory):
+                    os.mkdir(directory)
             except OSError as e:
                 error(f"Can't create directory {directory}", e)
             topo_file = f"{directory}/topology-data.json"
