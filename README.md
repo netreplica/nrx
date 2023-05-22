@@ -236,6 +236,36 @@ source nrx39/bin/activate
     ./nrx.py --input cyjs --file DM-Akron.cyjs --templates templates --output cml
     ```
 
+## Topology Visualization with Graphite
+
+A combination of **netreplica** `nrx` and [`graphite`](https://github.com/netreplica/graphite) tools can be used to visualize NetBox topology data. Unlike typical plugin-based visualizers, this method can work with a standard NetBox instance without any plugins installed. You also don't need an administrative access to the NetBox host in order to use this type of visualization.
+
+Follow a two-step process:
+
+1. Export topology data from NetBox in the Graphite format: `nrx.py -i netbox -o graphite`. For example, let's export "DM-Akron" site from [NetBox Demo](https://demo.netbox.dev) instance:
+
+    ```Shell
+    export NB_API_TOKEN='replace_with_valid_API_token'
+    ./nrx.py --api https://demo.netbox.dev --site DM-Akron --templates templates --output graphite
+    ```
+
+2. Start Graphite to visualize "DM-Akron" site, and then see the topology at [http://localhost:8080/graphite](http://localhost:8080/graphite):
+
+    ```Shell
+    TOPOLOGY="$(pwd)/DM-Akron.graphite.json"
+    sudo docker run -d -t --rm \
+        --mount type=bind,source="${TOPOLOGY}",target=/htdocs/default/default.json,readonly \
+        -p 8080:80 \
+        --name graphite \
+        netreplica/graphite:latest
+    ```
+
+3. If you're running Graphite on a remote host, or on a local VM, use the following helper command to print a proper URL:
+
+    ```Shell
+    sudo docker exec -t -e CLAB_SSH_CONNECTION="${SSH_CONNECTION}" graphite graphite_motd.sh 8080
+    ```
+
 # Credits
 
 ## Original idea and implementation
