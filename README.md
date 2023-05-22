@@ -242,7 +242,7 @@ A combination of **netreplica** `nrx` and [`graphite`](https://github.com/netrep
 
 Follow a two-step process:
 
-1. Export topology data from NetBox in the Graphite format: `nrx.py -i netbox -o graphite`. For example, let's export "DM-Akron" site from [NetBox Demo](https://demo.netbox.dev) instance:
+1. Export topology data from NetBox in the Graphite format: `nrx.py -o graphite`. For example, let's export "DM-Akron" site from the [NetBox Demo](https://demo.netbox.dev) instance:
 
     ```Shell
     export NB_API_TOKEN='replace_with_valid_API_token'
@@ -260,11 +260,15 @@ Follow a two-step process:
         netreplica/graphite:latest
     ```
 
-3. If you're running Graphite on a remote host, or on a local VM, use the following helper command to print a proper URL:
+>> If you're running Graphite on a remote host, or on a local VM, use the following helper command to print a proper URL:
+>>
+>> ```Shell
+>> sudo docker exec -t -e CLAB_SSH_CONNECTION="${SSH_CONNECTION}" graphite graphite_motd.sh 8080
+>> ```
 
-    ```Shell
-    sudo docker exec -t -e CLAB_SSH_CONNECTION="${SSH_CONNECTION}" graphite graphite_motd.sh 8080
-    ```
+You should see a visualization similar to this:
+
+![DM-Akron Diagram](images/graphite_topology.png)
 
 # Credits
 
