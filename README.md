@@ -30,6 +30,7 @@ This project is in a proof-of-concept phase. We're experimenting with the best w
 * [How to use](#how-to-use)
    * [Containerlab example](#containerlab-example)
    * [Cisco Modeling Labs example](#cisco-modeling-labs-example)
+   * [Topology Visualization with Graphite](#topology-visualization-with-graphite)
 * [Credits](#credits)
    * [Original idea and implementation](#original-idea-and-implementation)
    * [Copyright notice](#copyright-notice)
@@ -249,7 +250,7 @@ Follow a two-step process:
     ./nrx.py --api https://demo.netbox.dev --site DM-Akron --templates templates --output graphite
     ```
 
-2. Start Graphite to visualize "DM-Akron" site, and then see the topology at [http://localhost:8080/graphite](http://localhost:8080/graphite):
+2. Start Graphite to visualize "DM-Akron" site:
 
     ```Shell
     TOPOLOGY="$(pwd)/DM-Akron.graphite.json"
@@ -260,15 +261,15 @@ Follow a two-step process:
         netreplica/graphite:latest
     ```
 
->> If you're running Graphite on a remote host, or on a local VM, use the following helper command to print a proper URL:
->>
->> ```Shell
->> sudo docker exec -t -e CLAB_SSH_CONNECTION="${SSH_CONNECTION}" graphite graphite_motd.sh 8080
->> ```
+    Open [http://localhost:8080/graphite](http://localhost:8080/graphite) to see the topology. If you're running Graphite on a remote host, or inside a VM, use this helper to show a working URL:
 
-You should see a visualization similar to this:
+    ```Shell
+    sudo docker exec -t -e CLAB_SSH_CONNECTION="${SSH_CONNECTION}" graphite graphite_motd.sh 8080
+    ```
 
-![DM-Akron Diagram](images/graphite_topology.png)
+    The visualization should be similar to
+
+    ![DM-Akron Diagram](images/graphite_topology.png)
 
 # Credits
 
