@@ -529,16 +529,10 @@ class NetworkTopology:
 
     def _write_topology(self, topo):
         if self.config['output_format'] == 'graphite':
-            # Temporary use containerlab file layout: clab-<topology-name>/topology-data.json
-            try:
-                directory = f"clab-{self.topology['name']}"
-                # check if directory exists
-                if not os.path.exists(directory):
-                    os.mkdir(directory)
-            except OSError as e:
-                error(f"Can't create directory {directory}", e)
-            topo_file = f"{directory}/topology-data.json"
+            # <topology-name>.graphite.json
+            topo_file = f"{self.topology['name']}.{self.config['output_format']}.json"
         else:
+            # <topology-name>.clab.yaml or <topology-name>.cml.yaml
             topo_file = f"{self.topology['name']}.{self.config['output_format']}.yaml"
         try:
             with open(topo_file, "w", encoding="utf-8") as f:
@@ -625,7 +619,7 @@ def load_toml_config(filename):
         'nb_api_token': '',
         'tls_validate': True,
         'output_format': 'cyjs',
-        'export_device_roles': ["router", "core-switch", "access-switch", "distribution-switch", "tor-switch", "server"],
+        'export_device_roles': ["router", "core-switch", "access-switch", "distribution-switch", "tor-switch"],
         'device_role_levels': {
             'unknown':              0,
             'server':               0,
