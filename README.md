@@ -271,6 +271,15 @@ Follow a two-step process:
 
     ![DM-Akron Diagram](images/graphite_topology.png)
 
+    To stop Graphite, run
+
+    ```Shell
+    sudo docker stop graphite
+    ```
+
+
+If you'd like to be able to switch between multiple exported topologies without restarting Graphite, use one of the methods described in [Graphite documentation](https://github.com/netreplica/graphite/blob/main/docs/DOCKER.md).
+
 # Credits
 
 ## Original idea and implementation
