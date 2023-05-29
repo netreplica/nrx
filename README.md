@@ -259,7 +259,7 @@ Follow a two-step process:
 
     ```Shell
     TOPOLOGY="$(pwd)/DM-Akron.graphite.json"
-    sudo docker run -d -t --rm \
+    docker run -d -t --rm \
         --mount type=bind,source="${TOPOLOGY}",target=/htdocs/default/default.json,readonly \
         -p 8080:80 \
         --name graphite \
@@ -269,7 +269,7 @@ Follow a two-step process:
     Open [http://localhost:8080/graphite](http://localhost:8080/graphite) to see the topology. If you're running Graphite on a remote host, or inside a VM, use this helper to show a working URL:
 
     ```Shell
-    sudo docker exec -t -e HOST_CONNECTION="${SSH_CONNECTION}" graphite graphite_motd.sh 8080
+    docker exec -t -e HOST_CONNECTION="${SSH_CONNECTION}" graphite graphite_motd.sh 8080
     ```
 
     The visualization should be similar to
@@ -279,7 +279,7 @@ Follow a two-step process:
     To stop Graphite, run
 
     ```Shell
-    sudo docker stop graphite
+    docker stop graphite
     ```
 
 
