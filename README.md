@@ -10,6 +10,7 @@
 
 * Topology file for [Containerlab](https://containerlab.dev) tool for container-based networking labs
 * Topology file for [Cisco Modeling Labs](https://developer.cisco.com/modeling-labs/) platform for network simulation
+* Topology data for visualization using [Graphite](https://github.com/netreplica/graphite)
 * Graph data as a JSON file in [Cytoscape](https://cytoscape.org/) format [CYJS](http://manual.cytoscape.org/en/stable/Supported_Network_File_Formats.html#cytoscape-js-json)
 
 It can also read the topology graph previously saved as a CYJS file to convert it into other formats.
@@ -54,6 +55,7 @@ Export capabilities:
 
 * Exports the graph as a Containerlab topology definition file in YAML format
 * Exports the graph as a Cisco Modeling Labs topology definition file in YAML format
+* Exports the graph for visualization via Graphite in JSON format
 * Uses NetBox Device Platform `slug` field to identify node templates when rendering the topology definition file
 * Creates mapping between real interface names and interface names used by the supported lab tools
 * Calculates `level` and `rank` values for each node based on Device Role to help visualize the topology
@@ -66,6 +68,7 @@ The following minimum software versions were tested for compatibility with `nrx`
 * NetBox `v3.4`
 * Containerlab `v0.39`
 * Cisco Modeling Labs `v2.5`
+* Netreplica Graphite `v0.4.0`
 
 # Prerequisites
 
@@ -89,6 +92,8 @@ The following minimum software versions were tested for compatibility with `nrx`
     ```
 
 * [Cisco Modeling Labs](https://developer.cisco.com/modeling-labs/) – not required for **nrx**, but is needed to deploy CML topologies
+
+* [Netreplica Graphite](https://github.com/netreplica/graphite) – not required for **nrx**, but is needed for topology visualization
 
 # How to install
 
