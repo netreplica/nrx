@@ -32,13 +32,13 @@ import sys
 import argparse
 import json
 import math
+import ast
 import toml
 import pynetbox
 import requests
 import urllib3
 import networkx as nx
 import jinja2
-import ast
 import yaml
 
 # DEFINE GLOBAL VARs HERE
