@@ -38,6 +38,8 @@ import requests
 import urllib3
 import networkx as nx
 import jinja2
+import ast
+import yaml
 
 # DEFINE GLOBAL VARs HERE
 
@@ -526,6 +528,7 @@ class NetworkTopology:
             error("Rendering topology J2 template:", e)
 
         self._write_topology(topo)
+        self._print_motd(topo)
 
     def _write_topology(self, topo):
         if self.config['output_format'] == 'graphite':
@@ -541,6 +544,22 @@ class NetworkTopology:
             error(f"Can't write into {topo_file}", e)
 
         print(f"Created {self.config['output_format']} topology: {topo_file}")
+
+    def _print_motd(self, topo):
+        topo_dict = {}
+        try:
+            if self.config['output_format'] == 'graphite':
+                topo_dict = ast.literal_eval(topo)
+            elif self.config['output_format'] == 'cml':
+                topo_dict = yaml.safe_load(topo)
+                if 'lab' in topo_dict and 'notes' in topo_dict['lab'] and 'motd' not in topo_dict:
+                    topo_dict['motd'] = topo_dict['lab']['notes']
+        except SyntaxError as e:
+            debug("Can't parse topology as a dictionary:", e)
+        if 'motd' in topo_dict:
+            print(f"{topo_dict['motd']}")
+        elif self.config['output_format'] == 'clab':
+            print(f"To deploy this topology, run: sudo -E clab dep -t {self.topology['name']}.clab.yaml")
 
     def _render_interface_map(self, node):
         """Render interface mapping file for a node"""
