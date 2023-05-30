@@ -1,0 +1,274 @@
+{
+  "name": "dc1",
+  "type": "graphite",
+  "source": "netbox",
+  "motd": "Start Graphite and open http://localhost:8080/graphite to upload and view the topology: docker run -dt --rm -p 8080:80 --name graphite netreplica/graphite:latest",
+  "nodes": {
+    "dc1-leaf-1": {
+      "index": "0",
+      "shortname": "dc1-leaf-1",
+      "longname": "dc1-leaf-1",
+      "fqdn": "dc1-leaf-1",
+      "group": "",
+      "kind": "Nokia SR-Linux",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9
+      }
+    },
+    "dc1-spine-1": {
+      "index": "4",
+      "shortname": "dc1-spine-1",
+      "longname": "dc1-spine-1",
+      "fqdn": "dc1-spine-1",
+      "group": "",
+      "kind": "Arista EOS",
+      "labels": {
+        "graph-icon": "spine",
+        "graph-level": 8
+      }
+    },
+    "dc1-spine-2": {
+      "index": "5",
+      "shortname": "dc1-spine-2",
+      "longname": "dc1-spine-2",
+      "fqdn": "dc1-spine-2",
+      "group": "",
+      "kind": "Arista EOS",
+      "labels": {
+        "graph-icon": "spine",
+        "graph-level": 8
+      }
+    },
+    "dc1-leaf-2": {
+      "index": "1",
+      "shortname": "dc1-leaf-2",
+      "longname": "dc1-leaf-2",
+      "fqdn": "dc1-leaf-2",
+      "group": "",
+      "kind": "Nokia SR-Linux",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9
+      }
+    },
+    "dc1-leaf-3": {
+      "index": "2",
+      "shortname": "dc1-leaf-3",
+      "longname": "dc1-leaf-3",
+      "fqdn": "dc1-leaf-3",
+      "group": "",
+      "kind": "Nokia SR-Linux",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9
+      }
+    },
+    "dc1-leaf-4": {
+      "index": "3",
+      "shortname": "dc1-leaf-4",
+      "longname": "dc1-leaf-4",
+      "fqdn": "dc1-leaf-4",
+      "group": "",
+      "kind": "Nokia SR-Linux",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9
+      }
+    },
+    "dc1-srv-1": {
+      "index": "6",
+      "shortname": "dc1-srv-1",
+      "longname": "dc1-srv-1",
+      "fqdn": "dc1-srv-1",
+      "group": "",
+      "kind": "Linux",
+      "labels": {
+        "graph-icon": "server",
+        "graph-level": 10
+      }
+    },
+    "dc1-srv-2": {
+      "index": "7",
+      "shortname": "dc1-srv-2",
+      "longname": "dc1-srv-2",
+      "fqdn": "dc1-srv-2",
+      "group": "",
+      "kind": "Linux",
+      "labels": {
+        "graph-icon": "server",
+        "graph-level": 10
+      }
+    },
+    "dc1-srv-3": {
+      "index": "8",
+      "shortname": "dc1-srv-3",
+      "longname": "dc1-srv-3",
+      "fqdn": "dc1-srv-3",
+      "group": "",
+      "kind": "Linux",
+      "labels": {
+        "graph-icon": "server",
+        "graph-level": 10
+      }
+    },
+    "dc1-srv-4": {
+      "index": "9",
+      "shortname": "dc1-srv-4",
+      "longname": "dc1-srv-4",
+      "fqdn": "dc1-srv-4",
+      "group": "",
+      "kind": "Linux",
+      "labels": {
+        "graph-icon": "server",
+        "graph-level": 10
+      }
+    }
+  },
+  "links": [
+    {
+      "a": {
+        "node": "dc1-leaf-1",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "dc1-spine-1",
+        "interface": "Ethernet1/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "dc1-leaf-1",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "dc1-spine-2",
+        "interface": "Ethernet1/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "dc1-leaf-2",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "dc1-spine-1",
+        "interface": "Ethernet2/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "dc1-leaf-2",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "dc1-spine-2",
+        "interface": "Ethernet2/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "dc1-leaf-3",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "dc1-spine-1",
+        "interface": "Ethernet3/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "dc1-leaf-3",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "dc1-spine-2",
+        "interface": "Ethernet3/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "dc1-leaf-4",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "dc1-spine-1",
+        "interface": "Ethernet4/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "dc1-leaf-4",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "dc1-spine-2",
+        "interface": "Ethernet4/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "dc1-leaf-1",
+        "interface": "ethernet-1/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "dc1-srv-1",
+        "interface": "Gig-E 1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "dc1-leaf-2",
+        "interface": "ethernet-1/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "dc1-srv-2",
+        "interface": "Gig-E 1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "dc1-leaf-3",
+        "interface": "ethernet-1/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "dc1-srv-3",
+        "interface": "Gig-E 1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "dc1-leaf-4",
+        "interface": "ethernet-1/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "dc1-srv-4",
+        "interface": "Gig-E 1",
+        "peer": "a"
+      }
+    }
+  ]
+}
