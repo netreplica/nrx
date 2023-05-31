@@ -554,7 +554,7 @@ class NetworkTopology:
                 topo_dict = yaml.safe_load(topo)
                 if 'lab' in topo_dict and 'notes' in topo_dict['lab'] and 'motd' not in topo_dict:
                     topo_dict['motd'] = topo_dict['lab']['notes']
-        except SyntaxError as e:
+        except (SyntaxError, yaml.scanner.ScannerError) as e:
             debug("Can't parse topology as a dictionary:", e)
         if 'motd' in topo_dict:
             print(f"{topo_dict['motd']}")
