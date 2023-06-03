@@ -1,0 +1,294 @@
+{
+  "name": "dc2",
+  "type": "graphite",
+  "source": "netbox",
+  "motd": "Start Graphite and open http://localhost:8080/graphite to upload and view the topology: docker run -dt --rm -p 8080:80 --name graphite netreplica/graphite:latest",
+  "nodes": {
+    "dc2-tor-1": {
+      "index": "6",
+      "role": "TOR Switch",
+      "group": "dc2",
+      "platform": "Cisco NX-OS 9000",
+      "vendor": "Cisco",
+      "model": "Nexus 93108TC-EX",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "tor-switch",
+        "graph-level": 9
+      }
+    },
+    "dc2-spine-1": {
+      "index": "0",
+      "role": "Spine",
+      "group": "dc2",
+      "platform": "Cisco NX-OS 9000",
+      "vendor": "Cisco",
+      "model": "Nexus 9336C-FX2",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "spine",
+        "graph-level": 8
+      }
+    },
+    "dc2-spine-2": {
+      "index": "1",
+      "role": "Spine",
+      "group": "dc2",
+      "platform": "Cisco NX-OS 9000",
+      "vendor": "Cisco",
+      "model": "Nexus 9336C-FX2",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "spine",
+        "graph-level": 8
+      }
+    },
+    "dc2-tor-2": {
+      "index": "7",
+      "role": "TOR Switch",
+      "group": "dc2",
+      "platform": "Cisco NX-OS 9000",
+      "vendor": "Cisco",
+      "model": "Nexus 93108TC-EX",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "tor-switch",
+        "graph-level": 9
+      }
+    },
+    "dc2-tor-3": {
+      "index": "8",
+      "role": "TOR Switch",
+      "group": "dc2",
+      "platform": "Cisco NX-OS 9000",
+      "vendor": "Cisco",
+      "model": "Nexus 93108TC-EX",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "tor-switch",
+        "graph-level": 9
+      }
+    },
+    "dc2-tor-4": {
+      "index": "9",
+      "role": "TOR Switch",
+      "group": "dc2",
+      "platform": "Cisco NX-OS 9000",
+      "vendor": "Cisco",
+      "model": "Nexus 93108TC-EX",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "tor-switch",
+        "graph-level": 9
+      }
+    },
+    "dc2-srv-1": {
+      "index": "2",
+      "role": "server",
+      "group": "dc2",
+      "platform": "Ubuntu",
+      "vendor": "Dell",
+      "model": "PowerEdge R640",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "server",
+        "graph-level": 10
+      }
+    },
+    "dc2-srv-2": {
+      "index": "3",
+      "role": "server",
+      "group": "dc2",
+      "platform": "Ubuntu",
+      "vendor": "Dell",
+      "model": "PowerEdge R640",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "server",
+        "graph-level": 10
+      }
+    },
+    "dc2-srv-3": {
+      "index": "4",
+      "role": "server",
+      "group": "dc2",
+      "platform": "Ubuntu",
+      "vendor": "Dell",
+      "model": "PowerEdge R640",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "server",
+        "graph-level": 10
+      }
+    },
+    "dc2-srv-4": {
+      "index": "5",
+      "role": "server",
+      "group": "dc2",
+      "platform": "Ubuntu",
+      "vendor": "Dell",
+      "model": "PowerEdge R640",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "server",
+        "graph-level": 10
+      }
+    }
+  },
+  "links": [
+    {
+      "a": {
+        "node": "dc2-tor-1",
+        "interface": "Ethernet1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "dc2-spine-1",
+        "interface": "Ethernet1/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "dc2-tor-1",
+        "interface": "Ethernet1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "dc2-spine-2",
+        "interface": "Ethernet1/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "dc2-tor-2",
+        "interface": "Ethernet1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "dc2-spine-1",
+        "interface": "Ethernet1/2",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "dc2-tor-2",
+        "interface": "Ethernet1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "dc2-spine-2",
+        "interface": "Ethernet1/2",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "dc2-tor-3",
+        "interface": "Ethernet1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "dc2-spine-1",
+        "interface": "Ethernet1/3",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "dc2-tor-3",
+        "interface": "Ethernet1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "dc2-spine-2",
+        "interface": "Ethernet1/3",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "dc2-tor-4",
+        "interface": "Ethernet1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "dc2-spine-1",
+        "interface": "Ethernet1/4",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "dc2-tor-4",
+        "interface": "Ethernet1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "dc2-spine-2",
+        "interface": "Ethernet1/4",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "dc2-tor-1",
+        "interface": "Ethernet1/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "dc2-srv-1",
+        "interface": "Gig-E 1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "dc2-tor-2",
+        "interface": "Ethernet1/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "dc2-srv-2",
+        "interface": "Gig-E 1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "dc2-tor-3",
+        "interface": "Ethernet1/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "dc2-srv-3",
+        "interface": "Gig-E 1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "dc2-tor-4",
+        "interface": "Ethernet1/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "dc2-srv-4",
+        "interface": "Gig-E 1",
+        "peer": "a"
+      }
+    }
+  ]
+}

@@ -8,3 +8,4 @@ pynetbox==7.0.1
 requests==2.30.0
 toml==0.10.2
 urllib3==2.0.2
+pyyaml==6.0

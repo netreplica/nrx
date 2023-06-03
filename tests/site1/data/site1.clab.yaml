@@ -3,11 +3,11 @@ topology:
     nodes:
         graphite:
             kind: linux
-            image: netreplica/graphite:nanog86
+            image: netreplica/graphite:latest
             env:
-                CLAB_SSH_CONNECTION: ${SSH_CONNECTION}
+                HOST_CONNECTION: ${SSH_CONNECTION}
             binds:
-                - __clabDir__/topology-data.json:/htdocs/lab/default/topology-data.json:ro
+                - __clabDir__/topology-data.json:/htdocs/default/default.json:ro
                 - __clabDir__/ansible-inventory.yml:/htdocs/lab/default/ansible-inventory.yml:ro
             ports:
                 - 8080:80

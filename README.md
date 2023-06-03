@@ -10,6 +10,7 @@
 
 * Topology file for [Containerlab](https://containerlab.dev) tool for container-based networking labs
 * Topology file for [Cisco Modeling Labs](https://developer.cisco.com/modeling-labs/) platform for network simulation
+* Topology data for visualization using [Graphite](https://github.com/netreplica/graphite)
 * Graph data as a JSON file in [Cytoscape](https://cytoscape.org/) format [CYJS](http://manual.cytoscape.org/en/stable/Supported_Network_File_Formats.html#cytoscape-js-json)
 
 It can also read the topology graph previously saved as a CYJS file to convert it into other formats.
@@ -30,6 +31,7 @@ This project is in a proof-of-concept phase. We're experimenting with the best w
 * [How to use](#how-to-use)
    * [Containerlab example](#containerlab-example)
    * [Cisco Modeling Labs example](#cisco-modeling-labs-example)
+   * [Topology Visualization with Graphite](#topology-visualization-with-graphite)
 * [Credits](#credits)
    * [Original idea and implementation](#original-idea-and-implementation)
    * [Copyright notice](#copyright-notice)
@@ -53,7 +55,8 @@ Export capabilities:
 
 * Exports the graph as a Containerlab topology definition file in YAML format
 * Exports the graph as a Cisco Modeling Labs topology definition file in YAML format
-* Uses NetBox Device Platform `slug` field to identify node templates when rendering the topology definition file
+* Exports the graph in JSON format for visualization with Graphite
+* Uses NetBox Device Platform `slug` field to identify node templates when rendering the export file
 * Creates mapping between real interface names and interface names used by the supported lab tools
 * Calculates `level` and `rank` values for each node based on Device Role to help visualize the topology
 * Exports the graph into CYJS format that can be later converted into a topology definition file, or used by 3rd party software
@@ -65,6 +68,7 @@ The following minimum software versions were tested for compatibility with `nrx`
 * NetBox `v3.4`
 * Containerlab `v0.39`
 * Cisco Modeling Labs `v2.5`
+* Netreplica Graphite `v0.4.0`
 
 # Prerequisites
 
@@ -88,6 +92,8 @@ The following minimum software versions were tested for compatibility with `nrx`
     ```
 
 * [Cisco Modeling Labs](https://developer.cisco.com/modeling-labs/) – not required for **nrx**, but is needed to deploy CML topologies
+
+* [Netreplica Graphite](https://github.com/netreplica/graphite) – not required for **nrx**, but is needed for topology visualization
 
 # How to install
 
@@ -128,7 +134,7 @@ optional arguments:
   -h, --help                show this help message and exit
   -c, --config CONFIG       configuration file
   -i, --input INPUT         input source: netbox (default) | cyjs
-  -o, --output OUTPUT       output format: cyjs | gml | clab | cml
+  -o, --output OUTPUT       output format: cyjs | gml | clab | cml | graphite
   -a, --api API             netbox API URL
   -s, --site SITE           netbox site to export
   -t, --tags TAGS           netbox tags to export, for multiple tags use a comma-separated list: tag1,tag2,tag3 (uses AND logic)
@@ -235,6 +241,49 @@ source nrx39/bin/activate
     ```Shell
     ./nrx.py --input cyjs --file DM-Akron.cyjs --templates templates --output cml
     ```
+
+## Topology Visualization with Graphite
+
+A combination of **netreplica** `nrx` and [`graphite`](https://github.com/netreplica/graphite) tools can be used to visualize NetBox topology data. Unlike typical plugin-based visualizers, this method can work with a standard NetBox instance without any plugins installed. You also don't need an administrative access to the NetBox host in order to use this type of visualization.
+
+Follow a two-step process:
+
+1. Export topology data from NetBox in the Graphite format: `nrx.py -o graphite`. For example, let's export "DM-Akron" site from the [NetBox Demo](https://demo.netbox.dev) instance:
+
+    ```Shell
+    export NB_API_TOKEN='replace_with_valid_API_token'
+    ./nrx.py --api https://demo.netbox.dev --site DM-Akron --templates templates --output graphite
+    ```
+
+2. Start Graphite to visualize "DM-Akron" site:
+
+    ```Shell
+    TOPOLOGY="$(pwd)/DM-Akron.graphite.json"
+    docker run -d -t --rm \
+        --mount type=bind,source="${TOPOLOGY}",target=/htdocs/default/default.json,readonly \
+        -p 8080:80 \
+        --name graphite \
+        netreplica/graphite:latest
+    ```
+
+    Open [http://localhost:8080/graphite](http://localhost:8080/graphite) to see the topology. If you're running Graphite on a remote host, or inside a VM, use this helper to show a working URL:
+
+    ```Shell
+    docker exec -t -e HOST_CONNECTION="${SSH_CONNECTION}" graphite graphite_motd.sh 8080
+    ```
+
+    The visualization should be similar to
+
+    ![DM-Akron Diagram](images/graphite_topology.png)
+
+    To stop Graphite, run
+
+    ```Shell
+    docker stop graphite
+    ```
+
+
+If you'd like to be able to switch between multiple exported topologies without restarting Graphite, use one of the methods described in [Graphite documentation](https://github.com/netreplica/graphite/blob/main/docs/DOCKER.md).
 
 # Credits
 

@@ -32,12 +32,14 @@ import sys
 import argparse
 import json
 import math
+import ast
 import toml
 import pynetbox
 import requests
 import urllib3
 import networkx as nx
 import jinja2
+import yaml
 
 # DEFINE GLOBAL VARs HERE
 
@@ -135,39 +137,7 @@ class NBFactory:
                                                           tag=self.config['export_tags'],
                                                           role=self.config['export_device_roles'])
         for device in list(devices):
-            device_name = None
-            platform, platform_name = "unknown", "unknown"
-            vendor, vendor_name = "unknown", "unknown"
-            model, model_name = "unknown", "unknown"
-            role = "unknown"
-            if device.name is not None and len(device.name) > 0:
-                device_name = device.name
-            if device.platform is not None:
-                platform = device.platform.slug
-                platform_name = device.platform.name
-                if device.platform.manufacturer is not None:
-                    vendor = device.platform.manufacturer.slug
-                    vendor_name = device.platform.manufacturer.name
-            if device.device_type is not None:
-                model = device.device_type.slug
-                model_name = device.device_type.model
-            if device.device_role is not None:
-                role = device.device_role.slug
-                if device_name is None:
-                    device_name = f"{role}-{device.id}"
-            d = {
-                "id": device.id,
-                "type": "device",
-                "name": device_name,
-                "node_id": -1,
-                "platform": platform,
-                "platform_name": platform_name,
-                "vendor": vendor,
-                "vendor_name": vendor_name,
-                "model": model,
-                "model_name": model_name,
-                "role": role,
-            }
+            d = self._init_device(device)
             self.nb_net.nodes.append(d)
             d["node_id"] = len(self.nb_net.nodes) - 1
             self.nb_net.devices.append(d)
@@ -193,6 +163,52 @@ class NBFactory:
                     # index of the interface in the interfaces list will match its ID index in interface_ids list
                     self.nb_net.interface_ids.append(interface.id)
                     self.nb_net.cable_ids.append(interface.cable.id)
+
+    def _init_device(self, device):
+        """Initialize device data"""
+        d = {
+            "id": device.id,
+            "type": "device",
+            "name": None,
+            "node_id": -1,
+            "site": "",
+            "platform": "unknown",
+            "platform_name": "unknown",
+            "vendor": "unknown",
+            "vendor_name": "unknown",
+            "model": "unknown",
+            "model_name": "unknown",
+            "role": "unknown",
+            "role_name": "unknown",
+            "primary_ip4": "",
+            "primary_ip6": "",
+        }
+
+        if device.name is not None and len(device.name) > 0:
+            d["name"] = device.name
+        if device.site is not None:
+            d["site"] = device.site.name
+        if device.platform is not None:
+            d["platform"] = device.platform.slug
+            d["platform_name"] = device.platform.name
+        if device.device_type is not None:
+            d["model"] = device.device_type.slug
+            d["model_name"] = device.device_type.model
+            if device.device_type.manufacturer is not None:
+                d["vendor"] = device.device_type.manufacturer.slug
+                d["vendor_name"] = device.device_type.manufacturer.name
+        if device.device_role is not None:
+            d["role"] = device.device_role.slug
+            d["role_name"] = device.device_role.name
+            if d["name"] is None:
+                d["name"] = f"{d['role']}-{device.id}"
+        if device.primary_ip4 is not None:
+            d["primary_ip4"] = device.primary_ip4.address
+        if device.primary_ip6 is not None:
+            d["primary_ip6"] = device.primary_ip6.address
+
+        return d
+
 
     def _trace_cable(self, cable):
         debug(f"Tracing {cable}")
@@ -466,7 +482,12 @@ class NetworkTopology:
                     m = f"Unable to open {desc} template '{j2file}' for platform '{platform}' with path {self.config['templates_path']}."
                     m += f" Reason: {e}"
                     if is_required:
-                        error(m)
+                        if platform == 'default':
+                            error(m)
+                        else:
+                            # Render a default template
+                            debug(f"{m}. Rendering a default template instead.")
+                            return self._get_template(ttype, "default", True)
                     else:
                         debug(m)
                 self.templates[ttype][platform] = template
@@ -520,7 +541,16 @@ class NetworkTopology:
         except jinja2.TemplateError as e:
             error("Rendering topology J2 template:", e)
 
-        topo_file = f"{self.topology['name']}.{self.config['output_format']}.yaml"
+        self._write_topology(topo)
+        self._print_motd(topo)
+
+    def _write_topology(self, topo):
+        if self.config['output_format'] == 'graphite':
+            # <topology-name>.graphite.json
+            topo_file = f"{self.topology['name']}.{self.config['output_format']}.json"
+        else:
+            # <topology-name>.clab.yaml or <topology-name>.cml.yaml
+            topo_file = f"{self.topology['name']}.{self.config['output_format']}.yaml"
         try:
             with open(topo_file, "w", encoding="utf-8") as f:
                 f.write(topo)
@@ -529,7 +559,27 @@ class NetworkTopology:
 
         print(f"Created {self.config['output_format']} topology: {topo_file}")
 
+    def _print_motd(self, topo):
+        topo_dict = {}
+        try:
+            if self.config['output_format'] == 'graphite':
+                topo_dict = ast.literal_eval(topo)
+            elif self.config['output_format'] == 'cml':
+                topo_dict = yaml.safe_load(topo)
+                if 'lab' in topo_dict and 'notes' in topo_dict['lab'] and 'motd' not in topo_dict:
+                    topo_dict['motd'] = topo_dict['lab']['notes']
+        except (SyntaxError, yaml.scanner.ScannerError) as e:
+            debug("Can't parse topology as a dictionary:", e)
+        if 'motd' in topo_dict:
+            print(f"{topo_dict['motd']}")
+        elif self.config['output_format'] == 'clab':
+            print(f"To deploy this topology, run: sudo -E clab dep -t {self.topology['name']}.clab.yaml")
+
     def _render_interface_map(self, node):
+        """Render interface mapping file for a node"""
+        if self.config['output_format'] == 'graphite':
+            # No need to render interface maps for Graphite
+            return None
         if 'name' in node and node['name'] in self.device_interfaces_map:
             d = node['name']
         else:
@@ -555,13 +605,15 @@ class NetworkTopology:
         return None
 
 def arg_input_check(s):
+    """Check if input source is supported"""
     allowed_values = ['netbox', 'cyjs']
     if s in allowed_values:
         return s
     raise argparse.ArgumentTypeError(f"input source has to be one of {allowed_values}")
 
 def arg_output_check(s):
-    allowed_values = ['gml', 'cyjs', 'clab', 'cml']
+    """Check if output format is supported"""
+    allowed_values = ['gml', 'cyjs', 'clab', 'cml', 'graphite']
     if s in allowed_values:
         return s
     raise argparse.ArgumentTypeError(f"output format has to be one of {allowed_values}")
@@ -572,7 +624,7 @@ def parse_args():
     parser.add_argument('-c', '--config',    required=False, help='configuration file')
     parser.add_argument('-i', '--input',     required=False, help='input source: netbox (default) | cyjs',
                                              default='netbox', type=arg_input_check,)
-    parser.add_argument('-o', '--output',    required=False, help='output format: cyjs | gml | clab | cml',
+    parser.add_argument('-o', '--output',    required=False, help='output format: cyjs | gml | clab | cml | graphite',
                                              type=arg_output_check, )
     parser.add_argument('-a', '--api',       required=False, help='netbox API URL')
     parser.add_argument('-s', '--site',      required=False, help='netbox site to export')
@@ -600,7 +652,7 @@ def load_toml_config(filename):
         'nb_api_token': '',
         'tls_validate': True,
         'output_format': 'cyjs',
-        'export_device_roles': ["router", "core-switch", "access-switch", "distribution-switch", "tor-switch", "server"],
+        'export_device_roles': ["router", "core-switch", "access-switch", "distribution-switch", "tor-switch"],
         'device_role_levels': {
             'unknown':              0,
             'server':               0,
@@ -716,7 +768,7 @@ def main():
     else:
         topo.build_from_graph(nb_network.graph())
 
-    if config['output_format'] in ['clab', 'cml']:
+    if config['output_format'] in ['clab', 'cml', 'graphite']:
         topo.export_topology()
     else:
         if nb_network is None:

@@ -53,5 +53,6 @@ clab-*
 nrx39
 nrx39-dev
 tests/*/test/*
+tests/*/graphite/*
 tests/main.conf
 tmp
