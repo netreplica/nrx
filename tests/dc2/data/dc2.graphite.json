@@ -6,11 +6,13 @@
   "nodes": {
     "dc2-tor-1": {
       "index": "6",
-      "shortname": "dc2-tor-1",
-      "longname": "dc2-tor-1",
-      "fqdn": "dc2-tor-1",
-      "group": "",
-      "kind": "Cisco NX-OS 9000",
+      "role": "TOR Switch",
+      "group": "dc2",
+      "platform": "Cisco NX-OS 9000",
+      "vendor": "Cisco",
+      "model": "Nexus 93108TC-EX",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
       "labels": {
         "graph-icon": "tor-switch",
         "graph-level": 9
@@ -18,11 +20,13 @@
     },
     "dc2-spine-1": {
       "index": "0",
-      "shortname": "dc2-spine-1",
-      "longname": "dc2-spine-1",
-      "fqdn": "dc2-spine-1",
-      "group": "",
-      "kind": "Cisco NX-OS 9000",
+      "role": "Spine",
+      "group": "dc2",
+      "platform": "Cisco NX-OS 9000",
+      "vendor": "Cisco",
+      "model": "Nexus 9336C-FX2",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
       "labels": {
         "graph-icon": "spine",
         "graph-level": 8
@@ -30,11 +34,13 @@
     },
     "dc2-spine-2": {
       "index": "1",
-      "shortname": "dc2-spine-2",
-      "longname": "dc2-spine-2",
-      "fqdn": "dc2-spine-2",
-      "group": "",
-      "kind": "Cisco NX-OS 9000",
+      "role": "Spine",
+      "group": "dc2",
+      "platform": "Cisco NX-OS 9000",
+      "vendor": "Cisco",
+      "model": "Nexus 9336C-FX2",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
       "labels": {
         "graph-icon": "spine",
         "graph-level": 8
@@ -42,11 +48,13 @@
     },
     "dc2-tor-2": {
       "index": "7",
-      "shortname": "dc2-tor-2",
-      "longname": "dc2-tor-2",
-      "fqdn": "dc2-tor-2",
-      "group": "",
-      "kind": "Cisco NX-OS 9000",
+      "role": "TOR Switch",
+      "group": "dc2",
+      "platform": "Cisco NX-OS 9000",
+      "vendor": "Cisco",
+      "model": "Nexus 93108TC-EX",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
       "labels": {
         "graph-icon": "tor-switch",
         "graph-level": 9
@@ -54,11 +62,13 @@
     },
     "dc2-tor-3": {
       "index": "8",
-      "shortname": "dc2-tor-3",
-      "longname": "dc2-tor-3",
-      "fqdn": "dc2-tor-3",
-      "group": "",
-      "kind": "Cisco NX-OS 9000",
+      "role": "TOR Switch",
+      "group": "dc2",
+      "platform": "Cisco NX-OS 9000",
+      "vendor": "Cisco",
+      "model": "Nexus 93108TC-EX",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
       "labels": {
         "graph-icon": "tor-switch",
         "graph-level": 9
@@ -66,11 +76,13 @@
     },
     "dc2-tor-4": {
       "index": "9",
-      "shortname": "dc2-tor-4",
-      "longname": "dc2-tor-4",
-      "fqdn": "dc2-tor-4",
-      "group": "",
-      "kind": "Cisco NX-OS 9000",
+      "role": "TOR Switch",
+      "group": "dc2",
+      "platform": "Cisco NX-OS 9000",
+      "vendor": "Cisco",
+      "model": "Nexus 93108TC-EX",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
       "labels": {
         "graph-icon": "tor-switch",
         "graph-level": 9
@@ -78,11 +90,13 @@
     },
     "dc2-srv-1": {
       "index": "2",
-      "shortname": "dc2-srv-1",
-      "longname": "dc2-srv-1",
-      "fqdn": "dc2-srv-1",
-      "group": "",
-      "kind": "Ubuntu",
+      "role": "server",
+      "group": "dc2",
+      "platform": "Ubuntu",
+      "vendor": "Dell",
+      "model": "PowerEdge R640",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
       "labels": {
         "graph-icon": "server",
         "graph-level": 10
@@ -90,11 +104,13 @@
     },
     "dc2-srv-2": {
       "index": "3",
-      "shortname": "dc2-srv-2",
-      "longname": "dc2-srv-2",
-      "fqdn": "dc2-srv-2",
-      "group": "",
-      "kind": "Ubuntu",
+      "role": "server",
+      "group": "dc2",
+      "platform": "Ubuntu",
+      "vendor": "Dell",
+      "model": "PowerEdge R640",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
       "labels": {
         "graph-icon": "server",
         "graph-level": 10
@@ -102,11 +118,13 @@
     },
     "dc2-srv-3": {
       "index": "4",
-      "shortname": "dc2-srv-3",
-      "longname": "dc2-srv-3",
-      "fqdn": "dc2-srv-3",
-      "group": "",
-      "kind": "Ubuntu",
+      "role": "server",
+      "group": "dc2",
+      "platform": "Ubuntu",
+      "vendor": "Dell",
+      "model": "PowerEdge R640",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
       "labels": {
         "graph-icon": "server",
         "graph-level": 10
@@ -114,11 +132,13 @@
     },
     "dc2-srv-4": {
       "index": "5",
-      "shortname": "dc2-srv-4",
-      "longname": "dc2-srv-4",
-      "fqdn": "dc2-srv-4",
-      "group": "",
-      "kind": "Ubuntu",
+      "role": "server",
+      "group": "dc2",
+      "platform": "Ubuntu",
+      "vendor": "Dell",
+      "model": "PowerEdge R640",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
       "labels": {
         "graph-icon": "server",
         "graph-level": 10

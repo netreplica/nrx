@@ -137,31 +137,40 @@ class NBFactory:
                                                           tag=self.config['export_tags'],
                                                           role=self.config['export_device_roles'])
         for device in list(devices):
-            device_name = None
+            device_name, device_site = None, ""
             platform, platform_name = "unknown", "unknown"
             vendor, vendor_name = "unknown", "unknown"
             model, model_name = "unknown", "unknown"
-            role = "unknown"
+            role, role_name = "unknown", "unknown"
+            primary_ip4, primary_ip6 = "", ""
             if device.name is not None and len(device.name) > 0:
                 device_name = device.name
+            if device.site is not None:
+                device_site = device.site.name
             if device.platform is not None:
                 platform = device.platform.slug
                 platform_name = device.platform.name
-                if device.platform.manufacturer is not None:
-                    vendor = device.platform.manufacturer.slug
-                    vendor_name = device.platform.manufacturer.name
             if device.device_type is not None:
                 model = device.device_type.slug
                 model_name = device.device_type.model
+                if device.device_type.manufacturer is not None:
+                    vendor = device.device_type.manufacturer.slug
+                    vendor_name = device.device_type.manufacturer.name
             if device.device_role is not None:
                 role = device.device_role.slug
+                role_name = device.device_role.name
                 if device_name is None:
                     device_name = f"{role}-{device.id}"
+            if device.primary_ip4 is not None:
+                primary_ip4 = device.primary_ip4.address
+            if device.primary_ip6 is not None:
+                primary_ip6 = device.primary_ip6.address
             d = {
                 "id": device.id,
                 "type": "device",
                 "name": device_name,
                 "node_id": -1,
+                "site": device_site,
                 "platform": platform,
                 "platform_name": platform_name,
                 "vendor": vendor,
@@ -169,6 +178,9 @@ class NBFactory:
                 "model": model,
                 "model_name": model_name,
                 "role": role,
+                "role_name": role_name,
+                "primary_ip4": primary_ip4,
+                "primary_ip6": primary_ip6,
             }
             self.nb_net.nodes.append(d)
             d["node_id"] = len(self.nb_net.nodes) - 1

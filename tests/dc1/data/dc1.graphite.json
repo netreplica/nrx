@@ -6,11 +6,13 @@
   "nodes": {
     "dc1-leaf-1": {
       "index": "0",
-      "shortname": "dc1-leaf-1",
-      "longname": "dc1-leaf-1",
-      "fqdn": "dc1-leaf-1",
-      "group": "",
-      "kind": "Nokia SR-Linux",
+      "role": "Leaf",
+      "group": "dc1",
+      "platform": "Nokia SR-Linux",
+      "vendor": "Nokia",
+      "model": "7220 IXR-D2",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
       "labels": {
         "graph-icon": "leaf",
         "graph-level": 9
@@ -18,11 +20,13 @@
     },
     "dc1-spine-1": {
       "index": "4",
-      "shortname": "dc1-spine-1",
-      "longname": "dc1-spine-1",
-      "fqdn": "dc1-spine-1",
-      "group": "",
-      "kind": "Arista EOS",
+      "role": "Spine",
+      "group": "dc1",
+      "platform": "Arista EOS",
+      "vendor": "Arista",
+      "model": "DCS-7280CR3-32P4",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
       "labels": {
         "graph-icon": "spine",
         "graph-level": 8
@@ -30,11 +34,13 @@
     },
     "dc1-spine-2": {
       "index": "5",
-      "shortname": "dc1-spine-2",
-      "longname": "dc1-spine-2",
-      "fqdn": "dc1-spine-2",
-      "group": "",
-      "kind": "Arista EOS",
+      "role": "Spine",
+      "group": "dc1",
+      "platform": "Arista EOS",
+      "vendor": "Arista",
+      "model": "DCS-7280CR3-32P4",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
       "labels": {
         "graph-icon": "spine",
         "graph-level": 8
@@ -42,11 +48,13 @@
     },
     "dc1-leaf-2": {
       "index": "1",
-      "shortname": "dc1-leaf-2",
-      "longname": "dc1-leaf-2",
-      "fqdn": "dc1-leaf-2",
-      "group": "",
-      "kind": "Nokia SR-Linux",
+      "role": "Leaf",
+      "group": "dc1",
+      "platform": "Nokia SR-Linux",
+      "vendor": "Nokia",
+      "model": "7220 IXR-D2",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
       "labels": {
         "graph-icon": "leaf",
         "graph-level": 9
@@ -54,11 +62,13 @@
     },
     "dc1-leaf-3": {
       "index": "2",
-      "shortname": "dc1-leaf-3",
-      "longname": "dc1-leaf-3",
-      "fqdn": "dc1-leaf-3",
-      "group": "",
-      "kind": "Nokia SR-Linux",
+      "role": "Leaf",
+      "group": "dc1",
+      "platform": "Nokia SR-Linux",
+      "vendor": "Nokia",
+      "model": "7220 IXR-D2",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
       "labels": {
         "graph-icon": "leaf",
         "graph-level": 9
@@ -66,11 +76,13 @@
     },
     "dc1-leaf-4": {
       "index": "3",
-      "shortname": "dc1-leaf-4",
-      "longname": "dc1-leaf-4",
-      "fqdn": "dc1-leaf-4",
-      "group": "",
-      "kind": "Nokia SR-Linux",
+      "role": "Leaf",
+      "group": "dc1",
+      "platform": "Nokia SR-Linux",
+      "vendor": "Nokia",
+      "model": "7220 IXR-D2",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
       "labels": {
         "graph-icon": "leaf",
         "graph-level": 9
@@ -78,11 +90,13 @@
     },
     "dc1-srv-1": {
       "index": "6",
-      "shortname": "dc1-srv-1",
-      "longname": "dc1-srv-1",
-      "fqdn": "dc1-srv-1",
-      "group": "",
-      "kind": "Linux",
+      "role": "server",
+      "group": "dc1",
+      "platform": "Linux",
+      "vendor": "Dell",
+      "model": "PowerEdge R640",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
       "labels": {
         "graph-icon": "server",
         "graph-level": 10
@@ -90,11 +104,13 @@
     },
     "dc1-srv-2": {
       "index": "7",
-      "shortname": "dc1-srv-2",
-      "longname": "dc1-srv-2",
-      "fqdn": "dc1-srv-2",
-      "group": "",
-      "kind": "Linux",
+      "role": "server",
+      "group": "dc1",
+      "platform": "Linux",
+      "vendor": "Dell",
+      "model": "PowerEdge R640",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
       "labels": {
         "graph-icon": "server",
         "graph-level": 10
@@ -102,11 +118,13 @@
     },
     "dc1-srv-3": {
       "index": "8",
-      "shortname": "dc1-srv-3",
-      "longname": "dc1-srv-3",
-      "fqdn": "dc1-srv-3",
-      "group": "",
-      "kind": "Linux",
+      "role": "server",
+      "group": "dc1",
+      "platform": "Linux",
+      "vendor": "Dell",
+      "model": "PowerEdge R640",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
       "labels": {
         "graph-icon": "server",
         "graph-level": 10
@@ -114,11 +132,13 @@
     },
     "dc1-srv-4": {
       "index": "9",
-      "shortname": "dc1-srv-4",
-      "longname": "dc1-srv-4",
-      "fqdn": "dc1-srv-4",
-      "group": "",
-      "kind": "Linux",
+      "role": "server",
+      "group": "dc1",
+      "platform": "Linux",
+      "vendor": "Dell",
+      "model": "PowerEdge R640",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
       "labels": {
         "graph-icon": "server",
         "graph-level": 10
