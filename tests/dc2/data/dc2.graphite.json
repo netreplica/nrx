@@ -6,142 +6,142 @@
   "nodes": {
     "dc2-tor-1": {
       "index": "6",
-      "role": "TOR Switch",
-      "group": "dc2",
-      "platform": "Cisco NX-OS 9000",
-      "vendor": "Cisco",
-      "model": "Nexus 93108TC-EX",
       "mgmt-ipv4-address": "",
       "mgmt-ipv6-address": "",
       "labels": {
         "graph-icon": "tor-switch",
-        "graph-level": 9
+        "graph-level": 9,
+        "role": "TOR Switch",
+        "group": "dc2",
+        "platform": "Cisco NX-OS 9000",
+        "vendor": "Cisco",
+        "model": "Nexus 93108TC-EX"
       }
     },
     "dc2-spine-1": {
       "index": "0",
-      "role": "Spine",
-      "group": "dc2",
-      "platform": "Cisco NX-OS 9000",
-      "vendor": "Cisco",
-      "model": "Nexus 9336C-FX2",
       "mgmt-ipv4-address": "",
       "mgmt-ipv6-address": "",
       "labels": {
         "graph-icon": "spine",
-        "graph-level": 8
+        "graph-level": 8,
+        "role": "Spine",
+        "group": "dc2",
+        "platform": "Cisco NX-OS 9000",
+        "vendor": "Cisco",
+        "model": "Nexus 9336C-FX2"
       }
     },
     "dc2-spine-2": {
       "index": "1",
-      "role": "Spine",
-      "group": "dc2",
-      "platform": "Cisco NX-OS 9000",
-      "vendor": "Cisco",
-      "model": "Nexus 9336C-FX2",
       "mgmt-ipv4-address": "",
       "mgmt-ipv6-address": "",
       "labels": {
         "graph-icon": "spine",
-        "graph-level": 8
+        "graph-level": 8,
+        "role": "Spine",
+        "group": "dc2",
+        "platform": "Cisco NX-OS 9000",
+        "vendor": "Cisco",
+        "model": "Nexus 9336C-FX2"
       }
     },
     "dc2-tor-2": {
       "index": "7",
-      "role": "TOR Switch",
-      "group": "dc2",
-      "platform": "Cisco NX-OS 9000",
-      "vendor": "Cisco",
-      "model": "Nexus 93108TC-EX",
       "mgmt-ipv4-address": "",
       "mgmt-ipv6-address": "",
       "labels": {
         "graph-icon": "tor-switch",
-        "graph-level": 9
+        "graph-level": 9,
+        "role": "TOR Switch",
+        "group": "dc2",
+        "platform": "Cisco NX-OS 9000",
+        "vendor": "Cisco",
+        "model": "Nexus 93108TC-EX"
       }
     },
     "dc2-tor-3": {
       "index": "8",
-      "role": "TOR Switch",
-      "group": "dc2",
-      "platform": "Cisco NX-OS 9000",
-      "vendor": "Cisco",
-      "model": "Nexus 93108TC-EX",
       "mgmt-ipv4-address": "",
       "mgmt-ipv6-address": "",
       "labels": {
         "graph-icon": "tor-switch",
-        "graph-level": 9
+        "graph-level": 9,
+        "role": "TOR Switch",
+        "group": "dc2",
+        "platform": "Cisco NX-OS 9000",
+        "vendor": "Cisco",
+        "model": "Nexus 93108TC-EX"
       }
     },
     "dc2-tor-4": {
       "index": "9",
-      "role": "TOR Switch",
-      "group": "dc2",
-      "platform": "Cisco NX-OS 9000",
-      "vendor": "Cisco",
-      "model": "Nexus 93108TC-EX",
       "mgmt-ipv4-address": "",
       "mgmt-ipv6-address": "",
       "labels": {
         "graph-icon": "tor-switch",
-        "graph-level": 9
+        "graph-level": 9,
+        "role": "TOR Switch",
+        "group": "dc2",
+        "platform": "Cisco NX-OS 9000",
+        "vendor": "Cisco",
+        "model": "Nexus 93108TC-EX"
       }
     },
     "dc2-srv-1": {
       "index": "2",
-      "role": "server",
-      "group": "dc2",
-      "platform": "Ubuntu",
-      "vendor": "Dell",
-      "model": "PowerEdge R640",
       "mgmt-ipv4-address": "",
       "mgmt-ipv6-address": "",
       "labels": {
         "graph-icon": "server",
-        "graph-level": 10
+        "graph-level": 10,
+        "role": "server",
+        "group": "dc2",
+        "platform": "Ubuntu",
+        "vendor": "Dell",
+        "model": "PowerEdge R640"
       }
     },
     "dc2-srv-2": {
       "index": "3",
-      "role": "server",
-      "group": "dc2",
-      "platform": "Ubuntu",
-      "vendor": "Dell",
-      "model": "PowerEdge R640",
       "mgmt-ipv4-address": "",
       "mgmt-ipv6-address": "",
       "labels": {
         "graph-icon": "server",
-        "graph-level": 10
+        "graph-level": 10,
+        "role": "server",
+        "group": "dc2",
+        "platform": "Ubuntu",
+        "vendor": "Dell",
+        "model": "PowerEdge R640"
       }
     },
     "dc2-srv-3": {
       "index": "4",
-      "role": "server",
-      "group": "dc2",
-      "platform": "Ubuntu",
-      "vendor": "Dell",
-      "model": "PowerEdge R640",
       "mgmt-ipv4-address": "",
       "mgmt-ipv6-address": "",
       "labels": {
         "graph-icon": "server",
-        "graph-level": 10
+        "graph-level": 10,
+        "role": "server",
+        "group": "dc2",
+        "platform": "Ubuntu",
+        "vendor": "Dell",
+        "model": "PowerEdge R640"
       }
     },
     "dc2-srv-4": {
       "index": "5",
-      "role": "server",
-      "group": "dc2",
-      "platform": "Ubuntu",
-      "vendor": "Dell",
-      "model": "PowerEdge R640",
       "mgmt-ipv4-address": "",
       "mgmt-ipv6-address": "",
       "labels": {
         "graph-icon": "server",
-        "graph-level": 10
+        "graph-level": 10,
+        "role": "server",
+        "group": "dc2",
+        "platform": "Ubuntu",
+        "vendor": "Dell",
+        "model": "PowerEdge R640"
       }
     }
   },
