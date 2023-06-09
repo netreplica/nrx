@@ -1,0 +1,100 @@
+{
+  "name": "DM-Global-HQ",
+  "type": "graphite",
+  "source": "netbox",
+  "motd": "Start Graphite and open http://localhost:8080/graphite to upload and view the topology: docker run -dt --rm -p 8080:80 --name graphite netreplica/graphite:latest",
+  "nodes": {
+    "HQ-IT-Staging-Switch": {
+      "index": "1",
+      "mgmt-ipv4-address": "10.113.0.10",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "access-switch",
+        "graph-level": 9,
+        "role": "Access Switch",
+        "group": "DM-Global-HQ",
+        "platform": "Cisco IOS-XE",
+        "vendor": "Cisco",
+        "model": "C9200-48P"
+      }
+    },
+    "HQ-IT-Staging-DistSw": {
+      "index": "0",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "distribution-switch",
+        "graph-level": 8,
+        "role": "Distribution Switch",
+        "group": "DM-Global-HQ",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "HQ-IT-Staging-Switch2": {
+      "index": "2",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "access-switch",
+        "graph-level": 9,
+        "role": "Access Switch",
+        "group": "DM-Global-HQ",
+        "platform": "Arista EOS",
+        "vendor": "Arista",
+        "model": "DCS-7010T-48"
+      }
+    }
+  },
+  "links": [
+    {
+      "a": {
+        "node": "HQ-IT-Staging-Switch",
+        "interface": "TenGigabitEthernet1/1/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "HQ-IT-Staging-DistSw",
+        "interface": "ethernet-1/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "HQ-IT-Staging-Switch",
+        "interface": "TenGigabitEthernet1/1/2",
+        "peer": "z"
+      },
+      "z": {
+        "node": "HQ-IT-Staging-DistSw",
+        "interface": "ethernet-1/2",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "HQ-IT-Staging-Switch2",
+        "interface": "Ethernet49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "HQ-IT-Staging-DistSw",
+        "interface": "ethernet-1/3",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "HQ-IT-Staging-Switch2",
+        "interface": "Ethernet50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "HQ-IT-Staging-DistSw",
+        "interface": "ethernet-1/4",
+        "peer": "a"
+      }
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+name,device_role,manufacturer,device_type,status,site,platform
+HQ-IT-Staging-Switch,Access Switch,Cisco,C9200-48P,active,DM-Global-HQ,Cisco IOS-XE
+HQ-IT-Staging-Switch2,Access Switch,Arista,DCS-7010T-48,active,DM-Global-HQ,Arista EOS
+HQ-IT-Staging-DistSw,Distribution Switch,Nokia,7220 IXR-D2,active,DM-Global-HQ,Nokia SR-Linux
