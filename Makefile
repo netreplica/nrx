@@ -104,3 +104,23 @@ test-site1-cyjs-template-2-clab:
 	for f in *.yaml; do echo Comparing file $$f ...; diff $$f ../data/$$f || exit 1; done
 	@echo
 
+
+test-h88-nb-2-cyjs:
+	@echo "#################################################################"
+	@echo "# h88: read from NetBox and export as CYJS"
+	@echo "#################################################################"
+	mkdir -p tests/h88/test && cd tests/h88/test && rm -f * && \
+	source ../.env && \
+	../../../nrx.py -c ../nrx.conf -o cyjs -d && \
+	diff DM-Global-HQ.cyjs ../data/DM-Global-HQ.cyjs
+	@echo
+
+test-h88-cyjs-2-clab:
+	@echo "#################################################################"
+	@echo "# h88: read from CYJS and export as Containerlab"
+	@echo "#################################################################"
+	mkdir -p tests/h88/test && cd tests/h88/test && rm -f * && \
+	../../../nrx.py -c ../nrx.conf -i cyjs -f ../data/DM-Global-HQ.cyjs -o clab -d && \
+	for f in *; do echo Comparing file $$f ...; diff $$f ../data/$$f || exit 1; done
+	@echo
+
