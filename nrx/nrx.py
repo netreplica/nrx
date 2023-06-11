@@ -224,14 +224,11 @@ class NBFactory:
                 config_response = ast.literal_eval(response.text)
                 if "content" in config_response:
                     return config_response["content"]
-                else:
-                    return ""
             except (SyntaxError) as e:
-                debug("Can't parse rendered configuration")
-                return ""
+                debug("Get device configuration failed: can't parse rendered configuration")
         else:
-            debug(f"Request failed with status code: {response.status_code}")
-            return ""
+            debug(f"Get device configuration request failed with status code: {response.status_code}")
+        return ""
 
     def _trace_cable(self, cable):
         debug(f"Tracing {cable}")
