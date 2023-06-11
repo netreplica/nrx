@@ -182,6 +182,7 @@ class NBFactory:
             "role_name": "unknown",
             "primary_ip4": "",
             "primary_ip6": "",
+            "config": "",
         }
 
         if device.name is not None and len(device.name) > 0:
@@ -206,9 +207,28 @@ class NBFactory:
             d["primary_ip4"] = device.primary_ip4.address
         if device.primary_ip6 is not None:
             d["primary_ip6"] = device.primary_ip6.address
-
+        d["config"] = self._get_device_config(device)
         return d
 
+    def _get_device_config(self, device):
+        """Get device config from NetBox"""
+        headers = {
+            'Authorization': f"Token {self.config['nb_api_token']}",
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'  
+        }
+        url = f"{self.config['nb_api_url']}/api/dcim/devices/{device.id}/render-config/"
+        response = requests.post(url, headers=headers)
+        if response.status_code == 200:
+            try:
+                config_response = ast.literal_eval(response.text)
+                if "content" in config_response:
+                    return config_response["content"]
+            except (SyntaxError) as e:
+                debug("Get device configuration failed: can't parse rendered configuration")
+        else:
+            debug(f"Get device configuration request failed with status code: {response.status_code}")
+        return ""
 
     def _trace_cable(self, cable):
         debug(f"Tracing {cable}")
