@@ -220,7 +220,15 @@ class NBFactory:
         url = f"{self.config['nb_api_url']}/api/dcim/devices/{device.id}/render-config/"
         response = requests.post(url, headers=headers)
         if response.status_code == 200:
-            return(response.text)
+            try:
+                config_response = ast.literal_eval(response.text)
+                if "content" in config_response:
+                    return config_response["content"]
+                else:
+                    return ""
+            except (SyntaxError) as e:
+                debug("Can't parse rendered configuration")
+                return ""
         else:
             debug(f"Request failed with status code: {response.status_code}")
             return ""
