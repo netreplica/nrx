@@ -207,17 +207,17 @@ class NBFactory:
             d["primary_ip4"] = device.primary_ip4.address
         if device.primary_ip6 is not None:
             d["primary_ip6"] = device.primary_ip6.address
-        d["config"] = self._get_device_config("107")
+        d["config"] = self._get_device_config(device)
         return d
 
-    def _get_device_config(self, device_id):
+    def _get_device_config(self, device):
         """Get device config from NetBox"""
         headers = {
             'Authorization': f"Token {self.config['nb_api_token']}",
             'Content-Type': 'application/json',
             'Accept': 'application/json'  
         }
-        url = f"{self.config['nb_api_url']}/api/dcim/devices/{device_id}/render-config/"
+        url = f"{self.config['nb_api_url']}/api/dcim/devices/{device.id}/render-config/"
         response = requests.post(url, headers=headers)
         if response.status_code == 200:
             return(response.text)
