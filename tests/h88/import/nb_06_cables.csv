@@ -1,5 +1,5 @@
 side_a_device,side_a_type,side_a_name,side_b_device,side_b_type,side_b_name
-HQ-IT-Staging-Switch,dcim.interface,TenGigabitEthernet1/1/1,HQ-IT-Staging-DistSw,dcim.interface,ethernet-1/1
-HQ-IT-Staging-Switch,dcim.interface,TenGigabitEthernet1/1/2,HQ-IT-Staging-DistSw,dcim.interface,ethernet-1/2
-HQ-IT-Staging-Switch2,dcim.interface,Ethernet49,HQ-IT-Staging-DistSw,dcim.interface,ethernet-1/3
-HQ-IT-Staging-Switch2,dcim.interface,Ethernet50,HQ-IT-Staging-DistSw,dcim.interface,ethernet-1/4
+HQ-Switch1,dcim.interface,TenGigabitEthernet1/1/1,HQ-DistSw,dcim.interface,ethernet-1/1
+HQ-Switch1,dcim.interface,TenGigabitEthernet1/1/2,HQ-DistSw,dcim.interface,ethernet-1/2
+HQ-Switch2,dcim.interface,Ethernet49,HQ-DistSw,dcim.interface,ethernet-1/3
+HQ-Switch2,dcim.interface,Ethernet50,HQ-DistSw,dcim.interface,ethernet-1/4
