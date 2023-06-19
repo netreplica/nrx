@@ -6,7 +6,7 @@ test: test-dc1-cyjs-2-clab test-dc2-cyjs-2-cml test-site1-cyjs-2-clab test-dc1-c
 
 test-dc1: test-dc1-nb-2-cyjs-current test-dc1-nb-2-cyjs-latest test-dc1-cyjs-2-clab test-dc1-cyjs-2-graphite
 test-dc2: test-dc2-nb-2-cyjs-current test-dc2-nb-2-cyjs-latest test-dc2-cyjs-2-cml test-dc2-cyjs-2-graphite
-test-colo: test-colo-nb-2-cyjs
+test-colo: test-colo-nb-2-cyjs-current test-colo-nb-2-cyjs-latest
 test-site1: test-site1-nb-2-cyjs-current test-site1-nb-2-cyjs-latest test-site1-cyjs-2-clab
 test-h88: test-h88-nb-2-cyjs-current test-h88-nb-2-cyjs-latest test-h88-cyjs-2-clab
 
@@ -86,12 +86,22 @@ test-dc2-cyjs-2-cml:
 	for f in *; do echo Comparing file $$f ...; diff $$f ../data/$$f || exit 1; done
 	@echo
 
-test-colo-nb-2-cyjs:
+test-colo-nb-2-cyjs-current:
 	@echo "#################################################################"
-	@echo "# Colo: read from NetBox and export as CYJS"
+	@echo "# Colo: read from NetBox current version and export as CYJS"
 	@echo "#################################################################"
 	mkdir -p tests/colo/test && cd tests/colo/test && rm -f * && \
-	source ../.env && \
+	source ../.env_current && \
+	../../../nrx.py -c ../nrx.conf -o cyjs -d && \
+	diff colo.cyjs ../data/colo.cyjs
+	@echo
+
+test-colo-nb-2-cyjs-latest:
+	@echo "#################################################################"
+	@echo "# Colo: read from NetBox latest version and export as CYJS"
+	@echo "#################################################################"
+	mkdir -p tests/colo/test && cd tests/colo/test && rm -f * && \
+	source ../.env_latest && \
 	../../../nrx.py -c ../nrx.conf -o cyjs -d && \
 	diff colo.cyjs ../data/colo.cyjs
 	@echo
