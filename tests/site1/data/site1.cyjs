@@ -29,6 +29,7 @@
                         "role_name": "Router",
                         "primary_ip4": "",
                         "primary_ip6": "",
+                        "config": "",
                         "device_index": 2
                     },
                     "id": "4",
@@ -56,6 +57,7 @@
                         "role_name": "server",
                         "primary_ip4": "",
                         "primary_ip6": "",
+                        "config": "",
                         "device_index": 0
                     },
                     "id": "0",
@@ -115,6 +117,7 @@
                         "role_name": "server",
                         "primary_ip4": "",
                         "primary_ip6": "",
+                        "config": "",
                         "device_index": 1
                     },
                     "id": "2",
