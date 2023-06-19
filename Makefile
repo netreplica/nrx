@@ -1,13 +1,14 @@
 lint:
 	pylint nrx/*.py
 
-test-local: test-dc1 test-dc2 test-colo test-site1
+test-local: test-dc1 test-dc2 test-colo test-site1 test-h88
 test: test-dc1-cyjs-2-clab test-dc2-cyjs-2-cml test-site1-cyjs-2-clab test-dc1-cyjs-2-graphite test-dc2-cyjs-2-graphite
 
 test-dc1: test-dc1-nb-2-cyjs test-dc1-cyjs-2-clab test-dc1-cyjs-2-graphite
 test-dc2: test-dc2-nb-2-cyjs test-dc2-cyjs-2-cml test-dc2-cyjs-2-graphite
 test-colo: test-colo-nb-2-cyjs
 test-site1: test-site1-nb-2-cyjs test-site1-cyjs-2-clab
+test-h88: test-h88-nb-2-cyjs test-h88-cyjs-2-clab
 
 test-dc1-nb-2-cyjs:
 	@echo "#################################################################"
@@ -112,7 +113,7 @@ test-h88-nb-2-cyjs:
 	mkdir -p tests/h88/test && cd tests/h88/test && rm -f * && \
 	source ../.env && \
 	../../../nrx.py -c ../nrx.conf -o cyjs -d && \
-	diff DM-Global-HQ.cyjs ../data/DM-Global-HQ.cyjs
+	diff HQ.cyjs ../data/HQ.cyjs
 	@echo
 
 test-h88-cyjs-2-clab:
@@ -120,7 +121,7 @@ test-h88-cyjs-2-clab:
 	@echo "# h88: read from CYJS and export as Containerlab"
 	@echo "#################################################################"
 	mkdir -p tests/h88/test && cd tests/h88/test && rm -f * && \
-	../../../nrx.py -c ../nrx.conf -i cyjs -f ../data/DM-Global-HQ.cyjs -o clab -d && \
+	../../../nrx.py -c ../nrx.conf -i cyjs -f ../data/HQ.cyjs -o clab -d && \
 	for f in *; do echo Comparing file $$f ...; diff $$f ../data/$$f || exit 1; done
 	@echo
 

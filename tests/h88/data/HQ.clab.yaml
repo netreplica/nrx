@@ -1,4 +1,4 @@
-name: DM-Global-HQ
+name: HQ
 topology:
     nodes:
         graphite:
@@ -16,7 +16,7 @@ topology:
             labels:
                 graph-hide: yes
 
-        HQ-IT-Staging-Switch:
+        HQ-Switch1:
             kind: linux
             image: netreplica/ubuntu-host:latest
             cmd: /start.sh -sS
@@ -26,11 +26,11 @@ topology:
                 graph-icon: access-switch
                 graph-level: 9
                 role: Access Switch
-                group: DM-Global-HQ
+                group: HQ
                 platform: Cisco IOS-XE
                 vendor: Cisco
                 model: C9200-48P
-        HQ-IT-Staging-DistSw:
+        HQ-DistSw:
             kind: nokia_srlinux
             type: ixrd2
             image: ghcr.io/nokia/srlinux:latest
@@ -38,25 +38,25 @@ topology:
                 graph-icon: distribution-switch
                 graph-level: 8
                 role: Distribution Switch
-                group: DM-Global-HQ
+                group: HQ
                 platform: Nokia SR-Linux
                 vendor: Nokia
                 model: 7220 IXR-D2
-        HQ-IT-Staging-Switch2:
+        HQ-Switch2:
             kind: ceos
             image: ceos:latest
             binds:
-                - HQ-IT-Staging-Switch2_interface_map.json:/mnt/flash/EosIntfMapping.json:ro
+                - HQ-Switch2_interface_map.json:/mnt/flash/EosIntfMapping.json:ro
             labels:
                 graph-icon: access-switch
                 graph-level: 9
                 role: Access Switch
-                group: DM-Global-HQ
+                group: HQ
                 platform: Arista EOS
                 vendor: Arista
                 model: DCS-7010T-48
     links:
-        - endpoints: ["HQ-IT-Staging-Switch:eth1", "HQ-IT-Staging-DistSw:e1-1"]
-        - endpoints: ["HQ-IT-Staging-Switch:eth2", "HQ-IT-Staging-DistSw:e1-2"]
-        - endpoints: ["HQ-IT-Staging-Switch2:eth1", "HQ-IT-Staging-DistSw:e1-3"]
-        - endpoints: ["HQ-IT-Staging-Switch2:eth2", "HQ-IT-Staging-DistSw:e1-4"]
+        - endpoints: ["HQ-Switch1:eth1", "HQ-DistSw:e1-1"]
+        - endpoints: ["HQ-Switch1:eth2", "HQ-DistSw:e1-2"]
+        - endpoints: ["HQ-Switch2:eth1", "HQ-DistSw:e1-3"]
+        - endpoints: ["HQ-Switch2:eth2", "HQ-DistSw:e1-4"]
