@@ -1,0 +1,5 @@
+site,vid,name,status,role
+HQ,100,Data,active,Access - Data
+HQ,200,Voice,active,Access - Voice
+HQ,300,Wireless,active,Access - Wireless
+HQ,900,Network Management,active,Management
