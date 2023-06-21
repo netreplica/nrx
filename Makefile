@@ -153,7 +153,7 @@ test-h88-nb-2-cyjs-current:
 	mkdir -p tests/h88/test && cd tests/h88/test && rm -f * && \
 	source ../.env_current && \
 	../../../nrx.py -c ../nrx.conf -o cyjs -d && \
-	diff HQ.cyjs ../data/HQ.cyjs
+	diff HQ.cyjs ../data/HQ.cyjs.current
 	@echo
 
 test-h88-nb-2-cyjs-latest:
@@ -163,7 +163,7 @@ test-h88-nb-2-cyjs-latest:
 	mkdir -p tests/h88/test && cd tests/h88/test && rm -f * && \
 	source ../.env_latest && \
 	../../../nrx.py -c ../nrx.conf -o cyjs -d && \
-	diff HQ.cyjs ../data/HQ.cyjs
+	diff HQ.cyjs ../data/HQ.cyjs.latest
 	@echo
 
 test-h88-cyjs-2-clab:
