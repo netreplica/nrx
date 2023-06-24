@@ -236,7 +236,7 @@ class NBFactory:
         }
         url = f"{self.config['nb_api_url']}/api/dcim/devices/{device.id}/render-config/"
         try:
-            response = requests.post(url, headers=headers, timeout=self.config['api_timeout'])
+            response = requests.post(url, headers=headers, timeout=self.config['api_timeout'], verify=self.config['tls_validate'])
             response.raise_for_status()  # Raises an HTTPError if the response status is an error
             config_response = ast.literal_eval(response.text)
             if "content" in config_response:
