@@ -526,6 +526,10 @@ class NetworkTopology:
                 if int_map is not None:
                     n['interface_map'] = int_map
 
+                node_config = self._save_node_configuration(n)
+                if node_config is not None:
+                    n['configuration_file'] = node_config
+
                 template = self._get_template('kinds', p, True)
                 if template is not None:
                     try:
@@ -622,6 +626,28 @@ class NetworkTopology:
                     error(f"Can't write into {int_map_file}", e)
                 print(f"Created '{p}' interface map: {int_map_file}")
                 return int_map_file
+        return None
+
+    def _save_node_configuration(self, node):
+        """Save node configuration to a file"""
+        if 'name' in node and len(node['name']) > 0:
+            name = node['name']
+        else:
+            return None
+        if 'config' in node and len(node['config']) > 0:
+            config = node['config']
+        else:
+            return None
+        if self.config['output_format'] == 'clab':
+            # Support for Containerlab startup configurations
+            config_file = f"{name}.config"
+            try:
+                with open(config_file, "w", encoding="utf-8") as f:
+                    f.write(config)
+            except OSError as e:
+                error(f"Can't write into {config_file}", e)
+            print(f"Created device configuration file: {config_file}")
+            return config_file
         return None
 
 def arg_input_check(s):
