@@ -88,10 +88,7 @@ nodes:
     ram: null
     hide_links: false
     tags: []
-    x: 0
-    y: -200
     configuration: |-
-      hostname dc2-tor-1
       # workaround for booting to loader> prompt
       echo 'from cli import cli' > set_boot.py
       echo 'import json' >> set_boot.py
@@ -111,12 +108,137 @@ nodes:
       event manager applet BOOTCONFIG
        event syslog pattern "Configured from vty"
        action 1.0 cli python bootflash:set_boot.py
-      # minimum needed config to login
-      no password strength-check
-      username admin role network-admin
-      username admin password cisco role network-admin
-      username cisco role network-admin
-      username cisco password cisco role network-admin
+      # rendered configuration
+      !
+      hostname dc2-tor-1
+      !
+      !
+      ip name-server 8.8.8.8
+      ip name-server 9.9.9.9
+      !
+      interface Ethernet1/1
+       no shutdown
+      interface Ethernet1/2
+       no shutdown
+      interface Ethernet1/3
+       no shutdown
+      interface Ethernet1/4
+       no shutdown
+      interface Ethernet1/5
+       no shutdown
+      interface Ethernet1/6
+       no shutdown
+      interface Ethernet1/7
+       no shutdown
+      interface Ethernet1/8
+       no shutdown
+      interface Ethernet1/9
+       no shutdown
+      interface Ethernet1/10
+       no shutdown
+      interface Ethernet1/11
+       no shutdown
+      interface Ethernet1/12
+       no shutdown
+      interface Ethernet1/13
+       no shutdown
+      interface Ethernet1/14
+       no shutdown
+      interface Ethernet1/15
+       no shutdown
+      interface Ethernet1/16
+       no shutdown
+      interface Ethernet1/17
+       no shutdown
+      interface Ethernet1/18
+       no shutdown
+      interface Ethernet1/19
+       no shutdown
+      interface Ethernet1/20
+       no shutdown
+      interface Ethernet1/21
+       no shutdown
+      interface Ethernet1/22
+       no shutdown
+      interface Ethernet1/23
+       no shutdown
+      interface Ethernet1/24
+       no shutdown
+      interface Ethernet1/25
+       no shutdown
+      interface Ethernet1/26
+       no shutdown
+      interface Ethernet1/27
+       no shutdown
+      interface Ethernet1/28
+       no shutdown
+      interface Ethernet1/29
+       no shutdown
+      interface Ethernet1/30
+       no shutdown
+      interface Ethernet1/31
+       no shutdown
+      interface Ethernet1/32
+       no shutdown
+      interface Ethernet1/33
+       no shutdown
+      interface Ethernet1/34
+       no shutdown
+      interface Ethernet1/35
+       no shutdown
+      interface Ethernet1/36
+       no shutdown
+      interface Ethernet1/37
+       no shutdown
+      interface Ethernet1/38
+       no shutdown
+      interface Ethernet1/39
+       no shutdown
+      interface Ethernet1/40
+       no shutdown
+      interface Ethernet1/41
+       no shutdown
+      interface Ethernet1/42
+       no shutdown
+      interface Ethernet1/43
+       no shutdown
+      interface Ethernet1/44
+       no shutdown
+      interface Ethernet1/45
+       no shutdown
+      interface Ethernet1/46
+       no shutdown
+      interface Ethernet1/47
+       no shutdown
+      interface Ethernet1/48
+       no shutdown
+      interface Ethernet1/49
+       no shutdown
+      interface Ethernet1/50
+       no shutdown
+      interface Ethernet1/51
+       no shutdown
+      interface Ethernet1/52
+       no shutdown
+      interface Ethernet1/53
+       no shutdown
+      interface Ethernet1/54
+       no shutdown
+      interface mgmt0
+       description Management VLAN
+       no shutdown
+      !
+      snmp-server community R34d0nlY RO
+      !
+      logging host 192.168.4.12 transport udp port 1514
+      logging host 192.168.4.13 transport udp port 1514
+      !
+      ntp server 192.168.4.10
+      ntp server 192.168.4.11
+      !
+      end
+    x: 0
+    y: -200
     interfaces:
       - id: i0
         label: Loopback0
@@ -149,10 +271,7 @@ nodes:
     ram: null
     hide_links: false
     tags: []
-    x: 0
-    y: -400
     configuration: |-
-      hostname dc2-spine-1
       # workaround for booting to loader> prompt
       echo 'from cli import cli' > set_boot.py
       echo 'import json' >> set_boot.py
@@ -172,12 +291,101 @@ nodes:
       event manager applet BOOTCONFIG
        event syslog pattern "Configured from vty"
        action 1.0 cli python bootflash:set_boot.py
-      # minimum needed config to login
-      no password strength-check
-      username admin role network-admin
-      username admin password cisco role network-admin
-      username cisco role network-admin
-      username cisco password cisco role network-admin
+      # rendered configuration
+      !
+      hostname dc2-spine-1
+      !
+      !
+      ip name-server 8.8.8.8
+      ip name-server 9.9.9.9
+      !
+      interface Ethernet1/1
+       no shutdown
+      interface Ethernet1/2
+       no shutdown
+      interface Ethernet1/3
+       no shutdown
+      interface Ethernet1/4
+       no shutdown
+      interface Ethernet1/5
+       no shutdown
+      interface Ethernet1/6
+       no shutdown
+      interface Ethernet1/7
+       no shutdown
+      interface Ethernet1/8
+       no shutdown
+      interface Ethernet1/9
+       no shutdown
+      interface Ethernet1/10
+       no shutdown
+      interface Ethernet1/11
+       no shutdown
+      interface Ethernet1/12
+       no shutdown
+      interface Ethernet1/13
+       no shutdown
+      interface Ethernet1/14
+       no shutdown
+      interface Ethernet1/15
+       no shutdown
+      interface Ethernet1/16
+       no shutdown
+      interface Ethernet1/17
+       no shutdown
+      interface Ethernet1/18
+       no shutdown
+      interface Ethernet1/19
+       no shutdown
+      interface Ethernet1/20
+       no shutdown
+      interface Ethernet1/21
+       no shutdown
+      interface Ethernet1/22
+       no shutdown
+      interface Ethernet1/23
+       no shutdown
+      interface Ethernet1/24
+       no shutdown
+      interface Ethernet1/25
+       no shutdown
+      interface Ethernet1/26
+       no shutdown
+      interface Ethernet1/27
+       no shutdown
+      interface Ethernet1/28
+       no shutdown
+      interface Ethernet1/29
+       no shutdown
+      interface Ethernet1/30
+       no shutdown
+      interface Ethernet1/31
+       no shutdown
+      interface Ethernet1/32
+       no shutdown
+      interface Ethernet1/33
+       no shutdown
+      interface Ethernet1/34
+       no shutdown
+      interface Ethernet1/35
+       no shutdown
+      interface Ethernet1/36
+       no shutdown
+      interface mgmt0
+       description Management VLAN
+       no shutdown
+      !
+      snmp-server community R34d0nlY RO
+      !
+      logging host 192.168.4.12 transport udp port 1514
+      logging host 192.168.4.13 transport udp port 1514
+      !
+      ntp server 192.168.4.10
+      ntp server 192.168.4.11
+      !
+      end
+    x: 0
+    y: -400
     interfaces:
       - id: i0
         label: Loopback0
@@ -214,10 +422,7 @@ nodes:
     ram: null
     hide_links: false
     tags: []
-    x: 1000
-    y: -400
     configuration: |-
-      hostname dc2-spine-2
       # workaround for booting to loader> prompt
       echo 'from cli import cli' > set_boot.py
       echo 'import json' >> set_boot.py
@@ -237,12 +442,101 @@ nodes:
       event manager applet BOOTCONFIG
        event syslog pattern "Configured from vty"
        action 1.0 cli python bootflash:set_boot.py
-      # minimum needed config to login
-      no password strength-check
-      username admin role network-admin
-      username admin password cisco role network-admin
-      username cisco role network-admin
-      username cisco password cisco role network-admin
+      # rendered configuration
+      !
+      hostname dc2-spine-2
+      !
+      !
+      ip name-server 8.8.8.8
+      ip name-server 9.9.9.9
+      !
+      interface Ethernet1/1
+       no shutdown
+      interface Ethernet1/2
+       no shutdown
+      interface Ethernet1/3
+       no shutdown
+      interface Ethernet1/4
+       no shutdown
+      interface Ethernet1/5
+       no shutdown
+      interface Ethernet1/6
+       no shutdown
+      interface Ethernet1/7
+       no shutdown
+      interface Ethernet1/8
+       no shutdown
+      interface Ethernet1/9
+       no shutdown
+      interface Ethernet1/10
+       no shutdown
+      interface Ethernet1/11
+       no shutdown
+      interface Ethernet1/12
+       no shutdown
+      interface Ethernet1/13
+       no shutdown
+      interface Ethernet1/14
+       no shutdown
+      interface Ethernet1/15
+       no shutdown
+      interface Ethernet1/16
+       no shutdown
+      interface Ethernet1/17
+       no shutdown
+      interface Ethernet1/18
+       no shutdown
+      interface Ethernet1/19
+       no shutdown
+      interface Ethernet1/20
+       no shutdown
+      interface Ethernet1/21
+       no shutdown
+      interface Ethernet1/22
+       no shutdown
+      interface Ethernet1/23
+       no shutdown
+      interface Ethernet1/24
+       no shutdown
+      interface Ethernet1/25
+       no shutdown
+      interface Ethernet1/26
+       no shutdown
+      interface Ethernet1/27
+       no shutdown
+      interface Ethernet1/28
+       no shutdown
+      interface Ethernet1/29
+       no shutdown
+      interface Ethernet1/30
+       no shutdown
+      interface Ethernet1/31
+       no shutdown
+      interface Ethernet1/32
+       no shutdown
+      interface Ethernet1/33
+       no shutdown
+      interface Ethernet1/34
+       no shutdown
+      interface Ethernet1/35
+       no shutdown
+      interface Ethernet1/36
+       no shutdown
+      interface mgmt0
+       description Management VLAN
+       no shutdown
+      !
+      snmp-server community R34d0nlY RO
+      !
+      logging host 192.168.4.12 transport udp port 1514
+      logging host 192.168.4.13 transport udp port 1514
+      !
+      ntp server 192.168.4.10
+      ntp server 192.168.4.11
+      !
+      end
+    x: 1000
+    y: -400
     interfaces:
       - id: i0
         label: Loopback0
@@ -279,10 +573,7 @@ nodes:
     ram: null
     hide_links: false
     tags: []
-    x: 333
-    y: -200
     configuration: |-
-      hostname dc2-tor-2
       # workaround for booting to loader> prompt
       echo 'from cli import cli' > set_boot.py
       echo 'import json' >> set_boot.py
@@ -302,12 +593,137 @@ nodes:
       event manager applet BOOTCONFIG
        event syslog pattern "Configured from vty"
        action 1.0 cli python bootflash:set_boot.py
-      # minimum needed config to login
-      no password strength-check
-      username admin role network-admin
-      username admin password cisco role network-admin
-      username cisco role network-admin
-      username cisco password cisco role network-admin
+      # rendered configuration
+      !
+      hostname dc2-tor-2
+      !
+      !
+      ip name-server 8.8.8.8
+      ip name-server 9.9.9.9
+      !
+      interface Ethernet1/1
+       no shutdown
+      interface Ethernet1/2
+       no shutdown
+      interface Ethernet1/3
+       no shutdown
+      interface Ethernet1/4
+       no shutdown
+      interface Ethernet1/5
+       no shutdown
+      interface Ethernet1/6
+       no shutdown
+      interface Ethernet1/7
+       no shutdown
+      interface Ethernet1/8
+       no shutdown
+      interface Ethernet1/9
+       no shutdown
+      interface Ethernet1/10
+       no shutdown
+      interface Ethernet1/11
+       no shutdown
+      interface Ethernet1/12
+       no shutdown
+      interface Ethernet1/13
+       no shutdown
+      interface Ethernet1/14
+       no shutdown
+      interface Ethernet1/15
+       no shutdown
+      interface Ethernet1/16
+       no shutdown
+      interface Ethernet1/17
+       no shutdown
+      interface Ethernet1/18
+       no shutdown
+      interface Ethernet1/19
+       no shutdown
+      interface Ethernet1/20
+       no shutdown
+      interface Ethernet1/21
+       no shutdown
+      interface Ethernet1/22
+       no shutdown
+      interface Ethernet1/23
+       no shutdown
+      interface Ethernet1/24
+       no shutdown
+      interface Ethernet1/25
+       no shutdown
+      interface Ethernet1/26
+       no shutdown
+      interface Ethernet1/27
+       no shutdown
+      interface Ethernet1/28
+       no shutdown
+      interface Ethernet1/29
+       no shutdown
+      interface Ethernet1/30
+       no shutdown
+      interface Ethernet1/31
+       no shutdown
+      interface Ethernet1/32
+       no shutdown
+      interface Ethernet1/33
+       no shutdown
+      interface Ethernet1/34
+       no shutdown
+      interface Ethernet1/35
+       no shutdown
+      interface Ethernet1/36
+       no shutdown
+      interface Ethernet1/37
+       no shutdown
+      interface Ethernet1/38
+       no shutdown
+      interface Ethernet1/39
+       no shutdown
+      interface Ethernet1/40
+       no shutdown
+      interface Ethernet1/41
+       no shutdown
+      interface Ethernet1/42
+       no shutdown
+      interface Ethernet1/43
+       no shutdown
+      interface Ethernet1/44
+       no shutdown
+      interface Ethernet1/45
+       no shutdown
+      interface Ethernet1/46
+       no shutdown
+      interface Ethernet1/47
+       no shutdown
+      interface Ethernet1/48
+       no shutdown
+      interface Ethernet1/49
+       no shutdown
+      interface Ethernet1/50
+       no shutdown
+      interface Ethernet1/51
+       no shutdown
+      interface Ethernet1/52
+       no shutdown
+      interface Ethernet1/53
+       no shutdown
+      interface Ethernet1/54
+       no shutdown
+      interface mgmt0
+       description Management VLAN
+       no shutdown
+      !
+      snmp-server community R34d0nlY RO
+      !
+      logging host 192.168.4.12 transport udp port 1514
+      logging host 192.168.4.13 transport udp port 1514
+      !
+      ntp server 192.168.4.10
+      ntp server 192.168.4.11
+      !
+      end
+    x: 333
+    y: -200
     interfaces:
       - id: i0
         label: Loopback0
@@ -340,10 +756,7 @@ nodes:
     ram: null
     hide_links: false
     tags: []
-    x: 666
-    y: -200
     configuration: |-
-      hostname dc2-tor-3
       # workaround for booting to loader> prompt
       echo 'from cli import cli' > set_boot.py
       echo 'import json' >> set_boot.py
@@ -363,12 +776,137 @@ nodes:
       event manager applet BOOTCONFIG
        event syslog pattern "Configured from vty"
        action 1.0 cli python bootflash:set_boot.py
-      # minimum needed config to login
-      no password strength-check
-      username admin role network-admin
-      username admin password cisco role network-admin
-      username cisco role network-admin
-      username cisco password cisco role network-admin
+      # rendered configuration
+      !
+      hostname dc2-tor-3
+      !
+      !
+      ip name-server 8.8.8.8
+      ip name-server 9.9.9.9
+      !
+      interface Ethernet1/1
+       no shutdown
+      interface Ethernet1/2
+       no shutdown
+      interface Ethernet1/3
+       no shutdown
+      interface Ethernet1/4
+       no shutdown
+      interface Ethernet1/5
+       no shutdown
+      interface Ethernet1/6
+       no shutdown
+      interface Ethernet1/7
+       no shutdown
+      interface Ethernet1/8
+       no shutdown
+      interface Ethernet1/9
+       no shutdown
+      interface Ethernet1/10
+       no shutdown
+      interface Ethernet1/11
+       no shutdown
+      interface Ethernet1/12
+       no shutdown
+      interface Ethernet1/13
+       no shutdown
+      interface Ethernet1/14
+       no shutdown
+      interface Ethernet1/15
+       no shutdown
+      interface Ethernet1/16
+       no shutdown
+      interface Ethernet1/17
+       no shutdown
+      interface Ethernet1/18
+       no shutdown
+      interface Ethernet1/19
+       no shutdown
+      interface Ethernet1/20
+       no shutdown
+      interface Ethernet1/21
+       no shutdown
+      interface Ethernet1/22
+       no shutdown
+      interface Ethernet1/23
+       no shutdown
+      interface Ethernet1/24
+       no shutdown
+      interface Ethernet1/25
+       no shutdown
+      interface Ethernet1/26
+       no shutdown
+      interface Ethernet1/27
+       no shutdown
+      interface Ethernet1/28
+       no shutdown
+      interface Ethernet1/29
+       no shutdown
+      interface Ethernet1/30
+       no shutdown
+      interface Ethernet1/31
+       no shutdown
+      interface Ethernet1/32
+       no shutdown
+      interface Ethernet1/33
+       no shutdown
+      interface Ethernet1/34
+       no shutdown
+      interface Ethernet1/35
+       no shutdown
+      interface Ethernet1/36
+       no shutdown
+      interface Ethernet1/37
+       no shutdown
+      interface Ethernet1/38
+       no shutdown
+      interface Ethernet1/39
+       no shutdown
+      interface Ethernet1/40
+       no shutdown
+      interface Ethernet1/41
+       no shutdown
+      interface Ethernet1/42
+       no shutdown
+      interface Ethernet1/43
+       no shutdown
+      interface Ethernet1/44
+       no shutdown
+      interface Ethernet1/45
+       no shutdown
+      interface Ethernet1/46
+       no shutdown
+      interface Ethernet1/47
+       no shutdown
+      interface Ethernet1/48
+       no shutdown
+      interface Ethernet1/49
+       no shutdown
+      interface Ethernet1/50
+       no shutdown
+      interface Ethernet1/51
+       no shutdown
+      interface Ethernet1/52
+       no shutdown
+      interface Ethernet1/53
+       no shutdown
+      interface Ethernet1/54
+       no shutdown
+      interface mgmt0
+       description Management VLAN
+       no shutdown
+      !
+      snmp-server community R34d0nlY RO
+      !
+      logging host 192.168.4.12 transport udp port 1514
+      logging host 192.168.4.13 transport udp port 1514
+      !
+      ntp server 192.168.4.10
+      ntp server 192.168.4.11
+      !
+      end
+    x: 666
+    y: -200
     interfaces:
       - id: i0
         label: Loopback0
@@ -401,10 +939,7 @@ nodes:
     ram: null
     hide_links: false
     tags: []
-    x: 1000
-    y: -200
     configuration: |-
-      hostname dc2-tor-4
       # workaround for booting to loader> prompt
       echo 'from cli import cli' > set_boot.py
       echo 'import json' >> set_boot.py
@@ -424,12 +959,137 @@ nodes:
       event manager applet BOOTCONFIG
        event syslog pattern "Configured from vty"
        action 1.0 cli python bootflash:set_boot.py
-      # minimum needed config to login
-      no password strength-check
-      username admin role network-admin
-      username admin password cisco role network-admin
-      username cisco role network-admin
-      username cisco password cisco role network-admin
+      # rendered configuration
+      !
+      hostname dc2-tor-4
+      !
+      !
+      ip name-server 8.8.8.8
+      ip name-server 9.9.9.9
+      !
+      interface Ethernet1/1
+       no shutdown
+      interface Ethernet1/2
+       no shutdown
+      interface Ethernet1/3
+       no shutdown
+      interface Ethernet1/4
+       no shutdown
+      interface Ethernet1/5
+       no shutdown
+      interface Ethernet1/6
+       no shutdown
+      interface Ethernet1/7
+       no shutdown
+      interface Ethernet1/8
+       no shutdown
+      interface Ethernet1/9
+       no shutdown
+      interface Ethernet1/10
+       no shutdown
+      interface Ethernet1/11
+       no shutdown
+      interface Ethernet1/12
+       no shutdown
+      interface Ethernet1/13
+       no shutdown
+      interface Ethernet1/14
+       no shutdown
+      interface Ethernet1/15
+       no shutdown
+      interface Ethernet1/16
+       no shutdown
+      interface Ethernet1/17
+       no shutdown
+      interface Ethernet1/18
+       no shutdown
+      interface Ethernet1/19
+       no shutdown
+      interface Ethernet1/20
+       no shutdown
+      interface Ethernet1/21
+       no shutdown
+      interface Ethernet1/22
+       no shutdown
+      interface Ethernet1/23
+       no shutdown
+      interface Ethernet1/24
+       no shutdown
+      interface Ethernet1/25
+       no shutdown
+      interface Ethernet1/26
+       no shutdown
+      interface Ethernet1/27
+       no shutdown
+      interface Ethernet1/28
+       no shutdown
+      interface Ethernet1/29
+       no shutdown
+      interface Ethernet1/30
+       no shutdown
+      interface Ethernet1/31
+       no shutdown
+      interface Ethernet1/32
+       no shutdown
+      interface Ethernet1/33
+       no shutdown
+      interface Ethernet1/34
+       no shutdown
+      interface Ethernet1/35
+       no shutdown
+      interface Ethernet1/36
+       no shutdown
+      interface Ethernet1/37
+       no shutdown
+      interface Ethernet1/38
+       no shutdown
+      interface Ethernet1/39
+       no shutdown
+      interface Ethernet1/40
+       no shutdown
+      interface Ethernet1/41
+       no shutdown
+      interface Ethernet1/42
+       no shutdown
+      interface Ethernet1/43
+       no shutdown
+      interface Ethernet1/44
+       no shutdown
+      interface Ethernet1/45
+       no shutdown
+      interface Ethernet1/46
+       no shutdown
+      interface Ethernet1/47
+       no shutdown
+      interface Ethernet1/48
+       no shutdown
+      interface Ethernet1/49
+       no shutdown
+      interface Ethernet1/50
+       no shutdown
+      interface Ethernet1/51
+       no shutdown
+      interface Ethernet1/52
+       no shutdown
+      interface Ethernet1/53
+       no shutdown
+      interface Ethernet1/54
+       no shutdown
+      interface mgmt0
+       description Management VLAN
+       no shutdown
+      !
+      snmp-server community R34d0nlY RO
+      !
+      logging host 192.168.4.12 transport udp port 1514
+      logging host 192.168.4.13 transport udp port 1514
+      !
+      ntp server 192.168.4.10
+      ntp server 192.168.4.11
+      !
+      end
+    x: 1000
+    y: -200
     interfaces:
       - id: i0
         label: Loopback0

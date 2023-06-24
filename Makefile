@@ -55,7 +55,7 @@ test-dc2-nb-2-cyjs-current:
 	mkdir -p tests/dc2/test && cd tests/dc2/test && rm -f * && \
 	source ../.env_current && \
 	../../../nrx.py -c ../nrx.conf -o cyjs -d && \
-	diff dc2.cyjs ../data/dc2.cyjs
+	diff dc2.cyjs ../data/dc2.cyjs.current
 	@echo
 
 test-dc2-nb-2-cyjs-latest:
@@ -65,7 +65,7 @@ test-dc2-nb-2-cyjs-latest:
 	mkdir -p tests/dc2/test && cd tests/dc2/test && rm -f * && \
 	source ../.env_latest && \
 	../../../nrx.py -c ../nrx.conf -o cyjs -d && \
-	diff dc2.cyjs ../data/dc2.cyjs
+	diff dc2.cyjs ../data/dc2.cyjs.latest
 	@echo
 
 test-dc2-cyjs-2-graphite:
