@@ -36,6 +36,8 @@ import ast
 import toml
 import pynetbox
 import requests
+from requests.adapters import HTTPAdapter
+from requests.exceptions import RequestException, Timeout, HTTPError
 import urllib3
 import networkx as nx
 import jinja2
@@ -69,6 +71,17 @@ def error_debug(err, d):
     debug(d)
     error(err)
 
+class TimeoutHTTPAdapter(HTTPAdapter):
+    """HTTPAdapter with custom API timeout"""
+    def __init__(self, timeout, *args, **kwargs):
+        self.timeout = timeout
+        super().__init__(*args, **kwargs)
+
+    def send(self, request, stream=False, timeout=None, verify=True, cert=None, proxies=None):
+        if timeout is None:
+            timeout = self.timeout
+        return super().send(request, stream, timeout, verify, cert, proxies)
+
 class NBNetwork:
     """Class to hold network topology data exported from NetBox"""
     def __init__(self):
@@ -98,6 +111,10 @@ class NBFactory:
         if not config['tls_validate']:
             self.nb_session.http_session.verify = False
             urllib3.disable_warnings()
+        if config['api_timeout'] > 0:
+            adapter = TimeoutHTTPAdapter(config['api_timeout'])
+            self.nb_session.http_session.mount("http://", adapter)
+            self.nb_session.http_session.mount("https://", adapter)
         print(f"Connecting to NetBox at: {config['nb_api_url']}")
         if len(config['export_site']) > 0:
             debug(f"Fetching site: {config['export_site']}")
@@ -218,16 +235,18 @@ class NBFactory:
             'Accept': 'application/json'
         }
         url = f"{self.config['nb_api_url']}/api/dcim/devices/{device.id}/render-config/"
-        response = requests.post(url, headers=headers)
-        if response.status_code == 200:
-            try:
-                config_response = ast.literal_eval(response.text)
-                if "content" in config_response:
-                    return config_response["content"]
-            except (SyntaxError) as e:
-                debug("Get device configuration failed: can't parse rendered configuration")
-        else:
-            debug(f"Get device configuration request failed with status code: {response.status_code}")
+        try:
+            response = requests.post(url, headers=headers, timeout=self.config['api_timeout'], verify=self.config['tls_validate'])
+            response.raise_for_status()  # Raises an HTTPError if the response status is an error
+            config_response = ast.literal_eval(response.text)
+            if "content" in config_response:
+                return config_response["content"]
+        except HTTPError as e:
+            debug(f"{device.name}: Get device configuration request failed: {e}")
+        except (Timeout, RequestException) as e:
+            debug(f"{device.name}: Get device configuration failed: {e}")
+        except SyntaxError as e:
+            debug(f"{device.name}: Get device configuration failed: can't parse rendered configuration - {e}")
         return ""
 
     def _trace_cable(self, cable):
@@ -697,6 +716,7 @@ def load_toml_config(filename):
         'nb_api_url': '',
         'nb_api_token': '',
         'tls_validate': True,
+        'api_timeout': 10,
         'output_format': 'cyjs',
         'export_device_roles': ["router", "core-switch", "access-switch", "distribution-switch", "tor-switch"],
         'device_role_levels': {
