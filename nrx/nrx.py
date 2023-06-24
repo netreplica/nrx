@@ -36,6 +36,7 @@ import ast
 import toml
 import pynetbox
 import requests
+from requests.adapters import HTTPAdapter
 from requests.exceptions import RequestException, Timeout, HTTPError
 import urllib3
 import networkx as nx
@@ -70,6 +71,17 @@ def error_debug(err, d):
     debug(d)
     error(err)
 
+class TimeoutHTTPAdapter(HTTPAdapter):
+    """HTTPAdapter with custom API timeout"""
+    def __init__(self, timeout, *args, **kwargs):
+        self.timeout = timeout
+        super().__init__(*args, **kwargs)
+
+    def send(self, request, stream=False, timeout=None, verify=True, cert=None, proxies=None):
+        if timeout is None:
+            timeout = self.timeout
+        return super().send(request, stream, timeout, verify, cert, proxies)
+
 class NBNetwork:
     """Class to hold network topology data exported from NetBox"""
     def __init__(self):
@@ -99,6 +111,10 @@ class NBFactory:
         if not config['tls_validate']:
             self.nb_session.http_session.verify = False
             urllib3.disable_warnings()
+        if config['api_timeout'] > 0:
+            adapter = TimeoutHTTPAdapter(config['api_timeout'])
+            self.nb_session.http_session.mount("http://", adapter)
+            self.nb_session.http_session.mount("https://", adapter)
         print(f"Connecting to NetBox at: {config['nb_api_url']}")
         if len(config['export_site']) > 0:
             debug(f"Fetching site: {config['export_site']}")
