@@ -34,6 +34,7 @@ topology:
             kind: nokia_srlinux
             type: ixrd2
             image: ghcr.io/nokia/srlinux:latest
+            startup-config: HQ-DistSw.config
             labels:
                 graph-icon: distribution-switch
                 graph-level: 8
@@ -45,6 +46,7 @@ topology:
         HQ-Switch2:
             kind: ceos
             image: ceos:latest
+            startup-config: HQ-Switch2.config
             binds:
                 - HQ-Switch2_interface_map.json:/mnt/flash/EosIntfMapping.json:ro
             labels:

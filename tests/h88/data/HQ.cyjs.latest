@@ -1,0 +1,300 @@
+{
+    "data": [
+        [
+            "name",
+            "HQ"
+        ]
+    ],
+    "directed": false,
+    "multigraph": false,
+    "elements": {
+        "nodes": [
+            {
+                "data": {
+                    "side": "a",
+                    "type": "device",
+                    "device": {
+                        "id": 40,
+                        "type": "device",
+                        "name": "HQ-Switch1",
+                        "node_id": 5,
+                        "site": "HQ",
+                        "platform": "cisco-ios-xe",
+                        "platform_name": "Cisco IOS-XE",
+                        "vendor": "cisco",
+                        "vendor_name": "Cisco",
+                        "model": "c9200-48p",
+                        "model_name": "C9200-48P",
+                        "role": "access-switch",
+                        "role_name": "Access Switch",
+                        "primary_ip4": "10.113.0.10/24",
+                        "primary_ip6": "",
+                        "config": "hostname HQ-Switch1\n\n\nvlan 100\n name Data\nvlan 200\n name Voice\nvlan 300\n name Wireless\nvlan 900\n name NetMgmt\n\n\nip name-server 8.8.8.8\nip name-server 9.9.9.9\n\n\ninterface GigabitEthernet0/0\n description Management VLAN\n no shutdown\n ip address 10.113.0.10/24 255.255.255.0\ninterface GigabitEthernet1/0/1\n no shutdown\n switchport mode access\n switchport access vlan 200\n\ninterface GigabitEthernet1/0/2\n no shutdown\n switchport mode access\n switchport access vlan 100\n\ninterface GigabitEthernet1/0/3\n no shutdown\n switchport mode access\n switchport access vlan 100\n\ninterface GigabitEthernet1/0/4\n no shutdown\n switchport mode access\n switchport access vlan 100\n\ninterface GigabitEthernet1/0/5\n no shutdown\n switchport mode access\n switchport access vlan 100\n\ninterface GigabitEthernet1/0/6\n no shutdown\n\ninterface GigabitEthernet1/0/7\n no shutdown\n\ninterface GigabitEthernet1/0/8\n no shutdown\n\ninterface GigabitEthernet1/0/9\n no shutdown\n\ninterface GigabitEthernet1/0/10\n no shutdown\n\ninterface GigabitEthernet1/0/11\n no shutdown\n\ninterface GigabitEthernet1/0/12\n no shutdown\n\ninterface GigabitEthernet1/0/13\n no shutdown\n\ninterface GigabitEthernet1/0/14\n no shutdown\n\ninterface GigabitEthernet1/0/15\n no shutdown\n\ninterface GigabitEthernet1/0/16\n no shutdown\n\ninterface GigabitEthernet1/0/17\n no shutdown\n\ninterface GigabitEthernet1/0/18\n no shutdown\n\ninterface GigabitEthernet1/0/19\n no shutdown\n\ninterface GigabitEthernet1/0/20\n no shutdown\n\ninterface GigabitEthernet1/0/21\n no shutdown\n\ninterface GigabitEthernet1/0/22\n no shutdown\n\ninterface GigabitEthernet1/0/23\n no shutdown\n\ninterface GigabitEthernet1/0/24\n no shutdown\n\ninterface GigabitEthernet1/0/25\n no shutdown\n\ninterface GigabitEthernet1/0/26\n no shutdown\n\ninterface GigabitEthernet1/0/27\n no shutdown\n\ninterface GigabitEthernet1/0/28\n no shutdown\n\ninterface GigabitEthernet1/0/29\n no shutdown\n\ninterface GigabitEthernet1/0/30\n no shutdown\n\ninterface GigabitEthernet1/0/31\n no shutdown\n\ninterface GigabitEthernet1/0/32\n no shutdown\n\ninterface GigabitEthernet1/0/33\n no shutdown\n\ninterface GigabitEthernet1/0/34\n no shutdown\n\ninterface GigabitEthernet1/0/35\n no shutdown\n\ninterface GigabitEthernet1/0/36\n no shutdown\n\ninterface GigabitEthernet1/0/37\n no shutdown\n\ninterface GigabitEthernet1/0/38\n no shutdown\n\ninterface GigabitEthernet1/0/39\n no shutdown\n\ninterface GigabitEthernet1/0/40\n no shutdown\n\ninterface GigabitEthernet1/0/41\n no shutdown\n\ninterface GigabitEthernet1/0/42\n no shutdown\n\ninterface GigabitEthernet1/0/43\n no shutdown\n\ninterface GigabitEthernet1/0/44\n no shutdown\n\ninterface GigabitEthernet1/0/45\n no shutdown\n\ninterface GigabitEthernet1/0/46\n no shutdown\n\ninterface GigabitEthernet1/0/47\n no shutdown\n\ninterface GigabitEthernet1/0/48\n no shutdown\n\ninterface TenGigabitEthernet1/1/1\n no shutdown\n\ninterface TenGigabitEthernet1/1/2\n no shutdown\n\ninterface Vlan900\n no shutdown\n\n\nsnmp-server community R34d0nlY RO\n\n\nlogging host 192.168.4.12 transport udp port 1514\nlogging host 192.168.4.13 transport udp port 1514\n\n\nntp server 192.168.4.10\nntp server 192.168.4.11",
+                        "device_index": 1
+                    },
+                    "id": "5",
+                    "value": 5,
+                    "name": "5"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "device",
+                    "device": {
+                        "id": 42,
+                        "type": "device",
+                        "name": "HQ-DistSw",
+                        "node_id": 0,
+                        "site": "HQ",
+                        "platform": "sr-linux",
+                        "platform_name": "Nokia SR-Linux",
+                        "vendor": "nokia",
+                        "vendor_name": "Nokia",
+                        "model": "7220-ixr-d2",
+                        "model_name": "7220 IXR-D2",
+                        "role": "distribution-switch",
+                        "role_name": "Distribution Switch",
+                        "primary_ip4": "",
+                        "primary_ip6": "",
+                        "config": "/system name host-name HQ-DistSw\n/system dns\n    network-instance mgmt\n    search-list [\n\n        8.8.8.8\n        9.9.9.9\n    ]\n/system {\n    ntp {\n        admin-state enable\n        network-instance mgmt\n\n        server 192.168.4.10 {\n           }\n        server 192.168.4.11 {\n           }\n        }\n    }\n/system snmp community R34d0nlY\n\n\n/interface ethernet-1/1\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/2\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/3\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/4\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/5\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/6\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/7\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/8\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/9\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/10\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/11\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/12\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/13\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/14\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/15\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/16\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/17\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/18\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/19\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/20\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/21\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/22\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/23\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/24\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/25\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/26\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/27\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/28\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/29\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/30\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/31\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/32\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/33\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/34\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/35\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/36\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/37\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/38\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/39\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/40\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/41\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/42\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/43\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/44\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/45\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/46\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/47\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/48\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/49\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/50\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/51\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/52\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/53\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/54\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/55\n    admin-state enable\n    description \"\"\n\n/interface ethernet-1/56\n    admin-state enable\n    description \"\"\n\n/interface Port-Channel1\n    admin-state enable\n    description \"\"\n\n    vlan-tagging true\n\n    subinterface 100 {\n        description \"Data\"\n        vlan {\n            encap {\n                single-tagged {\n                    vlan-id 100\n                }\n            }\n        }\n    }\n    subinterface 200 {\n        description \"Voice\"\n        vlan {\n            encap {\n                single-tagged {\n                    vlan-id 200\n                }\n            }\n        }\n    }\n    subinterface 900 {\n        description \"NetMgmt\"\n        vlan {\n            encap {\n                single-tagged {\n                    vlan-id 900\n                }\n            }\n        }\n    }\n/interface Port-Channel2\n    admin-state enable\n    description \"\"\n\n    vlan-tagging true\n\n    subinterface 100 {\n        description \"Data\"\n        vlan {\n            encap {\n                single-tagged {\n                    vlan-id 100\n                }\n            }\n        }\n    }\n    subinterface 200 {\n        description \"Voice\"\n        vlan {\n            encap {\n                single-tagged {\n                    vlan-id 200\n                }\n            }\n        }\n    }\n    subinterface 900 {\n        description \"NetMgmt\"\n        vlan {\n            encap {\n                single-tagged {\n                    vlan-id 900\n                }\n            }\n        }\n    }\n/interface Vlan900\n    admin-state enable\n    description \"\"\n",
+                        "device_index": 0
+                    },
+                    "id": "0",
+                    "value": 0,
+                    "name": "0"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "interface",
+                    "interface": {
+                        "id": 1466,
+                        "type": "interface",
+                        "name": "TenGigabitEthernet1/1/1",
+                        "node_id": 6,
+                        "interface_index": 4
+                    },
+                    "id": "6",
+                    "value": 6,
+                    "name": "6"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "interface",
+                    "interface": {
+                        "id": 1410,
+                        "type": "interface",
+                        "name": "ethernet-1/1",
+                        "node_id": 1,
+                        "interface_index": 0
+                    },
+                    "id": "1",
+                    "value": 1,
+                    "name": "1"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "interface",
+                    "interface": {
+                        "id": 1467,
+                        "type": "interface",
+                        "name": "TenGigabitEthernet1/1/2",
+                        "node_id": 7,
+                        "interface_index": 5
+                    },
+                    "id": "7",
+                    "value": 7,
+                    "name": "7"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "interface",
+                    "interface": {
+                        "id": 1411,
+                        "type": "interface",
+                        "name": "ethernet-1/2",
+                        "node_id": 2,
+                        "interface_index": 1
+                    },
+                    "id": "2",
+                    "value": 2,
+                    "name": "2"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "device",
+                    "device": {
+                        "id": 41,
+                        "type": "device",
+                        "name": "HQ-Switch2",
+                        "node_id": 8,
+                        "site": "HQ",
+                        "platform": "eos",
+                        "platform_name": "Arista EOS",
+                        "vendor": "arista",
+                        "vendor_name": "Arista",
+                        "model": "dcs-7010t-48",
+                        "model_name": "DCS-7010T-48",
+                        "role": "access-switch",
+                        "role_name": "Access Switch",
+                        "primary_ip4": "10.113.0.11/24",
+                        "primary_ip6": "",
+                        "config": "hostname HQ-Switch2\n\n\nvlan 100\n name Data\nvlan 200\n name Voice\nvlan 300\n name Wireless\nvlan 900\n name NetMgmt\n\n\nip name-server 8.8.8.8\nip name-server 9.9.9.9\n\n\ninterface Ethernet1\n no shutdown\n switchport mode access\n switchport access vlan 200\n\ninterface Ethernet2\n no shutdown\n switchport mode access\n switchport access vlan 100\n\ninterface Ethernet3\n no shutdown\n switchport mode access\n switchport access vlan 200\n\ninterface Ethernet4\n no shutdown\n switchport mode access\n switchport access vlan 100\n\ninterface Ethernet5\n no shutdown\n\ninterface Ethernet6\n no shutdown\n\ninterface Ethernet7\n no shutdown\n\ninterface Ethernet8\n no shutdown\n\ninterface Ethernet9\n no shutdown\n\ninterface Ethernet10\n no shutdown\n\ninterface Ethernet11\n no shutdown\n\ninterface Ethernet12\n no shutdown\n\ninterface Ethernet13\n no shutdown\n\ninterface Ethernet14\n no shutdown\n\ninterface Ethernet15\n no shutdown\n\ninterface Ethernet16\n no shutdown\n\ninterface Ethernet17\n no shutdown\n\ninterface Ethernet18\n no shutdown\n\ninterface Ethernet19\n no shutdown\n\ninterface Ethernet20\n no shutdown\n\ninterface Ethernet21\n no shutdown\n\ninterface Ethernet22\n no shutdown\n\ninterface Ethernet23\n no shutdown\n\ninterface Ethernet24\n no shutdown\n\ninterface Ethernet25\n no shutdown\n\ninterface Ethernet26\n no shutdown\n\ninterface Ethernet27\n no shutdown\n\ninterface Ethernet28\n no shutdown\n\ninterface Ethernet29\n no shutdown\n\ninterface Ethernet30\n no shutdown\n\ninterface Ethernet31\n no shutdown\n\ninterface Ethernet32\n no shutdown\n\ninterface Ethernet33\n no shutdown\n\ninterface Ethernet34\n no shutdown\n\ninterface Ethernet35\n no shutdown\n\ninterface Ethernet36\n no shutdown\n\ninterface Ethernet37\n no shutdown\n\ninterface Ethernet38\n no shutdown\n\ninterface Ethernet39\n no shutdown\n\ninterface Ethernet40\n no shutdown\n\ninterface Ethernet41\n no shutdown\n\ninterface Ethernet42\n no shutdown\n\ninterface Ethernet43\n no shutdown\n\ninterface Ethernet44\n no shutdown\n\ninterface Ethernet45\n no shutdown\n\ninterface Ethernet46\n no shutdown\n\ninterface Ethernet47\n no shutdown\n\ninterface Ethernet48\n no shutdown\n\ninterface Ethernet49\n no shutdown\n channel-group 10 mode on\n\ninterface Ethernet50\n no shutdown\n channel-group 10 mode on\n\ninterface Ethernet51\n no shutdown\n\ninterface Ethernet52\n no shutdown\n\ninterface Management1\n description Management VLAN\n no shutdown\n ip address 10.113.0.11/24 255.255.255.0\ninterface Port-Channel10\n no shutdown\n switchport mode trunk\n switchport trunk allowed vlan add 100\n switchport trunk allowed vlan add 200\n switchport trunk allowed vlan add 900\n\ninterface Vlan900\n no shutdown\n\n\nsnmp-server community R34d0nlY RO\n\n\nlogging host 192.168.4.12 1514 protocol udp\nlogging host 192.168.4.13 1514 protocol udp\n\n\nntp server 192.168.4.10\nntp server 192.168.4.11",
+                        "device_index": 2
+                    },
+                    "id": "8",
+                    "value": 8,
+                    "name": "8"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "interface",
+                    "interface": {
+                        "id": 1405,
+                        "type": "interface",
+                        "name": "Ethernet49",
+                        "node_id": 9,
+                        "interface_index": 6
+                    },
+                    "id": "9",
+                    "value": 9,
+                    "name": "9"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "interface",
+                    "interface": {
+                        "id": 1412,
+                        "type": "interface",
+                        "name": "ethernet-1/3",
+                        "node_id": 3,
+                        "interface_index": 2
+                    },
+                    "id": "3",
+                    "value": 3,
+                    "name": "3"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "interface",
+                    "interface": {
+                        "id": 1406,
+                        "type": "interface",
+                        "name": "Ethernet50",
+                        "node_id": 10,
+                        "interface_index": 7
+                    },
+                    "id": "10",
+                    "value": 10,
+                    "name": "10"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "interface",
+                    "interface": {
+                        "id": 1413,
+                        "type": "interface",
+                        "name": "ethernet-1/4",
+                        "node_id": 4,
+                        "interface_index": 3
+                    },
+                    "id": "4",
+                    "value": 4,
+                    "name": "4"
+                }
+            }
+        ],
+        "edges": [
+            {
+                "data": {
+                    "source": 5,
+                    "target": 6
+                }
+            },
+            {
+                "data": {
+                    "source": 5,
+                    "target": 7
+                }
+            },
+            {
+                "data": {
+                    "source": 0,
+                    "target": 1
+                }
+            },
+            {
+                "data": {
+                    "source": 0,
+                    "target": 2
+                }
+            },
+            {
+                "data": {
+                    "source": 0,
+                    "target": 3
+                }
+            },
+            {
+                "data": {
+                    "source": 0,
+                    "target": 4
+                }
+            },
+            {
+                "data": {
+                    "source": 6,
+                    "target": 1
+                }
+            },
+            {
+                "data": {
+                    "source": 7,
+                    "target": 2
+                }
+            },
+            {
+                "data": {
+                    "source": 8,
+                    "target": 9
+                }
+            },
+            {
+                "data": {
+                    "source": 8,
+                    "target": 10
+                }
+            },
+            {
+                "data": {
+                    "source": 9,
+                    "target": 3
+                }
+            },
+            {
+                "data": {
+                    "source": 10,
+                    "target": 4
+                }
+            }
+        ]
+    }
+}
