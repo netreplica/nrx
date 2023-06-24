@@ -220,7 +220,7 @@ class NBFactory:
         }
         url = f"{self.config['nb_api_url']}/api/dcim/devices/{device.id}/render-config/"
         try:
-            response = requests.post(url, headers=headers, timeout=10)
+            response = requests.post(url, headers=headers, timeout=self.config['api_timeout'])
             response.raise_for_status()  # Raises an HTTPError if the response status is an error
             config_response = ast.literal_eval(response.text)
             if "content" in config_response:
@@ -700,6 +700,7 @@ def load_toml_config(filename):
         'nb_api_url': '',
         'nb_api_token': '',
         'tls_validate': True,
+        'api_timeout': 10,
         'output_format': 'cyjs',
         'export_device_roles': ["router", "core-switch", "access-switch", "distribution-switch", "tor-switch"],
         'device_role_levels': {
