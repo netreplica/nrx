@@ -215,7 +215,7 @@ class NBFactory:
         headers = {
             'Authorization': f"Token {self.config['nb_api_token']}",
             'Content-Type': 'application/json',
-            'Accept': 'application/json'  
+            'Accept': 'application/json'
         }
         url = f"{self.config['nb_api_url']}/api/dcim/devices/{device.id}/render-config/"
         response = requests.post(url, headers=headers)
@@ -225,7 +225,7 @@ class NBFactory:
                 if "content" in config_response:
                     return config_response["content"]
             except (SyntaxError) as e:
-                debug("Get device configuration failed: can't parse rendered configuration")
+                debug(f"Get device configuration failed: can't parse rendered configuration - {e}")
         else:
             debug(f"Get device configuration request failed with status code: {response.status_code}")
         return ""
