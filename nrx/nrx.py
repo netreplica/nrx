@@ -640,7 +640,7 @@ class NetworkTopology:
             return None
         if self.config['output_format'] == 'clab':
             # Support for Containerlab startup configurations
-            config_file = f"{name}_config"
+            config_file = f"{name}.config"
             try:
                 with open(config_file, "w", encoding="utf-8") as f:
                     f.write(config)
