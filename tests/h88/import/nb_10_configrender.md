@@ -76,9 +76,8 @@
 | HQ-Switch2     | Ethernet49              | SFP+ (10GE) |             |               |                | Port-Channel10   |
 | HQ-Switch2     | Ethernet50              | SFP+ (10GE) |             |               |                | Port-Channel10   |
 | **HQ-DistSw**  |                         |             |             |               |                |                  |
-| HQ-DistSw      | Vlan900                 | Virtual     |             |               |                |                  |
-| HQ-DistSw      | Port-Channel1           | LAG         | Tagged      |               | 100, 200, 900  |                  |
-| HQ-DistSw      | Port-Channel2           | LAG         | Tagged      |               | 100, 200, 900  |                  |
+| HQ-DistSw      | lag1                    | LAG         | Tagged      |               | 100, 200, 900  |                  |
+| HQ-DistSw      | lag2                    | LAG         | Tagged      |               | 100, 200, 900  |                  |
 | HQ-DistSw      | ethernet-1/1            |             |             |               |                | Port-Channel1    |
 | HQ-DistSw      | ethernet-1/2            |             |             |               |                | Port-Channel1    |
 | HQ-DistSw      | ethernet-1/3            |             |             |               |                | Port-Channel2    |

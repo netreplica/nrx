@@ -143,6 +143,7 @@ optional arguments:
   -d, --debug               enable debug output
   -f, --file FILE           file with the network graph to import
   -T, --templates TEMPLATES directory with template files, will be prepended to TEMPLATES_PATH list in the configuration file
+  -D, --dir DIRECTORY       save files into specified DIRECTORY (topology name by default)
 ```
 
 Note: `NB_API_TOKEN` is not supported as an argument for security reasons.
