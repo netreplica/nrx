@@ -15,7 +15,7 @@ test-dc1-nb-2-cyjs-current:
 	@echo "# DC1: read from NetBox current version and export as CYJS"
 	@echo "#################################################################"
 	mkdir -p tests/dc1/test && cd tests/dc1/test && rm -f * && \
-	source ../.env_current && \
+	source ../../.env_current && \
 	../../../nrx.py -c ../nrx.conf -o cyjs -d && \
 	diff dc1.cyjs ../data/dc1.cyjs
 	@echo
@@ -25,7 +25,7 @@ test-dc1-nb-2-cyjs-latest:
 	@echo "# DC1: read from NetBox latest version and export as CYJS"
 	@echo "#################################################################"
 	mkdir -p tests/dc1/test && cd tests/dc1/test && rm -f * && \
-	source ../.env_latest && \
+	source ../../.env_latest && \
 	../../../nrx.py -c ../nrx.conf -o cyjs -d && \
 	diff dc1.cyjs ../data/dc1.cyjs
 	@echo
@@ -53,7 +53,7 @@ test-dc2-nb-2-cyjs-current:
 	@echo "# DC2: read from NetBox current version and export as CYJS"
 	@echo "#################################################################"
 	mkdir -p tests/dc2/test && cd tests/dc2/test && rm -f * && \
-	source ../.env_current && \
+	source ../../.env_current && \
 	../../../nrx.py -c ../nrx.conf -o cyjs -d && \
 	diff dc2.cyjs ../data/dc2.cyjs.current
 	@echo
@@ -63,7 +63,7 @@ test-dc2-nb-2-cyjs-latest:
 	@echo "# DC2: read from NetBox latest version and export as CYJS"
 	@echo "#################################################################"
 	mkdir -p tests/dc2/test && cd tests/dc2/test && rm -f * && \
-	source ../.env_latest && \
+	source ../../.env_latest && \
 	../../../nrx.py -c ../nrx.conf -o cyjs -d && \
 	diff dc2.cyjs ../data/dc2.cyjs.latest
 	@echo
@@ -91,7 +91,7 @@ test-colo-nb-2-cyjs-current:
 	@echo "# Colo: read from NetBox current version and export as CYJS"
 	@echo "#################################################################"
 	mkdir -p tests/colo/test && cd tests/colo/test && rm -f * && \
-	source ../.env_current && \
+	source ../../.env_current && \
 	../../../nrx.py -c ../nrx.conf -o cyjs -d && \
 	diff colo.cyjs ../data/colo.cyjs
 	@echo
@@ -101,7 +101,7 @@ test-colo-nb-2-cyjs-latest:
 	@echo "# Colo: read from NetBox latest version and export as CYJS"
 	@echo "#################################################################"
 	mkdir -p tests/colo/test && cd tests/colo/test && rm -f * && \
-	source ../.env_latest && \
+	source ../../.env_latest && \
 	../../../nrx.py -c ../nrx.conf -o cyjs -d && \
 	diff colo.cyjs ../data/colo.cyjs
 	@echo
@@ -111,7 +111,7 @@ test-site1-nb-2-cyjs-current:
 	@echo "# Site1: read from NetBox current version and export as CYJS"
 	@echo "#################################################################"
 	mkdir -p tests/site1/test && cd tests/site1/test && rm -f * && \
-	source ../.env_current && \
+	source ../../.env_current && \
 	../../../nrx.py -c ../nrx.conf -o cyjs -d && \
 	diff site1.cyjs ../data/site1.cyjs
 	@echo
@@ -121,7 +121,7 @@ test-site1-nb-2-cyjs-latest:
 	@echo "# Site1: read from NetBox latest version and export as CYJS"
 	@echo "#################################################################"
 	mkdir -p tests/site1/test && cd tests/site1/test && rm -f * && \
-	source ../.env_latest && \
+	source ../../.env_latest && \
 	../../../nrx.py -c ../nrx.conf -o cyjs -d && \
 	diff site1.cyjs ../data/site1.cyjs
 	@echo
@@ -151,7 +151,7 @@ test-h88-nb-2-cyjs-current:
 	@echo "# h88: read from NetBox current version and export as CYJS"
 	@echo "#################################################################"
 	mkdir -p tests/h88/test && cd tests/h88/test && rm -f * && \
-	source ../.env_current && \
+	source ../../.env_current && \
 	../../../nrx.py -c ../nrx.conf -o cyjs -d && \
 	diff HQ.cyjs ../data/HQ.cyjs.current
 	@echo
@@ -161,7 +161,7 @@ test-h88-nb-2-cyjs-latest:
 	@echo "# h88: read from NetBox latest version and export as CYJS"
 	@echo "#################################################################"
 	mkdir -p tests/h88/test && cd tests/h88/test && rm -f * && \
-	source ../.env_latest && \
+	source ../../.env_latest && \
 	../../../nrx.py -c ../nrx.conf -o cyjs -d && \
 	diff HQ.cyjs ../data/HQ.cyjs.latest
 	@echo

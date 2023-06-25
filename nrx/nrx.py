@@ -224,7 +224,8 @@ class NBFactory:
             d["primary_ip4"] = device.primary_ip4.address
         if device.primary_ip6 is not None:
             d["primary_ip6"] = device.primary_ip6.address
-        d["config"] = self._get_device_config(device)
+        if self.config["export_configs"]:
+            d["config"] = self._get_device_config(device)
         return d
 
     def _get_device_config(self, device):
@@ -733,6 +734,7 @@ def load_toml_config(filename):
         },
         'export_site': '',
         'export_tags': [],
+        'export_configs': True,
         'templates_path': ['.'],
     }
     if filename is not None and len(filename) > 0:
