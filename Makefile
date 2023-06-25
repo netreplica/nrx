@@ -44,7 +44,7 @@ test-dc1-cyjs-2-graphite:
 	@echo "# DC1: read from CYJS and export as graphite"
 	@echo "#################################################################"
 	mkdir -p tests/dc1/graphite && cd tests/dc1/graphite && rm -rf * && \
-	../../../nrx.py -c ../nrx.conf -i cyjs -f ../data/dc1.cyjs -o graphite -d && \
+	../../../nrx.py -c ../nrx.conf -i cyjs -f ../data/dc1.cyjs -o graphite -D . -d && \
 	for f in *; do echo Comparing file $$f ...; diff $$f ../data/$$f || exit 1; done
 	@echo
 
@@ -73,7 +73,7 @@ test-dc2-cyjs-2-graphite:
 	@echo "# DC2: read from CYJS and export as graphite"
 	@echo "#################################################################"
 	mkdir -p tests/dc2/graphite && cd tests/dc2/graphite && rm -rf * && \
-	../../../nrx.py -c ../nrx.conf -i cyjs -f ../data/dc2.cyjs -o graphite -d && \
+	../../../nrx.py -c ../nrx.conf -i cyjs -f ../data/dc2.cyjs -o graphite -D . -d && \
 	for f in *; do echo Comparing file $$f ...; diff $$f ../data/$$f || exit 1; done
 	@echo
 
@@ -82,7 +82,7 @@ test-dc2-cyjs-2-cml:
 	@echo "# DC2: read from CYJS and export as CML"
 	@echo "#################################################################"
 	mkdir -p tests/dc2/test && cd tests/dc2/test && rm -rf * && \
-	../../../nrx.py -c ../nrx.conf -i cyjs -f ../data/dc2.cyjs -d && \
+	../../../nrx.py -c ../nrx.conf -i cyjs -f ../data/dc2.cyjs -D . -d && \
 	for f in *; do echo Comparing file $$f ...; diff $$f ../data/$$f || exit 1; done
 	@echo
 

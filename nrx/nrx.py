@@ -639,7 +639,7 @@ class NetworkTopology:
 
     def _create_files_directory(self):
         dir_name = "."
-        if self.config['output_format'] == 'clab':
+        if len(self.topology['name']) > 0:
             dir_name = self.topology['name']
         if len(self.config['files_dir']) > 0:
             dir_name = self.config['files_dir']
