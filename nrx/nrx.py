@@ -695,6 +695,8 @@ def parse_args():
     parser.add_argument('-a', '--api',       required=False, help='netbox API URL')
     parser.add_argument('-s', '--site',      required=False, help='netbox site to export')
     parser.add_argument('-t', '--tags',      required=False, help='netbox tags to export, for multiple tags use a comma-separated list: tag1,tag2,tag3 (uses AND logic)')
+    parser.add_argument('-n', '--noconfigs', required=False, help='disable device configuration export (enabled by default)',
+                                             action=argparse.BooleanOptionalAction)
     parser.add_argument('-k', '--insecure',  required=False, help='allow insecure server connections when using TLS',
                                              action=argparse.BooleanOptionalAction)
     parser.add_argument('-d', '--debug',     required=False, help='enable debug output',
@@ -770,6 +772,11 @@ def config_apply_netbox_args(config, args):
         debug(f"List of tags to filter devices for export: {config['export_tags']}")
     if len(config['export_site']) == 0 and len(config['export_tags']) == 0:
         error("Need a Site name or Tags to export. Use --site/--tags arguments, or EXPORT_SITE/EXPORT_TAGS key in --config file")
+    if args.noconfigs is not None:
+        if args.noconfigs:
+            config['export_configs'] = False
+        else:
+            config['export_configs'] = True
 
     return config
 

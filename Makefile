@@ -8,7 +8,7 @@ test-dc1: test-dc1-nb-2-cyjs-current test-dc1-nb-2-cyjs-latest test-dc1-cyjs-2-c
 test-dc2: test-dc2-nb-2-cyjs-current test-dc2-nb-2-cyjs-latest test-dc2-cyjs-2-cml test-dc2-cyjs-2-graphite
 test-colo: test-colo-nb-2-cyjs-current test-colo-nb-2-cyjs-latest
 test-site1: test-site1-nb-2-cyjs-current test-site1-nb-2-cyjs-latest test-site1-cyjs-2-clab
-test-h88: test-h88-nb-2-cyjs-current test-h88-nb-2-cyjs-latest test-h88-cyjs-2-clab
+test-h88: test-h88-nb-2-cyjs-current test-h88-nb-2-cyjs-latest test-h88-nb-2-cyjs-latest-noconfigs test-h88-cyjs-2-clab
 
 test-dc1-nb-2-cyjs-current:
 	@echo "#################################################################"
@@ -164,6 +164,16 @@ test-h88-nb-2-cyjs-latest:
 	source ../../.env_latest && \
 	../../../nrx.py -c ../nrx.conf -o cyjs -d && \
 	diff HQ.cyjs ../data/HQ.cyjs.latest
+	@echo
+
+test-h88-nb-2-cyjs-latest-noconfigs:
+	@echo "#################################################################"
+	@echo "# h88: read from NetBox latest version and export as CYJS with config export disabled"
+	@echo "#################################################################"
+	mkdir -p tests/h88/test && cd tests/h88/test && rm -f * && \
+	source ../../.env_latest && \
+	../../../nrx.py -c ../nrx.conf -o cyjs -d -n && \
+	diff HQ.cyjs ../data/HQ.cyjs.noconfigs
 	@echo
 
 test-h88-cyjs-2-clab:
