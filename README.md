@@ -303,15 +303,15 @@ The implementation is inspired by [ContainerLab random labs](https://gist.github
 
 ## Device configuration export
 
-We added capabilities to export device configurations at [NANOG-88 Hackathon](https://www.nanog.org/events/nanog-88-hackathon/). Watch [the demo of the project on YouTube](https://youtu.be/cP8PUr306ZM):
-
-[![Watch the video](https://img.youtube.com/vi/cP8PUr306ZM/maxresdefault.jpg)](https://youtu.be/cP8PUr306ZM).
-
-The project team:
+We added capabilities to export device configurations at [NANOG-88 Hackathon](https://www.nanog.org/events/nanog-88-hackathon/). The project team:
 
 * [Alex Bortok](https://github.com/bortok)
 * [Mau Rojas](https://www.linkedin.com/in/pinrojas/)
 * [Ahmed Elmokashfi](https://www.linkedin.com/in/elmokashfi/)
+
+Watch [the demo of the project on YouTube](https://youtu.be/cP8PUr306ZM):
+
+[![Watch the video](https://img.youtube.com/vi/cP8PUr306ZM/maxresdefault.jpg)](https://youtu.be/cP8PUr306ZM)
 
 ## Copyright notice
 
