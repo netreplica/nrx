@@ -1,0 +1,6 @@
+name,slug,weight
+Access - Data,access-data,1000
+Access - Voice,access-voice,1000
+Access - Wireless,access-wireless,1000
+Management,management,1000
+Testing,testing,1000

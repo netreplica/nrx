@@ -36,6 +36,8 @@ import ast
 import toml
 import pynetbox
 import requests
+from requests.adapters import HTTPAdapter
+from requests.exceptions import RequestException, Timeout, HTTPError
 import urllib3
 import networkx as nx
 import jinja2
@@ -69,6 +71,41 @@ def error_debug(err, d):
     debug(d)
     error(err)
 
+def create_output_directory(topology_name, config_dir):
+    dir_name = "."
+    if len(topology_name) > 0:
+        dir_name = topology_name
+    if len(config_dir) > 0:
+        dir_name = config_dir
+    if dir_name != ".":
+        create_dirs(dir_name)
+    return dir_name
+
+def create_dirs(dir_path):
+    try:
+        os.makedirs(dir_path)
+        abs_path = os.path.abspath(dir_path)
+        debug(f"Created directory '{dir_path}'")
+        return abs_path
+    except FileExistsError:
+        abs_path = os.path.abspath(dir_path)
+        debug(f"Directory '{dir_path}' already exists, will reuse")
+        return abs_path
+    except OSError as e:
+        error(f"An error occurred while creating the directory: {str(e)}")
+    return None
+
+class TimeoutHTTPAdapter(HTTPAdapter):
+    """HTTPAdapter with custom API timeout"""
+    def __init__(self, timeout, *args, **kwargs):
+        self.timeout = timeout
+        super().__init__(*args, **kwargs)
+
+    def send(self, request, stream=False, timeout=None, verify=True, cert=None, proxies=None):
+        if timeout is None:
+            timeout = self.timeout
+        return super().send(request, stream, timeout, verify, cert, proxies)
+
 class NBNetwork:
     """Class to hold network topology data exported from NetBox"""
     def __init__(self):
@@ -98,6 +135,10 @@ class NBFactory:
         if not config['tls_validate']:
             self.nb_session.http_session.verify = False
             urllib3.disable_warnings()
+        if config['api_timeout'] > 0:
+            adapter = TimeoutHTTPAdapter(config['api_timeout'])
+            self.nb_session.http_session.mount("http://", adapter)
+            self.nb_session.http_session.mount("https://", adapter)
         print(f"Connecting to NetBox at: {config['nb_api_url']}")
         if len(config['export_site']) > 0:
             debug(f"Fetching site: {config['export_site']}")
@@ -182,6 +223,7 @@ class NBFactory:
             "role_name": "unknown",
             "primary_ip4": "",
             "primary_ip6": "",
+            "config": "",
         }
 
         if device.name is not None and len(device.name) > 0:
@@ -206,9 +248,31 @@ class NBFactory:
             d["primary_ip4"] = device.primary_ip4.address
         if device.primary_ip6 is not None:
             d["primary_ip6"] = device.primary_ip6.address
-
+        if self.config["export_configs"]:
+            d["config"] = self._get_device_config(device)
         return d
 
+    def _get_device_config(self, device):
+        """Get device config from NetBox"""
+        headers = {
+            'Authorization': f"Token {self.config['nb_api_token']}",
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        }
+        url = f"{self.config['nb_api_url']}/api/dcim/devices/{device.id}/render-config/"
+        try:
+            response = requests.post(url, headers=headers, timeout=self.config['api_timeout'], verify=self.config['tls_validate'])
+            response.raise_for_status()  # Raises an HTTPError if the response status is an error
+            config_response = ast.literal_eval(response.text)
+            if "content" in config_response:
+                return config_response["content"]
+        except HTTPError as e:
+            debug(f"{device.name}: Get device configuration request failed: {e}")
+        except (Timeout, RequestException) as e:
+            debug(f"{device.name}: Get device configuration failed: {e}")
+        except SyntaxError as e:
+            debug(f"{device.name}: Get device configuration failed: can't parse rendered configuration - {e}")
+        return ""
 
     def _trace_cable(self, cable):
         debug(f"Tracing {cable}")
@@ -274,25 +338,29 @@ class NBFactory:
 
     def export_graph_gml(self):
         export_file = self.topology_name + ".gml"
+        dir_path = create_output_directory(self.topology_name, self.config['output_dir'])
+        export_path = f"{dir_path}/{export_file}"
         try:
-            nx.write_gml(self.G, export_file)
+            nx.write_gml(self.G, export_path)
         except OSError as e:
-            error(f"Writing to {export_file}:", e)
+            error(f"Writing to {export_path}:", e)
         except nx.exception.NetworkXError as e:
             error("Can't export as GML:", e)
-        print(f"GML graph saved to: {export_file}")
+        print(f"GML graph saved to: {export_path}")
 
     def export_graph_json(self):
         cyjs = nx.cytoscape_data(self.G)
+        dir_path = create_output_directory(self.topology_name, self.config['output_dir'])
         export_file = self.topology_name + ".cyjs"
+        export_path = f"{dir_path}/{export_file}"
         try:
-            with open(export_file, 'w', encoding='utf-8') as f:
+            with open(export_path, 'w', encoding='utf-8') as f:
                 json.dump(cyjs, f, indent=4)
         except OSError as e:
-            error(f"Writing to {export_file}:", e)
+            error(f"Writing to {export_path}:", e)
         except TypeError as e:
             error("Can't export as JSON:", e)
-        print(f"CYJS graph saved to: {export_file}")
+        print(f"CYJS graph saved to: {export_path}")
 
 class NetworkTopology:
     """Class to create network topology artifacts"""
@@ -319,6 +387,7 @@ class NetworkTopology:
             'interface_maps':  {'_path_': 'interface_maps',  '_description_': 'interface map'},
             'kinds':           {'_path_': f"{self.config['output_format']}/kinds", '_description_': 'node kind'}
         }
+        self.files_path = '.'
 
     def build_from_file(self, file):
         self._read_network_graph(file)
@@ -453,6 +522,8 @@ class NetworkTopology:
             error("Cannot export a topology: missing a name")
 
         debug(f"Exporting topology. Device role groups: {self.topology['roles']}")
+        # Create a directory for output files
+        self.files_path = create_output_directory(self.topology['name'], self.config['output_dir'])
         # Generate topology data structure
         self.topology['name'] = self.G.name
         self.topology['nodes'] = self._render_emulated_nodes()
@@ -506,6 +577,10 @@ class NetworkTopology:
                 if int_map is not None:
                     n['interface_map'] = int_map
 
+                node_config = self._save_node_configuration(n)
+                if node_config is not None:
+                    n['configuration_file'] = node_config
+
                 template = self._get_template('kinds', p, True)
                 if template is not None:
                     try:
@@ -552,12 +627,13 @@ class NetworkTopology:
             # <topology-name>.clab.yaml or <topology-name>.cml.yaml
             topo_file = f"{self.topology['name']}.{self.config['output_format']}.yaml"
         try:
-            with open(topo_file, "w", encoding="utf-8") as f:
+            topo_path = f"{self.files_path}/{topo_file}"
+            with open(topo_path, "w", encoding="utf-8") as f:
                 f.write(topo)
         except OSError as e:
-            error(f"Can't write into {topo_file}", e)
+            error(f"Can't write into {topo_path}", e)
 
-        print(f"Created {self.config['output_format']} topology: {topo_file}")
+        print(f"Created {self.config['output_format']} topology: {topo_path}")
 
     def _print_motd(self, topo):
         topo_dict = {}
@@ -573,7 +649,7 @@ class NetworkTopology:
         if 'motd' in topo_dict:
             print(f"{topo_dict['motd']}")
         elif self.config['output_format'] == 'clab':
-            print(f"To deploy this topology, run: sudo -E clab dep -t {self.topology['name']}.clab.yaml")
+            print(f"To deploy this topology, run: sudo -E clab dep -t {self.files_path}/{self.topology['name']}.clab.yaml")
 
     def _render_interface_map(self, node):
         """Render interface mapping file for a node"""
@@ -595,13 +671,37 @@ class NetworkTopology:
                 except jinja2.TemplateError as e:
                     error("Rendering interface map J2 template:", e)
                 int_map_file = f"{d}_interface_map.json"
+                int_map_path = f"{self.files_path}/{int_map_file}"
                 try:
-                    with open(int_map_file, "w", encoding="utf-8") as f:
+                    with open(int_map_path, "w", encoding="utf-8") as f:
                         f.write(interface_map)
                 except OSError as e:
-                    error(f"Can't write into {int_map_file}", e)
-                print(f"Created '{p}' interface map: {int_map_file}")
+                    error(f"Can't write into {int_map_path}", e)
+                print(f"Created '{p}' interface map: {int_map_path}")
                 return int_map_file
+        return None
+
+    def _save_node_configuration(self, node):
+        """Save node configuration to a file"""
+        if 'name' in node and len(node['name']) > 0:
+            name = node['name']
+        else:
+            return None
+        if 'config' in node and len(node['config']) > 0:
+            config = node['config']
+        else:
+            return None
+        if self.config['output_format'] == 'clab':
+            # Support for Containerlab startup configurations
+            config_file = f"{name}.config"
+            config_path = f"{self.files_path}/{config_file}"
+            try:
+                with open(config_path, "w", encoding="utf-8") as f:
+                    f.write(config)
+            except OSError as e:
+                error(f"Can't write into {config_path}", e)
+            print(f"Created device configuration file: {config_path}")
+            return config_file
         return None
 
 def arg_input_check(s):
@@ -629,6 +729,8 @@ def parse_args():
     parser.add_argument('-a', '--api',       required=False, help='netbox API URL')
     parser.add_argument('-s', '--site',      required=False, help='netbox site to export')
     parser.add_argument('-t', '--tags',      required=False, help='netbox tags to export, for multiple tags use a comma-separated list: tag1,tag2,tag3 (uses AND logic)')
+    parser.add_argument('-n', '--noconfigs', required=False, help='disable device configuration export (enabled by default)',
+                                             action=argparse.BooleanOptionalAction)
     parser.add_argument('-k', '--insecure',  required=False, help='allow insecure server connections when using TLS',
                                              action=argparse.BooleanOptionalAction)
     parser.add_argument('-d', '--debug',     required=False, help='enable debug output',
@@ -637,6 +739,9 @@ def parse_args():
     parser.add_argument('-T', '--templates', required=False, help='directory with template files, \
                                                                    will be prepended to TEMPLATES_PATH list \
                                                                    in the configuration file')
+    parser.add_argument('-D', '--dir',       required=False, help='save files into specified directory. \
+                                                                   nested relative and absolute paths are OK \
+                                                                   (topology name is used by default)')
 
     args = parser.parse_args()
     global DEBUG_ON
@@ -651,6 +756,7 @@ def load_toml_config(filename):
         'nb_api_url': '',
         'nb_api_token': '',
         'tls_validate': True,
+        'api_timeout': 10,
         'output_format': 'cyjs',
         'export_device_roles': ["router", "core-switch", "access-switch", "distribution-switch", "tor-switch"],
         'device_role_levels': {
@@ -667,7 +773,9 @@ def load_toml_config(filename):
         },
         'export_site': '',
         'export_tags': [],
+        'export_configs': True,
         'templates_path': ['.'],
+        'output_dir': '',
     }
     if filename is not None and len(filename) > 0:
         try:
@@ -702,6 +810,11 @@ def config_apply_netbox_args(config, args):
         debug(f"List of tags to filter devices for export: {config['export_tags']}")
     if len(config['export_site']) == 0 and len(config['export_tags']) == 0:
         error("Need a Site name or Tags to export. Use --site/--tags arguments, or EXPORT_SITE/EXPORT_TAGS key in --config file")
+    if args.noconfigs is not None:
+        if args.noconfigs:
+            config['export_configs'] = False
+        else:
+            config['export_configs'] = True
 
     return config
 
@@ -730,6 +843,9 @@ def load_config(args):
 
     if args.templates is not None and len(args.templates) > 0:
         config['templates_path'].insert(0, args.templates)
+
+    if args.dir is not None and len(args.dir) > 0:
+        config['output_dir'] = args.dir
 
     return config
 

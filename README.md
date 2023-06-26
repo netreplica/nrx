@@ -15,7 +15,7 @@
 
 It can also read the topology graph previously saved as a CYJS file to convert it into other formats.
 
-This project is in a proof-of-concept phase. We're experimenting with the best ways to automate software network lab orchestration. If you have any feedback, questions or suggestions, please reach out to us via the Netreplica Discord server linked above, [#netreplica](https://netdev-community.slack.com/archives/C054GKBC4LB) channel in NetDev Community on Slack, or open a github issue in this repository.
+This project is in early phase. We're experimenting with the best ways to automate software network lab orchestration. If you have any feedback, questions or suggestions, please reach out to us via the Netreplica Discord server linked above, [#netreplica](https://netdev-community.slack.com/archives/C054GKBC4LB) channel in NetDev Community on Slack, or open a github issue in this repository.
 
 # Table of contents
 
@@ -49,12 +49,14 @@ Data sourcing capabilities:
 * Direct connections between Devices via Cables will be exported as topology edges
 * Connections via Patch Panels and Circuits will be exported as well with help of NetBox [Cable Tracing API](https://docs.netbox.dev/en/stable/models/dcim/cable/#tracing-cables)
 * Only Ethernet connections will be exported
+* Device configurations will be rendered and exported if not empty
 * As an alternative to sourcing live data from NetBox, imports a graph from a previously exported file in CYJS format
 
 Export capabilities:
 
 * Exports the graph as a Containerlab topology definition file in YAML format
-* Exports the graph as a Cisco Modeling Labs topology definition file in YAML format
+* Exports the graph as a Cisco Modeling Labs (CML) topology definition file in YAML format
+* Exported device configurations will be used as `startup-config` for Containerlab and CML
 * Exports the graph in JSON format for visualization with Graphite
 * Uses NetBox Device Platform `slug` field to identify node templates when rendering the export file
 * Creates mapping between real interface names and interface names used by the supported lab tools
@@ -65,7 +67,7 @@ Export capabilities:
 
 The following minimum software versions were tested for compatibility with `nrx`:
 
-* NetBox `v3.4`
+* NetBox `v3.4`. For device configuration export, `v3.5` is the minimum version.
 * Containerlab `v0.39`
 * Cisco Modeling Labs `v2.5`
 * Netreplica Graphite `v0.4.0`
@@ -138,10 +140,12 @@ optional arguments:
   -a, --api API             netbox API URL
   -s, --site SITE           netbox site to export
   -t, --tags TAGS           netbox tags to export, for multiple tags use a comma-separated list: tag1,tag2,tag3 (uses AND logic)
+  -n, --noconfigs           disable device configuration export (enabled by default)
   -k, --insecure            allow insecure server connections when using TLS
   -d, --debug               enable debug output
   -f, --file FILE           file with the network graph to import
   -T, --templates TEMPLATES directory with template files, will be prepended to TEMPLATES_PATH list in the configuration file
+  -D, --dir DIR             save files into directory DIR (topology name is used by default). nested relative and absolute paths are OK
 ```
 
 Note: `NB_API_TOKEN` is not supported as an argument for security reasons.
@@ -190,26 +194,26 @@ source nrx39/bin/activate
 
     ```Shell
     export NB_API_TOKEN='replace_with_valid_API_token'
-    ./nrx.py --api https://demo.netbox.dev --site DM-Albany --templates templates --output clab
+    ./nrx.py --api https://demo.netbox.dev --templates templates --output clab --dir demo --site DM-Albany
     ```
 
 2. Now you're ready to start the Containerlab topology. Here is the example for "DM-Albany" site
 
     ```Shell
-    sudo -E containerlab deploy -t DM-Albany.clab.yaml --reconfigure
+    sudo -E containerlab deploy -t demo/DM-Albany.clab.yaml --reconfigure
     ```
 
 3. Without `--output clab` argument, `nrx.py` will save data from NetBox as a CYJS file `<site_name>.cyjs`
 
     ```Shell
     export NB_API_TOKEN='replace_with_valid_API_token'
-    ./nrx.py --api https://demo.netbox.dev --site DM-Albany
+    ./nrx.py --api https://demo.netbox.dev --site DM-Albany --dir demo
     ```
 
 5. If you have a CYJS file, run `./nrx.py --input cyjs --file <site>.cyjs --output clab` to create a Containerlab topology file from the CYJS graph you exported in the previous step. For example, run:
 
     ```Shell
-    ./nrx.py --input cyjs --file DM-Albany.cyjs --templates templates --output clab
+    ./nrx.py --input cyjs --file demo/DM-Albany.cyjs --templates templates --output clab --dir demo
     ```
 
 ## Cisco Modeling Labs example
@@ -218,7 +222,7 @@ source nrx39/bin/activate
 
     ```Shell
     export NB_API_TOKEN='replace_with_valid_API_token'
-    ./nrx.py --api https://demo.netbox.dev --site DM-Akron --templates templates --output cml
+    ./nrx.py --api https://demo.netbox.dev --templates templates --output cml --dir demo --site DM-Akron
     ```
 
 2. Now you're ready to start the "DM-Akron" topology in CML.
@@ -233,13 +237,13 @@ source nrx39/bin/activate
 
     ```Shell
     export NB_API_TOKEN='replace_with_valid_API_token'
-    ./nrx.py --api https://demo.netbox.dev --site DM-Akron
+    ./nrx.py --api https://demo.netbox.dev --dir demo --site DM-Akron
     ```
 
 4. If you have a CYJS file, run `./nrx.py --input cyjs --file <site>.cyjs --output cml` to create a topology file from the CYJS graph you exported in the previous step. For example, run:
 
     ```Shell
-    ./nrx.py --input cyjs --file DM-Akron.cyjs --templates templates --output cml
+    ./nrx.py --input cyjs --file demo/DM-Akron.cyjs --templates templates --output cml --dir demo
     ```
 
 ## Topology Visualization with Graphite
@@ -296,6 +300,18 @@ This is a [NANOG-87 Hackathon](https://www.nanog.org/events/nanog-87-hackathon/)
 * [Toni Yannick Kalombo](https://github.com/tonikalombo)
 
 The implementation is inspired by [ContainerLab random labs](https://gist.github.com/renatoalmeidaoliveira/fdb772a5a02f3cfc0b5fbe7e8b7586a2) by [Renato Almeida de Oliveira](https://github.com/renatoalmeidaoliveira).
+
+## Device configuration export
+
+We added capabilities to export device configurations at [NANOG-88 Hackathon](https://www.nanog.org/events/nanog-88-hackathon/). The project team:
+
+* [Alex Bortok](https://www.linkedin.com/in/bortok/)
+* [Mau Rojas](https://www.linkedin.com/in/pinrojas/)
+* [Ahmed Elmokashfi](https://www.linkedin.com/in/elmokashfi/)
+
+Watch [the demo of the project on YouTube](https://youtu.be/cP8PUr306ZM):
+
+[![Watch the video](https://img.youtube.com/vi/cP8PUr306ZM/maxresdefault.jpg)](https://youtu.be/cP8PUr306ZM)
 
 ## Copyright notice
 

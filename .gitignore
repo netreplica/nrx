@@ -18,7 +18,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
+.env*
 .venv
 env/
 venv/
@@ -56,3 +56,4 @@ tests/*/test/*
 tests/*/graphite/*
 tests/main.conf
 tmp
+demo

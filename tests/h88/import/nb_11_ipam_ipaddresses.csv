@@ -1,0 +1,3 @@
+address,status,device,interface,is_primary
+10.113.0.10/24,active,HQ-Switch1,Vlan900,true
+10.113.0.11/24,active,HQ-Switch2,Vlan900,true
