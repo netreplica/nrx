@@ -338,7 +338,7 @@ class NBFactory:
 
     def export_graph_gml(self):
         export_file = self.topology_name + ".gml"
-        dir_path = create_output_directory(self.topology_name, self.config['files_dir'])
+        dir_path = create_output_directory(self.topology_name, self.config['output_dir'])
         export_path = f"{dir_path}/{export_file}"
         try:
             nx.write_gml(self.G, export_path)
@@ -350,7 +350,7 @@ class NBFactory:
 
     def export_graph_json(self):
         cyjs = nx.cytoscape_data(self.G)
-        dir_path = create_output_directory(self.topology_name, self.config['files_dir'])
+        dir_path = create_output_directory(self.topology_name, self.config['output_dir'])
         export_file = self.topology_name + ".cyjs"
         export_path = f"{dir_path}/{export_file}"
         try:
@@ -523,7 +523,7 @@ class NetworkTopology:
 
         debug(f"Exporting topology. Device role groups: {self.topology['roles']}")
         # Create a directory for output files
-        self.files_path = create_output_directory(self.topology['name'], self.config['files_dir'])
+        self.files_path = create_output_directory(self.topology['name'], self.config['output_dir'])
         # Generate topology data structure
         self.topology['name'] = self.G.name
         self.topology['nodes'] = self._render_emulated_nodes()
@@ -739,7 +739,9 @@ def parse_args():
     parser.add_argument('-T', '--templates', required=False, help='directory with template files, \
                                                                    will be prepended to TEMPLATES_PATH list \
                                                                    in the configuration file')
-    parser.add_argument('-D', '--dir',       required=False, help='save files into specified directory (topology name by default)')
+    parser.add_argument('-D', '--dir',       required=False, help='save files into specified directory. \
+                                                                   nested relative and absolute paths are OK \
+                                                                   (topology name is used by default)')
 
     args = parser.parse_args()
     global DEBUG_ON
@@ -773,7 +775,7 @@ def load_toml_config(filename):
         'export_tags': [],
         'export_configs': True,
         'templates_path': ['.'],
-        'files_dir': '',
+        'output_dir': '',
     }
     if filename is not None and len(filename) > 0:
         try:
@@ -843,7 +845,7 @@ def load_config(args):
         config['templates_path'].insert(0, args.templates)
 
     if args.dir is not None and len(args.dir) > 0:
-        config['files_dir'] = args.dir
+        config['output_dir'] = args.dir
 
     return config
 
