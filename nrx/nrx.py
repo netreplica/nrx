@@ -71,6 +71,16 @@ def error_debug(err, d):
     debug(d)
     error(err)
 
+def create_output_directory(topology_name, config_dir):
+    dir_name = "."
+    if len(topology_name) > 0:
+        dir_name = topology_name
+    if len(config_dir) > 0:
+        dir_name = config_dir
+    if dir_name != ".":
+        create_dirs(dir_name)
+    return dir_name
+
 def create_dirs(dir):
     try:
         os.makedirs(dir)
@@ -328,25 +338,29 @@ class NBFactory:
 
     def export_graph_gml(self):
         export_file = self.topology_name + ".gml"
+        dir = create_output_directory(self.topology_name, self.config['files_dir'])
+        export_path = f"{dir}/{export_file}"
         try:
-            nx.write_gml(self.G, export_file)
+            nx.write_gml(self.G, export_path)
         except OSError as e:
-            error(f"Writing to {export_file}:", e)
+            error(f"Writing to {export_path}:", e)
         except nx.exception.NetworkXError as e:
             error("Can't export as GML:", e)
-        print(f"GML graph saved to: {export_file}")
+        print(f"GML graph saved to: {export_path}")
 
     def export_graph_json(self):
         cyjs = nx.cytoscape_data(self.G)
+        dir = create_output_directory(self.topology_name, self.config['files_dir'])
         export_file = self.topology_name + ".cyjs"
+        export_path = f"{dir}/{export_file}"
         try:
-            with open(export_file, 'w', encoding='utf-8') as f:
+            with open(export_path, 'w', encoding='utf-8') as f:
                 json.dump(cyjs, f, indent=4)
         except OSError as e:
-            error(f"Writing to {export_file}:", e)
+            error(f"Writing to {export_path}:", e)
         except TypeError as e:
             error("Can't export as JSON:", e)
-        print(f"CYJS graph saved to: {export_file}")
+        print(f"CYJS graph saved to: {export_path}")
 
 class NetworkTopology:
     """Class to create network topology artifacts"""

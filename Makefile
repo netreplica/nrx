@@ -16,7 +16,7 @@ test-dc1-nb-2-cyjs-current:
 	@echo "#################################################################"
 	mkdir -p tests/dc1/test && cd tests/dc1/test && rm -rf * && \
 	source ../../.env_current && \
-	../../../nrx.py -c ../nrx.conf -o cyjs -d && \
+	../../../nrx.py -c ../nrx.conf -o cyjs -D . -d && \
 	diff dc1.cyjs ../data/dc1.cyjs
 	@echo
 
@@ -26,7 +26,7 @@ test-dc1-nb-2-cyjs-latest:
 	@echo "#################################################################"
 	mkdir -p tests/dc1/test && cd tests/dc1/test && rm -rf * && \
 	source ../../.env_latest && \
-	../../../nrx.py -c ../nrx.conf -o cyjs -d && \
+	../../../nrx.py -c ../nrx.conf -o cyjs -D . -d && \
 	diff dc1.cyjs ../data/dc1.cyjs
 	@echo
 
@@ -54,7 +54,7 @@ test-dc2-nb-2-cyjs-current:
 	@echo "#################################################################"
 	mkdir -p tests/dc2/test && cd tests/dc2/test && rm -rf * && \
 	source ../../.env_current && \
-	../../../nrx.py -c ../nrx.conf -o cyjs -d && \
+	../../../nrx.py -c ../nrx.conf -o cyjs -D . -d && \
 	diff dc2.cyjs ../data/dc2.cyjs.current
 	@echo
 
@@ -64,7 +64,7 @@ test-dc2-nb-2-cyjs-latest:
 	@echo "#################################################################"
 	mkdir -p tests/dc2/test && cd tests/dc2/test && rm -rf * && \
 	source ../../.env_latest && \
-	../../../nrx.py -c ../nrx.conf -o cyjs -d && \
+	../../../nrx.py -c ../nrx.conf -o cyjs -D . -d && \
 	diff dc2.cyjs ../data/dc2.cyjs.latest
 	@echo
 
@@ -92,7 +92,7 @@ test-colo-nb-2-cyjs-current:
 	@echo "#################################################################"
 	mkdir -p tests/colo/test && cd tests/colo/test && rm -rf * && \
 	source ../../.env_current && \
-	../../../nrx.py -c ../nrx.conf -o cyjs -d && \
+	../../../nrx.py -c ../nrx.conf -o cyjs -D . -d && \
 	diff colo.cyjs ../data/colo.cyjs
 	@echo
 
@@ -102,7 +102,7 @@ test-colo-nb-2-cyjs-latest:
 	@echo "#################################################################"
 	mkdir -p tests/colo/test && cd tests/colo/test && rm -rf * && \
 	source ../../.env_latest && \
-	../../../nrx.py -c ../nrx.conf -o cyjs -d && \
+	../../../nrx.py -c ../nrx.conf -o cyjs -D . -d && \
 	diff colo.cyjs ../data/colo.cyjs
 	@echo
 
@@ -112,7 +112,7 @@ test-site1-nb-2-cyjs-current:
 	@echo "#################################################################"
 	mkdir -p tests/site1/test && cd tests/site1/test && rm -rf * && \
 	source ../../.env_current && \
-	../../../nrx.py -c ../nrx.conf -o cyjs -d && \
+	../../../nrx.py -c ../nrx.conf -o cyjs -D . -d && \
 	diff site1.cyjs ../data/site1.cyjs
 	@echo
 
@@ -122,7 +122,7 @@ test-site1-nb-2-cyjs-latest:
 	@echo "#################################################################"
 	mkdir -p tests/site1/test && cd tests/site1/test && rm -rf * && \
 	source ../../.env_latest && \
-	../../../nrx.py -c ../nrx.conf -o cyjs -d && \
+	../../../nrx.py -c ../nrx.conf -o cyjs -D . -d && \
 	diff site1.cyjs ../data/site1.cyjs
 	@echo
 
@@ -141,7 +141,7 @@ test-site1-cyjs-template-2-clab:
 	@echo "#################################################################"
 	mkdir -p tests/site1/test && cd tests/site1/test && rm -rf * && \
 	cat ../data/site1.cyjs.template | envsubst > site1.sonic-vs.cyjs && \
-	../../../nrx.py -c ../nrx.conf -i cyjs -f site1.sonic-vs.cyjs -o clab -d && \
+	../../../nrx.py -c ../nrx.conf -i cyjs -f site1.sonic-vs.cyjs -o clab -D . -d && \
 	for f in *.yaml; do echo Comparing file $$f ...; diff $$f ../data/$$f || exit 1; done
 	@echo
 
@@ -152,7 +152,7 @@ test-h88-nb-2-cyjs-current:
 	@echo "#################################################################"
 	mkdir -p tests/h88/test && cd tests/h88/test && rm -rf * && \
 	source ../../.env_current && \
-	../../../nrx.py -c ../nrx.conf -o cyjs -d && \
+	../../../nrx.py -c ../nrx.conf -o cyjs -D . -d && \
 	diff HQ.cyjs ../data/HQ.cyjs.current
 	@echo
 
@@ -162,7 +162,7 @@ test-h88-nb-2-cyjs-latest:
 	@echo "#################################################################"
 	mkdir -p tests/h88/test && cd tests/h88/test && rm -rf * && \
 	source ../../.env_latest && \
-	../../../nrx.py -c ../nrx.conf -o cyjs -d && \
+	../../../nrx.py -c ../nrx.conf -o cyjs -D . -d && \
 	diff HQ.cyjs ../data/HQ.cyjs.latest
 	@echo
 
@@ -172,7 +172,7 @@ test-h88-nb-2-cyjs-latest-noconfigs:
 	@echo "#################################################################"
 	mkdir -p tests/h88/test && cd tests/h88/test && rm -rf * && \
 	source ../../.env_latest && \
-	../../../nrx.py -c ../nrx.conf -o cyjs -d -n && \
+	../../../nrx.py -c ../nrx.conf -o cyjs -D . -d -n && \
 	diff HQ.cyjs ../data/HQ.cyjs.noconfigs
 	@echo
 
