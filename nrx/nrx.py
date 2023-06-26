@@ -88,7 +88,7 @@ def create_dirs(dir_path):
         debug(f"Created directory '{dir_path}'")
         return abs_path
     except FileExistsError:
-        dir_path = os.path.abspath(dir_path)
+        abs_path = os.path.abspath(dir_path)
         debug(f"Directory '{dir_path}' already exists, will reuse")
         return abs_path
     except OSError as e:
