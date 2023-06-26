@@ -56,3 +56,4 @@ tests/*/test/*
 tests/*/graphite/*
 tests/main.conf
 tmp
+demo
