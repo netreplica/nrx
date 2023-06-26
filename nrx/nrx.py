@@ -81,16 +81,16 @@ def create_output_directory(topology_name, config_dir):
         create_dirs(dir_name)
     return dir_name
 
-def create_dirs(dir):
+def create_dirs(dir_path):
     try:
-        os.makedirs(dir)
-        dir_path = os.path.abspath(dir)
-        debug(f"Created directory '{dir}'")
-        return dir_path
+        os.makedirs(dir_path)
+        abs_path = os.path.abspath(dir_path)
+        debug(f"Created directory '{dir_path}'")
+        return abs_path
     except FileExistsError:
-        dir_path = os.path.abspath(dir)
-        debug(f"Directory '{dir}' already exists, will reuse")
-        return dir_path
+        dir_path = os.path.abspath(dir_path)
+        debug(f"Directory '{dir_path}' already exists, will reuse")
+        return abs_path
     except OSError as e:
         error(f"An error occurred while creating the directory: {str(e)}")
     return None
@@ -338,8 +338,8 @@ class NBFactory:
 
     def export_graph_gml(self):
         export_file = self.topology_name + ".gml"
-        dir = create_output_directory(self.topology_name, self.config['files_dir'])
-        export_path = f"{dir}/{export_file}"
+        dir_path = create_output_directory(self.topology_name, self.config['files_dir'])
+        export_path = f"{dir_path}/{export_file}"
         try:
             nx.write_gml(self.G, export_path)
         except OSError as e:
@@ -350,9 +350,9 @@ class NBFactory:
 
     def export_graph_json(self):
         cyjs = nx.cytoscape_data(self.G)
-        dir = create_output_directory(self.topology_name, self.config['files_dir'])
+        dir_path = create_output_directory(self.topology_name, self.config['files_dir'])
         export_file = self.topology_name + ".cyjs"
-        export_path = f"{dir}/{export_file}"
+        export_path = f"{dir_path}/{export_file}"
         try:
             with open(export_path, 'w', encoding='utf-8') as f:
                 json.dump(cyjs, f, indent=4)
@@ -523,7 +523,7 @@ class NetworkTopology:
 
         debug(f"Exporting topology. Device role groups: {self.topology['roles']}")
         # Create a directory for output files
-        self.files_path = self._create_files_directory()
+        self.files_path = create_output_directory(self.topology['name'], self.config['files_dir'])
         # Generate topology data structure
         self.topology['name'] = self.G.name
         self.topology['nodes'] = self._render_emulated_nodes()
@@ -650,16 +650,6 @@ class NetworkTopology:
             print(f"{topo_dict['motd']}")
         elif self.config['output_format'] == 'clab':
             print(f"To deploy this topology, run: sudo -E clab dep -t {self.files_path}/{self.topology['name']}.clab.yaml")
-
-    def _create_files_directory(self):
-        dir_name = "."
-        if len(self.topology['name']) > 0:
-            dir_name = self.topology['name']
-        if len(self.config['files_dir']) > 0:
-            dir_name = self.config['files_dir']
-        if dir_name != ".":
-            create_dirs(dir_name)
-        return dir_name
 
     def _render_interface_map(self, node):
         """Render interface mapping file for a node"""
