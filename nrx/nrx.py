@@ -71,6 +71,30 @@ def error_debug(err, d):
     debug(d)
     error(err)
 
+def create_output_directory(topology_name, config_dir):
+    dir_name = "."
+    if len(topology_name) > 0:
+        dir_name = topology_name
+    if len(config_dir) > 0:
+        dir_name = config_dir
+    if dir_name != ".":
+        create_dirs(dir_name)
+    return dir_name
+
+def create_dirs(dir_path):
+    try:
+        os.makedirs(dir_path)
+        abs_path = os.path.abspath(dir_path)
+        debug(f"Created directory '{dir_path}'")
+        return abs_path
+    except FileExistsError:
+        abs_path = os.path.abspath(dir_path)
+        debug(f"Directory '{dir_path}' already exists, will reuse")
+        return abs_path
+    except OSError as e:
+        error(f"An error occurred while creating the directory: {str(e)}")
+    return None
+
 class TimeoutHTTPAdapter(HTTPAdapter):
     """HTTPAdapter with custom API timeout"""
     def __init__(self, timeout, *args, **kwargs):
@@ -314,25 +338,29 @@ class NBFactory:
 
     def export_graph_gml(self):
         export_file = self.topology_name + ".gml"
+        dir_path = create_output_directory(self.topology_name, self.config['output_dir'])
+        export_path = f"{dir_path}/{export_file}"
         try:
-            nx.write_gml(self.G, export_file)
+            nx.write_gml(self.G, export_path)
         except OSError as e:
-            error(f"Writing to {export_file}:", e)
+            error(f"Writing to {export_path}:", e)
         except nx.exception.NetworkXError as e:
             error("Can't export as GML:", e)
-        print(f"GML graph saved to: {export_file}")
+        print(f"GML graph saved to: {export_path}")
 
     def export_graph_json(self):
         cyjs = nx.cytoscape_data(self.G)
+        dir_path = create_output_directory(self.topology_name, self.config['output_dir'])
         export_file = self.topology_name + ".cyjs"
+        export_path = f"{dir_path}/{export_file}"
         try:
-            with open(export_file, 'w', encoding='utf-8') as f:
+            with open(export_path, 'w', encoding='utf-8') as f:
                 json.dump(cyjs, f, indent=4)
         except OSError as e:
-            error(f"Writing to {export_file}:", e)
+            error(f"Writing to {export_path}:", e)
         except TypeError as e:
             error("Can't export as JSON:", e)
-        print(f"CYJS graph saved to: {export_file}")
+        print(f"CYJS graph saved to: {export_path}")
 
 class NetworkTopology:
     """Class to create network topology artifacts"""
@@ -359,6 +387,7 @@ class NetworkTopology:
             'interface_maps':  {'_path_': 'interface_maps',  '_description_': 'interface map'},
             'kinds':           {'_path_': f"{self.config['output_format']}/kinds", '_description_': 'node kind'}
         }
+        self.files_path = '.'
 
     def build_from_file(self, file):
         self._read_network_graph(file)
@@ -493,6 +522,8 @@ class NetworkTopology:
             error("Cannot export a topology: missing a name")
 
         debug(f"Exporting topology. Device role groups: {self.topology['roles']}")
+        # Create a directory for output files
+        self.files_path = create_output_directory(self.topology['name'], self.config['output_dir'])
         # Generate topology data structure
         self.topology['name'] = self.G.name
         self.topology['nodes'] = self._render_emulated_nodes()
@@ -596,12 +627,13 @@ class NetworkTopology:
             # <topology-name>.clab.yaml or <topology-name>.cml.yaml
             topo_file = f"{self.topology['name']}.{self.config['output_format']}.yaml"
         try:
-            with open(topo_file, "w", encoding="utf-8") as f:
+            topo_path = f"{self.files_path}/{topo_file}"
+            with open(topo_path, "w", encoding="utf-8") as f:
                 f.write(topo)
         except OSError as e:
-            error(f"Can't write into {topo_file}", e)
+            error(f"Can't write into {topo_path}", e)
 
-        print(f"Created {self.config['output_format']} topology: {topo_file}")
+        print(f"Created {self.config['output_format']} topology: {topo_path}")
 
     def _print_motd(self, topo):
         topo_dict = {}
@@ -617,7 +649,7 @@ class NetworkTopology:
         if 'motd' in topo_dict:
             print(f"{topo_dict['motd']}")
         elif self.config['output_format'] == 'clab':
-            print(f"To deploy this topology, run: sudo -E clab dep -t {self.topology['name']}.clab.yaml")
+            print(f"To deploy this topology, run: sudo -E clab dep -t {self.files_path}/{self.topology['name']}.clab.yaml")
 
     def _render_interface_map(self, node):
         """Render interface mapping file for a node"""
@@ -639,12 +671,13 @@ class NetworkTopology:
                 except jinja2.TemplateError as e:
                     error("Rendering interface map J2 template:", e)
                 int_map_file = f"{d}_interface_map.json"
+                int_map_path = f"{self.files_path}/{int_map_file}"
                 try:
-                    with open(int_map_file, "w", encoding="utf-8") as f:
+                    with open(int_map_path, "w", encoding="utf-8") as f:
                         f.write(interface_map)
                 except OSError as e:
-                    error(f"Can't write into {int_map_file}", e)
-                print(f"Created '{p}' interface map: {int_map_file}")
+                    error(f"Can't write into {int_map_path}", e)
+                print(f"Created '{p}' interface map: {int_map_path}")
                 return int_map_file
         return None
 
@@ -661,12 +694,13 @@ class NetworkTopology:
         if self.config['output_format'] == 'clab':
             # Support for Containerlab startup configurations
             config_file = f"{name}.config"
+            config_path = f"{self.files_path}/{config_file}"
             try:
-                with open(config_file, "w", encoding="utf-8") as f:
+                with open(config_path, "w", encoding="utf-8") as f:
                     f.write(config)
             except OSError as e:
-                error(f"Can't write into {config_file}", e)
-            print(f"Created device configuration file: {config_file}")
+                error(f"Can't write into {config_path}", e)
+            print(f"Created device configuration file: {config_path}")
             return config_file
         return None
 
@@ -705,6 +739,9 @@ def parse_args():
     parser.add_argument('-T', '--templates', required=False, help='directory with template files, \
                                                                    will be prepended to TEMPLATES_PATH list \
                                                                    in the configuration file')
+    parser.add_argument('-D', '--dir',       required=False, help='save files into specified directory. \
+                                                                   nested relative and absolute paths are OK \
+                                                                   (topology name is used by default)')
 
     args = parser.parse_args()
     global DEBUG_ON
@@ -738,6 +775,7 @@ def load_toml_config(filename):
         'export_tags': [],
         'export_configs': True,
         'templates_path': ['.'],
+        'output_dir': '',
     }
     if filename is not None and len(filename) > 0:
         try:
@@ -805,6 +843,9 @@ def load_config(args):
 
     if args.templates is not None and len(args.templates) > 0:
         config['templates_path'].insert(0, args.templates)
+
+    if args.dir is not None and len(args.dir) > 0:
+        config['output_dir'] = args.dir
 
     return config
 
