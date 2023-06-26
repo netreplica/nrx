@@ -301,6 +301,18 @@ This is a [NANOG-87 Hackathon](https://www.nanog.org/events/nanog-87-hackathon/)
 
 The implementation is inspired by [ContainerLab random labs](https://gist.github.com/renatoalmeidaoliveira/fdb772a5a02f3cfc0b5fbe7e8b7586a2) by [Renato Almeida de Oliveira](https://github.com/renatoalmeidaoliveira).
 
+## Device configuration export
+
+We added capabilities to export device configurations at [NANOG-88 Hackathon](https://www.nanog.org/events/nanog-88-hackathon/). Watch [the demo of the project on YouTube](https://youtu.be/cP8PUr306ZM):
+
+[![Watch the video](https://img.youtube.com/vi/cP8PUr306ZM/maxresdefault.jpg)](https://youtu.be/cP8PUr306ZM).
+
+The project team:
+
+* [Alex Bortok](https://github.com/bortok)
+* [Mau Rojas](https://www.linkedin.com/in/pinrojas/)
+* [Ahmed Elmokashfi](https://www.linkedin.com/in/elmokashfi/)
+
 ## Copyright notice
 
 Copyright 2023 Netreplica Team
