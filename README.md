@@ -305,7 +305,7 @@ The implementation is inspired by [ContainerLab random labs](https://gist.github
 
 We added capabilities to export device configurations at [NANOG-88 Hackathon](https://www.nanog.org/events/nanog-88-hackathon/). The project team:
 
-* [Alex Bortok](https://github.com/bortok)
+* [Alex Bortok](https://www.linkedin.com/in/bortok/)
 * [Mau Rojas](https://www.linkedin.com/in/pinrojas/)
 * [Ahmed Elmokashfi](https://www.linkedin.com/in/elmokashfi/)
 
