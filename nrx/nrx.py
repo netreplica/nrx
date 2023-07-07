@@ -534,10 +534,17 @@ class NetworkTopology:
         link_id = 0
         for l in self.topology['links']:
             l['id'] = link_id
+            #if self.config['output_format'] != 'd2':
             l['a']['e_interface'] = self.device_interfaces_map[l['a']['node']][l['a']['interface']]['name']
             l['b']['e_interface'] = self.device_interfaces_map[l['b']['node']][l['b']['interface']]['name']
+            #else:
+            #    print("A --> %s" % self.device_interfaces_map[l['a']['node']][l['a']['interface']])
+            #    print("B --> %s" % self.device_interfaces_map[l['b']['node']][l['b']['interface']])
+            #    l['a']['e_interface'] = self.device_interfaces_map[l['a']['node']][l['a']['interface']] 
+            #    l['b']['e_interface'] = self.device_interfaces_map[l['b']['node']][l['b']['interface']] 
             l['a']['index'] = self.device_interfaces_map[l['a']['node']][l['a']['interface']]['index']
             l['b']['index'] = self.device_interfaces_map[l['b']['node']][l['b']['interface']]['index']
+            print("L-->%s" % l)
             link_id += 1
 
     def _get_template(self, ttype, platform, is_required = False):
@@ -623,6 +630,9 @@ class NetworkTopology:
         if self.config['output_format'] == 'graphite':
             # <topology-name>.graphite.json
             topo_file = f"{self.topology['name']}.{self.config['output_format']}.json"
+        elif self.config['output_format'] == 'd2':
+            # <topology-name>.d2
+            topo_file = f"{self.topology['name']}.{self.config['output_format']}"
         else:
             # <topology-name>.clab.yaml or <topology-name>.cml.yaml
             topo_file = f"{self.topology['name']}.{self.config['output_format']}.yaml"
@@ -650,11 +660,16 @@ class NetworkTopology:
             print(f"{topo_dict['motd']}")
         elif self.config['output_format'] == 'clab':
             print(f"To deploy this topology, run: sudo -E clab dep -t {self.files_path}/{self.topology['name']}.clab.yaml")
+        elif self.config['output_format'] == 'd2':
+            print(f"d2 file created to {self.files_path}/{self.topology['name']}.d2")
 
     def _render_interface_map(self, node):
         """Render interface mapping file for a node"""
         if self.config['output_format'] == 'graphite':
             # No need to render interface maps for Graphite
+            return None
+        if self.config['output_format'] == 'd2':
+            # No need to render interface maps for d2
             return None
         if 'name' in node and node['name'] in self.device_interfaces_map:
             d = node['name']
@@ -713,7 +728,7 @@ def arg_input_check(s):
 
 def arg_output_check(s):
     """Check if output format is supported"""
-    allowed_values = ['gml', 'cyjs', 'clab', 'cml', 'graphite']
+    allowed_values = ['gml', 'cyjs', 'clab', 'cml', 'graphite', 'd2']
     if s in allowed_values:
         return s
     raise argparse.ArgumentTypeError(f"output format has to be one of {allowed_values}")
@@ -724,7 +739,7 @@ def parse_args():
     parser.add_argument('-c', '--config',    required=False, help='configuration file')
     parser.add_argument('-i', '--input',     required=False, help='input source: netbox (default) | cyjs',
                                              default='netbox', type=arg_input_check,)
-    parser.add_argument('-o', '--output',    required=False, help='output format: cyjs | gml | clab | cml | graphite',
+    parser.add_argument('-o', '--output',    required=False, help='output format: cyjs | gml | clab | cml | graphite | d2',
                                              type=arg_output_check, )
     parser.add_argument('-a', '--api',       required=False, help='netbox API URL')
     parser.add_argument('-s', '--site',      required=False, help='netbox site to export')
@@ -884,7 +899,7 @@ def main():
     else:
         topo.build_from_graph(nb_network.graph())
 
-    if config['output_format'] in ['clab', 'cml', 'graphite']:
+    if config['output_format'] in ['clab', 'cml', 'graphite', 'd2']:
         topo.export_topology()
     else:
         if nb_network is None:
