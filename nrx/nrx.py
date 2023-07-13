@@ -534,14 +534,8 @@ class NetworkTopology:
         link_id = 0
         for l in self.topology['links']:
             l['id'] = link_id
-            #if self.config['output_format'] != 'd2':
             l['a']['e_interface'] = self.device_interfaces_map[l['a']['node']][l['a']['interface']]['name']
             l['b']['e_interface'] = self.device_interfaces_map[l['b']['node']][l['b']['interface']]['name']
-            #else:
-            #    print("A --> %s" % self.device_interfaces_map[l['a']['node']][l['a']['interface']])
-            #    print("B --> %s" % self.device_interfaces_map[l['b']['node']][l['b']['interface']])
-            #    l['a']['e_interface'] = self.device_interfaces_map[l['a']['node']][l['a']['interface']] 
-            #    l['b']['e_interface'] = self.device_interfaces_map[l['b']['node']][l['b']['interface']] 
             l['a']['index'] = self.device_interfaces_map[l['a']['node']][l['a']['interface']]['index']
             l['b']['index'] = self.device_interfaces_map[l['b']['node']][l['b']['interface']]['index']
             print("L-->%s" % l)
