@@ -654,7 +654,7 @@ class NetworkTopology:
         elif self.config['output_format'] == 'clab':
             print(f"To deploy this topology, run: sudo -E clab dep -t {self.files_path}/{self.topology['name']}.clab.yaml")
         elif self.config['output_format'] == 'd2':
-            print(f"d2 file created to {self.files_path}/{self.topology['name']}.d2")
+            print(f"To visualize this D2 topology, open https://play.d2lang.com and paste content of the file: {self.files_path}/{self.topology['name']}.d2")
 
     def _render_interface_map(self, node):
         """Render interface mapping file for a node"""
