@@ -658,11 +658,8 @@ class NetworkTopology:
 
     def _render_interface_map(self, node):
         """Render interface mapping file for a node"""
-        if self.config['output_format'] == 'graphite':
-            # No need to render interface maps for Graphite
-            return None
-        if self.config['output_format'] == 'd2':
-            # No need to render interface maps for d2
+        if self.config['output_format'] in ['graphite', 'd2']:
+            # No need to render interface maps
             return None
         if 'name' in node and node['name'] in self.device_interfaces_map:
             d = node['name']
