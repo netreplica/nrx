@@ -538,7 +538,6 @@ class NetworkTopology:
             l['b']['e_interface'] = self.device_interfaces_map[l['b']['node']][l['b']['interface']]['name']
             l['a']['index'] = self.device_interfaces_map[l['a']['node']][l['a']['interface']]['index']
             l['b']['index'] = self.device_interfaces_map[l['b']['node']][l['b']['interface']]['index']
-            print("L-->%s" % l)
             link_id += 1
 
     def _get_template(self, ttype, platform, is_required = False):
