@@ -1,0 +1,98 @@
+title: "" {
+  near: top-center
+  grid-columns: 2
+  grid-gap: 0
+  width: 1000
+
+  Topology.width: 500
+  Topology.style.font-size: 32
+  dc1.width: 500
+  dc1.style.bold: false
+  dc1.style.font-size: 32
+}
+
+direction: right
+
+style: {
+    fill: transparent
+}
+
+dc1-leaf-1: {
+    shape: circle
+}
+dc1-spine-1: {
+    shape: circle
+}
+dc1-spine-2: {
+    shape: circle
+}
+dc1-leaf-2: {
+    shape: circle
+}
+dc1-leaf-3: {
+    shape: circle
+}
+dc1-leaf-4: {
+    shape: circle
+}
+dc1-srv-1: {
+    shape: circle
+}
+dc1-srv-2: {
+    shape: circle
+}
+dc1-srv-3: {
+    shape: circle
+}
+dc1-srv-4: {
+    shape: circle
+}
+
+dc1-leaf-1 -- dc1-spine-1: {
+    source-arrowhead.label: ethernet-1/49
+    target-arrowhead.label: Ethernet1/1
+}
+dc1-leaf-1 -- dc1-spine-2: {
+    source-arrowhead.label: ethernet-1/50
+    target-arrowhead.label: Ethernet1/1
+}
+dc1-leaf-2 -- dc1-spine-1: {
+    source-arrowhead.label: ethernet-1/49
+    target-arrowhead.label: Ethernet2/1
+}
+dc1-leaf-2 -- dc1-spine-2: {
+    source-arrowhead.label: ethernet-1/50
+    target-arrowhead.label: Ethernet2/1
+}
+dc1-leaf-3 -- dc1-spine-1: {
+    source-arrowhead.label: ethernet-1/49
+    target-arrowhead.label: Ethernet3/1
+}
+dc1-leaf-3 -- dc1-spine-2: {
+    source-arrowhead.label: ethernet-1/50
+    target-arrowhead.label: Ethernet3/1
+}
+dc1-leaf-4 -- dc1-spine-1: {
+    source-arrowhead.label: ethernet-1/49
+    target-arrowhead.label: Ethernet4/1
+}
+dc1-leaf-4 -- dc1-spine-2: {
+    source-arrowhead.label: ethernet-1/50
+    target-arrowhead.label: Ethernet4/1
+}
+dc1-leaf-1 -- dc1-srv-1: {
+    source-arrowhead.label: ethernet-1/1
+    target-arrowhead.label: Gig-E 1
+}
+dc1-leaf-2 -- dc1-srv-2: {
+    source-arrowhead.label: ethernet-1/1
+    target-arrowhead.label: Gig-E 1
+}
+dc1-leaf-3 -- dc1-srv-3: {
+    source-arrowhead.label: ethernet-1/1
+    target-arrowhead.label: Gig-E 1
+}
+dc1-leaf-4 -- dc1-srv-4: {
+    source-arrowhead.label: ethernet-1/1
+    target-arrowhead.label: Gig-E 1
+}
