@@ -2,9 +2,9 @@ lint:
 	pylint nrx/*.py
 
 test-local: test-dc1 test-dc2 test-colo test-site1 test-h88
-test: test-dc1-cyjs-2-clab test-dc2-cyjs-2-cml test-site1-cyjs-2-clab test-dc1-cyjs-2-graphite test-dc2-cyjs-2-graphite test-h88-cyjs-2-clab
+test: test-dc1-cyjs-2-clab test-dc2-cyjs-2-cml test-site1-cyjs-2-clab test-dc1-cyjs-2-graphite test-dc2-cyjs-2-graphite test-h88-cyjs-2-clab test-dc1-cyjs-2-d2
 
-test-dc1: test-dc1-nb-2-cyjs-current test-dc1-nb-2-cyjs-latest test-dc1-cyjs-2-clab test-dc1-cyjs-2-graphite
+test-dc1: test-dc1-nb-2-cyjs-current test-dc1-nb-2-cyjs-latest test-dc1-cyjs-2-clab test-dc1-cyjs-2-graphite test-dc1-cyjs-2-d2
 test-dc2: test-dc2-nb-2-cyjs-current test-dc2-nb-2-cyjs-latest test-dc2-cyjs-2-cml test-dc2-cyjs-2-graphite
 test-colo: test-colo-nb-2-cyjs-current test-colo-nb-2-cyjs-latest
 test-site1: test-site1-nb-2-cyjs-current test-site1-nb-2-cyjs-latest test-site1-cyjs-2-clab
@@ -45,6 +45,15 @@ test-dc1-cyjs-2-graphite:
 	@echo "#################################################################"
 	mkdir -p tests/dc1/graphite && cd tests/dc1/graphite && rm -rf * && \
 	../../../nrx.py -c ../nrx.conf -i cyjs -f ../data/dc1.cyjs -o graphite -d && \
+	for f in *; do echo Comparing file $$f ...; diff $$f ../data/$$f || exit 1; done
+	@echo
+
+test-dc1-cyjs-2-d2:
+	@echo "#################################################################"
+	@echo "# DC1: read from CYJS and export as d2"
+	@echo "#################################################################"
+	mkdir -p tests/dc1/d2 && cd tests/dc1/d2 && rm -rf * && \
+	../../../nrx.py -c ../nrx.conf -i cyjs -f ../data/dc1.cyjs -o d2 -d && \
 	for f in *; do echo Comparing file $$f ...; diff $$f ../data/$$f || exit 1; done
 	@echo
 
