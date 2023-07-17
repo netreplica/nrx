@@ -158,10 +158,23 @@ class NBFactory:
         except (pynetbox.core.query.RequestError, pynetbox.core.query.ContentError) as e:
             error("NetBox API failure at get devices or interfaces:", e)
 
-        try:
-            self._build_network_graph()
-        except (pynetbox.core.query.RequestError, pynetbox.core.query.ContentError) as e:
-            error("NetBox API failure at get cables:", e)
+        attempts, max_attempts = 0, 3
+        block_size = 64
+        while attempts < max_attempts:
+            try:
+                self._build_network_graph(block_size)
+                break # success, break out of while loop
+            except (requests.Timeout, requests.exceptions.HTTPError) as e:
+                if type(e) == requests.exceptions.HTTPError and e.response.status_code != 414:
+                    error("NetBox API failure at get cables:", e)
+                else:
+                    warning("NetBox API failure at get cables, will reduce cables block size and retry:", e)
+                    attempts += 1
+                    block_size = block_size // 2
+            except (pynetbox.core.query.RequestError, pynetbox.core.query.ContentError) as e:
+                error("NetBox API failure at get cables:", e)
+        if attempts == max_attempts:
+            error("NetBox API failure at get cables, max attempts reached")
 
 
     def graph(self):
@@ -275,13 +288,11 @@ class NBFactory:
         return ""
 
     def _trace_cable(self, cable):
-        debug(f"Tracing {cable}")
         if len(cable.a_terminations) == 1 and len(cable.b_terminations) == 1:
             term_a = cable.a_terminations[0]
             term_b = cable.b_terminations[0]
             if isinstance(term_a, pynetbox.models.dcim.Interfaces) and \
                isinstance(term_b, pynetbox.models.dcim.Interfaces):
-                debug(f"Direct cable {term_a.device} {term_a.name} <-> {term_b.device} {term_b.name}")
                 return [term_a, term_b]
             interface = None
             if isinstance(term_a, pynetbox.models.dcim.Interfaces):
@@ -305,36 +316,41 @@ class NBFactory:
         debug(f"Skipping {cable} as it has more than one termination on one or both sides")
         return []
 
-    def _build_network_graph(self):
-        if len(self.nb_net.cable_ids) > 0:
-            # Making sure there will be a non-empty filter for cables, as otherwise all cables would be returned
-            for cable in list(self.nb_session.dcim.cables.filter(id=self.nb_net.cable_ids)):
-                edge = self._trace_cable(cable)
-                if len(edge) == 2:
-                    int_a = edge[0]
-                    int_b = edge[1]
-                    try:
-                        d_a = self.nb_net.devices[self.nb_net.device_ids.index(int_a.device.id)]
-                        d_b = self.nb_net.devices[self.nb_net.device_ids.index(int_b.device.id)]
-                        self.G.add_nodes_from([
-                            (d_a["node_id"], {"side": "a", "type": "device", "device": d_a}),
-                            (d_b["node_id"], {"side": "b", "type": "device", "device": d_b}),
-                        ])
-                        i_a = self.nb_net.interfaces[self.nb_net.interface_ids.index(int_a.id)]
-                        i_b = self.nb_net.interfaces[self.nb_net.interface_ids.index(int_b.id)]
-                        self.G.add_nodes_from([
-                            (i_a["node_id"], {"side": "a", "type": "interface", "interface": i_a}),
-                            (i_b["node_id"], {"side": "b", "type": "interface", "interface": i_b}),
-                        ])
-                        self.G.add_edges_from([
-                            (d_a["node_id"], i_a["node_id"]),
-                            (d_b["node_id"], i_b["node_id"]),
-                        ])
-                        self.G.add_edges_from([
-                            (i_a["node_id"], i_b["node_id"]),
-                        ])
-                    except ValueError:
-                        debug("One or both devices for this connection are not in the export graph")
+    def _add_cable_to_graph(self, cable):
+        edge = self._trace_cable(cable)
+        if len(edge) == 2:
+            int_a = edge[0]
+            int_b = edge[1]
+            try:
+                d_a = self.nb_net.devices[self.nb_net.device_ids.index(int_a.device.id)]
+                d_b = self.nb_net.devices[self.nb_net.device_ids.index(int_b.device.id)]
+                self.G.add_nodes_from([
+                    (d_a["node_id"], {"side": "a", "type": "device", "device": d_a}),
+                    (d_b["node_id"], {"side": "b", "type": "device", "device": d_b}),
+                ])
+                i_a = self.nb_net.interfaces[self.nb_net.interface_ids.index(int_a.id)]
+                i_b = self.nb_net.interfaces[self.nb_net.interface_ids.index(int_b.id)]
+                self.G.add_nodes_from([
+                    (i_a["node_id"], {"side": "a", "type": "interface", "interface": i_a}),
+                    (i_b["node_id"], {"side": "b", "type": "interface", "interface": i_b}),
+                ])
+                self.G.add_edges_from([
+                    (d_a["node_id"], i_a["node_id"]),
+                    (d_b["node_id"], i_b["node_id"]),
+                ])
+                self.G.add_edges_from([
+                    (i_a["node_id"], i_b["node_id"]),
+                ])
+            except ValueError:
+                debug("One or both devices for this connection are not in the export graph")
+
+    def _build_network_graph(self, block_size):
+        size = len(self.nb_net.cable_ids)
+        debug(f"Exporting {size} cables to build the network graph, in blocks of {block_size}")
+        for i in range(0, size, block_size):
+            cables_block = self.nb_net.cable_ids[i:i + block_size]
+            for cable in list(self.nb_session.dcim.cables.filter(id=cables_block)):
+                self._add_cable_to_graph(cable)
 
     def export_graph_gml(self):
         export_file = self.topology_name + ".gml"
