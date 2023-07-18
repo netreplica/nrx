@@ -1,0 +1,8098 @@
+{
+  "name": "lrg",
+  "type": "graphite",
+  "source": "netbox",
+  "motd": "Start Graphite and open http://localhost:8080/graphite to upload and view the topology: docker run -dt --rm -p 8080:80 --name graphite netreplica/graphite:latest",
+  "nodes": {
+    "lrg-spine1-1": {
+      "index": "68",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "spine",
+        "graph-level": 8,
+        "role": "Spine",
+        "group": "lrg",
+        "platform": "Arista EOS",
+        "vendor": "Arista",
+        "model": "DCS-7280CR3-32P4"
+      }
+    },
+    "lrg-core-1": {
+      "index": "0",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "core",
+        "graph-level": 7,
+        "role": "Core",
+        "group": "lrg",
+        "platform": "Arista EOS",
+        "vendor": "Arista",
+        "model": "DCS-7060DX4-32"
+      }
+    },
+    "lrg-spine1-2": {
+      "index": "69",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "spine",
+        "graph-level": 8,
+        "role": "Spine",
+        "group": "lrg",
+        "platform": "Arista EOS",
+        "vendor": "Arista",
+        "model": "DCS-7280CR3-32P4"
+      }
+    },
+    "lrg-spine1-3": {
+      "index": "70",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "spine",
+        "graph-level": 8,
+        "role": "Spine",
+        "group": "lrg",
+        "platform": "Arista EOS",
+        "vendor": "Arista",
+        "model": "DCS-7280CR3-32P4"
+      }
+    },
+    "lrg-spine1-4": {
+      "index": "71",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "spine",
+        "graph-level": 8,
+        "role": "Spine",
+        "group": "lrg",
+        "platform": "Arista EOS",
+        "vendor": "Arista",
+        "model": "DCS-7280CR3-32P4"
+      }
+    },
+    "lrg-spine1-5": {
+      "index": "72",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "spine",
+        "graph-level": 8,
+        "role": "Spine",
+        "group": "lrg",
+        "platform": "Arista EOS",
+        "vendor": "Arista",
+        "model": "DCS-7280CR3-32P4"
+      }
+    },
+    "lrg-spine1-6": {
+      "index": "73",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "spine",
+        "graph-level": 8,
+        "role": "Spine",
+        "group": "lrg",
+        "platform": "Arista EOS",
+        "vendor": "Arista",
+        "model": "DCS-7280CR3-32P4"
+      }
+    },
+    "lrg-spine1-7": {
+      "index": "74",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "spine",
+        "graph-level": 8,
+        "role": "Spine",
+        "group": "lrg",
+        "platform": "Arista EOS",
+        "vendor": "Arista",
+        "model": "DCS-7280CR3-32P4"
+      }
+    },
+    "lrg-spine1-8": {
+      "index": "75",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "spine",
+        "graph-level": 8,
+        "role": "Spine",
+        "group": "lrg",
+        "platform": "Arista EOS",
+        "vendor": "Arista",
+        "model": "DCS-7280CR3-32P4"
+      }
+    },
+    "lrg-spine2-1": {
+      "index": "76",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "spine",
+        "graph-level": 8,
+        "role": "Spine",
+        "group": "lrg",
+        "platform": "Arista EOS",
+        "vendor": "Arista",
+        "model": "DCS-7280CR3-32P4"
+      }
+    },
+    "lrg-spine2-2": {
+      "index": "77",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "spine",
+        "graph-level": 8,
+        "role": "Spine",
+        "group": "lrg",
+        "platform": "Arista EOS",
+        "vendor": "Arista",
+        "model": "DCS-7280CR3-32P4"
+      }
+    },
+    "lrg-spine2-3": {
+      "index": "78",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "spine",
+        "graph-level": 8,
+        "role": "Spine",
+        "group": "lrg",
+        "platform": "Arista EOS",
+        "vendor": "Arista",
+        "model": "DCS-7280CR3-32P4"
+      }
+    },
+    "lrg-spine2-4": {
+      "index": "79",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "spine",
+        "graph-level": 8,
+        "role": "Spine",
+        "group": "lrg",
+        "platform": "Arista EOS",
+        "vendor": "Arista",
+        "model": "DCS-7280CR3-32P4"
+      }
+    },
+    "lrg-spine2-5": {
+      "index": "80",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "spine",
+        "graph-level": 8,
+        "role": "Spine",
+        "group": "lrg",
+        "platform": "Arista EOS",
+        "vendor": "Arista",
+        "model": "DCS-7280CR3-32P4"
+      }
+    },
+    "lrg-spine2-6": {
+      "index": "81",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "spine",
+        "graph-level": 8,
+        "role": "Spine",
+        "group": "lrg",
+        "platform": "Arista EOS",
+        "vendor": "Arista",
+        "model": "DCS-7280CR3-32P4"
+      }
+    },
+    "lrg-spine2-7": {
+      "index": "82",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "spine",
+        "graph-level": 8,
+        "role": "Spine",
+        "group": "lrg",
+        "platform": "Arista EOS",
+        "vendor": "Arista",
+        "model": "DCS-7280CR3-32P4"
+      }
+    },
+    "lrg-spine2-8": {
+      "index": "83",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "spine",
+        "graph-level": 8,
+        "role": "Spine",
+        "group": "lrg",
+        "platform": "Arista EOS",
+        "vendor": "Arista",
+        "model": "DCS-7280CR3-32P4"
+      }
+    },
+    "lrg-core-2": {
+      "index": "1",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "core",
+        "graph-level": 7,
+        "role": "Core",
+        "group": "lrg",
+        "platform": "Arista EOS",
+        "vendor": "Arista",
+        "model": "DCS-7060DX4-32"
+      }
+    },
+    "lrg-core-3": {
+      "index": "2",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "core",
+        "graph-level": 7,
+        "role": "Core",
+        "group": "lrg",
+        "platform": "Arista EOS",
+        "vendor": "Arista",
+        "model": "DCS-7060DX4-32"
+      }
+    },
+    "lrg-core-4": {
+      "index": "3",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "core",
+        "graph-level": 7,
+        "role": "Core",
+        "group": "lrg",
+        "platform": "Arista EOS",
+        "vendor": "Arista",
+        "model": "DCS-7060DX4-32"
+      }
+    },
+    "lrg-leaf1-1": {
+      "index": "4",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf1-2": {
+      "index": "5",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf1-3": {
+      "index": "6",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf1-4": {
+      "index": "7",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf1-5": {
+      "index": "8",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf1-6": {
+      "index": "9",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf1-7": {
+      "index": "10",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf1-8": {
+      "index": "11",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf1-9": {
+      "index": "12",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf1-10": {
+      "index": "13",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf1-11": {
+      "index": "14",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf1-12": {
+      "index": "15",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf1-13": {
+      "index": "16",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf1-14": {
+      "index": "17",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf1-15": {
+      "index": "18",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf1-16": {
+      "index": "19",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf2-1": {
+      "index": "20",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf2-2": {
+      "index": "21",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf2-3": {
+      "index": "22",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf2-4": {
+      "index": "23",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf2-5": {
+      "index": "24",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf2-6": {
+      "index": "25",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf2-7": {
+      "index": "26",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf2-8": {
+      "index": "27",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf2-9": {
+      "index": "28",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf2-10": {
+      "index": "29",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf2-11": {
+      "index": "30",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf2-12": {
+      "index": "31",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf2-13": {
+      "index": "32",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf2-14": {
+      "index": "33",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf2-15": {
+      "index": "34",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf2-16": {
+      "index": "35",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf3-1": {
+      "index": "36",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf3-2": {
+      "index": "37",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf3-3": {
+      "index": "38",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf3-4": {
+      "index": "39",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf3-5": {
+      "index": "40",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf3-6": {
+      "index": "41",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf3-7": {
+      "index": "42",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf3-8": {
+      "index": "43",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf3-9": {
+      "index": "44",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf3-10": {
+      "index": "45",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf3-11": {
+      "index": "46",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf3-12": {
+      "index": "47",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf3-13": {
+      "index": "48",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf3-14": {
+      "index": "49",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf3-15": {
+      "index": "50",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf3-16": {
+      "index": "51",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf4-1": {
+      "index": "52",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf4-2": {
+      "index": "53",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf4-3": {
+      "index": "54",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf4-4": {
+      "index": "55",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf4-5": {
+      "index": "56",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf4-6": {
+      "index": "57",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf4-7": {
+      "index": "58",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf4-8": {
+      "index": "59",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf4-9": {
+      "index": "60",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf4-10": {
+      "index": "61",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf4-11": {
+      "index": "62",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf4-12": {
+      "index": "63",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf4-13": {
+      "index": "64",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf4-14": {
+      "index": "65",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf4-15": {
+      "index": "66",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    },
+    "lrg-leaf4-16": {
+      "index": "67",
+      "mgmt-ipv4-address": "",
+      "mgmt-ipv6-address": "",
+      "labels": {
+        "graph-icon": "leaf",
+        "graph-level": 9,
+        "role": "Leaf",
+        "group": "lrg",
+        "platform": "Nokia SR-Linux",
+        "vendor": "Nokia",
+        "model": "7220 IXR-D2"
+      }
+    }
+  },
+  "links": [
+    {
+      "a": {
+        "node": "lrg-spine1-1",
+        "interface": "Ethernet33/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-1",
+        "interface": "Ethernet1/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine1-2",
+        "interface": "Ethernet33/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-1",
+        "interface": "Ethernet2/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine1-3",
+        "interface": "Ethernet33/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-1",
+        "interface": "Ethernet3/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine1-4",
+        "interface": "Ethernet33/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-1",
+        "interface": "Ethernet4/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine1-5",
+        "interface": "Ethernet33/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-1",
+        "interface": "Ethernet5/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine1-6",
+        "interface": "Ethernet33/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-1",
+        "interface": "Ethernet6/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine1-7",
+        "interface": "Ethernet33/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-1",
+        "interface": "Ethernet7/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine1-8",
+        "interface": "Ethernet33/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-1",
+        "interface": "Ethernet8/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine2-1",
+        "interface": "Ethernet33/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-1",
+        "interface": "Ethernet9/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine2-2",
+        "interface": "Ethernet33/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-1",
+        "interface": "Ethernet10/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine2-3",
+        "interface": "Ethernet33/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-1",
+        "interface": "Ethernet11/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine2-4",
+        "interface": "Ethernet33/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-1",
+        "interface": "Ethernet12/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine2-5",
+        "interface": "Ethernet33/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-1",
+        "interface": "Ethernet13/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine2-6",
+        "interface": "Ethernet33/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-1",
+        "interface": "Ethernet14/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine2-7",
+        "interface": "Ethernet33/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-1",
+        "interface": "Ethernet15/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine2-8",
+        "interface": "Ethernet33/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-1",
+        "interface": "Ethernet16/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine1-1",
+        "interface": "Ethernet34/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-2",
+        "interface": "Ethernet1/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine1-2",
+        "interface": "Ethernet34/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-2",
+        "interface": "Ethernet2/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine1-3",
+        "interface": "Ethernet34/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-2",
+        "interface": "Ethernet3/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine1-4",
+        "interface": "Ethernet34/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-2",
+        "interface": "Ethernet4/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine1-5",
+        "interface": "Ethernet34/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-2",
+        "interface": "Ethernet5/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine1-6",
+        "interface": "Ethernet34/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-2",
+        "interface": "Ethernet6/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine1-7",
+        "interface": "Ethernet34/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-2",
+        "interface": "Ethernet7/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine1-8",
+        "interface": "Ethernet34/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-2",
+        "interface": "Ethernet8/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine2-1",
+        "interface": "Ethernet34/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-2",
+        "interface": "Ethernet9/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine2-2",
+        "interface": "Ethernet34/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-2",
+        "interface": "Ethernet10/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine2-3",
+        "interface": "Ethernet34/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-2",
+        "interface": "Ethernet11/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine2-4",
+        "interface": "Ethernet34/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-2",
+        "interface": "Ethernet12/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine2-5",
+        "interface": "Ethernet34/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-2",
+        "interface": "Ethernet13/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine2-6",
+        "interface": "Ethernet34/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-2",
+        "interface": "Ethernet14/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine2-7",
+        "interface": "Ethernet34/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-2",
+        "interface": "Ethernet15/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine2-8",
+        "interface": "Ethernet34/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-2",
+        "interface": "Ethernet16/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine1-1",
+        "interface": "Ethernet35/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-3",
+        "interface": "Ethernet1/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine1-2",
+        "interface": "Ethernet35/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-3",
+        "interface": "Ethernet2/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine1-3",
+        "interface": "Ethernet35/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-3",
+        "interface": "Ethernet3/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine1-4",
+        "interface": "Ethernet35/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-3",
+        "interface": "Ethernet4/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine1-5",
+        "interface": "Ethernet35/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-3",
+        "interface": "Ethernet5/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine1-6",
+        "interface": "Ethernet35/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-3",
+        "interface": "Ethernet6/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine1-7",
+        "interface": "Ethernet35/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-3",
+        "interface": "Ethernet7/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine1-8",
+        "interface": "Ethernet35/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-3",
+        "interface": "Ethernet8/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine2-1",
+        "interface": "Ethernet35/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-3",
+        "interface": "Ethernet9/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine2-2",
+        "interface": "Ethernet35/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-3",
+        "interface": "Ethernet10/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine2-3",
+        "interface": "Ethernet35/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-3",
+        "interface": "Ethernet11/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine2-4",
+        "interface": "Ethernet35/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-3",
+        "interface": "Ethernet12/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine2-5",
+        "interface": "Ethernet35/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-3",
+        "interface": "Ethernet13/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine2-6",
+        "interface": "Ethernet35/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-3",
+        "interface": "Ethernet14/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine2-7",
+        "interface": "Ethernet35/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-3",
+        "interface": "Ethernet15/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine2-8",
+        "interface": "Ethernet35/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-3",
+        "interface": "Ethernet16/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine1-1",
+        "interface": "Ethernet36/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-4",
+        "interface": "Ethernet1/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine1-2",
+        "interface": "Ethernet36/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-4",
+        "interface": "Ethernet2/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine1-3",
+        "interface": "Ethernet36/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-4",
+        "interface": "Ethernet3/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine1-4",
+        "interface": "Ethernet36/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-4",
+        "interface": "Ethernet4/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine1-5",
+        "interface": "Ethernet36/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-4",
+        "interface": "Ethernet5/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine1-6",
+        "interface": "Ethernet36/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-4",
+        "interface": "Ethernet6/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine1-7",
+        "interface": "Ethernet36/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-4",
+        "interface": "Ethernet7/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine1-8",
+        "interface": "Ethernet36/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-4",
+        "interface": "Ethernet8/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine2-1",
+        "interface": "Ethernet36/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-4",
+        "interface": "Ethernet9/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine2-2",
+        "interface": "Ethernet36/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-4",
+        "interface": "Ethernet10/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine2-3",
+        "interface": "Ethernet36/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-4",
+        "interface": "Ethernet11/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine2-4",
+        "interface": "Ethernet36/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-4",
+        "interface": "Ethernet12/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine2-5",
+        "interface": "Ethernet36/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-4",
+        "interface": "Ethernet13/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine2-6",
+        "interface": "Ethernet36/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-4",
+        "interface": "Ethernet14/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine2-7",
+        "interface": "Ethernet36/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-4",
+        "interface": "Ethernet15/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-spine2-8",
+        "interface": "Ethernet36/1",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-core-4",
+        "interface": "Ethernet16/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-1",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-1",
+        "interface": "Ethernet1/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-1",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-2",
+        "interface": "Ethernet1/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-1",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-3",
+        "interface": "Ethernet1/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-1",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-4",
+        "interface": "Ethernet1/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-1",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-5",
+        "interface": "Ethernet1/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-1",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-6",
+        "interface": "Ethernet1/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-1",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-7",
+        "interface": "Ethernet1/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-1",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-8",
+        "interface": "Ethernet1/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-2",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-1",
+        "interface": "Ethernet2/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-2",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-2",
+        "interface": "Ethernet2/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-2",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-3",
+        "interface": "Ethernet2/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-2",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-4",
+        "interface": "Ethernet2/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-2",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-5",
+        "interface": "Ethernet2/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-2",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-6",
+        "interface": "Ethernet2/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-2",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-7",
+        "interface": "Ethernet2/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-2",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-8",
+        "interface": "Ethernet2/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-3",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-1",
+        "interface": "Ethernet3/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-3",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-2",
+        "interface": "Ethernet3/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-3",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-3",
+        "interface": "Ethernet3/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-3",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-4",
+        "interface": "Ethernet3/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-3",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-5",
+        "interface": "Ethernet3/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-3",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-6",
+        "interface": "Ethernet3/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-3",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-7",
+        "interface": "Ethernet3/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-3",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-8",
+        "interface": "Ethernet3/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-4",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-1",
+        "interface": "Ethernet4/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-4",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-2",
+        "interface": "Ethernet4/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-4",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-3",
+        "interface": "Ethernet4/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-4",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-4",
+        "interface": "Ethernet4/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-4",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-5",
+        "interface": "Ethernet4/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-4",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-6",
+        "interface": "Ethernet4/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-4",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-7",
+        "interface": "Ethernet4/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-4",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-8",
+        "interface": "Ethernet4/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-5",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-1",
+        "interface": "Ethernet5/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-5",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-2",
+        "interface": "Ethernet5/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-5",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-3",
+        "interface": "Ethernet5/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-5",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-4",
+        "interface": "Ethernet5/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-5",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-5",
+        "interface": "Ethernet5/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-5",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-6",
+        "interface": "Ethernet5/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-5",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-7",
+        "interface": "Ethernet5/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-5",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-8",
+        "interface": "Ethernet5/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-6",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-1",
+        "interface": "Ethernet6/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-6",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-2",
+        "interface": "Ethernet6/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-6",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-3",
+        "interface": "Ethernet6/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-6",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-4",
+        "interface": "Ethernet6/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-6",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-5",
+        "interface": "Ethernet6/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-6",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-6",
+        "interface": "Ethernet6/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-6",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-7",
+        "interface": "Ethernet6/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-6",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-8",
+        "interface": "Ethernet6/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-7",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-1",
+        "interface": "Ethernet7/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-7",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-2",
+        "interface": "Ethernet7/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-7",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-3",
+        "interface": "Ethernet7/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-7",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-4",
+        "interface": "Ethernet7/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-7",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-5",
+        "interface": "Ethernet7/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-7",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-6",
+        "interface": "Ethernet7/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-7",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-7",
+        "interface": "Ethernet7/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-7",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-8",
+        "interface": "Ethernet7/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-8",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-1",
+        "interface": "Ethernet8/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-8",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-2",
+        "interface": "Ethernet8/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-8",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-3",
+        "interface": "Ethernet8/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-8",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-4",
+        "interface": "Ethernet8/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-8",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-5",
+        "interface": "Ethernet8/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-8",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-6",
+        "interface": "Ethernet8/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-8",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-7",
+        "interface": "Ethernet8/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-8",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-8",
+        "interface": "Ethernet8/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-9",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-1",
+        "interface": "Ethernet9/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-9",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-2",
+        "interface": "Ethernet9/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-9",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-3",
+        "interface": "Ethernet9/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-9",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-4",
+        "interface": "Ethernet9/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-9",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-5",
+        "interface": "Ethernet9/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-9",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-6",
+        "interface": "Ethernet9/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-9",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-7",
+        "interface": "Ethernet9/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-9",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-8",
+        "interface": "Ethernet9/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-10",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-1",
+        "interface": "Ethernet10/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-10",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-2",
+        "interface": "Ethernet10/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-10",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-3",
+        "interface": "Ethernet10/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-10",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-4",
+        "interface": "Ethernet10/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-10",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-5",
+        "interface": "Ethernet10/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-10",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-6",
+        "interface": "Ethernet10/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-10",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-7",
+        "interface": "Ethernet10/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-10",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-8",
+        "interface": "Ethernet10/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-11",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-1",
+        "interface": "Ethernet11/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-11",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-2",
+        "interface": "Ethernet11/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-11",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-3",
+        "interface": "Ethernet11/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-11",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-4",
+        "interface": "Ethernet11/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-11",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-5",
+        "interface": "Ethernet11/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-11",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-6",
+        "interface": "Ethernet11/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-11",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-7",
+        "interface": "Ethernet11/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-11",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-8",
+        "interface": "Ethernet11/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-12",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-1",
+        "interface": "Ethernet12/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-12",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-2",
+        "interface": "Ethernet12/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-12",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-3",
+        "interface": "Ethernet12/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-12",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-4",
+        "interface": "Ethernet12/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-12",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-5",
+        "interface": "Ethernet12/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-12",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-6",
+        "interface": "Ethernet12/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-12",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-7",
+        "interface": "Ethernet12/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-12",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-8",
+        "interface": "Ethernet12/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-13",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-1",
+        "interface": "Ethernet13/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-13",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-2",
+        "interface": "Ethernet13/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-13",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-3",
+        "interface": "Ethernet13/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-13",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-4",
+        "interface": "Ethernet13/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-13",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-5",
+        "interface": "Ethernet13/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-13",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-6",
+        "interface": "Ethernet13/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-13",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-7",
+        "interface": "Ethernet13/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-13",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-8",
+        "interface": "Ethernet13/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-14",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-1",
+        "interface": "Ethernet14/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-14",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-2",
+        "interface": "Ethernet14/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-14",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-3",
+        "interface": "Ethernet14/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-14",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-4",
+        "interface": "Ethernet14/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-14",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-5",
+        "interface": "Ethernet14/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-14",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-6",
+        "interface": "Ethernet14/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-14",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-7",
+        "interface": "Ethernet14/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-14",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-8",
+        "interface": "Ethernet14/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-15",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-1",
+        "interface": "Ethernet15/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-15",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-2",
+        "interface": "Ethernet15/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-15",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-3",
+        "interface": "Ethernet15/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-15",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-4",
+        "interface": "Ethernet15/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-15",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-5",
+        "interface": "Ethernet15/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-15",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-6",
+        "interface": "Ethernet15/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-15",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-7",
+        "interface": "Ethernet15/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-15",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-8",
+        "interface": "Ethernet15/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-16",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-1",
+        "interface": "Ethernet16/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-16",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-2",
+        "interface": "Ethernet16/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-16",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-3",
+        "interface": "Ethernet16/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-16",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-4",
+        "interface": "Ethernet16/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-16",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-5",
+        "interface": "Ethernet16/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-16",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-6",
+        "interface": "Ethernet16/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-16",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-7",
+        "interface": "Ethernet16/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf1-16",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-8",
+        "interface": "Ethernet16/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-1",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-1",
+        "interface": "Ethernet17/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-1",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-2",
+        "interface": "Ethernet17/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-1",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-3",
+        "interface": "Ethernet17/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-1",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-4",
+        "interface": "Ethernet17/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-1",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-5",
+        "interface": "Ethernet17/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-1",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-6",
+        "interface": "Ethernet17/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-1",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-7",
+        "interface": "Ethernet17/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-1",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-8",
+        "interface": "Ethernet17/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-2",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-1",
+        "interface": "Ethernet18/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-2",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-2",
+        "interface": "Ethernet18/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-2",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-3",
+        "interface": "Ethernet18/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-2",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-4",
+        "interface": "Ethernet18/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-2",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-5",
+        "interface": "Ethernet18/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-2",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-6",
+        "interface": "Ethernet18/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-2",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-7",
+        "interface": "Ethernet18/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-2",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-8",
+        "interface": "Ethernet18/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-3",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-1",
+        "interface": "Ethernet19/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-3",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-2",
+        "interface": "Ethernet19/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-3",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-3",
+        "interface": "Ethernet19/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-3",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-4",
+        "interface": "Ethernet19/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-3",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-5",
+        "interface": "Ethernet19/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-3",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-6",
+        "interface": "Ethernet19/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-3",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-7",
+        "interface": "Ethernet19/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-3",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-8",
+        "interface": "Ethernet19/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-4",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-1",
+        "interface": "Ethernet20/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-4",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-2",
+        "interface": "Ethernet20/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-4",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-3",
+        "interface": "Ethernet20/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-4",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-4",
+        "interface": "Ethernet20/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-4",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-5",
+        "interface": "Ethernet20/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-4",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-6",
+        "interface": "Ethernet20/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-4",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-7",
+        "interface": "Ethernet20/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-4",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-8",
+        "interface": "Ethernet20/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-5",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-1",
+        "interface": "Ethernet21/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-5",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-2",
+        "interface": "Ethernet21/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-5",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-3",
+        "interface": "Ethernet21/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-5",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-4",
+        "interface": "Ethernet21/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-5",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-5",
+        "interface": "Ethernet21/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-5",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-6",
+        "interface": "Ethernet21/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-5",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-7",
+        "interface": "Ethernet21/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-5",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-8",
+        "interface": "Ethernet21/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-6",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-1",
+        "interface": "Ethernet22/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-6",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-2",
+        "interface": "Ethernet22/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-6",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-3",
+        "interface": "Ethernet22/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-6",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-4",
+        "interface": "Ethernet22/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-6",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-5",
+        "interface": "Ethernet22/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-6",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-6",
+        "interface": "Ethernet22/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-6",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-7",
+        "interface": "Ethernet22/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-6",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-8",
+        "interface": "Ethernet22/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-7",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-1",
+        "interface": "Ethernet23/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-7",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-2",
+        "interface": "Ethernet23/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-7",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-3",
+        "interface": "Ethernet23/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-7",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-4",
+        "interface": "Ethernet23/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-7",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-5",
+        "interface": "Ethernet23/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-7",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-6",
+        "interface": "Ethernet23/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-7",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-7",
+        "interface": "Ethernet23/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-7",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-8",
+        "interface": "Ethernet23/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-8",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-1",
+        "interface": "Ethernet24/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-8",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-2",
+        "interface": "Ethernet24/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-8",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-3",
+        "interface": "Ethernet24/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-8",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-4",
+        "interface": "Ethernet24/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-8",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-5",
+        "interface": "Ethernet24/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-8",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-6",
+        "interface": "Ethernet24/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-8",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-7",
+        "interface": "Ethernet24/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-8",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-8",
+        "interface": "Ethernet24/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-9",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-1",
+        "interface": "Ethernet25/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-9",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-2",
+        "interface": "Ethernet25/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-9",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-3",
+        "interface": "Ethernet25/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-9",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-4",
+        "interface": "Ethernet25/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-9",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-5",
+        "interface": "Ethernet25/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-9",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-6",
+        "interface": "Ethernet25/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-9",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-7",
+        "interface": "Ethernet25/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-9",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-8",
+        "interface": "Ethernet25/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-10",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-1",
+        "interface": "Ethernet26/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-10",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-2",
+        "interface": "Ethernet26/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-10",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-3",
+        "interface": "Ethernet26/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-10",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-4",
+        "interface": "Ethernet26/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-10",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-5",
+        "interface": "Ethernet26/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-10",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-6",
+        "interface": "Ethernet26/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-10",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-7",
+        "interface": "Ethernet26/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-10",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-8",
+        "interface": "Ethernet26/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-11",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-1",
+        "interface": "Ethernet27/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-11",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-2",
+        "interface": "Ethernet27/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-11",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-3",
+        "interface": "Ethernet27/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-11",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-4",
+        "interface": "Ethernet27/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-11",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-5",
+        "interface": "Ethernet27/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-11",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-6",
+        "interface": "Ethernet27/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-11",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-7",
+        "interface": "Ethernet27/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-11",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-8",
+        "interface": "Ethernet27/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-12",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-1",
+        "interface": "Ethernet28/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-12",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-2",
+        "interface": "Ethernet28/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-12",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-3",
+        "interface": "Ethernet28/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-12",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-4",
+        "interface": "Ethernet28/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-12",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-5",
+        "interface": "Ethernet28/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-12",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-6",
+        "interface": "Ethernet28/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-12",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-7",
+        "interface": "Ethernet28/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-12",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-8",
+        "interface": "Ethernet28/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-13",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-1",
+        "interface": "Ethernet29/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-13",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-2",
+        "interface": "Ethernet29/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-13",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-3",
+        "interface": "Ethernet29/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-13",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-4",
+        "interface": "Ethernet29/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-13",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-5",
+        "interface": "Ethernet29/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-13",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-6",
+        "interface": "Ethernet29/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-13",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-7",
+        "interface": "Ethernet29/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-13",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-8",
+        "interface": "Ethernet29/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-14",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-1",
+        "interface": "Ethernet30/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-14",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-2",
+        "interface": "Ethernet30/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-14",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-3",
+        "interface": "Ethernet30/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-14",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-4",
+        "interface": "Ethernet30/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-14",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-5",
+        "interface": "Ethernet30/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-14",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-6",
+        "interface": "Ethernet30/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-14",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-7",
+        "interface": "Ethernet30/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-14",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-8",
+        "interface": "Ethernet30/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-15",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-1",
+        "interface": "Ethernet31/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-15",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-2",
+        "interface": "Ethernet31/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-15",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-3",
+        "interface": "Ethernet31/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-15",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-4",
+        "interface": "Ethernet31/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-15",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-5",
+        "interface": "Ethernet31/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-15",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-6",
+        "interface": "Ethernet31/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-15",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-7",
+        "interface": "Ethernet31/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-15",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-8",
+        "interface": "Ethernet31/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-16",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-1",
+        "interface": "Ethernet32/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-16",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-2",
+        "interface": "Ethernet32/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-16",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-3",
+        "interface": "Ethernet32/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-16",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-4",
+        "interface": "Ethernet32/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-16",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-5",
+        "interface": "Ethernet32/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-16",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-6",
+        "interface": "Ethernet32/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-16",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-7",
+        "interface": "Ethernet32/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf2-16",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine1-8",
+        "interface": "Ethernet32/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-1",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-1",
+        "interface": "Ethernet1/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-1",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-2",
+        "interface": "Ethernet1/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-1",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-3",
+        "interface": "Ethernet1/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-1",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-4",
+        "interface": "Ethernet1/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-1",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-5",
+        "interface": "Ethernet1/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-1",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-6",
+        "interface": "Ethernet1/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-1",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-7",
+        "interface": "Ethernet1/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-1",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-8",
+        "interface": "Ethernet1/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-2",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-1",
+        "interface": "Ethernet2/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-2",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-2",
+        "interface": "Ethernet2/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-2",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-3",
+        "interface": "Ethernet2/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-2",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-4",
+        "interface": "Ethernet2/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-2",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-5",
+        "interface": "Ethernet2/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-2",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-6",
+        "interface": "Ethernet2/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-2",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-7",
+        "interface": "Ethernet2/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-2",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-8",
+        "interface": "Ethernet2/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-3",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-1",
+        "interface": "Ethernet3/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-3",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-2",
+        "interface": "Ethernet3/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-3",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-3",
+        "interface": "Ethernet3/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-3",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-4",
+        "interface": "Ethernet3/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-3",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-5",
+        "interface": "Ethernet3/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-3",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-6",
+        "interface": "Ethernet3/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-3",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-7",
+        "interface": "Ethernet3/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-3",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-8",
+        "interface": "Ethernet3/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-4",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-1",
+        "interface": "Ethernet4/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-4",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-2",
+        "interface": "Ethernet4/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-4",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-3",
+        "interface": "Ethernet4/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-4",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-4",
+        "interface": "Ethernet4/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-4",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-5",
+        "interface": "Ethernet4/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-4",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-6",
+        "interface": "Ethernet4/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-4",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-7",
+        "interface": "Ethernet4/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-4",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-8",
+        "interface": "Ethernet4/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-5",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-1",
+        "interface": "Ethernet5/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-5",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-2",
+        "interface": "Ethernet5/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-5",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-3",
+        "interface": "Ethernet5/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-5",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-4",
+        "interface": "Ethernet5/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-5",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-5",
+        "interface": "Ethernet5/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-5",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-6",
+        "interface": "Ethernet5/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-5",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-7",
+        "interface": "Ethernet5/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-5",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-8",
+        "interface": "Ethernet5/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-6",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-1",
+        "interface": "Ethernet6/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-6",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-2",
+        "interface": "Ethernet6/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-6",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-3",
+        "interface": "Ethernet6/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-6",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-4",
+        "interface": "Ethernet6/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-6",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-5",
+        "interface": "Ethernet6/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-6",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-6",
+        "interface": "Ethernet6/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-6",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-7",
+        "interface": "Ethernet6/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-6",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-8",
+        "interface": "Ethernet6/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-7",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-1",
+        "interface": "Ethernet7/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-7",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-2",
+        "interface": "Ethernet7/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-7",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-3",
+        "interface": "Ethernet7/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-7",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-4",
+        "interface": "Ethernet7/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-7",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-5",
+        "interface": "Ethernet7/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-7",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-6",
+        "interface": "Ethernet7/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-7",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-7",
+        "interface": "Ethernet7/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-7",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-8",
+        "interface": "Ethernet7/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-8",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-1",
+        "interface": "Ethernet8/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-8",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-2",
+        "interface": "Ethernet8/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-8",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-3",
+        "interface": "Ethernet8/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-8",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-4",
+        "interface": "Ethernet8/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-8",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-5",
+        "interface": "Ethernet8/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-8",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-6",
+        "interface": "Ethernet8/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-8",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-7",
+        "interface": "Ethernet8/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-8",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-8",
+        "interface": "Ethernet8/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-9",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-1",
+        "interface": "Ethernet9/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-9",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-2",
+        "interface": "Ethernet9/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-9",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-3",
+        "interface": "Ethernet9/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-9",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-4",
+        "interface": "Ethernet9/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-9",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-5",
+        "interface": "Ethernet9/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-9",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-6",
+        "interface": "Ethernet9/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-9",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-7",
+        "interface": "Ethernet9/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-9",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-8",
+        "interface": "Ethernet9/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-10",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-1",
+        "interface": "Ethernet10/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-10",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-2",
+        "interface": "Ethernet10/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-10",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-3",
+        "interface": "Ethernet10/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-10",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-4",
+        "interface": "Ethernet10/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-10",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-5",
+        "interface": "Ethernet10/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-10",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-6",
+        "interface": "Ethernet10/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-10",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-7",
+        "interface": "Ethernet10/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-10",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-8",
+        "interface": "Ethernet10/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-11",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-1",
+        "interface": "Ethernet11/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-11",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-2",
+        "interface": "Ethernet11/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-11",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-3",
+        "interface": "Ethernet11/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-11",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-4",
+        "interface": "Ethernet11/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-11",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-5",
+        "interface": "Ethernet11/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-11",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-6",
+        "interface": "Ethernet11/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-11",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-7",
+        "interface": "Ethernet11/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-11",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-8",
+        "interface": "Ethernet11/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-12",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-1",
+        "interface": "Ethernet12/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-12",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-2",
+        "interface": "Ethernet12/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-12",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-3",
+        "interface": "Ethernet12/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-12",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-4",
+        "interface": "Ethernet12/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-12",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-5",
+        "interface": "Ethernet12/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-12",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-6",
+        "interface": "Ethernet12/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-12",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-7",
+        "interface": "Ethernet12/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-12",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-8",
+        "interface": "Ethernet12/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-13",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-1",
+        "interface": "Ethernet13/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-13",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-2",
+        "interface": "Ethernet13/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-13",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-3",
+        "interface": "Ethernet13/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-13",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-4",
+        "interface": "Ethernet13/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-13",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-5",
+        "interface": "Ethernet13/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-13",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-6",
+        "interface": "Ethernet13/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-13",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-7",
+        "interface": "Ethernet13/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-13",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-8",
+        "interface": "Ethernet13/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-14",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-1",
+        "interface": "Ethernet14/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-14",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-2",
+        "interface": "Ethernet14/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-14",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-3",
+        "interface": "Ethernet14/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-14",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-4",
+        "interface": "Ethernet14/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-14",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-5",
+        "interface": "Ethernet14/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-14",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-6",
+        "interface": "Ethernet14/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-14",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-7",
+        "interface": "Ethernet14/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-14",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-8",
+        "interface": "Ethernet14/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-15",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-1",
+        "interface": "Ethernet15/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-15",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-2",
+        "interface": "Ethernet15/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-15",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-3",
+        "interface": "Ethernet15/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-15",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-4",
+        "interface": "Ethernet15/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-15",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-5",
+        "interface": "Ethernet15/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-15",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-6",
+        "interface": "Ethernet15/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-15",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-7",
+        "interface": "Ethernet15/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-15",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-8",
+        "interface": "Ethernet15/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-16",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-1",
+        "interface": "Ethernet16/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-16",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-2",
+        "interface": "Ethernet16/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-16",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-3",
+        "interface": "Ethernet16/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-16",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-4",
+        "interface": "Ethernet16/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-16",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-5",
+        "interface": "Ethernet16/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-16",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-6",
+        "interface": "Ethernet16/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-16",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-7",
+        "interface": "Ethernet16/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf3-16",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-8",
+        "interface": "Ethernet16/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-1",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-1",
+        "interface": "Ethernet17/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-1",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-2",
+        "interface": "Ethernet17/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-1",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-3",
+        "interface": "Ethernet17/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-1",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-4",
+        "interface": "Ethernet17/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-1",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-5",
+        "interface": "Ethernet17/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-1",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-6",
+        "interface": "Ethernet17/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-1",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-7",
+        "interface": "Ethernet17/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-1",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-8",
+        "interface": "Ethernet17/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-2",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-1",
+        "interface": "Ethernet18/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-2",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-2",
+        "interface": "Ethernet18/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-2",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-3",
+        "interface": "Ethernet18/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-2",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-4",
+        "interface": "Ethernet18/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-2",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-5",
+        "interface": "Ethernet18/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-2",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-6",
+        "interface": "Ethernet18/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-2",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-7",
+        "interface": "Ethernet18/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-2",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-8",
+        "interface": "Ethernet18/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-3",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-1",
+        "interface": "Ethernet19/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-3",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-2",
+        "interface": "Ethernet19/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-3",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-3",
+        "interface": "Ethernet19/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-3",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-4",
+        "interface": "Ethernet19/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-3",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-5",
+        "interface": "Ethernet19/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-3",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-6",
+        "interface": "Ethernet19/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-3",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-7",
+        "interface": "Ethernet19/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-3",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-8",
+        "interface": "Ethernet19/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-4",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-1",
+        "interface": "Ethernet20/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-4",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-2",
+        "interface": "Ethernet20/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-4",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-3",
+        "interface": "Ethernet20/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-4",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-4",
+        "interface": "Ethernet20/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-4",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-5",
+        "interface": "Ethernet20/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-4",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-6",
+        "interface": "Ethernet20/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-4",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-7",
+        "interface": "Ethernet20/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-4",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-8",
+        "interface": "Ethernet20/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-5",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-1",
+        "interface": "Ethernet21/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-5",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-2",
+        "interface": "Ethernet21/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-5",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-3",
+        "interface": "Ethernet21/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-5",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-4",
+        "interface": "Ethernet21/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-5",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-5",
+        "interface": "Ethernet21/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-5",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-6",
+        "interface": "Ethernet21/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-5",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-7",
+        "interface": "Ethernet21/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-5",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-8",
+        "interface": "Ethernet21/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-6",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-1",
+        "interface": "Ethernet22/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-6",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-2",
+        "interface": "Ethernet22/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-6",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-3",
+        "interface": "Ethernet22/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-6",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-4",
+        "interface": "Ethernet22/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-6",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-5",
+        "interface": "Ethernet22/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-6",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-6",
+        "interface": "Ethernet22/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-6",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-7",
+        "interface": "Ethernet22/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-6",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-8",
+        "interface": "Ethernet22/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-7",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-1",
+        "interface": "Ethernet23/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-7",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-2",
+        "interface": "Ethernet23/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-7",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-3",
+        "interface": "Ethernet23/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-7",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-4",
+        "interface": "Ethernet23/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-7",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-5",
+        "interface": "Ethernet23/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-7",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-6",
+        "interface": "Ethernet23/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-7",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-7",
+        "interface": "Ethernet23/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-7",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-8",
+        "interface": "Ethernet23/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-8",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-1",
+        "interface": "Ethernet24/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-8",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-2",
+        "interface": "Ethernet24/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-8",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-3",
+        "interface": "Ethernet24/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-8",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-4",
+        "interface": "Ethernet24/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-8",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-5",
+        "interface": "Ethernet24/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-8",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-6",
+        "interface": "Ethernet24/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-8",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-7",
+        "interface": "Ethernet24/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-8",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-8",
+        "interface": "Ethernet24/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-9",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-1",
+        "interface": "Ethernet25/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-9",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-2",
+        "interface": "Ethernet25/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-9",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-3",
+        "interface": "Ethernet25/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-9",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-4",
+        "interface": "Ethernet25/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-9",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-5",
+        "interface": "Ethernet25/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-9",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-6",
+        "interface": "Ethernet25/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-9",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-7",
+        "interface": "Ethernet25/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-9",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-8",
+        "interface": "Ethernet25/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-10",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-1",
+        "interface": "Ethernet26/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-10",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-2",
+        "interface": "Ethernet26/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-10",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-3",
+        "interface": "Ethernet26/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-10",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-4",
+        "interface": "Ethernet26/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-10",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-5",
+        "interface": "Ethernet26/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-10",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-6",
+        "interface": "Ethernet26/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-10",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-7",
+        "interface": "Ethernet26/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-10",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-8",
+        "interface": "Ethernet26/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-11",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-1",
+        "interface": "Ethernet27/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-11",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-2",
+        "interface": "Ethernet27/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-11",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-3",
+        "interface": "Ethernet27/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-11",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-4",
+        "interface": "Ethernet27/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-11",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-5",
+        "interface": "Ethernet27/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-11",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-6",
+        "interface": "Ethernet27/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-11",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-7",
+        "interface": "Ethernet27/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-11",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-8",
+        "interface": "Ethernet27/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-12",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-1",
+        "interface": "Ethernet28/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-12",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-2",
+        "interface": "Ethernet28/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-12",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-3",
+        "interface": "Ethernet28/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-12",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-4",
+        "interface": "Ethernet28/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-12",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-5",
+        "interface": "Ethernet28/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-12",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-6",
+        "interface": "Ethernet28/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-12",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-7",
+        "interface": "Ethernet28/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-12",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-8",
+        "interface": "Ethernet28/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-13",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-1",
+        "interface": "Ethernet29/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-13",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-2",
+        "interface": "Ethernet29/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-13",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-3",
+        "interface": "Ethernet29/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-13",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-4",
+        "interface": "Ethernet29/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-13",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-5",
+        "interface": "Ethernet29/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-13",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-6",
+        "interface": "Ethernet29/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-13",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-7",
+        "interface": "Ethernet29/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-13",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-8",
+        "interface": "Ethernet29/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-14",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-1",
+        "interface": "Ethernet30/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-14",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-2",
+        "interface": "Ethernet30/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-14",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-3",
+        "interface": "Ethernet30/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-14",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-4",
+        "interface": "Ethernet30/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-14",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-5",
+        "interface": "Ethernet30/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-14",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-6",
+        "interface": "Ethernet30/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-14",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-7",
+        "interface": "Ethernet30/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-14",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-8",
+        "interface": "Ethernet30/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-15",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-1",
+        "interface": "Ethernet31/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-15",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-2",
+        "interface": "Ethernet31/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-15",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-3",
+        "interface": "Ethernet31/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-15",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-4",
+        "interface": "Ethernet31/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-15",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-5",
+        "interface": "Ethernet31/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-15",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-6",
+        "interface": "Ethernet31/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-15",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-7",
+        "interface": "Ethernet31/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-15",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-8",
+        "interface": "Ethernet31/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-16",
+        "interface": "ethernet-1/49",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-1",
+        "interface": "Ethernet32/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-16",
+        "interface": "ethernet-1/50",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-2",
+        "interface": "Ethernet32/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-16",
+        "interface": "ethernet-1/51",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-3",
+        "interface": "Ethernet32/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-16",
+        "interface": "ethernet-1/52",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-4",
+        "interface": "Ethernet32/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-16",
+        "interface": "ethernet-1/53",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-5",
+        "interface": "Ethernet32/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-16",
+        "interface": "ethernet-1/54",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-6",
+        "interface": "Ethernet32/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-16",
+        "interface": "ethernet-1/55",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-7",
+        "interface": "Ethernet32/1",
+        "peer": "a"
+      }
+    },
+    {
+      "a": {
+        "node": "lrg-leaf4-16",
+        "interface": "ethernet-1/56",
+        "peer": "z"
+      },
+      "z": {
+        "node": "lrg-spine2-8",
+        "interface": "Ethernet32/1",
+        "peer": "a"
+      }
+    }
+  ]
+}
