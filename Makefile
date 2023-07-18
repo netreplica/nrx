@@ -1,14 +1,15 @@
 lint:
 	pylint nrx/*.py
 
-test-local: test-dc1 test-dc2 test-colo test-site1 test-h88
-test: test-dc1-cyjs-2-clab test-dc2-cyjs-2-cml test-site1-cyjs-2-clab test-dc1-cyjs-2-graphite test-dc2-cyjs-2-graphite test-h88-cyjs-2-clab test-dc1-cyjs-2-d2
+test-local: test-dc1 test-dc2 test-colo test-site1 test-h88 test-lrg
+test: test-dc1-cyjs-2-clab test-dc2-cyjs-2-cml test-site1-cyjs-2-clab test-dc1-cyjs-2-graphite test-dc2-cyjs-2-graphite test-h88-cyjs-2-clab test-dc1-cyjs-2-d2 test-lrg-cyjs-2-graphite
 
 test-dc1: test-dc1-nb-2-cyjs-current test-dc1-nb-2-cyjs-latest test-dc1-cyjs-2-clab test-dc1-cyjs-2-graphite test-dc1-cyjs-2-d2
 test-dc2: test-dc2-nb-2-cyjs-current test-dc2-nb-2-cyjs-latest test-dc2-cyjs-2-cml test-dc2-cyjs-2-graphite
 test-colo: test-colo-nb-2-cyjs-current test-colo-nb-2-cyjs-latest
 test-site1: test-site1-nb-2-cyjs-current test-site1-nb-2-cyjs-latest test-site1-cyjs-2-clab
 test-h88: test-h88-nb-2-cyjs-current test-h88-nb-2-cyjs-latest test-h88-nb-2-cyjs-latest-noconfigs test-h88-cyjs-2-clab
+test-lrg: test-lrg-nb-2-cyjs-latest test-lrg-cyjs-2-graphite
 
 test-dc1-nb-2-cyjs-current:
 	@echo "#################################################################"
@@ -191,6 +192,25 @@ test-h88-cyjs-2-clab:
 	@echo "#################################################################"
 	mkdir -p tests/h88/test && cd tests/h88/test && rm -rf * && \
 	../../../nrx.py -c ../nrx.conf -i cyjs -f ../data/HQ.cyjs -o clab -d && \
+	for f in *; do echo Comparing file $$f ...; diff $$f ../data/$$f || exit 1; done
+	@echo
+
+test-lrg-nb-2-cyjs-latest:
+	@echo "#################################################################"
+	@echo "# LRG: read from NetBox latest version and export as CYJS"
+	@echo "#################################################################"
+	mkdir -p tests/lrg/test && cd tests/lrg/test && rm -rf * && \
+	source ../../.env_latest && \
+	../../../nrx.py -c ../nrx.conf -o cyjs --noconfigs -d && \
+	diff lrg.cyjs ../data/lrg.cyjs
+	@echo
+
+test-lrg-cyjs-2-graphite:
+	@echo "#################################################################"
+	@echo "# LRG: read from CYJS and export as graphite"
+	@echo "#################################################################"
+	mkdir -p tests/lrg/graphite && cd tests/lrg/graphite && rm -rf * && \
+	../../../nrx.py -c ../nrx.conf -i cyjs -f ../data/lrg.cyjs -o graphite -d && \
 	for f in *; do echo Comparing file $$f ...; diff $$f ../data/$$f || exit 1; done
 	@echo
 

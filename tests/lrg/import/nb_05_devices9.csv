@@ -1,0 +1,5 @@
+﻿name,device_role,manufacturer,device_type,status,site,platform
+lrg-core-1,Core,Arista,DCS-7060DX4-32,active,lrg,Arista EOS
+lrg-core-2,Core,Arista,DCS-7060DX4-32,active,lrg,Arista EOS
+lrg-core-3,Core,Arista,DCS-7060DX4-32,active,lrg,Arista EOS
+lrg-core-4,Core,Arista,DCS-7060DX4-32,active,lrg,Arista EOS

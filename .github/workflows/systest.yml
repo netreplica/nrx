@@ -2,13 +2,13 @@ name: System Tests
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "dev" ]
     paths:
       - '**'
       - '!**.md'
       - '!**.png'
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "dev" ]
     paths:
       - '**'
       - '!**.md'
