@@ -162,7 +162,7 @@ class NBFactory:
         block_size = 64
         while attempts < max_attempts:
             try:
-                self._build_network_graph(block_size)
+                self._build_graph_edges(block_size)
                 break # success, break out of while loop
             except (requests.Timeout, requests.exceptions.HTTPError) as e:
                 if type(e) == requests.exceptions.HTTPError and e.response.status_code != 414:
@@ -344,7 +344,7 @@ class NBFactory:
             except ValueError:
                 debug("One or both devices for this connection are not in the export graph")
 
-    def _build_network_graph(self, block_size):
+    def _build_graph_edges(self, block_size):
         size = len(self.nb_net.cable_ids)
         debug(f"Exporting {size} cables to build the network graph, in blocks of {block_size}")
         for i in range(0, size, block_size):
