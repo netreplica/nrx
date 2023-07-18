@@ -158,23 +158,7 @@ class NBFactory:
         except (pynetbox.core.query.RequestError, pynetbox.core.query.ContentError) as e:
             error("NetBox API failure at get devices or interfaces:", e)
 
-        attempts, max_attempts = 0, 3
-        block_size = 64
-        while attempts < max_attempts:
-            try:
-                self._build_graph_edges(block_size)
-                break # success, break out of while loop
-            except (requests.Timeout, requests.exceptions.HTTPError) as e:
-                if type(e) == requests.exceptions.HTTPError and e.response.status_code != 414:
-                    error("NetBox API failure at get cables:", e)
-                else:
-                    warning("NetBox API failure at get cables, will reduce cables block size and retry:", e)
-                    attempts += 1
-                    block_size = block_size // 2
-            except (pynetbox.core.query.RequestError, pynetbox.core.query.ContentError) as e:
-                error("NetBox API failure at get cables:", e)
-        if attempts == max_attempts:
-            error("NetBox API failure at get cables, max attempts reached")
+        self._build_graph()
 
 
     def graph(self):
@@ -351,6 +335,25 @@ class NBFactory:
             cables_block = self.nb_net.cable_ids[i:i + block_size]
             for cable in list(self.nb_session.dcim.cables.filter(id=cables_block)):
                 self._add_cable_to_graph(cable)
+
+    def _build_graph(self):
+        attempts, max_attempts = 0, 3
+        block_size = 64
+        while attempts < max_attempts:
+            try:
+                self._build_graph_edges(block_size)
+                break # success, break out of while loop
+            except (requests.Timeout, requests.exceptions.HTTPError) as e:
+                if isinstance(e, requests.exceptions.HTTPError) and e.response.status_code != 414:
+                    error("NetBox API failure at get cables:", e)
+                else:
+                    warning("NetBox API failure at get cables, will reduce cables block size and retry:", e)
+                    attempts += 1
+                    block_size = block_size // 2
+            except (pynetbox.core.query.RequestError, pynetbox.core.query.ContentError) as e:
+                error("NetBox API failure at get cables:", e)
+        if attempts == max_attempts:
+            error("NetBox API failure at get cables, max attempts reached")
 
     def export_graph_gml(self):
         export_file = self.topology_name + ".gml"
