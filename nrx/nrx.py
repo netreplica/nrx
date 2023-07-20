@@ -196,8 +196,8 @@ class NBFactory:
                                                                          kind="physical",
                                                                          cabled=True,
                                                                          connected=True)):
-                if "base" in interface.type.value and interface.cable:  # only connected ethernet interfaces
-                    #debug(device.name, ":", interface, ":", interface.type.value)
+                if "base" in interface.type.value: # only ethernet interfaces
+                    debug(interface.device, ":", interface, ":", interface.type.value)
                     i = {
                         "id": interface.id,
                         "type": "interface",
