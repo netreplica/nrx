@@ -155,6 +155,7 @@ class NBFactory:
 
         try:
             self._get_nb_devices()
+            self._get_nb_interfaces()
         except (pynetbox.core.query.RequestError, pynetbox.core.query.ContentError) as e:
             error("NetBox API failure at get devices or interfaces:", e)
 
@@ -180,14 +181,23 @@ class NBFactory:
             d["node_id"] = len(self.nb_net.nodes) - 1
             self.nb_net.devices.append(d)
             d["device_index"] = len(self.nb_net.devices) - 1 # do not use insert with self.nb_net.devices!
-            self.nb_net.device_ids.append(
-                device.id)  # index of the device in the devices list will match its ID index in device_ids list
+            # index of the device in the devices list will match its ID index in device_ids list
+            self.nb_net.device_ids.append(device.id)
             debug("Added device:", d)
 
-            debug(f"{d['name']} Ethernet interfaces:")
-            for interface in list(self.nb_session.dcim.interfaces.filter(device_id=device.id)):
+
+    def _get_nb_interfaces(self, block_size = 4):
+        """Get interfaces from NetBox filtered by devices we already have in the network topology"""
+        size = len(self.nb_net.device_ids)
+        debug(f"Exporting interfaces from with {size} devices, in blocks of {block_size}")
+        for i in range(0, size, block_size):
+            device_block = self.nb_net.device_ids[i:i + block_size]
+            for interface in list(self.nb_session.dcim.interfaces.filter(device_id=device_block,
+                                                                         kind="physical",
+                                                                         cabled=True,
+                                                                         connected=True)):
                 if "base" in interface.type.value and interface.cable:  # only connected ethernet interfaces
-                    debug(device.name, ":", interface, ":", interface.type.value)
+                    #debug(device.name, ":", interface, ":", interface.type.value)
                     i = {
                         "id": interface.id,
                         "type": "interface",
@@ -201,6 +211,7 @@ class NBFactory:
                     # index of the interface in the interfaces list will match its ID index in interface_ids list
                     self.nb_net.interface_ids.append(interface.id)
                     self.nb_net.cable_ids.append(interface.cable.id)
+
 
     def _init_device(self, device):
         """Initialize device data"""
