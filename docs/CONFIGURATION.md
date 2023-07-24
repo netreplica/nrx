@@ -2,7 +2,7 @@
 
 ## Configuration file
 
-Use `--config <filename>` argument to specify a configuration file to use. The sample configuration file is provided as [`nrx.conf`](nrx.conf).
+Use `--config <filename>` argument to specify a configuration file to use.
 
 ## Available options
 
