@@ -45,7 +45,7 @@
                         "id": 36,
                         "type": "device",
                         "name": "sw2",
-                        "node_id": 5,
+                        "node_id": 1,
                         "site": "colo",
                         "platform": "eos",
                         "platform_name": "Arista EOS",
@@ -60,9 +60,9 @@
                         "config": "",
                         "device_index": 1
                     },
-                    "id": "5",
-                    "value": 5,
-                    "name": "5"
+                    "id": "1",
+                    "value": 1,
+                    "name": "1"
                 }
             },
             {
@@ -73,12 +73,12 @@
                         "id": 1181,
                         "type": "interface",
                         "name": "Ethernet1",
-                        "node_id": 1,
+                        "node_id": 2,
                         "interface_index": 0
                     },
-                    "id": "1",
-                    "value": 1,
-                    "name": "1"
+                    "id": "2",
+                    "value": 2,
+                    "name": "2"
                 }
             },
             {
@@ -105,12 +105,12 @@
                         "id": 1182,
                         "type": "interface",
                         "name": "Ethernet2",
-                        "node_id": 2,
+                        "node_id": 3,
                         "interface_index": 1
                     },
-                    "id": "2",
-                    "value": 2,
-                    "name": "2"
+                    "id": "3",
+                    "value": 3,
+                    "name": "3"
                 }
             },
             {
@@ -137,12 +137,12 @@
                         "id": 1183,
                         "type": "interface",
                         "name": "Ethernet3",
-                        "node_id": 3,
+                        "node_id": 4,
                         "interface_index": 2
                     },
-                    "id": "3",
-                    "value": 3,
-                    "name": "3"
+                    "id": "4",
+                    "value": 4,
+                    "name": "4"
                 }
             },
             {
@@ -166,12 +166,6 @@
             {
                 "data": {
                     "source": 0,
-                    "target": 1
-                }
-            },
-            {
-                "data": {
-                    "source": 0,
                     "target": 2
                 }
             },
@@ -183,20 +177,8 @@
             },
             {
                 "data": {
-                    "source": 5,
-                    "target": 6
-                }
-            },
-            {
-                "data": {
-                    "source": 5,
-                    "target": 7
-                }
-            },
-            {
-                "data": {
-                    "source": 5,
-                    "target": 8
+                    "source": 0,
+                    "target": 4
                 }
             },
             {
@@ -207,13 +189,31 @@
             },
             {
                 "data": {
-                    "source": 2,
+                    "source": 1,
                     "target": 7
                 }
             },
             {
                 "data": {
+                    "source": 1,
+                    "target": 8
+                }
+            },
+            {
+                "data": {
+                    "source": 2,
+                    "target": 6
+                }
+            },
+            {
+                "data": {
                     "source": 3,
+                    "target": 7
+                }
+            },
+            {
+                "data": {
+                    "source": 4,
                     "target": 8
                 }
             }
