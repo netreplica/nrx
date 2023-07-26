@@ -16,8 +16,9 @@ TLS_VALIDATE	     = true
 # API request timeout, in seconds
 API_TIMEOUT          = 10
 # Netbox API bulk queries optimization
-NB_API_INTERFACES_BLOCK_SIZE = 4
-NB_API_CABLES_BLOCK_SIZE = 64
+[NB_API_PARAMS]
+interfaces_block_size = 4
+cables_block_size =     64
 
 # Output format to use for export: 'gml' | 'cyjs' | 'clab'. Alternatively, use --output argument
 OUTPUT_FORMAT        = 'clab'

@@ -155,8 +155,8 @@ class NBFactory:
 
         try:
             self._get_nb_devices()
-            self._get_nb_objects("interfaces", self.config['nb_api_interfaces_block_size'])
-            self._get_nb_objects("cables", self.config['nb_api_cables_block_size'])
+            self._get_nb_objects("interfaces", self.config['nb_api_params']['interfaces_block_size'])
+            self._get_nb_objects("cables", self.config['nb_api_params']['cables_block_size'])
         except (pynetbox.core.query.RequestError, pynetbox.core.query.ContentError) as e:
             error("NetBox API failure", e)
 
@@ -815,8 +815,10 @@ def load_toml_config(filename):
         'export_configs': True,
         'templates_path': ['.'],
         'output_dir': '',
-        'nb_api_interfaces_block_size': 4,
-        'nb_api_cables_block_size': 64,
+        'nb_api_params': {
+            'interfaces_block_size':    4,
+            'cables_block_size':        64,
+        },
     }
     if filename is not None and len(filename) > 0:
         try:
