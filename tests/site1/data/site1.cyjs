@@ -17,7 +17,7 @@
                         "id": 37,
                         "type": "device",
                         "name": "site1-r1",
-                        "node_id": 4,
+                        "node_id": 2,
                         "site": "site1",
                         "platform": "sonic",
                         "platform_name": "SONiC",
@@ -32,9 +32,9 @@
                         "config": "",
                         "device_index": 2
                     },
-                    "id": "4",
-                    "value": 4,
-                    "name": "4"
+                    "id": "2",
+                    "value": 2,
+                    "name": "2"
                 }
             },
             {
@@ -89,12 +89,12 @@
                         "id": 1298,
                         "type": "interface",
                         "name": "Gig-E 1",
-                        "node_id": 1,
+                        "node_id": 3,
                         "interface_index": 0
                     },
-                    "id": "1",
-                    "value": 1,
-                    "name": "1"
+                    "id": "3",
+                    "value": 3,
+                    "name": "3"
                 }
             },
             {
@@ -105,7 +105,7 @@
                         "id": 39,
                         "type": "device",
                         "name": "site1-h2",
-                        "node_id": 2,
+                        "node_id": 1,
                         "site": "site1",
                         "platform": "linux",
                         "platform_name": "Linux",
@@ -120,9 +120,9 @@
                         "config": "",
                         "device_index": 1
                     },
-                    "id": "2",
-                    "value": 2,
-                    "name": "2"
+                    "id": "1",
+                    "value": 1,
+                    "name": "1"
                 }
             },
             {
@@ -149,50 +149,50 @@
                         "id": 1303,
                         "type": "interface",
                         "name": "Gig-E 1",
-                        "node_id": 3,
+                        "node_id": 4,
                         "interface_index": 1
                     },
-                    "id": "3",
-                    "value": 3,
-                    "name": "3"
+                    "id": "4",
+                    "value": 4,
+                    "name": "4"
                 }
             }
         ],
         "edges": [
             {
                 "data": {
-                    "source": 4,
+                    "source": 2,
                     "target": 5
                 }
             },
             {
                 "data": {
-                    "source": 4,
+                    "source": 2,
                     "target": 6
                 }
             },
             {
                 "data": {
                     "source": 0,
-                    "target": 1
+                    "target": 3
                 }
             },
             {
                 "data": {
                     "source": 5,
-                    "target": 1
+                    "target": 3
                 }
             },
             {
                 "data": {
-                    "source": 2,
-                    "target": 3
+                    "source": 1,
+                    "target": 4
                 }
             },
             {
                 "data": {
                     "source": 6,
-                    "target": 3
+                    "target": 4
                 }
             }
         ]
