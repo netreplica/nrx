@@ -890,6 +890,10 @@ def load_config(args):
     if args.dir is not None and len(args.dir) > 0:
         config['output_dir'] = args.dir
 
+    # Do not export configs for formats that do not support it
+    if config['output_format'] in ['graphite', 'd2']:
+        config['export_configs'] = False
+
     return config
 
 def main():
