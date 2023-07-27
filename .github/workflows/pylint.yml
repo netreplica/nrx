@@ -2,12 +2,12 @@ name: Pylint
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "dev" ]
     paths:
       - '**.py'
       - '.github/workflows/pylint.yml'
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "dev" ]
     paths:
       - '**.py'
       - '.github/workflows/pylint.yml'

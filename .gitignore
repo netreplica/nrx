@@ -54,6 +54,7 @@ nrx39
 nrx39-dev
 tests/*/test/*
 tests/*/graphite/*
+tests/*/d2/*
 tests/main.conf
 tmp
 demo

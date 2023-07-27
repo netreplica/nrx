@@ -10,7 +10,7 @@
 
 * Topology file for [Containerlab](https://containerlab.dev) tool for container-based networking labs
 * Topology file for [Cisco Modeling Labs](https://developer.cisco.com/modeling-labs/) platform for network simulation
-* Topology data for visualization using [Graphite](https://github.com/netreplica/graphite)
+* Topology data for visualization using [Graphite](https://github.com/netreplica/graphite) or [D2](https://d2lang.com/)
 * Graph data as a JSON file in [Cytoscape](https://cytoscape.org/) format [CYJS](http://manual.cytoscape.org/en/stable/Supported_Network_File_Formats.html#cytoscape-js-json)
 
 It can also read the topology graph previously saved as a CYJS file to convert it into other formats.
@@ -57,7 +57,7 @@ Export capabilities:
 * Exports the graph as a Containerlab topology definition file in YAML format
 * Exports the graph as a Cisco Modeling Labs (CML) topology definition file in YAML format
 * Exported device configurations will be used as `startup-config` for Containerlab and CML
-* Exports the graph in JSON format for visualization with Graphite
+* Exports the graph in formats for visualization with Graphite or D2
 * Uses NetBox Device Platform `slug` field to identify node templates when rendering the export file
 * Creates mapping between real interface names and interface names used by the supported lab tools
 * Calculates `level` and `rank` values for each node based on Device Role to help visualize the topology
@@ -136,7 +136,7 @@ optional arguments:
   -h, --help                show this help message and exit
   -c, --config CONFIG       configuration file
   -i, --input INPUT         input source: netbox (default) | cyjs
-  -o, --output OUTPUT       output format: cyjs | gml | clab | cml | graphite
+  -o, --output OUTPUT       output format: cyjs | gml | clab | cml | graphite | d2
   -a, --api API             netbox API URL
   -s, --site SITE           netbox site to export
   -t, --tags TAGS           netbox tags to export, for multiple tags use a comma-separated list: tag1,tag2,tag3 (uses AND logic)
@@ -163,7 +163,7 @@ export NB_API_TOKEN='replace_with_valid_API_token'
 
 ## Configuration file
 
-Use `--config <filename>` argument to specify a configuration file to use. The sample configuration file is provided as [`nrx.conf`](nrx.conf).
+Use `--config <filename>` argument to specify a configuration file to use. The sample configuration file is provided as [`nrx.conf`](nrx.conf). Detailed information on the configuration options can be found in [CONFIGURATION.md](docs/CONFIGURATION.md).
 
 # Templates
 

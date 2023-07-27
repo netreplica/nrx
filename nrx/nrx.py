@@ -155,17 +155,37 @@ class NBFactory:
 
         try:
             self._get_nb_devices()
+            self._get_nb_objects("interfaces", self.config['nb_api_params']['interfaces_block_size'])
+            self._get_nb_objects("cables", self.config['nb_api_params']['cables_block_size'])
         except (pynetbox.core.query.RequestError, pynetbox.core.query.ContentError) as e:
-            error("NetBox API failure at get devices or interfaces:", e)
-
-        try:
-            self._build_network_graph()
-        except (pynetbox.core.query.RequestError, pynetbox.core.query.ContentError) as e:
-            error("NetBox API failure at get cables:", e)
+            error("NetBox API failure", e)
 
 
     def graph(self):
         return self.G
+
+
+    def _get_nb_objects(self, kind, block_size):
+        attempts, max_attempts = 0, 3
+        while attempts < max_attempts:
+            try:
+                if kind == "interfaces":
+                    self._get_nb_interfaces(block_size)
+                elif kind == "cables":
+                    self._get_nb_cables(block_size)
+                break # success, break out of while loop
+            except (requests.Timeout, requests.exceptions.HTTPError) as e:
+                if isinstance(e, requests.exceptions.HTTPError) and e.response.status_code != 414:
+                    error(f"NetBox API failure at get {kind}:", e)
+                else:
+                    warning(f"NetBox API failure at get {kind}, will reduce block size and retry:", e)
+                    attempts += 1
+                    block_size = block_size // 2
+            except (pynetbox.core.query.RequestError, pynetbox.core.query.ContentError) as e:
+                error(f"NetBox API failure at get {kind}:", e)
+        if attempts == max_attempts:
+            error(f"NetBox API failure at get {kind}, max attempts reached")
+
 
     def _get_nb_devices(self):
         """Get device list from NetBox filtered by site, tags and device roles"""
@@ -183,14 +203,23 @@ class NBFactory:
             d["node_id"] = len(self.nb_net.nodes) - 1
             self.nb_net.devices.append(d)
             d["device_index"] = len(self.nb_net.devices) - 1 # do not use insert with self.nb_net.devices!
-            self.nb_net.device_ids.append(
-                device.id)  # index of the device in the devices list will match its ID index in device_ids list
+            # index of the device in the devices list will match its ID index in device_ids list
+            self.nb_net.device_ids.append(device.id)
             debug("Added device:", d)
 
-            debug(f"{d['name']} Ethernet interfaces:")
-            for interface in list(self.nb_session.dcim.interfaces.filter(device_id=device.id)):
-                if "base" in interface.type.value and interface.cable:  # only connected ethernet interfaces
-                    debug(device.name, ":", interface, ":", interface.type.value)
+
+    def _get_nb_interfaces(self, block_size = 4):
+        """Get interfaces from NetBox filtered by devices we already have in the network topology"""
+        size = len(self.nb_net.device_ids)
+        debug(f"Exporting interfaces from with {size} devices, in blocks of {block_size}")
+        for i in range(0, size, block_size):
+            device_block = self.nb_net.device_ids[i:i + block_size]
+            for interface in list(self.nb_session.dcim.interfaces.filter(device_id=device_block,
+                                                                         kind="physical",
+                                                                         cabled=True,
+                                                                         connected=True)):
+                if "base" in interface.type.value: # only ethernet interfaces
+                    debug(interface.device, ":", interface, ":", interface.type.value)
                     i = {
                         "id": interface.id,
                         "type": "interface",
@@ -204,6 +233,7 @@ class NBFactory:
                     # index of the interface in the interfaces list will match its ID index in interface_ids list
                     self.nb_net.interface_ids.append(interface.id)
                     self.nb_net.cable_ids.append(interface.cable.id)
+
 
     def _init_device(self, device):
         """Initialize device data"""
@@ -275,13 +305,11 @@ class NBFactory:
         return ""
 
     def _trace_cable(self, cable):
-        debug(f"Tracing {cable}")
         if len(cable.a_terminations) == 1 and len(cable.b_terminations) == 1:
             term_a = cable.a_terminations[0]
             term_b = cable.b_terminations[0]
             if isinstance(term_a, pynetbox.models.dcim.Interfaces) and \
                isinstance(term_b, pynetbox.models.dcim.Interfaces):
-                debug(f"Direct cable {term_a.device} {term_a.name} <-> {term_b.device} {term_b.name}")
                 return [term_a, term_b]
             interface = None
             if isinstance(term_a, pynetbox.models.dcim.Interfaces):
@@ -305,36 +333,42 @@ class NBFactory:
         debug(f"Skipping {cable} as it has more than one termination on one or both sides")
         return []
 
-    def _build_network_graph(self):
-        if len(self.nb_net.cable_ids) > 0:
-            # Making sure there will be a non-empty filter for cables, as otherwise all cables would be returned
-            for cable in list(self.nb_session.dcim.cables.filter(id=self.nb_net.cable_ids)):
-                edge = self._trace_cable(cable)
-                if len(edge) == 2:
-                    int_a = edge[0]
-                    int_b = edge[1]
-                    try:
-                        d_a = self.nb_net.devices[self.nb_net.device_ids.index(int_a.device.id)]
-                        d_b = self.nb_net.devices[self.nb_net.device_ids.index(int_b.device.id)]
-                        self.G.add_nodes_from([
-                            (d_a["node_id"], {"side": "a", "type": "device", "device": d_a}),
-                            (d_b["node_id"], {"side": "b", "type": "device", "device": d_b}),
-                        ])
-                        i_a = self.nb_net.interfaces[self.nb_net.interface_ids.index(int_a.id)]
-                        i_b = self.nb_net.interfaces[self.nb_net.interface_ids.index(int_b.id)]
-                        self.G.add_nodes_from([
-                            (i_a["node_id"], {"side": "a", "type": "interface", "interface": i_a}),
-                            (i_b["node_id"], {"side": "b", "type": "interface", "interface": i_b}),
-                        ])
-                        self.G.add_edges_from([
-                            (d_a["node_id"], i_a["node_id"]),
-                            (d_b["node_id"], i_b["node_id"]),
-                        ])
-                        self.G.add_edges_from([
-                            (i_a["node_id"], i_b["node_id"]),
-                        ])
-                    except ValueError:
-                        debug("One or both devices for this connection are not in the export graph")
+    def _add_cable_to_graph(self, cable):
+        edge = self._trace_cable(cable)
+        if len(edge) == 2:
+            int_a = edge[0]
+            int_b = edge[1]
+            try:
+                d_a = self.nb_net.devices[self.nb_net.device_ids.index(int_a.device.id)]
+                d_b = self.nb_net.devices[self.nb_net.device_ids.index(int_b.device.id)]
+                self.G.add_nodes_from([
+                    (d_a["node_id"], {"side": "a", "type": "device", "device": d_a}),
+                    (d_b["node_id"], {"side": "b", "type": "device", "device": d_b}),
+                ])
+                i_a = self.nb_net.interfaces[self.nb_net.interface_ids.index(int_a.id)]
+                i_b = self.nb_net.interfaces[self.nb_net.interface_ids.index(int_b.id)]
+                self.G.add_nodes_from([
+                    (i_a["node_id"], {"side": "a", "type": "interface", "interface": i_a}),
+                    (i_b["node_id"], {"side": "b", "type": "interface", "interface": i_b}),
+                ])
+                self.G.add_edges_from([
+                    (d_a["node_id"], i_a["node_id"]),
+                    (d_b["node_id"], i_b["node_id"]),
+                ])
+                self.G.add_edges_from([
+                    (i_a["node_id"], i_b["node_id"]),
+                ])
+            except ValueError:
+                debug("One or both devices for this connection are not in the export graph")
+
+    def _get_nb_cables(self, block_size):
+        size = len(self.nb_net.cable_ids)
+        debug(f"Exporting {size} cables to build the network graph, in blocks of {block_size}")
+        for i in range(0, size, block_size):
+            cables_block = self.nb_net.cable_ids[i:i + block_size]
+            for cable in list(self.nb_session.dcim.cables.filter(id=cables_block)):
+                self._add_cable_to_graph(cable)
+
 
     def export_graph_gml(self):
         export_file = self.topology_name + ".gml"
@@ -623,6 +657,9 @@ class NetworkTopology:
         if self.config['output_format'] == 'graphite':
             # <topology-name>.graphite.json
             topo_file = f"{self.topology['name']}.{self.config['output_format']}.json"
+        elif self.config['output_format'] == 'd2':
+            # <topology-name>.d2
+            topo_file = f"{self.topology['name']}.{self.config['output_format']}"
         else:
             # <topology-name>.clab.yaml or <topology-name>.cml.yaml
             topo_file = f"{self.topology['name']}.{self.config['output_format']}.yaml"
@@ -650,11 +687,13 @@ class NetworkTopology:
             print(f"{topo_dict['motd']}")
         elif self.config['output_format'] == 'clab':
             print(f"To deploy this topology, run: sudo -E clab dep -t {self.files_path}/{self.topology['name']}.clab.yaml")
+        elif self.config['output_format'] == 'd2':
+            print(f"To visualize this D2 topology, open https://play.d2lang.com and paste content of the file: {self.files_path}/{self.topology['name']}.d2")
 
     def _render_interface_map(self, node):
         """Render interface mapping file for a node"""
-        if self.config['output_format'] == 'graphite':
-            # No need to render interface maps for Graphite
+        if self.config['output_format'] in ['graphite', 'd2']:
+            # No need to render interface maps
             return None
         if 'name' in node and node['name'] in self.device_interfaces_map:
             d = node['name']
@@ -713,7 +752,7 @@ def arg_input_check(s):
 
 def arg_output_check(s):
     """Check if output format is supported"""
-    allowed_values = ['gml', 'cyjs', 'clab', 'cml', 'graphite']
+    allowed_values = ['gml', 'cyjs', 'clab', 'cml', 'graphite', 'd2']
     if s in allowed_values:
         return s
     raise argparse.ArgumentTypeError(f"output format has to be one of {allowed_values}")
@@ -724,7 +763,7 @@ def parse_args():
     parser.add_argument('-c', '--config',    required=False, help='configuration file')
     parser.add_argument('-i', '--input',     required=False, help='input source: netbox (default) | cyjs',
                                              default='netbox', type=arg_input_check,)
-    parser.add_argument('-o', '--output',    required=False, help='output format: cyjs | gml | clab | cml | graphite',
+    parser.add_argument('-o', '--output',    required=False, help='output format: cyjs | gml | clab | cml | graphite | d2',
                                              type=arg_output_check, )
     parser.add_argument('-a', '--api',       required=False, help='netbox API URL')
     parser.add_argument('-s', '--site',      required=False, help='netbox site to export')
@@ -776,6 +815,10 @@ def load_toml_config(filename):
         'export_configs': True,
         'templates_path': ['.'],
         'output_dir': '',
+        'nb_api_params': {
+            'interfaces_block_size':    4,
+            'cables_block_size':        64,
+        },
     }
     if filename is not None and len(filename) > 0:
         try:
@@ -847,6 +890,10 @@ def load_config(args):
     if args.dir is not None and len(args.dir) > 0:
         config['output_dir'] = args.dir
 
+    # Do not export configs for formats that do not support it
+    if config['output_format'] in ['graphite', 'd2']:
+        config['export_configs'] = False
+
     return config
 
 def main():
@@ -884,7 +931,7 @@ def main():
     else:
         topo.build_from_graph(nb_network.graph())
 
-    if config['output_format'] in ['clab', 'cml', 'graphite']:
+    if config['output_format'] in ['clab', 'cml', 'graphite', 'd2']:
         topo.export_topology()
     else:
         if nb_network is None:
