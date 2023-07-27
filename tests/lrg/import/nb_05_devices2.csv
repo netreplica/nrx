@@ -1,0 +1,41 @@
+﻿name,device_role,manufacturer,device_type,status,site,platform,tags
+lrg-spine2-1,Spine,Arista,DCS-7280CR3-32P4,active,lrg,Arista EOS,"spine2,pod2"
+lrg-spine2-2,Spine,Arista,DCS-7280CR3-32P4,active,lrg,Arista EOS,"spine2,pod2"
+lrg-spine2-3,Spine,Arista,DCS-7280CR3-32P4,active,lrg,Arista EOS,"spine2,pod2"
+lrg-spine2-4,Spine,Arista,DCS-7280CR3-32P4,active,lrg,Arista EOS,"spine2,pod2"
+lrg-spine2-5,Spine,Arista,DCS-7280CR3-32P4,active,lrg,Arista EOS,"spine2,pod2"
+lrg-spine2-6,Spine,Arista,DCS-7280CR3-32P4,active,lrg,Arista EOS,"spine2,pod2"
+lrg-spine2-7,Spine,Arista,DCS-7280CR3-32P4,active,lrg,Arista EOS,"spine2,pod2"
+lrg-spine2-8,Spine,Arista,DCS-7280CR3-32P4,active,lrg,Arista EOS,"spine2,pod2"
+lrg-leaf3-1,Leaf,Nokia,7220 IXR-D2,active,lrg,Nokia SR-Linux,pod2
+lrg-leaf3-2,Leaf,Nokia,7220 IXR-D2,active,lrg,Nokia SR-Linux,pod2
+lrg-leaf3-3,Leaf,Nokia,7220 IXR-D2,active,lrg,Nokia SR-Linux,pod2
+lrg-leaf3-4,Leaf,Nokia,7220 IXR-D2,active,lrg,Nokia SR-Linux,pod2
+lrg-leaf3-5,Leaf,Nokia,7220 IXR-D2,active,lrg,Nokia SR-Linux,pod2
+lrg-leaf3-6,Leaf,Nokia,7220 IXR-D2,active,lrg,Nokia SR-Linux,pod2
+lrg-leaf3-7,Leaf,Nokia,7220 IXR-D2,active,lrg,Nokia SR-Linux,pod2
+lrg-leaf3-8,Leaf,Nokia,7220 IXR-D2,active,lrg,Nokia SR-Linux,pod2
+lrg-leaf3-9,Leaf,Nokia,7220 IXR-D2,active,lrg,Nokia SR-Linux,pod2
+lrg-leaf3-10,Leaf,Nokia,7220 IXR-D2,active,lrg,Nokia SR-Linux,pod2
+lrg-leaf3-11,Leaf,Nokia,7220 IXR-D2,active,lrg,Nokia SR-Linux,pod2
+lrg-leaf3-12,Leaf,Nokia,7220 IXR-D2,active,lrg,Nokia SR-Linux,pod2
+lrg-leaf3-13,Leaf,Nokia,7220 IXR-D2,active,lrg,Nokia SR-Linux,pod2
+lrg-leaf3-14,Leaf,Nokia,7220 IXR-D2,active,lrg,Nokia SR-Linux,pod2
+lrg-leaf3-15,Leaf,Nokia,7220 IXR-D2,active,lrg,Nokia SR-Linux,pod2
+lrg-leaf3-16,Leaf,Nokia,7220 IXR-D2,active,lrg,Nokia SR-Linux,pod2
+lrg-leaf4-1,Leaf,Nokia,7220 IXR-D2,active,lrg,Nokia SR-Linux,pod2
+lrg-leaf4-2,Leaf,Nokia,7220 IXR-D2,active,lrg,Nokia SR-Linux,pod2
+lrg-leaf4-3,Leaf,Nokia,7220 IXR-D2,active,lrg,Nokia SR-Linux,pod2
+lrg-leaf4-4,Leaf,Nokia,7220 IXR-D2,active,lrg,Nokia SR-Linux,pod2
+lrg-leaf4-5,Leaf,Nokia,7220 IXR-D2,active,lrg,Nokia SR-Linux,pod2
+lrg-leaf4-6,Leaf,Nokia,7220 IXR-D2,active,lrg,Nokia SR-Linux,pod2
+lrg-leaf4-7,Leaf,Nokia,7220 IXR-D2,active,lrg,Nokia SR-Linux,pod2
+lrg-leaf4-8,Leaf,Nokia,7220 IXR-D2,active,lrg,Nokia SR-Linux,pod2
+lrg-leaf4-9,Leaf,Nokia,7220 IXR-D2,active,lrg,Nokia SR-Linux,pod2
+lrg-leaf4-10,Leaf,Nokia,7220 IXR-D2,active,lrg,Nokia SR-Linux,pod2
+lrg-leaf4-11,Leaf,Nokia,7220 IXR-D2,active,lrg,Nokia SR-Linux,pod2
+lrg-leaf4-12,Leaf,Nokia,7220 IXR-D2,active,lrg,Nokia SR-Linux,pod2
+lrg-leaf4-13,Leaf,Nokia,7220 IXR-D2,active,lrg,Nokia SR-Linux,pod2
+lrg-leaf4-14,Leaf,Nokia,7220 IXR-D2,active,lrg,Nokia SR-Linux,pod2
+lrg-leaf4-15,Leaf,Nokia,7220 IXR-D2,active,lrg,Nokia SR-Linux,pod2
+lrg-leaf4-16,Leaf,Nokia,7220 IXR-D2,active,lrg,Nokia SR-Linux,pod2

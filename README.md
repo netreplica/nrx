@@ -163,7 +163,7 @@ export NB_API_TOKEN='replace_with_valid_API_token'
 
 ## Configuration file
 
-Use `--config <filename>` argument to specify a configuration file to use. The sample configuration file is provided as [`nrx.conf`](nrx.conf).
+Use `--config <filename>` argument to specify a configuration file to use. The sample configuration file is provided as [`nrx.conf`](nrx.conf). Detailed information on the configuration options can be found in [CONFIGURATION.md](docs/CONFIGURATION.md).
 
 # Templates
 
