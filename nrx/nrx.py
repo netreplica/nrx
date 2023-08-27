@@ -424,18 +424,21 @@ class NetworkTopology:
         self.files_path = '.'
 
     def build_from_file(self, file):
+        """Build network topology from a CYJS file"""
         self._read_network_graph(file)
         if "name" in self.G.graph.keys():
             self.topology['name'] = self.G.graph["name"]
         self._build_topology()
 
     def build_from_graph(self, graph):
+        """Build network topology from a NetworkX graph"""
         self.G = graph
         if "name" in self.G.graph.keys():
             self.topology['name'] = self.G.graph["name"]
         self._build_topology()
 
     def _read_network_graph(self, file):
+        """Read network topology graph from a CYJS file"""
         print(f"Reading CYJS topology graph: {file}")
         cyjs = {}
         try:
@@ -448,6 +451,7 @@ class NetworkTopology:
         self.G = nx.cytoscape_graph(cyjs)
 
     def _append_if_node_is_device(self, n):
+        """Append a device node to the topology"""
         if self.G.nodes[n]['type'] == 'device':
             dev = self.G.nodes[n]['device']
             self.topology['nodes'].append(dev)
@@ -470,6 +474,7 @@ class NetworkTopology:
         return False
 
     def _append_if_node_is_interface(self, n):
+        """Append an interface node to the topology"""
         if self.G.nodes[n]['type'] == 'interface':
             int_name = self.G.nodes[n]['interface']['name']
             dev_name, dev_node_id = None, None
@@ -509,7 +514,7 @@ class NetworkTopology:
         return False
 
     def _initialize_emulated_interface_names(self):
-        # Initialize emulated interface names for each NOS interface name
+        """Initialize emulated interface names for each NOS interface name"""
         for node in self.topology['nodes']:
             if 'name' in node.keys():
                 name = node['name']
@@ -526,6 +531,7 @@ class NetworkTopology:
                     node['interfaces'] = self.device_interfaces_map[name]
 
     def _rank_nodes(self):
+        """Rank nodes by their role and device_index"""
         for device_indexes in self.topology['roles'].values():
             device_indexes.sort()
         for n in self.topology['nodes']:
@@ -539,8 +545,8 @@ class NetworkTopology:
                 n['rank'] = 0.5
 
     def _build_topology(self):
-        # Parse graph G into lists of: nodes and links.
-        # Keep list of interfaces per device in `device_interfaces_map`, and then add them to each device
+        """ Parse graph G into lists of: nodes and links.
+        Keep list of interfaces per device in `device_interfaces_map`, and then add them to each device"""
         try:
             for n in self.G.nodes:
                 if not self._append_if_node_is_device(n):
@@ -552,6 +558,7 @@ class NetworkTopology:
         self._rank_nodes()
 
     def export_topology(self):
+        """Export network topology through Jinja2 templates"""
         if self.topology['name'] is None or len(self.topology['name']) == 0:
             error("Cannot export a topology: missing a name")
 
@@ -565,6 +572,7 @@ class NetworkTopology:
         self._render_topology()
 
     def _initialize_emulated_links(self):
+        """Initialize emulated links"""
         link_id = 0
         for l in self.topology['links']:
             l['id'] = link_id
@@ -575,6 +583,7 @@ class NetworkTopology:
             link_id += 1
 
     def _get_template(self, ttype, platform, is_required = False):
+        """Get a Jinja2 template for a given type and platform"""
         template = None
         if ttype in self.templates and '_path_' in self.templates[ttype]:
             desc = self.templates[ttype]['_description_']
@@ -603,6 +612,7 @@ class NetworkTopology:
         return template
 
     def _render_emulated_nodes(self):
+        """Render device nodes via Jinja2 templates"""
         topo_nodes = []
         for n in self.topology['nodes']:
             if 'platform' in n.keys():
@@ -625,6 +635,7 @@ class NetworkTopology:
         return topo_nodes
 
     def _render_emulated_interface_name(self, platform, interface, index):
+        """Render emulated interface name via Jinja2 templates"""
         # We assume interface with index `0` is reserved for management, and start with `1`
         default_name = f"eth{index+1}"
         template = self._get_template('interface_names', platform)
@@ -636,6 +647,7 @@ class NetworkTopology:
         return default_name
 
     def _render_topology(self):
+        """Render network topology via Jinja2 templates"""
         #debug("Topology data to render:", json.dumps(self.topology))
         # Load Jinja2 template to run the topology through
         try:
@@ -654,6 +666,7 @@ class NetworkTopology:
         self._print_motd(topo)
 
     def _write_topology(self, topo):
+        """Write network topology to a file"""
         if self.config['output_format'] == 'graphite':
             # <topology-name>.graphite.json
             topo_file = f"{self.topology['name']}.{self.config['output_format']}.json"
@@ -673,6 +686,7 @@ class NetworkTopology:
         print(f"Created {self.config['output_format']} topology: {topo_path}")
 
     def _print_motd(self, topo):
+        """Print a message on how to use the exported topology"""
         topo_dict = {}
         try:
             if self.config['output_format'] == 'graphite':
@@ -814,6 +828,7 @@ def load_toml_config(filename):
         'export_tags': [],
         'export_configs': True,
         'templates_path': ['templates'],
+        'platforms_map': 'templates/platform_map.yml',
         'output_dir': '',
         'nb_api_params': {
             'interfaces_block_size':    4,
