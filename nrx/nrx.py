@@ -417,11 +417,29 @@ class NetworkTopology:
                 )
         self.j2env.filters['ceil'] = math.ceil
         self.templates = {
+            'platform_map':    {},
             'interface_names': {'_path_': f"{self.config['output_format']}/interface_names", '_description_': 'interface name'},
             'interface_maps':  {'_path_': 'interface_maps',  '_description_': 'interface map'},
             'kinds':           {'_path_': f"{self.config['output_format']}/kinds", '_description_': 'node kind'}
         }
+        self._read_platform_map(self.config['platform_map'])
         self.files_path = '.'
+
+
+    def _read_platform_map(self, file):
+        """Read platform_map from a YAML file to locate templated for given platforms"""
+        print(f"Reading platform map from: {file}")
+        platform_map = {}
+        try:
+            with open(file, 'r', encoding='utf-8') as f:
+                platform_map = yaml.load(f.read(), Loader=yaml.SafeLoader)
+                f.close()
+        except OSError as e:
+            error("Can't read platform map:", e)
+        except yaml.scanner.ScannerError as e:
+            error("Can't parse platform map:", e)
+        self.templates['platform_map'] = platform_map
+
 
     def build_from_file(self, file):
         """Build network topology from a CYJS file"""
@@ -789,6 +807,7 @@ def parse_args():
     parser.add_argument('-d', '--debug',     required=False, help='enable debug output',
                                              action=argparse.BooleanOptionalAction)
     parser.add_argument('-f', '--file',      required=False, help='file with the network graph to import')
+    parser.add_argument('-P', '--platformmap', required=False, help='platform map file to locate templates for given platforms')
     parser.add_argument('-T', '--templates', required=False, help='directory with template files, \
                                                                    will be prepended to TEMPLATES_PATH list \
                                                                    in the configuration file')
@@ -828,7 +847,7 @@ def load_toml_config(filename):
         'export_tags': [],
         'export_configs': True,
         'templates_path': ['templates'],
-        'platforms_map': 'templates/platform_map.yml',
+        'platform_map': 'templates/platform_map.yml',
         'output_dir': '',
         'nb_api_params': {
             'interfaces_block_size':    4,
@@ -898,6 +917,9 @@ def load_config(args):
 
     if config['input_source'] == config['output_format']:
         error(f"Input and output formats must be different, got '{config['output_format']}'")
+
+    if args.platformmap is not None and len(args.platformmap) > 0:
+        config['platform_map'] = args.platformmap
 
     if args.templates is not None and len(args.templates) > 0:
         config['templates_path'].insert(0, args.templates)
