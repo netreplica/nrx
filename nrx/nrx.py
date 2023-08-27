@@ -813,7 +813,7 @@ def load_toml_config(filename):
         'export_site': '',
         'export_tags': [],
         'export_configs': True,
-        'templates_path': ['.'],
+        'templates_path': ['templates'],
         'output_dir': '',
         'nb_api_params': {
             'interfaces_block_size':    4,
