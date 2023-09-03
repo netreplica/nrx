@@ -600,24 +600,28 @@ class NetworkTopology:
             link_id += 1
 
 
-    def _map_kind_to_template(self, ttype, kind):
-        """Map node kind to a template file path"""
+    def _map_kind_to_template_params(self, ttype, kind):
+        """Map node kind to template parameters"""
         if len(kind) == 0:
             kind = "default"
-        template = f"{self.templates[ttype]['_path_']}/{kind}.j2"
+        map = {
+            'template': f"{self.templates[ttype]['_path_']}/{kind}.j2"
+        }
         if self.config['output_format'] in self.platform_map['kinds']:
             if kind in self.platform_map['kinds'][self.config['output_format']]:
                 if 'template' in self.platform_map['kinds'][self.config['output_format']][kind]:
-                    template = self.platform_map['kinds'][self.config['output_format']][kind]['template']
-                    debug(f"[MAP] Mapped kind '{kind}' to template '{template}'")
-                    return template
-        debug(f"[MAP] No template for kind '{kind}' was found for '{self.config['output_format']}' output format, will use '{template}'")
-        return template
+                    map.update(self.platform_map['kinds'][self.config['output_format']][kind])
+                    debug(f"[MAP] Mapped kind '{kind}' to '{map}'")
+                    return map
+        debug(f"[MAP] No template for kind '{kind}' was found for '{self.config['output_format']}' output format, will use '{map['template']}'")
+        return map
 
 
-    def _map_platform_to_template(self, ttype, platform):
+    def _map_platform_to_template_params(self, ttype, platform):
         """Map platform name to a node kind and then return a template file path for that kind"""
-        template = f"{self.templates[ttype]['_path_']}/{platform}.j2"
+        map = {
+            'template': f"{self.templates[ttype]['_path_']}/{platform}.j2"
+        }
         if ttype == "kinds":
             kind = platform
             if platform in self.platform_map['platforms'] and ttype in self.platform_map['platforms'][platform]:
@@ -627,18 +631,19 @@ class NetworkTopology:
                     debug(f"[MAP] Mapped platform '{platform}' to kind '{kind}'")
             else:
                 debug(f"[MAP] No mapping for platform '{platform}' was found for '{self.config['output_format']}' output format, will use '{kind}'")
-            return self._map_kind_to_template(ttype, kind)
-        return template
+            return self._map_kind_to_template_params(ttype, kind)
+        return map
 
 
     def _get_template(self, ttype, platform, is_required = False):
-        """Get a Jinja2 template for a given type and platform"""
+        """Get a Jinja2 template for a given type and platform, as well as initialize template params"""
         template = None
         if ttype in self.templates and '_path_' in self.templates[ttype]:
             desc = self.templates[ttype]['_description_']
             if platform not in self.templates[ttype]:
                 try:
-                    j2file = self._map_platform_to_template(ttype, platform)
+                    params = self._map_platform_to_template_params(ttype, platform)
+                    j2file = params['template']
                     template = self.j2env.get_template(j2file)
                     debug(f"[TEMPLATE] Found {desc} template {j2file} for platform {platform}")
                 except (OSError, jinja2.TemplateError) as e:
@@ -653,12 +658,28 @@ class NetworkTopology:
                             return self._get_template(ttype, "default", True)
                     else:
                         debug(m)
-                self.templates[ttype][platform] = template
+                self.templates[ttype][platform] = {
+                    'template': template,
+                    'params': params
+                }
             else:
-                template = self.templates[ttype][platform]
+                template = self.templates[ttype][platform]['template']
         elif is_required:
             error(f"No such template type as {ttype}")
         return template
+
+
+    def _get_template_params(self, ttype, platform):
+        """
+            Return template params for a given type and platform.
+            Parameters are initialized in _get_template()
+        """
+        params = None
+        if ttype in self.templates and '_path_' in self.templates[ttype]:
+            if platform in self.templates[ttype] and 'params' in self.templates[ttype][platform]:
+                params = self.templates[ttype][platform]['params']
+        return params
+
 
     def _render_emulated_nodes(self):
         """Render device nodes via Jinja2 templates"""
@@ -675,6 +696,9 @@ class NetworkTopology:
                     n['configuration_file'] = node_config
 
                 template = self._get_template('kinds', p, True)
+                template_params = self._get_template_params('kinds', p)
+                if template_params is not None:
+                    n.update(template_params)
                 if template is not None:
                     try:
                         topo_nodes.append(template.render(n))

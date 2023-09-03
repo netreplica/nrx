@@ -5,37 +5,13 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "colo",
+            "name": "site1_cyjs_2_clab",
             "type": "python",
             "request": "launch",
-            "cwd": "tmp",
-            "program": "../nrx.py",
+            "cwd": "${workspaceFolder}/tests/site1/test",
+            "program": "../../../nrx.py",
             "args": [
-                "-c", "../tests/main.conf", "-s", "colo", "-o", "cyjs", "-d"
-            ],
-            "console": "integratedTerminal",
-            "justMyCode": true
-        },
-        {
-            "name": "dc1",
-            "type": "python",
-            "request": "launch",
-            "cwd": "tmp",
-            "program": "../nrx.py",
-            "args": [
-                "-c", "../tests/main.conf", "-s", "dc1", "-o", "cyjs", "-d"
-            ],
-            "console": "integratedTerminal",
-            "justMyCode": true
-        },
-        {
-            "name": "demo",
-            "type": "python",
-            "request": "launch",
-            "cwd": "tmp",
-            "program": "../nrx.py",
-            "args": [
-                "-c", "../nrx.conf", "-o", "cyjs", "-d"
+                "-c", "../nrx.conf", "-i", "cyjs", "-f", "../data/site1.cyjs", "-o", "clab", "-d"
             ],
             "console": "integratedTerminal",
             "justMyCode": true

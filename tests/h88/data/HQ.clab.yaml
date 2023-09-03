@@ -32,8 +32,8 @@ topology:
                 model: C9200-48P
         HQ-DistSw:
             kind: nokia_srlinux
-            type: ixrd2
             image: ghcr.io/nokia/srlinux:latest
+            type: ixrd2
             startup-config: HQ-DistSw.config
             labels:
                 graph-icon: distribution-switch

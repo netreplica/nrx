@@ -18,8 +18,8 @@ topology:
 
         dc1-leaf-1:
             kind: nokia_srlinux
-            type: ixrd2
             image: ghcr.io/nokia/srlinux:latest
+            type: ixrd2
             labels:
                 graph-icon: leaf
                 graph-level: 9
@@ -56,8 +56,8 @@ topology:
                 model: DCS-7280CR3-32P4
         dc1-leaf-2:
             kind: nokia_srlinux
-            type: ixrd2
             image: ghcr.io/nokia/srlinux:latest
+            type: ixrd2
             labels:
                 graph-icon: leaf
                 graph-level: 9
@@ -68,8 +68,8 @@ topology:
                 model: 7220 IXR-D2
         dc1-leaf-3:
             kind: nokia_srlinux
-            type: ixrd2
             image: ghcr.io/nokia/srlinux:latest
+            type: ixrd2
             labels:
                 graph-icon: leaf
                 graph-level: 9
@@ -80,8 +80,8 @@ topology:
                 model: 7220 IXR-D2
         dc1-leaf-4:
             kind: nokia_srlinux
-            type: ixrd2
             image: ghcr.io/nokia/srlinux:latest
+            type: ixrd2
             labels:
                 graph-icon: leaf
                 graph-level: 9
