@@ -609,10 +609,9 @@ class NetworkTopology:
         }
         if self.config['output_format'] in self.platform_map['kinds']:
             if kind in self.platform_map['kinds'][self.config['output_format']]:
-                if 'template' in self.platform_map['kinds'][self.config['output_format']][kind]:
-                    map.update(self.platform_map['kinds'][self.config['output_format']][kind])
-                    debug(f"[MAP] Mapped kind '{kind}' to '{map}'")
-                    return map
+                map.update(self.platform_map['kinds'][self.config['output_format']][kind])
+                debug(f"[MAP] Mapped kind '{kind}' to '{map}'")
+                return map
         debug(f"[MAP] No template for kind '{kind}' was found for '{self.config['output_format']}' output format, will use '{map['template']}'")
         return map
 
