@@ -18,10 +18,7 @@ topology:
 
         HQ-Switch1:
             kind: linux
-            image: netreplica/ubuntu-host:latest
-            cmd: /start.sh -sS
-            exec:
-                - bash -c "echo root:root | chpasswd"
+            image: alpine:latest
             labels:
                 graph-icon: access-switch
                 graph-level: 9

@@ -8,10 +8,22 @@
             "name": "site1_cyjs_2_clab",
             "type": "python",
             "request": "launch",
-            "cwd": "${workspaceFolder}/tests/site1/test",
-            "program": "../../../nrx.py",
+            "cwd": "${workspaceFolder}",
+            "program": "nrx.py",
             "args": [
-                "-c", "../nrx.conf", "-i", "cyjs", "-f", "../data/site1.cyjs", "-o", "clab", "-d"
+                "-i", "cyjs", "-f", "tests/site1/data/site1.cyjs", "-o", "clab", "-d", "-D", "/tmp", "-P", "../templates/platform_map.yml", "-T", "../templates"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "h88_cyjs_2_clab",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "program": "nrx.py",
+            "args": [
+                "-i", "cyjs", "-f", "tests/h88/data/HQ.cyjs", "-o", "clab", "-d", "-D", "/tmp", "-P", "../templates/platform_map.yml", "-T", "../templates"
             ],
             "console": "integratedTerminal",
             "justMyCode": true
