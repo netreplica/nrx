@@ -600,34 +600,35 @@ class NetworkTopology:
             link_id += 1
 
 
-    def _map_kind_to_template(self, kind):
+    def _map_kind_to_template(self, ttype, kind):
         """Map node kind to a template file path"""
         if len(kind) == 0:
             kind = "default"
-        template = f"{self.config['output_format']}/kinds/{kind}.j2"
+        template = f"{self.templates[ttype]['_path_']}/{kind}.j2"
         if self.config['output_format'] in self.platform_map['kinds']:
             if kind in self.platform_map['kinds'][self.config['output_format']]:
                 if 'template' in self.platform_map['kinds'][self.config['output_format']][kind]:
                     template = self.platform_map['kinds'][self.config['output_format']][kind]['template']
-                    debug(f"MMM Mapped kind '{kind}' to template '{template}'")
+                    debug(f"[MAP] Mapped kind '{kind}' to template '{template}'")
                     return template
-        debug(f"MMM No template for kind '{kind}' was found for '{self.config['output_format']}' output format, will use '{template}'")
+        debug(f"[MAP] No template for kind '{kind}' was found for '{self.config['output_format']}' output format, will use '{template}'")
         return template
 
 
     def _map_platform_to_template(self, ttype, platform):
-        """Map platform name to a template file path"""
+        """Map platform name to a node kind and then return a template file path for that kind"""
+        template = f"{self.templates[ttype]['_path_']}/{platform}.j2"
         if ttype == "kinds":
             kind = platform
-            if platform in self.platform_map['platforms'] and 'kinds' in self.platform_map['platforms'][platform]:
-                platform_kinds = self.platform_map['platforms'][platform]['kinds']
+            if platform in self.platform_map['platforms'] and ttype in self.platform_map['platforms'][platform]:
+                platform_kinds = self.platform_map['platforms'][platform][ttype]
                 if self.config['output_format'] in platform_kinds:
                     kind = platform_kinds[self.config['output_format']]
-                    debug(f"MMM Mapped platform '{platform}' to kind '{kind}'")
+                    debug(f"[MAP] Mapped platform '{platform}' to kind '{kind}'")
             else:
-                debug(f"MMM No mapping for platform '{platform}' was found for '{self.config['output_format']}' output format, will use '{kind}'")
-            return self._map_kind_to_template(kind)
-        return ""
+                debug(f"[MAP] No mapping for platform '{platform}' was found for '{self.config['output_format']}' output format, will use '{kind}'")
+            return self._map_kind_to_template(ttype, kind)
+        return template
 
 
     def _get_template(self, ttype, platform, is_required = False):
@@ -637,12 +638,11 @@ class NetworkTopology:
             desc = self.templates[ttype]['_description_']
             if platform not in self.templates[ttype]:
                 try:
-                    self._map_platform_to_template(ttype, platform)
-                    j2file = f"{self.templates[ttype]['_path_']}/{platform}.j2"
+                    j2file = self._map_platform_to_template(ttype, platform)
                     template = self.j2env.get_template(j2file)
-                    debug(f"Found {desc} template {j2file} for platform {platform}")
+                    debug(f"[TEMPLATE] Found {desc} template {j2file} for platform {platform}")
                 except (OSError, jinja2.TemplateError) as e:
-                    m = f"Unable to open {desc} template '{j2file}' for platform '{platform}' with path {self.config['templates_path']}."
+                    m = f"[TEMPLATE] Unable to open {desc} template '{j2file}' for platform '{platform}' with path {self.config['templates_path']}."
                     m += f" Reason: {e}"
                     if is_required:
                         if platform == 'default':
