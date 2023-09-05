@@ -58,6 +58,14 @@ test-dc1-cyjs-2-d2:
 	for f in *; do echo Comparing file $$f ...; diff $$f ../data/$$f || exit 1; done
 	@echo
 
+update-dc1:
+	@echo "#################################################################"
+	@echo "# Update reference data for DC1"
+	@echo "#################################################################"
+	cd tests/dc1/test && \
+	cp * ../data/
+	@echo
+
 test-dc2-nb-2-cyjs-current:
 	@echo "#################################################################"
 	@echo "# DC2: read from NetBox current version and export as CYJS"
@@ -94,6 +102,14 @@ test-dc2-cyjs-2-cml:
 	mkdir -p tests/dc2/test && cd tests/dc2/test && rm -rf * && \
 	../../../nrx.py -c ../nrx.conf -i cyjs -f ../data/dc2.cyjs -d && \
 	for f in *; do echo Comparing file $$f ...; diff $$f ../data/$$f || exit 1; done
+	@echo
+
+update-dc2:
+	@echo "#################################################################"
+	@echo "# Update reference data for DC2"
+	@echo "#################################################################"
+	cd tests/dc2/test && \
+	cp * ../data/
 	@echo
 
 test-colo-nb-2-cyjs-current:
@@ -193,6 +209,14 @@ test-h88-cyjs-2-clab:
 	mkdir -p tests/h88/test && cd tests/h88/test && rm -rf * && \
 	../../../nrx.py -c ../nrx.conf -i cyjs -f ../data/HQ.cyjs -o clab -d && \
 	for f in *; do echo Comparing file $$f ...; diff $$f ../data/$$f || exit 1; done
+	@echo
+
+update-h88:
+	@echo "#################################################################"
+	@echo "# Update reference data for h88"
+	@echo "#################################################################"
+	cd tests/h88/test && \
+	cp * ../data/
 	@echo
 
 test-lrg-nb-2-cyjs-latest:

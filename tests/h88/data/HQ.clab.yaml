@@ -29,9 +29,9 @@ topology:
                 model: C9200-48P
         HQ-DistSw:
             kind: nokia_srlinux
-            image: ghcr.io/nokia/srlinux:latest
             type: ixrd2
             startup-config: HQ-DistSw.config
+            image: ghcr.io/nokia/srlinux:latest
             labels:
                 graph-icon: distribution-switch
                 graph-level: 8
@@ -42,10 +42,10 @@ topology:
                 model: 7220 IXR-D2
         HQ-Switch2:
             kind: ceos
-            image: ceos:latest
             startup-config: HQ-Switch2.config
             binds:
                 - HQ-Switch2_interface_map.json:/mnt/flash/EosIntfMapping.json:ro
+            image: ceos:latest
             labels:
                 graph-icon: access-switch
                 graph-level: 9
