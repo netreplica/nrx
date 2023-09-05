@@ -692,7 +692,7 @@ class NetworkTopology:
 
                 node_config = self._save_node_configuration(n)
                 if node_config is not None:
-                    n['configuration_file'] = node_config
+                    n['startup_config'] = node_config
 
                 template = self._get_template('kinds', p, True)
                 template_params = self._get_template_params('kinds', p)
