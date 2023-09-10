@@ -604,21 +604,21 @@ class NetworkTopology:
         """Map node kind to template parameters"""
         if len(kind) == 0:
             kind = "default"
-        map = {
+        kind_map = {
             'template': f"{self.templates[ttype]['_path_']}/{kind}.j2"
         }
         if self.config['output_format'] in self.platform_map['kinds']:
             if kind in self.platform_map['kinds'][self.config['output_format']]:
-                map.update(self.platform_map['kinds'][self.config['output_format']][kind])
-                debug(f"[MAP] Mapped kind '{kind}' to '{map}'")
-                return map
-        debug(f"[MAP] No template for kind '{kind}' was found for '{self.config['output_format']}' output format, will use '{map['template']}'")
-        return map
+                kind_map.update(self.platform_map['kinds'][self.config['output_format']][kind])
+                debug(f"[MAP] Mapped kind '{kind}' to '{kind_map}'")
+                return kind_map
+        debug(f"[MAP] No template for kind '{kind}' was found for '{self.config['output_format']}' output format, will use '{kind_map['template']}'")
+        return kind_map
 
 
     def _map_platform_to_template_params(self, ttype, platform):
         """Map platform name to a node kind and then return a template file path for that kind"""
-        map = {
+        default_map = {
             'template': f"{self.templates[ttype]['_path_']}/{platform}.j2"
         }
         if ttype == "kinds":
@@ -631,7 +631,7 @@ class NetworkTopology:
             else:
                 debug(f"[MAP] No mapping for platform '{platform}' was found for '{self.config['output_format']}' output format, will use '{kind}'")
             return self._map_kind_to_template_params(ttype, kind)
-        return map
+        return default_map
 
 
     def _get_template(self, ttype, platform, is_required = False):
