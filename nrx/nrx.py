@@ -418,7 +418,7 @@ class NetworkTopology:
         self.j2env.filters['ceil'] = math.ceil
         self.templates = {
             'interface_names': {'_path_': f"{self.config['output_format']}/interface_names", '_description_': 'interface name'},
-            'interface_maps':  {'_path_': 'interface_maps',  '_description_': 'interface map'},
+            'interface_maps':  {'_path_': f"{self.config['output_format']}/interface_maps",  '_description_': 'interface map'},
             'kinds':           {'_path_': f"{self.config['output_format']}/kinds", '_description_': 'node kind'}
         }
         self.files_path = '.'
