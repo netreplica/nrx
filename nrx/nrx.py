@@ -560,7 +560,7 @@ class NetworkTopology:
         self.files_path = create_output_directory(self.topology['name'], self.config['output_dir'])
         # Generate topology data structure
         self.topology['name'] = self.G.name
-        self.topology['nodes'] = self._render_emulated_nodes()
+        self.topology['rendered_nodes'] = self._render_emulated_nodes()
         self._initialize_emulated_links()
         self._render_topology()
 
