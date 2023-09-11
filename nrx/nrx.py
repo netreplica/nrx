@@ -422,6 +422,7 @@ class NetworkTopology:
             'kinds':           {'_path_': f"{self.config['output_format']}/kinds", '_description_': 'node kind'}
         }
         self.files_path = '.'
+        self.config['format'] = self._read_formats_map(config['formats_map'])
 
     def build_from_file(self, file):
         self._read_network_graph(file)
@@ -434,6 +435,25 @@ class NetworkTopology:
         if "name" in self.G.graph.keys():
             self.topology['name'] = self.G.graph["name"]
         self._build_topology()
+
+
+    def _read_formats_map(self, file):
+        """Read format_map from a YAML file to initialize output parameters"""
+        debug(f"[FORMAT] Reading format map from: {file}")
+        template = self._get_template_with_file(file)
+        try:
+            formats_map = yaml.load(template.render(self.config), Loader=yaml.SafeLoader)
+        except yaml.scanner.ScannerError as e:
+            error("[FORMAT] Can't parse formats map:", e)
+        if 'type' in formats_map and formats_map['type'] == 'formats_map' and 'version' in formats_map:
+            if formats_map['version'] not in ['v1']:
+                error(f"[FORMAT] Unsupported version of {file}")
+            if self.config['output_format'] not in formats_map['formats']:
+                error(f"[FORMAT] Output format '{self.config['output_format']}' is not found in {file}")
+            return formats_map['formats'][self.config['output_format']]
+        error(f"[FORMAT] Unsupported format in {file}")
+        return None
+
 
     def _read_network_graph(self, file):
         print(f"Reading CYJS topology graph: {file}")
@@ -602,6 +622,19 @@ class NetworkTopology:
             error(f"No such template type as {ttype}")
         return template
 
+
+    def _get_template_with_file(self, j2file):
+        template = None
+        try:
+            template = self.j2env.get_template(j2file)
+            debug(f"Found template {j2file}")
+        except (OSError, jinja2.TemplateError) as e:
+            m = f"Unable to open template '{j2file}' with path {self.config['templates_path']}."
+            m += f" Reason: {e}"
+            error(m)
+        return template
+
+
     def _render_emulated_nodes(self):
         topo_nodes = []
         for n in self.topology['nodes']:
@@ -654,19 +687,17 @@ class NetworkTopology:
         self._print_motd(topo)
 
     def _write_topology(self, topo):
-        if self.config['output_format'] == 'graphite':
-            # <topology-name>.graphite.json
-            topo_file = f"{self.topology['name']}.{self.config['output_format']}.json"
-        elif self.config['output_format'] == 'd2':
-            # <topology-name>.d2
-            topo_file = f"{self.topology['name']}.{self.config['output_format']}"
-        else:
-            # <topology-name>.clab.yaml or <topology-name>.cml.yaml
-            topo_file = f"{self.topology['name']}.{self.config['output_format']}.yaml"
+        topo_file = f"{self.topology['name']}"
+        topo_format = self.config['format']
+        if 'file_extension' in topo_format:
+            topo_file += f".{topo_format['file_extension']}"
+        elif 'file_format' in topo_format:
+            topo_file += f".{self.config['output_format']}.{topo_format['file_format']}"
         try:
             topo_path = f"{self.files_path}/{topo_file}"
             with open(topo_path, "w", encoding="utf-8") as f:
                 f.write(topo)
+                f.close()
         except OSError as e:
             error(f"Can't write into {topo_path}", e)
 
@@ -675,11 +706,13 @@ class NetworkTopology:
     def _print_motd(self, topo):
         topo_dict = {}
         try:
-            if self.config['output_format'] == 'graphite':
+            f = self.config['format']['file_format'].lower()
+            if f == 'json':
                 topo_dict = ast.literal_eval(topo)
-            elif self.config['output_format'] == 'cml':
+            elif f == 'yaml':
                 topo_dict = yaml.safe_load(topo)
                 if 'lab' in topo_dict and 'notes' in topo_dict['lab'] and 'motd' not in topo_dict:
+                    # CML
                     topo_dict['motd'] = topo_dict['lab']['notes']
         except (SyntaxError, yaml.scanner.ScannerError) as e:
             debug("Can't parse topology as a dictionary:", e)
@@ -692,9 +725,6 @@ class NetworkTopology:
 
     def _render_interface_map(self, node):
         """Render interface mapping file for a node"""
-        if self.config['output_format'] in ['graphite', 'd2']:
-            # No need to render interface maps
-            return None
         if 'name' in node and node['name'] in self.device_interfaces_map:
             d = node['name']
         else:
@@ -714,6 +744,7 @@ class NetworkTopology:
                 try:
                     with open(int_map_path, "w", encoding="utf-8") as f:
                         f.write(interface_map)
+                        f.close()
                 except OSError as e:
                     error(f"Can't write into {int_map_path}", e)
                 print(f"Created '{p}' interface map: {int_map_path}")
@@ -730,13 +761,13 @@ class NetworkTopology:
             config = node['config']
         else:
             return None
-        if self.config['output_format'] == 'clab':
-            # Support for Containerlab startup configurations
+        if 'startup_config_mode' in self.config['format'] and self.config['format']['startup_config_mode'] == 'file':
             config_file = f"{name}.config"
             config_path = f"{self.files_path}/{config_file}"
             try:
                 with open(config_path, "w", encoding="utf-8") as f:
                     f.write(config)
+                    f.close()
             except OSError as e:
                 error(f"Can't write into {config_path}", e)
             print(f"Created device configuration file: {config_path}")
@@ -806,6 +837,7 @@ def load_toml_config(filename):
         'export_tags': [],
         'export_configs': True,
         'templates_path': ['.'],
+        'formats_map': 'formats.yaml',
         'output_dir': '',
         'nb_api_params': {
             'interfaces_block_size':    4,
@@ -824,7 +856,6 @@ def load_toml_config(filename):
         except toml.decoder.TomlDecodeError as e:
             error(f"Unable to parse configuration file {filename}: {e}")
         except argparse.ArgumentTypeError as e:
-            # config['output_format'] has unsupported value
             error(f"Unsupported configuration: {e}")
     return config
 
@@ -880,7 +911,7 @@ def load_config(args):
     if args.dir is not None and len(args.dir) > 0:
         config['output_dir'] = args.dir
 
-    # Do not export configs for formats that do not support it
+    # Do not export configs for formats that do not support it TODO use startup_config_mode parameter
     if config['output_format'] in ['graphite', 'd2']:
         config['export_configs'] = False
 
