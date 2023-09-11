@@ -750,21 +750,13 @@ def arg_input_check(s):
         return s
     raise argparse.ArgumentTypeError(f"input source has to be one of {allowed_values}")
 
-def arg_output_check(s):
-    """Check if output format is supported"""
-    allowed_values = ['gml', 'cyjs', 'clab', 'cml', 'graphite', 'd2']
-    if s in allowed_values:
-        return s
-    raise argparse.ArgumentTypeError(f"output format has to be one of {allowed_values}")
-
 def parse_args():
     """CLI arguments parser"""
     parser = argparse.ArgumentParser(prog='nrx', description="nrx - network topology exporter by netreplica")
     parser.add_argument('-c', '--config',    required=False, help='configuration file')
     parser.add_argument('-i', '--input',     required=False, help='input source: netbox (default) | cyjs',
                                              default='netbox', type=arg_input_check,)
-    parser.add_argument('-o', '--output',    required=False, help='output format: cyjs | gml | clab | cml | graphite | d2',
-                                             type=arg_output_check, )
+    parser.add_argument('-o', '--output',    required=False, help='output format: cyjs for JSON, or any other format supported by provided templates')
     parser.add_argument('-a', '--api',       required=False, help='netbox API URL')
     parser.add_argument('-s', '--site',      required=False, help='netbox site to export')
     parser.add_argument('-t', '--tags',      required=False, help='netbox tags to export, for multiple tags use a comma-separated list: tag1,tag2,tag3 (uses AND logic)')
@@ -827,8 +819,6 @@ def load_toml_config(filename):
                 for k in config:
                     if k.upper() in nb_config:
                         config[k] = nb_config[k.upper()]
-                if len(config['output_format']) > 0:
-                    arg_output_check(config['output_format'])
         except OSError as e:
             error(f"Unable to open configuration file {filename}: {e}")
         except toml.decoder.TomlDecodeError as e:
@@ -931,7 +921,7 @@ def main():
     else:
         topo.build_from_graph(nb_network.graph())
 
-    if config['output_format'] in ['clab', 'cml', 'graphite', 'd2']:
+    if config['output_format'] != 'cyjs':
         topo.export_topology()
     else:
         if nb_network is None:
