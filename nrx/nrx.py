@@ -443,15 +443,17 @@ class NetworkTopology:
         template = self._get_template_with_file(file)
         try:
             formats_map = yaml.load(template.render(self.config), Loader=yaml.SafeLoader)
+        except jinja2.TemplateError as e:
+            error(f"[FORMAT] Rendering {file} template as format map: {e}")
         except yaml.scanner.ScannerError as e:
             error("[FORMAT] Can't parse formats map:", e)
         if 'type' in formats_map and formats_map['type'] == 'formats_map' and 'version' in formats_map:
             if formats_map['version'] not in ['v1']:
-                error(f"[FORMAT] Unsupported version of {file}")
+                error(f"[FORMAT] Unsupported version of {file} as format map")
             if self.config['output_format'] not in formats_map['formats']:
-                error(f"[FORMAT] Output format '{self.config['output_format']}' is not found in {file}")
+                error(f"[FORMAT] Output format '{self.config['output_format']}' is not found in {file} under {self.config['templates_path']}")
             return formats_map['formats'][self.config['output_format']]
-        error(f"[FORMAT] Unsupported format in {file}")
+        error(f"[FORMAT] Unsupported 'type' in {file} under {self.config['templates_path']}, has to be a 'formats_map' with a 'version'")
         return None
 
 
