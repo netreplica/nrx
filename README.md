@@ -12,10 +12,18 @@
 * Topology file for [Cisco Modeling Labs](https://developer.cisco.com/modeling-labs/) platform for network simulation
 * Topology data for visualization using [Graphite](https://github.com/netreplica/graphite) or [D2](https://d2lang.com/)
 * Graph data as a JSON file in [Cytoscape](https://cytoscape.org/) format [CYJS](http://manual.cytoscape.org/en/stable/Supported_Network_File_Formats.html#cytoscape-js-json)
+* Any other user-defined format using [Jinja2](https://palletsprojects.com/p/jinja/) templates
 
 It can also read the topology graph previously saved as a CYJS file to convert it into other formats.
 
 This project is in early phase. We're experimenting with the best ways to automate software network lab orchestration. If you have any feedback, questions or suggestions, please reach out to us via the Netreplica Discord server linked above, [#netreplica](https://netdev-community.slack.com/archives/C054GKBC4LB) channel in NetDev Community on Slack, or open a github issue in this repository.
+
+# Latest capabilities added
+
+The last release adds the following capabilities:
+* User-defined output formats using Jinja2 templates
+
+Find detailed release notes on the [Releases page](https://github.com/netreplica/nrx/releases).
 
 # Table of contents
 
@@ -58,6 +66,7 @@ Export capabilities:
 * Exports the graph as a Cisco Modeling Labs (CML) topology definition file in YAML format
 * Exported device configurations will be used as `startup-config` for Containerlab and CML
 * Exports the graph in formats for visualization with Graphite or D2
+* User-defined output formats using Jinja2 templates
 * Uses NetBox Device Platform `slug` field to identify node templates when rendering the export file
 * Creates mapping between real interface names and interface names used by the supported lab tools
 * Calculates `level` and `rank` values for each node based on Device Role to help visualize the topology
@@ -65,10 +74,10 @@ Export capabilities:
 
 # Compatibility
 
-The following minimum software versions were tested for compatibility with `nrx`:
+The following software versions were tested for compatibility with `nrx`:
 
-* NetBox `v3.4`. For device configuration export, `v3.5` is the minimum version.
-* Containerlab `v0.39`
+* NetBox `v3.4`-`v3.5`. For device configuration export, `v3.5` is the minimum version.
+* Containerlab `v0.39`, but earlier and later versions should work fine
 * Cisco Modeling Labs `v2.5`
 * Netreplica Graphite `v0.4.0`
 
@@ -167,14 +176,14 @@ Use `--config <filename>` argument to specify a configuration file to use. The s
 
 # Templates
 
-**nrx** renders all topology artifacts from [Jinja2](https://jinja.palletsprojects.com/en/3.1.x/) templates. Depending on the desired output format, the required templates are taken from a matching subfolder. For example, if the output format is `clab` for Containerlab, then templates are searched under `clab` subfolder. For Cisco Modelling Labs `cml` format the subfolder would be `cml`.
+**nrx** renders all topology artifacts from [Jinja2](https://jinja.palletsprojects.com/en/3.1.x/) templates. Depending on the desired output format, the required templates are taken from a matching subfolder. For example, if the output format is `clab` for Containerlab, then templates are searched under `clab` subfolder. For Cisco Modelling Labs `cml` format the subfolder would be `cml`. A user can create their own templates for any output format and store them in a subfolder with a format name they would use for `--output` argument.
 
 Most templates are unique for each node `kind`. Value of `kind` is taken from NetBox `device.platform.slug` field. The full list of template search rules:
 
-* `<format>/topology.j2`: template for the final topology file.
-* `<format>/kinds/<kind>.j2`: templates for individual node entries in the topology file.
-* `<format>/interface_names/<kind>.j2`: templates for generating emulated interface names used by this NOS `kind`.
-* `<format>/interface_maps/<kind>.j2`: templates for mappings between real interface names and emulated interface names used by this NOS `kind`. Not all `kinds` support such mappings.
+* `<format>/topology.j2`: template for the final topology file. Mandatory.
+* `<format>/kinds/<kind>.j2`: templates for individual node entries in the topology file, with `default.j2` being mandatory as a fallback template.
+* `<format>/interface_names/<kind>.j2`: templates for generating emulated interface names used by this NOS `kind` with `default.j2` being a fallback template. Optional, as not all formats need emulated interface names.
+* `<format>/interface_maps/<kind>.j2`: templates for mappings between real interface names and emulated interface names used by this NOS `kind`. Optional, as not all `kinds` support such mappings.
 
 This repository includes a set of [netreplica/templates](https://github.com/netreplica/templates) as a submodule. See more details about available templates in the [templates/README.md](https://github.com/netreplica/templates).
 
