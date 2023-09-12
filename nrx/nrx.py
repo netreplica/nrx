@@ -690,11 +690,11 @@ class NetworkTopology:
 
     def _write_topology(self, topo):
         topo_file = f"{self.topology['name']}"
-        topo_format = self.config['format']
-        if 'file_extension' in topo_format:
-            topo_file += f".{topo_format['file_extension']}"
-        elif 'file_format' in topo_format:
-            topo_file += f".{self.config['output_format']}.{topo_format['file_format']}"
+        format_params = self.config['format']
+        if 'file_extension' in format_params:
+            topo_file += f".{format_params['file_extension']}"
+        elif 'file_format' in format_params:
+            topo_file += f".{self.config['output_format']}.{format_params['file_format']}"
         try:
             topo_path = f"{self.files_path}/{topo_file}"
             with open(topo_path, "w", encoding="utf-8") as f:
