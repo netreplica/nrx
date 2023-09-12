@@ -145,7 +145,7 @@ optional arguments:
   -h, --help                show this help message and exit
   -c, --config CONFIG       configuration file
   -i, --input INPUT         input source: netbox (default) | cyjs
-  -o, --output OUTPUT       output format: cyjs for JSON, or any other format supported by provided templates
+  -o, --output OUTPUT       output format: cyjs | clab | cml | graphite | d2 or any other format supported by provided templates
   -a, --api API             netbox API URL
   -s, --site SITE           netbox site to export
   -t, --tags TAGS           netbox tags to export, for multiple tags use a comma-separated list: tag1,tag2,tag3 (uses AND logic)

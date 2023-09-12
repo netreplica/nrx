@@ -789,7 +789,7 @@ def parse_args():
     parser.add_argument('-c', '--config',    required=False, help='configuration file')
     parser.add_argument('-i', '--input',     required=False, help='input source: netbox (default) | cyjs',
                                              default='netbox', type=arg_input_check,)
-    parser.add_argument('-o', '--output',    required=False, help='output format: cyjs for JSON, or any other format supported by provided templates')
+    parser.add_argument('-o', '--output',    required=False, help='output format: cyjs | clab | cml | graphite | d2 or any other format supported by provided templates')
     parser.add_argument('-a', '--api',       required=False, help='netbox API URL')
     parser.add_argument('-s', '--site',      required=False, help='netbox site to export')
     parser.add_argument('-t', '--tags',      required=False, help='netbox tags to export, for multiple tags use a comma-separated list: tag1,tag2,tag3 (uses AND logic)')
