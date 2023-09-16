@@ -182,7 +182,7 @@ By default, **nrx** searches for the template files in the current directory. Yo
 
 Depending on the desired output format, the required templates are taken from a matching subfolder. For example, if the output format is `clab` for Containerlab, then templates are taken from `clab` subfolder. For Cisco Modelling Labs `cml` format the subfolder would be `cml`.
 
-A user can create their own templates for any output format and store them in a subfolder with a format name they would use for `--output` argument. To make the new output format available to `nrx`, an entry describing basic properties of the format must be added to [`formats.yaml`](./templates/formats.yaml) file in the `templates` folder.
+A user can create their own templates for any output format and store them in a subfolder with a format name they would use for `--output` argument. To make the new output format available to **nrx**, an entry describing basic properties of the format must be added to [`formats.yaml`](templates/formats.yaml) file in the `templates` folder.
 
 Most templates are unique for each node `kind`. Value of `kind` is taken from NetBox `device.platform.slug` field. The full list of template search rules:
 
