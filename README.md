@@ -83,7 +83,7 @@ The following software versions were tested for compatibility with `nrx`:
 
 # Prerequisites
 
-* Python 3.9+. In the commands below we assume use have `python3.9` executable. If you have a different name, change accordingly.
+* Python 3.9+. In the commands below we assume you have `python3.9` executable. If it is under a different name, change accordingly.
 * PIP
 
     ```Shell
@@ -176,7 +176,13 @@ Use `--config <filename>` argument to specify a configuration file to use. The s
 
 # Templates
 
-**nrx** renders all topology artifacts from [Jinja2](https://jinja.palletsprojects.com/en/3.1.x/) templates. Depending on the desired output format, the required templates are taken from a matching subfolder. For example, if the output format is `clab` for Containerlab, then templates are searched under `clab` subfolder. For Cisco Modelling Labs `cml` format the subfolder would be `cml`. A user can create their own templates for any output format and store them in a subfolder with a format name they would use for `--output` argument.
+**nrx** renders all topology artifacts from [Jinja2](https://jinja.palletsprojects.com/en/3.1.x/) templates the user points `nrx` to using `--templates` parameter.
+
+By default, **nrx** searches for the template files in the current directory. You can provide a list of folders to search for the templates via `TEMPLATES_PATH` parameter in the [configuration file](#configuration-file), or use `--templates` argument.
+
+Depending on the desired output format, the required templates are taken from a matching subfolder. For example, if the output format is `clab` for Containerlab, then templates are taken from `clab` subfolder. For Cisco Modelling Labs `cml` format the subfolder would be `cml`.
+
+A user can create their own templates for any output format and store them in a subfolder with a format name they would use for `--output` argument. To make the new output format available to `nrx`, an entry describing basic properties of the format must be added to [`formats.yaml`](./templates/formats.yaml) file in the `templates` folder.
 
 Most templates are unique for each node `kind`. Value of `kind` is taken from NetBox `device.platform.slug` field. The full list of template search rules:
 
@@ -186,8 +192,6 @@ Most templates are unique for each node `kind`. Value of `kind` is taken from Ne
 * `<format>/interface_maps/<kind>.j2`: templates for mappings between real interface names and emulated interface names used by this NOS `kind`. Optional, as not all `kinds` support such mappings.
 
 This repository includes a set of [netreplica/templates](https://github.com/netreplica/templates) as a submodule. See more details about available templates in the [templates/README.md](https://github.com/netreplica/templates).
-
-By default, **nrx** searches for the template files in the current directory. You can provide a list of folders to search for the templates via `TEMPLATES_PATH` parameter in the [configuration file](#configuration-file), or use `--templates` argument.
 
 # How to use
 
