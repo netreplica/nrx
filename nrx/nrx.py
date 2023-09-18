@@ -786,6 +786,9 @@ def arg_input_check(s):
 def parse_args():
     """CLI arguments parser"""
     parser = argparse.ArgumentParser(prog='nrx', description="nrx - network topology exporter by netreplica")
+    parser.add_argument('-d', '--debug',     nargs=0, action=NrxDebugAction, help='enable debug output')
+    #parser.add_argument('-V', '--version',   action='version', version=f'%(prog)s {__version__}')
+    parser.add_argument('-I', '--init',      nargs=0, action=NrxInitAction, help='initialize nrx environment and exit')
     parser.add_argument('-c', '--config',    required=False, help='configuration file')
     parser.add_argument('-i', '--input',     required=False, help='input source: netbox (default) | cyjs',
                                              default='netbox', type=arg_input_check,)
@@ -797,8 +800,6 @@ def parse_args():
                                              action=argparse.BooleanOptionalAction)
     parser.add_argument('-k', '--insecure',  required=False, help='allow insecure server connections when using TLS',
                                              action=argparse.BooleanOptionalAction)
-    parser.add_argument('-d', '--debug',     required=False, help='enable debug output',
-                                             action=argparse.BooleanOptionalAction)
     parser.add_argument('-f', '--file',      required=False, help='file with the network graph to import')
     parser.add_argument('-T', '--templates', required=False, help='directory with template files, \
                                                                    will be prepended to TEMPLATES_PATH list \
@@ -808,11 +809,54 @@ def parse_args():
                                                                    (topology name is used by default)')
 
     args = parser.parse_args()
-    global DEBUG_ON
-    DEBUG_ON = args.debug is True
     debug(f"arguments {args}")
 
     return args
+
+
+class NrxDebugAction(argparse.Action):
+    """Argparse action to turn on debug output"""
+    def __call__(self, parser, namespace, values, option_string=None):
+        global DEBUG_ON
+        DEBUG_ON = True
+
+
+class NrxInitAction(argparse.Action):
+    """Argparse action to initialize nrx environment"""
+    def __call__(self, parser, namespace, values, option_string=None):
+        print(f"[INIT] Initializing nrx environment")
+        versions = get_versions('v0.3.0')
+        templates_path = get_templates(versions)
+        if templates_path is not None:
+            print(f"[INIT] Downloaded templates to: {templates_path}")
+        sys.exit(0)
+
+
+def get_versions(nrx_version):
+    """Download and parse versions.yaml asset file for a specific nrx version"""
+    versions_url = f"https://github.com/netreplica/nrx/releases/download/{nrx_version}/versions.yaml"
+    r = requests.get(versions_url)
+    if r.status_code == 200:
+        versions = yaml.safe_load(r.text)
+        debug(f"[VERSIONS] Retrieved versions for {nrx_version}:", versions)
+        return versions
+    return None
+
+
+def get_templates(versions):
+    """Download netreplica/templates version from the versions dict provided as a parameter"""
+    if 'templates' in versions:
+        templates_version = versions['templates']
+        templates_url = f"https://github.com/netreplica/templates/archive/refs/tags/{templates_version}.zip"
+        r = requests.get(templates_url)
+        if r.status_code == 200:
+            templates_path = f"{os.getcwd()}/templates_{templates_version}.zip"
+            with open(templates_path, 'wb') as f:
+                f.write(r.content)
+                debug(f"[TEMPLATES] Downloaded templates from {templates_url}")
+                return templates_path
+    return None
+
 
 def load_toml_config(filename):
     """Load configuration from a config file in TOML format"""

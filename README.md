@@ -143,6 +143,8 @@ nrx - network topology exporter by netreplica
 
 optional arguments:
   -h, --help                show this help message and exit
+  -d, --debug               enable debug output
+  -I, --init                initialize nrx environment and exit
   -c, --config CONFIG       configuration file
   -i, --input INPUT         input source: netbox (default) | cyjs
   -o, --output OUTPUT       output format: cyjs | clab | cml | graphite | d2 or any other format supported by provided templates
@@ -151,7 +153,6 @@ optional arguments:
   -t, --tags TAGS           netbox tags to export, for multiple tags use a comma-separated list: tag1,tag2,tag3 (uses AND logic)
   -n, --noconfigs           disable device configuration export (enabled by default)
   -k, --insecure            allow insecure server connections when using TLS
-  -d, --debug               enable debug output
   -f, --file FILE           file with the network graph to import
   -T, --templates TEMPLATES directory with template files, will be prepended to TEMPLATES_PATH list in the configuration file
   -D, --dir DIR             save files into directory DIR (topology name is used by default). nested relative and absolute paths are OK
