@@ -85,14 +85,14 @@ def create_dirs(dir_path):
     try:
         os.makedirs(dir_path)
         abs_path = os.path.abspath(dir_path)
-        debug(f"Created directory '{dir_path}'")
+        debug(f"[CREATE_DIRS] Created directory '{dir_path}'")
         return abs_path
     except FileExistsError:
         abs_path = os.path.abspath(dir_path)
-        debug(f"Directory '{dir_path}' already exists, will reuse")
+        debug(f"[CREATE_DIRS] Directory '{dir_path}' already exists, will reuse")
         return abs_path
     except OSError as e:
-        error(f"An error occurred while creating the directory: {str(e)}")
+        error(f"[CREATE_DIRS] An error occurred while creating the directory: {str(e)}")
     return None
 
 class TimeoutHTTPAdapter(HTTPAdapter):
@@ -824,11 +824,15 @@ class NrxDebugAction(argparse.Action):
 class NrxInitAction(argparse.Action):
     """Argparse action to initialize nrx environment"""
     def __call__(self, parser, namespace, values, option_string=None):
-        print(f"[INIT] Initializing nrx environment")
+        # Create a .nr directory in the user's home directory, or in the current directory if HOME is not set
+        env_path = f"{os.getenv('HOME', os.getcwd())}/.nr"
+        print(f"[INIT] Initializing nrx environment in {env_path}")
+        env_dir = create_dirs(env_path)
+        # Get asset matrix versions.yaml
         versions = get_versions('v0.3.0')
-        templates_path = get_templates(versions)
+        templates_path = get_templates(versions, env_dir)
         if templates_path is not None:
-            print(f"[INIT] Downloaded templates to: {templates_path}")
+            print(f"[INIT] Saved templates to: {templates_path}")
         sys.exit(0)
 
 
@@ -838,19 +842,19 @@ def get_versions(nrx_version):
     r = requests.get(versions_url)
     if r.status_code == 200:
         versions = yaml.safe_load(r.text)
-        debug(f"[VERSIONS] Retrieved versions for {nrx_version}:", versions)
+        debug(f"[VERSIONS] Retrieved versions map for {nrx_version}:", versions)
         return versions
     return None
 
 
-def get_templates(versions):
+def get_templates(versions, dir_path):
     """Download netreplica/templates version from the versions dict provided as a parameter"""
     if 'templates' in versions:
         templates_version = versions['templates']
         templates_url = f"https://github.com/netreplica/templates/archive/refs/tags/{templates_version}.zip"
         r = requests.get(templates_url)
         if r.status_code == 200:
-            templates_path = f"{os.getcwd()}/templates_{templates_version}.zip"
+            templates_path = f"{dir_path}/templates_{templates_version}.zip"
             with open(templates_path, 'wb') as f:
                 f.write(r.content)
                 debug(f"[TEMPLATES] Downloaded templates from {templates_url}")
