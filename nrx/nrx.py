@@ -42,6 +42,7 @@ import urllib3
 import networkx as nx
 import jinja2
 import yaml
+import zipfile
 
 # DEFINE GLOBAL VARs HERE
 
@@ -854,11 +855,19 @@ def get_templates(versions, dir_path):
         templates_url = f"https://github.com/netreplica/templates/archive/refs/tags/{templates_version}.zip"
         r = requests.get(templates_url)
         if r.status_code == 200:
-            templates_path = f"{dir_path}/templates_{templates_version}.zip"
-            with open(templates_path, 'wb') as f:
+            zip_file = f"templates_{templates_version}.zip"
+            zip_path = f"{dir_path}/{zip_file}"
+            templates_path = f"{dir_path}/templates-{templates_version.lstrip('v')}"
+            with open(zip_path, 'wb') as f:
                 f.write(r.content)
                 debug(f"[TEMPLATES] Downloaded templates from {templates_url}")
+                # Unzip
+                with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+                    zip_ref.extractall(dir_path)
+                    debug(f"[TEMPLATES] Unzipped templates to {dir_path}")
                 return templates_path
+        else:
+            error(f"[TEMPLATES] Can't download templates from {templates_url}, status code: {r.status_code}")
     return None
 
 
