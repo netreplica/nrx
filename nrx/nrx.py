@@ -30,11 +30,6 @@ It can also read the topology graph previously saved as a CYJS file to convert i
 __version__ = 'v0.3.0'
 __author__ = 'Alex Bortok and Netreplica Team'
 
-NRX_ENV_DIR = ".nr"
-NRX_REPOSITORY = "https://github.com/netreplica/nrx"
-NRX_TEMPLATES_REPOSITORY = "https://github.com/netreplica/templates"
-NRX_REPOSITORY_TIMEOUT = 10
-
 import os
 import sys
 import argparse
@@ -55,6 +50,11 @@ import yaml
 # DEFINE GLOBAL VARs HERE
 
 DEBUG_ON = False
+NRX_ENV_DIR = ".nr"
+NRX_REPOSITORY = "https://github.com/netreplica/nrx"
+NRX_TEMPLATES_REPOSITORY = "https://github.com/netreplica/templates"
+NRX_REPOSITORY_TIMEOUT = 10
+
 
 def errlog(*args, **kwargs):
     """print message on STDERR"""
@@ -886,6 +886,23 @@ def get_templates(versions, dir_path):
                             debug(f"[TEMPLATES] Unzipped templates to {dir_path}")
                     except (zipfile.BadZipFile, FileNotFoundError, Exception) as e:
                         error(f"[TEMPLATES] Can't unzip {zip_path}: {e}")
+                    # Remove an existing symlink to templates
+                    if os.path.exists(f"{dir_path}/templates"):
+                        if os.path.islink(f"{dir_path}/templates"):
+                            try:
+                                os.remove(f"{dir_path}/templates")
+                                debug(f"[TEMPLATES] Deleted existing symlink {dir_path}/templates")
+                            except OSError as e:
+                                warning(f"[TEMPLATES] Can't delete existing symlink {dir_path}/templates: {e}, skipping. Use '--templates {templates_path}' argument instead")
+                        else:
+                            warning(f"[TEMPLATES] {dir_path}/templates exists and is not a symlink, skipping. Use '--templates {templates_path}' argument instead")
+                    # Create a symlink
+                    if not os.path.exists(f"{dir_path}/templates"):
+                        try:
+                            os.symlink(templates_path, f"{dir_path}/templates")
+                            debug(f"[TEMPLATES] Created a symlink to templates: {dir_path}/templates")
+                        except OSError as e:
+                            error(f"[TEMPLATES] Can't create a symlink to templates: {e}")
                     # Remove zip file
                     try:
                         os.remove(zip_path)
