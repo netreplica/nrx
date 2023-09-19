@@ -834,47 +834,61 @@ class NrxInitAction(argparse.Action):
         templates_path = get_templates(versions, env_dir)
         if templates_path is not None:
             print(f"[INIT] Saved templates to: {templates_path}")
+        else:
+            error("[INIT] Can't download templates")
         sys.exit(0)
 
 
 def get_versions(nrx_version):
     """Download and parse versions.yaml asset file for a specific nrx version"""
     versions_url = f"https://github.com/netreplica/nrx/releases/download/{nrx_version}/versions.yaml"
-    r = requests.get(versions_url)
+    timeout=10
+    try:
+        r = requests.get(versions_url, timeout=timeout)
+    except (HTTPError, Timeout, RequestException) as e:
+        error(f"[VERSIONS] Downloading versions map from {versions_url} failed: {e}")
     if r.status_code == 200:
         versions = yaml.safe_load(r.text)
         debug(f"[VERSIONS] Retrieved versions map for {nrx_version}:", versions)
         return versions
+    error(f"[VERSIONS] Can't download versions map from {versions_url}, status code: {r.status_code}")
     return None
 
 
 def get_templates(versions, dir_path):
     """Download netreplica/templates version from the versions dict provided as a parameter"""
-    if 'templates' in versions:
+    if versions is not None and 'templates' in versions:
         templates_version = versions['templates']
         templates_url = f"https://github.com/netreplica/templates/archive/refs/tags/{templates_version}.zip"
-        r = requests.get(templates_url)
+        timeout=10
+        try:
+            r = requests.get(templates_url, timeout=timeout)
+        except (HTTPError, Timeout, RequestException) as e:
+            error(f"[TEMPLATES] Downloading templates from {templates_url} failed: {e}")
         if r.status_code == 200:
             zip_file = f"templates_{templates_version}.zip"
             zip_path = f"{dir_path}/{zip_file}"
             templates_path = f"{dir_path}/templates-{templates_version.lstrip('v')}"
-            with open(zip_path, 'wb') as f:
-                f.write(r.content)
-                debug(f"[TEMPLATES] Downloaded templates from {templates_url}")
-                # Unzip
-                try:
-                    with zipfile.ZipFile(zip_path, 'r') as zip_ref:
-                        zip_ref.extractall(dir_path)
-                        debug(f"[TEMPLATES] Unzipped templates to {dir_path}")
-                except (zipfile.BadZipFile, FileNotFoundError, Exception) as e:
-                    error(f"[TEMPLATES] Can't unzip {zip_path}: {e}")
-                # Remove zip file
-                try:
-                    os.remove(zip_path)
-                    debug(f"[TEMPLATES] Deleted {zip_path}")
-                except OSError as e:
-                    error(f"[TEMPLATES] Can't delete {zip_path}: {e}")
-                return templates_path
+            try:
+                with open(zip_path, 'wb') as f:
+                    f.write(r.content)
+                    debug(f"[TEMPLATES] Downloaded templates from {templates_url}")
+                    # Unzip
+                    try:
+                        with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+                            zip_ref.extractall(dir_path)
+                            debug(f"[TEMPLATES] Unzipped templates to {dir_path}")
+                    except (zipfile.BadZipFile, FileNotFoundError, Exception) as e:
+                        error(f"[TEMPLATES] Can't unzip {zip_path}: {e}")
+                    # Remove zip file
+                    try:
+                        os.remove(zip_path)
+                        debug(f"[TEMPLATES] Deleted {zip_path}")
+                    except OSError as e:
+                        error(f"[TEMPLATES] Can't delete {zip_path}: {e}")
+                    return templates_path
+            except OSError as e:
+                error(f"[TEMPLATES] Can't write into {zip_path}", e)
         else:
             error(f"[TEMPLATES] Can't download templates from {templates_url}, status code: {r.status_code}")
     return None
