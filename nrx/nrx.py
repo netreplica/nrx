@@ -30,6 +30,11 @@ It can also read the topology graph previously saved as a CYJS file to convert i
 __version__ = 'v0.3.0'
 __author__ = 'Alex Bortok and Netreplica Team'
 
+NRX_ENV_DIR = ".nr"
+NRX_REPOSITORY = "https://github.com/netreplica/nrx"
+NRX_TEMPLATES_REPOSITORY = "https://github.com/netreplica/templates"
+NRX_REPOSITORY_TIMEOUT = 10
+
 import os
 import sys
 import argparse
@@ -828,8 +833,8 @@ class NrxDebugAction(argparse.Action):
 class NrxInitAction(argparse.Action):
     """Argparse action to initialize nrx environment"""
     def __call__(self, parser, namespace, values, option_string=None):
-        # Create a .nr directory in the user's home directory, or in the current directory if HOME is not set
-        env_path = f"{os.getenv('HOME', os.getcwd())}/.nr"
+        # Create a NRX_ENV_DIR directory in the user's home directory, or in the current directory if HOME is not set
+        env_path = f"{os.getenv('HOME', os.getcwd())}/{NRX_ENV_DIR}"
         print(f"[INIT] Initializing nrx environment in {env_path}")
         env_dir = create_dirs(env_path)
         # Get asset matrix versions.yaml
@@ -844,10 +849,9 @@ class NrxInitAction(argparse.Action):
 
 def get_versions(nrx_version):
     """Download and parse versions.yaml asset file for a specific nrx version"""
-    versions_url = f"https://github.com/netreplica/nrx/releases/download/{nrx_version}/versions.yaml"
-    timeout=10
+    versions_url = f"{NRX_REPOSITORY}/releases/download/{nrx_version}/versions.yaml"
     try:
-        r = requests.get(versions_url, timeout=timeout)
+        r = requests.get(versions_url, timeout=NRX_REPOSITORY_TIMEOUT)
     except (HTTPError, Timeout, RequestException) as e:
         error(f"[VERSIONS] Downloading versions map from {versions_url} failed: {e}")
     if r.status_code == 200:
@@ -862,10 +866,9 @@ def get_templates(versions, dir_path):
     """Download netreplica/templates version from the versions dict provided as a parameter"""
     if versions is not None and 'templates' in versions:
         templates_version = versions['templates']
-        templates_url = f"https://github.com/netreplica/templates/archive/refs/tags/{templates_version}.zip"
-        timeout=10
+        templates_url = f"{NRX_TEMPLATES_REPOSITORY}/archive/refs/tags/{templates_version}.zip"
         try:
-            r = requests.get(templates_url, timeout=timeout)
+            r = requests.get(templates_url, timeout=NRX_REPOSITORY_TIMEOUT)
         except (HTTPError, Timeout, RequestException) as e:
             error(f"[TEMPLATES] Downloading templates from {templates_url} failed: {e}")
         if r.status_code == 200:
