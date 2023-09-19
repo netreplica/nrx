@@ -868,6 +868,12 @@ def get_templates(versions, dir_path):
                         debug(f"[TEMPLATES] Unzipped templates to {dir_path}")
                 except (zipfile.BadZipFile, FileNotFoundError, Exception) as e:
                     error(f"[TEMPLATES] Can't unzip {zip_path}: {e}")
+                # Remove zip file
+                try:
+                    os.remove(zip_path)
+                    debug(f"[TEMPLATES] Deleted {zip_path}")
+                except OSError as e:
+                    error(f"[TEMPLATES] Can't delete {zip_path}: {e}")
                 return templates_path
         else:
             error(f"[TEMPLATES] Can't download templates from {templates_url}, status code: {r.status_code}")
