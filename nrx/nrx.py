@@ -33,6 +33,7 @@ import argparse
 import json
 import math
 import ast
+import zipfile
 import toml
 import pynetbox
 import requests
@@ -42,7 +43,6 @@ import urllib3
 import networkx as nx
 import jinja2
 import yaml
-import zipfile
 
 # DEFINE GLOBAL VARs HERE
 
@@ -862,9 +862,12 @@ def get_templates(versions, dir_path):
                 f.write(r.content)
                 debug(f"[TEMPLATES] Downloaded templates from {templates_url}")
                 # Unzip
-                with zipfile.ZipFile(zip_path, 'r') as zip_ref:
-                    zip_ref.extractall(dir_path)
-                    debug(f"[TEMPLATES] Unzipped templates to {dir_path}")
+                try:
+                    with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+                        zip_ref.extractall(dir_path)
+                        debug(f"[TEMPLATES] Unzipped templates to {dir_path}")
+                except (zipfile.BadZipFile, FileNotFoundError, Exception) as e:
+                    error(f"[TEMPLATES] Can't unzip {zip_path}: {e}")
                 return templates_path
         else:
             error(f"[TEMPLATES] Can't download templates from {templates_url}, status code: {r.status_code}")
