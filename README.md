@@ -143,6 +143,7 @@ nrx - network topology exporter by netreplica
 
 optional arguments:
   -h, --help                show this help message and exit
+  -v, --version             show version number and exit
   -d, --debug               enable debug output
   -I, --init                initialize nrx environment and exit
   -c, --config CONFIG       configuration file

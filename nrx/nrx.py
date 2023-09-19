@@ -27,6 +27,9 @@ nrx reads a network topology graph from NetBox DCIM system and exports it in one
 It can also read the topology graph previously saved as a CYJS file to convert it into the one of supported network emulation formats.
 """
 
+__version__ = 'v0.3.0'
+__author__ = 'Alex Bortok and Netreplica Team'
+
 import os
 import sys
 import argparse
@@ -787,8 +790,8 @@ def arg_input_check(s):
 def parse_args():
     """CLI arguments parser"""
     parser = argparse.ArgumentParser(prog='nrx', description="nrx - network topology exporter by netreplica")
+    parser.add_argument('-v', '--version',   action='version', version=f'%(prog)s {__version__}')
     parser.add_argument('-d', '--debug',     nargs=0, action=NrxDebugAction, help='enable debug output')
-    #parser.add_argument('-V', '--version',   action='version', version=f'%(prog)s {__version__}')
     parser.add_argument('-I', '--init',      nargs=0, action=NrxInitAction, help='initialize nrx environment and exit')
     parser.add_argument('-c', '--config',    required=False, help='configuration file')
     parser.add_argument('-i', '--input',     required=False, help='input source: netbox (default) | cyjs',
@@ -830,7 +833,7 @@ class NrxInitAction(argparse.Action):
         print(f"[INIT] Initializing nrx environment in {env_path}")
         env_dir = create_dirs(env_path)
         # Get asset matrix versions.yaml
-        versions = get_versions('v0.3.0')
+        versions = get_versions(__version__)
         templates_path = get_templates(versions, env_dir)
         if templates_path is not None:
             print(f"[INIT] Saved templates to: {templates_path}")
