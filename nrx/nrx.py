@@ -104,6 +104,48 @@ def create_dirs(dir_path):
         error(f"[CREATE_DIRS] An error occurred while creating the directory: {str(e)}")
     return None
 
+
+def update_symlink(link_path, target_path, log_context="[SYMLINK]"):
+    """Create a symlink to a target_path if it doesn't exist yet, or update it if it points to a different target_path"""
+    # Remove an existing symlink
+    if os.path.exists(link_path):
+        if os.path.islink(link_path):
+            try:
+                os.remove(link_path)
+                debug(f"{log_context} Deleted existing symlink {link_path}")
+            except OSError as e:
+                warning(f"{log_context} Can't delete existing symlink {link_path}: {e}, skipping.")
+        else:
+            warning(f"{log_context} {link_path} exists and is not a symlink, skipping.")
+    # Create a symlink
+    if not os.path.exists(link_path):
+        try:
+            os.symlink(target_path, link_path)
+            debug(f"{log_context} Created a symlink: {link_path}")
+        except OSError as e:
+            error(f"{log_context} Can't create a symlink: {e}")
+
+
+def remove_file(file_path, log_context="[REMOVE]"):
+    """Remove a file"""
+    try:
+        os.remove(file_path)
+        debug(f"{log_context} Deleted {file_path}")
+    except OSError as e:
+        error(f"{log_context} Can't delete {file_path}: {e}")
+
+
+def unzip_file(zip_path, dir_path, log_context="[UNZIP]"):
+    """Unzip a file to a directory"""
+    try:
+        with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+            zip_ref.extractall(dir_path)
+            debug(f"{log_context} Unzipped templates to {dir_path}")
+    except (zipfile.BadZipFile, FileNotFoundError, Exception) as e:
+        error(f"{log_context} Can't unzip {zip_path}: {e}")
+
+
+
 class TimeoutHTTPAdapter(HTTPAdapter):
     """HTTPAdapter with custom API timeout"""
     def __init__(self, timeout, *args, **kwargs):
@@ -877,38 +919,15 @@ def get_templates(versions, dir_path):
             templates_path = f"{dir_path}/templates-{templates_version.lstrip('v')}"
             try:
                 with open(zip_path, 'wb') as f:
+                    # Save
                     f.write(r.content)
                     debug(f"[TEMPLATES] Downloaded templates from {templates_url}")
                     # Unzip
-                    try:
-                        with zipfile.ZipFile(zip_path, 'r') as zip_ref:
-                            zip_ref.extractall(dir_path)
-                            debug(f"[TEMPLATES] Unzipped templates to {dir_path}")
-                    except (zipfile.BadZipFile, FileNotFoundError, Exception) as e:
-                        error(f"[TEMPLATES] Can't unzip {zip_path}: {e}")
-                    # Remove an existing symlink to templates
-                    if os.path.exists(f"{dir_path}/templates"):
-                        if os.path.islink(f"{dir_path}/templates"):
-                            try:
-                                os.remove(f"{dir_path}/templates")
-                                debug(f"[TEMPLATES] Deleted existing symlink {dir_path}/templates")
-                            except OSError as e:
-                                warning(f"[TEMPLATES] Can't delete existing symlink {dir_path}/templates: {e}, skipping. Use '--templates {templates_path}' argument instead")
-                        else:
-                            warning(f"[TEMPLATES] {dir_path}/templates exists and is not a symlink, skipping. Use '--templates {templates_path}' argument instead")
-                    # Create a symlink
-                    if not os.path.exists(f"{dir_path}/templates"):
-                        try:
-                            os.symlink(templates_path, f"{dir_path}/templates")
-                            debug(f"[TEMPLATES] Created a symlink to templates: {dir_path}/templates")
-                        except OSError as e:
-                            error(f"[TEMPLATES] Can't create a symlink to templates: {e}")
+                    unzip_file(zip_path, dir_path, "[TEMPLATES]")
+                    # Create or replace a symlink to the templates directory
+                    update_symlink(f"{dir_path}/templates", templates_path, "[TEMPLATES]")
                     # Remove zip file
-                    try:
-                        os.remove(zip_path)
-                        debug(f"[TEMPLATES] Deleted {zip_path}")
-                    except OSError as e:
-                        error(f"[TEMPLATES] Can't delete {zip_path}: {e}")
+                    remove_file(zip_path, "[TEMPLATES]")
                     return templates_path
             except OSError as e:
                 error(f"[TEMPLATES] Can't write into {zip_path}", e)
