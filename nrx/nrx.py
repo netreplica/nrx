@@ -886,6 +886,11 @@ class NrxInitAction(argparse.Action):
             print(f"[INIT] Saved templates to: {templates_path}")
         else:
             error("[INIT] Can't download templates")
+        default_config_path = get_default_config(versions, env_dir)
+        if default_config_path is not None:
+            print(f"[INIT] Saved default config to: {default_config_path}. Rename it as nrx.conf and edit as needed")
+        else:
+            error("[INIT] Can't download default config")
         sys.exit(0)
 
 
@@ -916,7 +921,8 @@ def get_templates(versions, dir_path):
         if r.status_code == 200:
             zip_file = f"templates_{templates_version}.zip"
             zip_path = f"{dir_path}/{zip_file}"
-            templates_path = f"{dir_path}/templates-{templates_version.lstrip('v')}"
+            templates_file = f"templates-{templates_version.lstrip('v')}"
+            templates_path = f"{dir_path}/{templates_file}"
             try:
                 with open(zip_path, 'wb') as f:
                     # Save
@@ -925,7 +931,7 @@ def get_templates(versions, dir_path):
                     # Unzip
                     unzip_file(zip_path, dir_path, "[TEMPLATES]")
                     # Create or replace a symlink to the templates directory
-                    update_symlink(f"{dir_path}/templates", templates_path, "[TEMPLATES]")
+                    update_symlink(f"{dir_path}/templates", templates_file, "[TEMPLATES]")
                     # Remove zip file
                     remove_file(zip_path, "[TEMPLATES]")
                     return templates_path
@@ -933,6 +939,31 @@ def get_templates(versions, dir_path):
                 error(f"[TEMPLATES] Can't write into {zip_path}", e)
         else:
             error(f"[TEMPLATES] Can't download templates from {templates_url}, status code: {r.status_code}")
+    return None
+
+
+def get_default_config(versions, dir_path):
+    """Download nrx.conf from the assets of the provided release"""
+    if versions is not None and 'nrx' in versions:
+        asset_version = versions['nrx']
+        asset_url = f"{NRX_REPOSITORY}/releases/download/{asset_version}/nrx.conf"
+        try:
+            r = requests.get(asset_url, timeout=NRX_REPOSITORY_TIMEOUT)
+        except (HTTPError, Timeout, RequestException) as e:
+            error(f"[DEFAULT_CONFIG] Downloading default config from {asset_url} failed: {e}")
+        if r.status_code == 200:
+            asset_file = f"nrx.conf-{asset_version.lstrip('v')}"
+            asset_path = f"{dir_path}/{asset_file}"
+            try:
+                with open(asset_path, 'wb') as f:
+                    # Save
+                    f.write(r.content)
+                    debug(f"[DEFAULT_CONFIG] Downloaded default config from {asset_url}")
+                    return asset_path
+            except OSError as e:
+                error(f"[DEFAULT_CONFIG] Can't write into {asset_path}", e)
+        else:
+            error(f"[DEFAULT_CONFIG] Can't download default config from {asset_url}, status code: {r.status_code}")
     return None
 
 
