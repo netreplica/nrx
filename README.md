@@ -176,6 +176,15 @@ export NB_API_TOKEN='replace_with_valid_API_token'
 
 Use `--config <filename>` argument to specify a configuration file to use. The sample configuration file is provided as [`nrx.conf`](nrx.conf). Detailed information on the configuration options can be found in [CONFIGURATION.md](docs/CONFIGURATION.md).
 
+# Configuration Environment
+
+By default, **nrx** looks up for the following assets in the `$HOME/.nr` directory:
+
+* Configuration file: `nrx.conf`, unless overridden by `--config` argument
+* Templates: `templates`, which can be supplemented by additional paths with `--templates` argument
+
+To initialize the configuration environment, run `nrx.py --init`. This will create the `$HOME/.nr` directory and populate it with a configuration file example and a compatible version of the templates.
+
 # Templates
 
 **nrx** renders all topology artifacts from [Jinja2](https://jinja.palletsprojects.com/en/3.1.x/) templates the user points `nrx` to using `--templates` parameter.
