@@ -145,7 +145,7 @@ optional arguments:
   -h, --help                show this help message and exit
   -v, --version             show version number and exit
   -d, --debug               enable debug output
-  -I, --init                initialize nrx environment and exit
+  -I, --init                initialize nrx environment in $HOME/.nr and exit
   -c, --config CONFIG       configuration file, default: $HOME/.nr/nrx.conf
   -i, --input INPUT         input source: netbox (default) | cyjs
   -o, --output OUTPUT       output format: cyjs | clab | cml | graphite | d2 or any other format supported by provided templates

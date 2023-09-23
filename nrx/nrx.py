@@ -852,7 +852,7 @@ def parse_args():
     parser = argparse.ArgumentParser(prog='nrx', description="nrx - network topology exporter by netreplica")
     parser.add_argument('-v', '--version',   action='version', version=f'%(prog)s {__version__}')
     parser.add_argument('-d', '--debug',     nargs=0, action=NrxDebugAction, help='enable debug output')
-    parser.add_argument('-I', '--init',      nargs=0, action=NrxInitAction, help='initialize nrx environment and exit')
+    parser.add_argument('-I', '--init',      nargs=0, action=NrxInitAction, help=f"initialize nrx environment in $HOME/{NRX_ENV_DIR} and exit")
     parser.add_argument('-c', '--config',    required=False, help=f"configuration file, default: $HOME/{NRX_ENV_DIR}/{NRX_DEFAULT_CONFIG_NAME}",
                                              default=nrx_default_config_path())
     parser.add_argument('-i', '--input',     required=False, help='input source: netbox (default) | cyjs',
