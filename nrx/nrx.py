@@ -687,7 +687,7 @@ class NetworkTopology:
             debug(f"Found template {j2file}")
         except (OSError, jinja2.TemplateError) as e:
             m = f"Unable to open template '{j2file}' with path {self.config['templates_path']}."
-            m += f" Reason: {e}"
+            m += f" Make sure you have a compatible version of the templates repository."
             error(m)
         return template
 
