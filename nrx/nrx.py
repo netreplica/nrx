@@ -51,6 +51,7 @@ import yaml
 
 DEBUG_ON = False
 NRX_ENV_DIR = ".nr"
+NRX_DEFAULT_CONFIG_NAME = "nrx.conf"
 NRX_REPOSITORY = "https://github.com/netreplica/nrx"
 NRX_TEMPLATES_REPOSITORY = "https://github.com/netreplica/templates"
 NRX_REPOSITORY_TIMEOUT = 10
@@ -59,6 +60,10 @@ NRX_REPOSITORY_TIMEOUT = 10
 def nrx_env_path():
     """Return path to the nrx environment directory"""
     return f"{os.getenv('HOME', os.getcwd())}/{NRX_ENV_DIR}"
+
+def nrx_default_config_path():
+    """Return path to the default nrx configuration file"""
+    return f"{nrx_env_path()}/{NRX_DEFAULT_CONFIG_NAME}"
 
 def errlog(*args, **kwargs):
     """print message on STDERR"""
@@ -684,7 +689,7 @@ class NetworkTopology:
         template = None
         try:
             template = self.j2env.get_template(j2file)
-            debug(f"Found template {j2file}")
+            debug(f"Found template {template.filename}")
         except (OSError, jinja2.TemplateError) as e:
             m = f"Unable to open template '{j2file}' with path {self.config['templates_path']}."
             m += f" Make sure you have a compatible version of the templates repository."
@@ -844,7 +849,8 @@ def parse_args():
     parser.add_argument('-v', '--version',   action='version', version=f'%(prog)s {__version__}')
     parser.add_argument('-d', '--debug',     nargs=0, action=NrxDebugAction, help='enable debug output')
     parser.add_argument('-I', '--init',      nargs=0, action=NrxInitAction, help='initialize nrx environment and exit')
-    parser.add_argument('-c', '--config',    required=False, help='configuration file')
+    parser.add_argument('-c', '--config',    required=False, help=f"configuration file, default: $HOME/{NRX_ENV_DIR}/{NRX_DEFAULT_CONFIG_NAME}",
+                                             default=nrx_default_config_path())
     parser.add_argument('-i', '--input',     required=False, help='input source: netbox (default) | cyjs',
                                              default='netbox', type=arg_input_check,)
     parser.add_argument('-o', '--output',    required=False, help='output format: cyjs | clab | cml | graphite | d2 or any other format supported by provided templates')
@@ -995,7 +1001,7 @@ def load_toml_config(filename):
         'export_site': '',
         'export_tags': [],
         'export_configs': True,
-        'templates_path': ["templates", f"{nrx_env_path()}/templates"],
+        'templates_path': ["./templates", f"{nrx_env_path()}/templates"],
         'formats_map': 'formats.yaml',
         'output_dir': '',
         'nb_api_params': {
@@ -1011,7 +1017,10 @@ def load_toml_config(filename):
                     if k.upper() in nb_config:
                         config[k] = nb_config[k.upper()]
         except OSError as e:
-            error(f"Unable to open configuration file {filename}: {e}")
+            if filename == nrx_default_config_path():
+                debug(f"Can't open default configuration file, ignoring.", e)
+            else:
+                error(f"Unable to open configuration file:", e)
         except toml.decoder.TomlDecodeError as e:
             error(f"Unable to parse configuration file {filename}: {e}")
         except argparse.ArgumentTypeError as e:

@@ -146,7 +146,7 @@ optional arguments:
   -v, --version             show version number and exit
   -d, --debug               enable debug output
   -I, --init                initialize nrx environment and exit
-  -c, --config CONFIG       configuration file
+  -c, --config CONFIG       configuration file, default: $HOME/.nr/nrx.conf
   -i, --input INPUT         input source: netbox (default) | cyjs
   -o, --output OUTPUT       output format: cyjs | clab | cml | graphite | d2 or any other format supported by provided templates
   -a, --api API             netbox API URL
@@ -174,7 +174,7 @@ export NB_API_TOKEN='replace_with_valid_API_token'
 
 ## Configuration file
 
-Use `--config <filename>` argument to specify a configuration file to use. The sample configuration file is provided as [`nrx.conf`](nrx.conf). Detailed information on the configuration options can be found in [CONFIGURATION.md](docs/CONFIGURATION.md).
+Use `--config <filename>` argument to specify a configuration file to use. By default, **nrx** uses `$HOME/.nr/nrx.conf` if such file exists. The sample configuration file is provided as [`nrx.conf`](nrx.conf). Detailed information on the configuration options can be found in [CONFIGURATION.md](docs/CONFIGURATION.md).
 
 # Configuration Environment
 
