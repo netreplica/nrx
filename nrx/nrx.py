@@ -52,6 +52,7 @@ import yaml
 DEBUG_ON = False
 NRX_CONFIG_DIR = ".nr"
 NRX_DEFAULT_CONFIG_NAME = "nrx.conf"
+NRX_VERSIONS_NAME = "versions.yaml"
 NRX_REPOSITORY = "https://github.com/netreplica/nrx"
 NRX_TEMPLATES_REPOSITORY = "https://github.com/netreplica/templates"
 NRX_REPOSITORY_TIMEOUT = 10
@@ -893,7 +894,7 @@ class NrxInitAction(argparse.Action):
         config_dir_path = nrx_config_dir()
         print(f"[INIT] Initializing configuration directory in {config_dir_path}")
         config_dir = create_dirs(config_dir_path)
-        # Get asset matrix versions.yaml
+        # Get asset NRX_VERSIONS_NAME with versions compatibility matrix
         versions = get_versions(__version__)
         templates_path = get_templates(versions, config_dir)
         if templates_path is not None:
@@ -909,8 +910,8 @@ class NrxInitAction(argparse.Action):
 
 
 def get_versions(nrx_version):
-    """Download and parse versions.yaml asset file for a specific nrx version"""
-    versions_url = f"{NRX_REPOSITORY}/releases/download/{nrx_version}/versions.yaml"
+    """Download and parse NRX_VERSIONS_NAME asset file for a specific nrx version"""
+    versions_url = f"{NRX_REPOSITORY}/releases/download/{nrx_version}/{NRX_VERSIONS_NAME}"
     try:
         r = requests.get(versions_url, timeout=NRX_REPOSITORY_TIMEOUT)
     except (HTTPError, Timeout, RequestException) as e:
