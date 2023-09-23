@@ -890,17 +890,17 @@ class NrxInitAction(argparse.Action):
     """Argparse action to initialize configuration directory"""
     def __call__(self, parser, namespace, values, option_string=None):
         # Create a NRX_CONFIG_DIR directory in the user's home directory, or in the current directory if HOME is not set
-        env_path = nrx_config_dir()
-        print(f"[INIT] Initializing configuration directory in {env_path}")
-        env_dir = create_dirs(env_path)
+        config_dir_path = nrx_config_dir()
+        print(f"[INIT] Initializing configuration directory in {config_dir_path}")
+        config_dir = create_dirs(config_dir_path)
         # Get asset matrix versions.yaml
         versions = get_versions(__version__)
-        templates_path = get_templates(versions, env_dir)
+        templates_path = get_templates(versions, config_dir)
         if templates_path is not None:
             print(f"[INIT] Saved templates to: {templates_path}")
         else:
             error("[INIT] Can't download templates")
-        default_config_path = get_default_config(versions, env_dir)
+        default_config_path = get_default_config(versions, config_dir)
         if default_config_path is not None:
             print(f"[INIT] Saved default config to: {default_config_path}. Rename it as nrx.conf and edit as needed")
         else:
