@@ -690,9 +690,13 @@ class NetworkTopology:
         try:
             template = self.j2env.get_template(j2file)
             debug(f"Found template {template.filename}")
-        except (OSError, jinja2.TemplateError) as e:
+        except OSError:
             m = f"Unable to open template '{j2file}' with path {self.config['templates_path']}."
-            m += f" Make sure you have a compatible version of the templates repository."
+            m += " Make sure you have a compatible version of the templates repository."
+            error(m)
+        except jinja2.TemplateError as e:
+            m = f"Unable to open use '{j2file}' with path {self.config['templates_path']}."
+            m += f" Reason: {e}."
             error(m)
         return template
 
@@ -1018,9 +1022,9 @@ def load_toml_config(filename):
                         config[k] = nb_config[k.upper()]
         except OSError as e:
             if filename == nrx_default_config_path():
-                debug(f"Can't open default configuration file, ignoring.", e)
+                debug("Can't open default configuration file, ignoring.", e)
             else:
-                error(f"Unable to open configuration file:", e)
+                error("Unable to open configuration file:", e)
         except toml.decoder.TomlDecodeError as e:
             error(f"Unable to parse configuration file {filename}: {e}")
         except argparse.ArgumentTypeError as e:
