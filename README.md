@@ -35,6 +35,7 @@ Find detailed release notes on the [Releases page](https://github.com/netreplica
    * [Command-line arguments](#command-line-arguments)
    * [Environmental variables](#environmental-variables)
    * [Configuration file](#configuration-file)
+   * [Configuration environment](#configuration-environment)
 * [Templates](#templates)
 * [How to use](#how-to-use)
    * [Containerlab example](#containerlab-example)
@@ -176,7 +177,7 @@ export NB_API_TOKEN='replace_with_valid_API_token'
 
 Use `--config <filename>` argument to specify a configuration file to use. By default, **nrx** uses `$HOME/.nr/nrx.conf` if such file exists. The sample configuration file is provided as [`nrx.conf`](nrx.conf). Detailed information on the configuration options can be found in [CONFIGURATION.md](docs/CONFIGURATION.md).
 
-# Configuration Environment
+## Configuration environment
 
 By default, **nrx** looks up for the following assets in the `$HOME/.nr` directory:
 
