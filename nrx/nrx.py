@@ -56,6 +56,10 @@ NRX_TEMPLATES_REPOSITORY = "https://github.com/netreplica/templates"
 NRX_REPOSITORY_TIMEOUT = 10
 
 
+def nrx_env_path():
+    """Return path to the nrx environment directory"""
+    return f"{os.getenv('HOME', os.getcwd())}/{NRX_ENV_DIR}"
+
 def errlog(*args, **kwargs):
     """print message on STDERR"""
     print(*args, file=sys.stderr, **kwargs)
@@ -876,7 +880,7 @@ class NrxInitAction(argparse.Action):
     """Argparse action to initialize nrx environment"""
     def __call__(self, parser, namespace, values, option_string=None):
         # Create a NRX_ENV_DIR directory in the user's home directory, or in the current directory if HOME is not set
-        env_path = f"{os.getenv('HOME', os.getcwd())}/{NRX_ENV_DIR}"
+        env_path = nrx_env_path()
         print(f"[INIT] Initializing nrx environment in {env_path}")
         env_dir = create_dirs(env_path)
         # Get asset matrix versions.yaml
@@ -991,7 +995,7 @@ def load_toml_config(filename):
         'export_site': '',
         'export_tags': [],
         'export_configs': True,
-        'templates_path': ['.'],
+        'templates_path': ["templates", f"{nrx_env_path()}/templates"],
         'formats_map': 'formats.yaml',
         'output_dir': '',
         'nb_api_params': {
