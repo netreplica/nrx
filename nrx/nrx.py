@@ -902,7 +902,7 @@ class NrxInitAction(argparse.Action):
             error("[INIT] Can't download templates")
         default_config_path = get_default_config(versions, config_dir)
         if default_config_path is not None:
-            print(f"[INIT] Saved default config to: {default_config_path}. Rename it as nrx.conf and edit as needed")
+            print(f"[INIT] Saved default config to: {default_config_path}. Rename it as {NRX_DEFAULT_CONFIG_NAME} and edit as needed")
         else:
             error("[INIT] Can't download default config")
         sys.exit(0)
@@ -957,16 +957,16 @@ def get_templates(versions, dir_path):
 
 
 def get_default_config(versions, dir_path):
-    """Download nrx.conf from the assets of the provided release"""
+    """Download NRX_DEFAULT_CONFIG_NAME from the assets of the provided release"""
     if versions is not None and 'nrx' in versions:
         asset_version = versions['nrx']
-        asset_url = f"{NRX_REPOSITORY}/releases/download/{asset_version}/nrx.conf"
+        asset_url = f"{NRX_REPOSITORY}/releases/download/{asset_version}/{NRX_DEFAULT_CONFIG_NAME}"
         try:
             r = requests.get(asset_url, timeout=NRX_REPOSITORY_TIMEOUT)
         except (HTTPError, Timeout, RequestException) as e:
             error(f"[DEFAULT_CONFIG] Downloading default config from {asset_url} failed: {e}")
         if r.status_code == 200:
-            asset_file = f"nrx.conf-{asset_version.lstrip('v')}"
+            asset_file = f"{NRX_DEFAULT_CONFIG_NAME}-{asset_version.lstrip('v')}"
             asset_path = f"{dir_path}/{asset_file}"
             try:
                 with open(asset_path, 'wb') as f:
