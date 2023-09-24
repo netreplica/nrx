@@ -35,6 +35,7 @@ Find detailed release notes on the [Releases page](https://github.com/netreplica
    * [Command-line arguments](#command-line-arguments)
    * [Environmental variables](#environmental-variables)
    * [Configuration file](#configuration-file)
+   * [Configuration directory](#configuration-directory)
 * [Templates](#templates)
 * [How to use](#how-to-use)
    * [Containerlab example](#containerlab-example)
@@ -143,7 +144,10 @@ nrx - network topology exporter by netreplica
 
 optional arguments:
   -h, --help                show this help message and exit
-  -c, --config CONFIG       configuration file
+  -v, --version             show version number and exit
+  -d, --debug               enable debug output
+  -I, --init                initialize configuration directory in $HOME/.nr and exit
+  -c, --config CONFIG       configuration file, default: $HOME/.nr/nrx.conf
   -i, --input INPUT         input source: netbox (default) | cyjs
   -o, --output OUTPUT       output format: cyjs | clab | cml | graphite | d2 or any other format supported by provided templates
   -a, --api API             netbox API URL
@@ -151,7 +155,6 @@ optional arguments:
   -t, --tags TAGS           netbox tags to export, for multiple tags use a comma-separated list: tag1,tag2,tag3 (uses AND logic)
   -n, --noconfigs           disable device configuration export (enabled by default)
   -k, --insecure            allow insecure server connections when using TLS
-  -d, --debug               enable debug output
   -f, --file FILE           file with the network graph to import
   -T, --templates TEMPLATES directory with template files, will be prepended to TEMPLATES_PATH list in the configuration file
   -D, --dir DIR             save files into directory DIR (topology name is used by default). nested relative and absolute paths are OK
@@ -172,7 +175,16 @@ export NB_API_TOKEN='replace_with_valid_API_token'
 
 ## Configuration file
 
-Use `--config <filename>` argument to specify a configuration file to use. The sample configuration file is provided as [`nrx.conf`](nrx.conf). Detailed information on the configuration options can be found in [CONFIGURATION.md](docs/CONFIGURATION.md).
+Use `--config <filename>` argument to specify a configuration file to use. By default, **nrx** uses `$HOME/.nr/nrx.conf` if such file exists. The sample configuration file is provided as [`nrx.conf`](nrx.conf). Detailed information on the configuration options can be found in [CONFIGURATION.md](docs/CONFIGURATION.md).
+
+## Configuration directory
+
+By default, **nrx** looks up for the following assets in the `$HOME/.nr` directory:
+
+* Configuration file: `nrx.conf`, unless overridden by `--config` argument
+* Templates: `templates`, which can be supplemented by additional paths with `--templates` argument
+
+To initialize the configuration directory, run `nrx.py --init`. This will create the `$HOME/.nr` folder and populate it with a configuration file example and a compatible version of the templates.
 
 # Templates
 

@@ -27,12 +27,16 @@ nrx reads a network topology graph from NetBox DCIM system and exports it in one
 It can also read the topology graph previously saved as a CYJS file to convert it into the one of supported network emulation formats.
 """
 
+__version__ = 'v0.4.0'
+__author__ = 'Alex Bortok and Netreplica Team'
+
 import os
 import sys
 import argparse
 import json
 import math
 import ast
+import zipfile
 import toml
 import pynetbox
 import requests
@@ -46,6 +50,21 @@ import yaml
 # DEFINE GLOBAL VARs HERE
 
 DEBUG_ON = False
+NRX_CONFIG_DIR = ".nr"
+NRX_DEFAULT_CONFIG_NAME = "nrx.conf"
+NRX_VERSIONS_NAME = "versions.yaml"
+NRX_REPOSITORY = "https://github.com/netreplica/nrx"
+NRX_TEMPLATES_REPOSITORY = "https://github.com/netreplica/templates"
+NRX_REPOSITORY_TIMEOUT = 10
+
+
+def nrx_config_dir():
+    """Return path to the nrx configuration directory"""
+    return f"{os.getenv('HOME', os.getcwd())}/{NRX_CONFIG_DIR}"
+
+def nrx_default_config_path():
+    """Return path to the default nrx configuration file"""
+    return f"{nrx_config_dir()}/{NRX_DEFAULT_CONFIG_NAME}"
 
 def errlog(*args, **kwargs):
     """print message on STDERR"""
@@ -85,15 +104,57 @@ def create_dirs(dir_path):
     try:
         os.makedirs(dir_path)
         abs_path = os.path.abspath(dir_path)
-        debug(f"Created directory '{dir_path}'")
+        debug(f"[CREATE_DIRS] Created directory '{dir_path}'")
         return abs_path
     except FileExistsError:
         abs_path = os.path.abspath(dir_path)
-        debug(f"Directory '{dir_path}' already exists, will reuse")
+        debug(f"[CREATE_DIRS] Directory '{dir_path}' already exists, will reuse")
         return abs_path
     except OSError as e:
-        error(f"An error occurred while creating the directory: {str(e)}")
+        error(f"[CREATE_DIRS] An error occurred while creating the directory: {str(e)}")
     return None
+
+
+def update_symlink(link_path, target_path, log_context="[SYMLINK]"):
+    """Create a symlink to a target_path if it doesn't exist yet, or update it if it points to a different target_path"""
+    # Remove an existing symlink
+    if os.path.exists(link_path):
+        if os.path.islink(link_path):
+            try:
+                os.remove(link_path)
+                debug(f"{log_context} Deleted existing symlink {link_path}")
+            except OSError as e:
+                warning(f"{log_context} Can't delete existing symlink {link_path}: {e}, skipping.")
+        else:
+            warning(f"{log_context} {link_path} exists and is not a symlink, skipping.")
+    # Create a symlink
+    if not os.path.exists(link_path):
+        try:
+            os.symlink(target_path, link_path)
+            debug(f"{log_context} Created a symlink: {link_path}")
+        except OSError as e:
+            error(f"{log_context} Can't create a symlink: {e}")
+
+
+def remove_file(file_path, log_context="[REMOVE]"):
+    """Remove a file"""
+    try:
+        os.remove(file_path)
+        debug(f"{log_context} Deleted {file_path}")
+    except OSError as e:
+        error(f"{log_context} Can't delete {file_path}: {e}")
+
+
+def unzip_file(zip_path, dir_path, log_context="[UNZIP]"):
+    """Unzip a file to a directory"""
+    try:
+        with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+            zip_ref.extractall(dir_path)
+            debug(f"{log_context} Unzipped templates to {dir_path}")
+    except (zipfile.BadZipFile, FileNotFoundError, Exception) as e:
+        error(f"{log_context} Can't unzip {zip_path}: {e}")
+
+
 
 class TimeoutHTTPAdapter(HTTPAdapter):
     """HTTPAdapter with custom API timeout"""
@@ -629,10 +690,14 @@ class NetworkTopology:
         template = None
         try:
             template = self.j2env.get_template(j2file)
-            debug(f"Found template {j2file}")
-        except (OSError, jinja2.TemplateError) as e:
+            debug(f"Found template {template.filename}")
+        except OSError:
             m = f"Unable to open template '{j2file}' with path {self.config['templates_path']}."
-            m += f" Reason: {e}"
+            m += " Make sure you have a compatible version of the templates repository."
+            error(m)
+        except jinja2.TemplateError as e:
+            m = f"Unable to open use '{j2file}' with path {self.config['templates_path']}."
+            m += f" Reason: {e}."
             error(m)
         return template
 
@@ -786,7 +851,11 @@ def arg_input_check(s):
 def parse_args():
     """CLI arguments parser"""
     parser = argparse.ArgumentParser(prog='nrx', description="nrx - network topology exporter by netreplica")
-    parser.add_argument('-c', '--config',    required=False, help='configuration file')
+    parser.add_argument('-v', '--version',   action='version', version=f'%(prog)s {__version__}')
+    parser.add_argument('-d', '--debug',     nargs=0, action=NrxDebugAction, help='enable debug output')
+    parser.add_argument('-I', '--init',      nargs=0, action=NrxInitAction, help=f"initialize configuration directory in $HOME/{NRX_CONFIG_DIR} and exit")
+    parser.add_argument('-c', '--config',    required=False, help=f"configuration file, default: $HOME/{NRX_CONFIG_DIR}/{NRX_DEFAULT_CONFIG_NAME}",
+                                             default=nrx_default_config_path())
     parser.add_argument('-i', '--input',     required=False, help='input source: netbox (default) | cyjs',
                                              default='netbox', type=arg_input_check,)
     parser.add_argument('-o', '--output',    required=False, help='output format: cyjs | clab | cml | graphite | d2 or any other format supported by provided templates')
@@ -797,8 +866,6 @@ def parse_args():
                                              action=argparse.BooleanOptionalAction)
     parser.add_argument('-k', '--insecure',  required=False, help='allow insecure server connections when using TLS',
                                              action=argparse.BooleanOptionalAction)
-    parser.add_argument('-d', '--debug',     required=False, help='enable debug output',
-                                             action=argparse.BooleanOptionalAction)
     parser.add_argument('-f', '--file',      required=False, help='file with the network graph to import')
     parser.add_argument('-T', '--templates', required=False, help='directory with template files, \
                                                                    will be prepended to TEMPLATES_PATH list \
@@ -808,11 +875,112 @@ def parse_args():
                                                                    (topology name is used by default)')
 
     args = parser.parse_args()
-    global DEBUG_ON
-    DEBUG_ON = args.debug is True
     debug(f"arguments {args}")
 
     return args
+
+
+class NrxDebugAction(argparse.Action):
+    """Argparse action to turn on debug output"""
+    def __call__(self, parser, namespace, values, option_string=None):
+        global DEBUG_ON
+        DEBUG_ON = True
+
+
+class NrxInitAction(argparse.Action):
+    """Argparse action to initialize configuration directory"""
+    def __call__(self, parser, namespace, values, option_string=None):
+        # Create a NRX_CONFIG_DIR directory in the user's home directory, or in the current directory if HOME is not set
+        config_dir_path = nrx_config_dir()
+        print(f"[INIT] Initializing configuration directory in {config_dir_path}")
+        config_dir = create_dirs(config_dir_path)
+        # Get asset NRX_VERSIONS_NAME with versions compatibility matrix
+        versions = get_versions(__version__)
+        templates_path = get_templates(versions, config_dir)
+        if templates_path is not None:
+            print(f"[INIT] Saved templates to: {templates_path}")
+        else:
+            error("[INIT] Can't download templates")
+        default_config_path = get_default_config(versions, config_dir)
+        if default_config_path is not None:
+            print(f"[INIT] Saved default config to: {default_config_path}. Rename it as {NRX_DEFAULT_CONFIG_NAME} and edit as needed")
+        else:
+            error("[INIT] Can't download default config")
+        sys.exit(0)
+
+
+def get_versions(nrx_version):
+    """Download and parse NRX_VERSIONS_NAME asset file for a specific nrx version"""
+    versions_url = f"{NRX_REPOSITORY}/releases/download/{nrx_version}/{NRX_VERSIONS_NAME}"
+    try:
+        r = requests.get(versions_url, timeout=NRX_REPOSITORY_TIMEOUT)
+    except (HTTPError, Timeout, RequestException) as e:
+        error(f"[VERSIONS] Downloading versions map from {versions_url} failed: {e}")
+    if r.status_code == 200:
+        versions = yaml.safe_load(r.text)
+        debug(f"[VERSIONS] Retrieved versions map for {nrx_version}:", versions)
+        return versions
+    error(f"[VERSIONS] Can't download versions map from {versions_url}, status code: {r.status_code}")
+    return None
+
+
+def get_templates(versions, dir_path):
+    """Download netreplica/templates version from the versions dict provided as a parameter"""
+    if versions is not None and 'templates' in versions:
+        templates_version = versions['templates']
+        templates_url = f"{NRX_TEMPLATES_REPOSITORY}/archive/refs/tags/{templates_version}.zip"
+        try:
+            r = requests.get(templates_url, timeout=NRX_REPOSITORY_TIMEOUT)
+        except (HTTPError, Timeout, RequestException) as e:
+            error(f"[TEMPLATES] Downloading templates from {templates_url} failed: {e}")
+        if r.status_code == 200:
+            zip_file = f"templates_{templates_version}.zip"
+            zip_path = f"{dir_path}/{zip_file}"
+            templates_file = f"templates-{templates_version.lstrip('v')}"
+            templates_path = f"{dir_path}/{templates_file}"
+            try:
+                with open(zip_path, 'wb') as f:
+                    # Save
+                    f.write(r.content)
+                    debug(f"[TEMPLATES] Downloaded templates from {templates_url}")
+                    # Unzip
+                    unzip_file(zip_path, dir_path, "[TEMPLATES]")
+                    # Create or replace a symlink to the templates directory
+                    update_symlink(f"{dir_path}/templates", templates_file, "[TEMPLATES]")
+                    # Remove zip file
+                    remove_file(zip_path, "[TEMPLATES]")
+                    return templates_path
+            except OSError as e:
+                error(f"[TEMPLATES] Can't write into {zip_path}", e)
+        else:
+            error(f"[TEMPLATES] Can't download templates from {templates_url}, status code: {r.status_code}")
+    return None
+
+
+def get_default_config(versions, dir_path):
+    """Download NRX_DEFAULT_CONFIG_NAME from the assets of the provided release"""
+    if versions is not None and 'nrx' in versions:
+        asset_version = versions['nrx']
+        asset_url = f"{NRX_REPOSITORY}/releases/download/{asset_version}/{NRX_DEFAULT_CONFIG_NAME}"
+        try:
+            r = requests.get(asset_url, timeout=NRX_REPOSITORY_TIMEOUT)
+        except (HTTPError, Timeout, RequestException) as e:
+            error(f"[DEFAULT_CONFIG] Downloading default config from {asset_url} failed: {e}")
+        if r.status_code == 200:
+            asset_file = f"{NRX_DEFAULT_CONFIG_NAME}-{asset_version.lstrip('v')}"
+            asset_path = f"{dir_path}/{asset_file}"
+            try:
+                with open(asset_path, 'wb') as f:
+                    # Save
+                    f.write(r.content)
+                    debug(f"[DEFAULT_CONFIG] Downloaded default config from {asset_url}")
+                    return asset_path
+            except OSError as e:
+                error(f"[DEFAULT_CONFIG] Can't write into {asset_path}", e)
+        else:
+            error(f"[DEFAULT_CONFIG] Can't download default config from {asset_url}, status code: {r.status_code}")
+    return None
+
 
 def load_toml_config(filename):
     """Load configuration from a config file in TOML format"""
@@ -838,7 +1006,7 @@ def load_toml_config(filename):
         'export_site': '',
         'export_tags': [],
         'export_configs': True,
-        'templates_path': ['.'],
+        'templates_path': ["./templates", f"{nrx_config_dir()}/templates"],
         'formats_map': 'formats.yaml',
         'output_dir': '',
         'nb_api_params': {
@@ -854,7 +1022,10 @@ def load_toml_config(filename):
                     if k.upper() in nb_config:
                         config[k] = nb_config[k.upper()]
         except OSError as e:
-            error(f"Unable to open configuration file {filename}: {e}")
+            if filename == nrx_default_config_path():
+                debug("Can't open default configuration file, ignoring.", e)
+            else:
+                error("Unable to open configuration file:", e)
         except toml.decoder.TomlDecodeError as e:
             error(f"Unable to parse configuration file {filename}: {e}")
         except argparse.ArgumentTypeError as e:
