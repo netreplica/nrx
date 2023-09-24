@@ -483,7 +483,8 @@ class NetworkTopology:
             'kinds':           {'_path_': f"{self.config['output_format']}/kinds", '_description_': 'node kind'}
         }
         self.files_path = '.'
-        self.config['format'] = self._read_formats_map(config['formats_map'])
+        if self.config['output_format'] != 'cyjs':
+            self.config['format'] = self._read_formats_map(config['formats_map'])
 
     def build_from_file(self, file):
         self._read_network_graph(file)
