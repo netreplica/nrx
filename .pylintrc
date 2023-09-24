@@ -6,4 +6,4 @@ max-args=7
 max-attributes=10
 [FORMAT]
 # temporary mix until we break the code into smaller files
-max-module-lines=1200
+max-module-lines=1500

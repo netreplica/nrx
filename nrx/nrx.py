@@ -1112,6 +1112,7 @@ def load_toml_config(filename):
         'export_configs': True,
         'templates_path': ["./templates", f"{nrx_config_dir()}/templates"],
         'formats_map': 'formats.yaml',
+        'platform_map': 'templates/platform_map.yml',
         'output_dir': '',
         'nb_api_params': {
             'interfaces_block_size':    4,
