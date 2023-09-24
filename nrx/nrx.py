@@ -154,8 +154,6 @@ def unzip_file(zip_path, dir_path, log_context="[UNZIP]"):
     except (zipfile.BadZipFile, FileNotFoundError, Exception) as e:
         error(f"{log_context} Can't unzip {zip_path}: {e}")
 
-
-
 class TimeoutHTTPAdapter(HTTPAdapter):
     """HTTPAdapter with custom API timeout"""
     def __init__(self, timeout, *args, **kwargs):
@@ -537,13 +535,7 @@ class NetworkTopology:
     def _read_formats_map(self, file):
         """Read format_map from a YAML file to initialize output parameters"""
         debug(f"[FORMAT] Reading format map from: {file}")
-        template = self._get_template_with_file(file)
-        try:
-            formats_map = yaml.load(template.render(self.config), Loader=yaml.SafeLoader)
-        except jinja2.TemplateError as e:
-            error(f"[FORMAT] Rendering {file} template as format map: {e}")
-        except yaml.scanner.ScannerError as e:
-            error("[FORMAT] Can't parse formats map:", e)
+        formats_map = self._load_yaml_from_template_file(file, "[FORMAT]")
         if 'type' in formats_map and formats_map['type'] == 'formats_map' and 'version' in formats_map:
             if formats_map['version'] not in ['v1']:
                 error(f"[FORMAT] Unsupported version of {file} as format map")
@@ -783,6 +775,15 @@ class NetworkTopology:
             error(m)
         return template
 
+
+    def _load_yaml_from_template_file(self, file, log_context = "[LOAD_YAML]"):
+        template = self._get_template_with_file(file)
+        try:
+            return yaml.load(template.render(self.config), Loader=yaml.SafeLoader)
+        except jinja2.TemplateError as e:
+            error(f"{log_context} Rendering {file} template as format map: {e}")
+        except yaml.scanner.ScannerError as e:
+            error(f"{log_context} Can't parse {file} as YAML:", e)
 
 
     def _get_template_params(self, ttype, platform):
