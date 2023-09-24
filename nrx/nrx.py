@@ -489,32 +489,13 @@ class NetworkTopology:
     def _read_platform_map(self, file):
         """Read platform_map from a YAML file to locate templated for given platforms"""
         print(f"Reading platform map from: {file}")
-        platform_map = {}
-        try:
-            with open(file, 'r', encoding='utf-8') as f:
-                platform_map = yaml.load(f.read(), Loader=yaml.SafeLoader)
-                f.close()
-        except OSError as e:
-            error("Can't read platform map:", e)
-        except yaml.scanner.ScannerError as e:
-            error("Can't parse platform map:", e)
-        return platform_map
-
-
-
-    def _read_platform_map(self, file):
-        """Read platform_map from a YAML file to locate templated for given platforms"""
-        print(f"Reading platform map from: {file}")
-        platform_map = {}
-        try:
-            with open(file, 'r', encoding='utf-8') as f:
-                platform_map = yaml.load(f.read(), Loader=yaml.SafeLoader)
-                f.close()
-        except OSError as e:
-            error("Can't read platform map:", e)
-        except yaml.scanner.ScannerError as e:
-            error("Can't parse platform map:", e)
-        return platform_map
+        platform_map = self._load_yaml_from_template_file(file, "[PLATFORM]")
+        if 'type' in platform_map and platform_map['type'] == 'platform_map' and 'version' in platform_map:
+            if platform_map['version'] not in ['v1']:
+                error(f"[PLATFORM] Unsupported version of {file} as platform map")
+            return platform_map
+        error(f"[PLATFORM] Unsupported 'type' in {file} under {self.config['templates_path']}, has to be a 'platform_map' with a 'version'")
+        return {}
 
 
     def build_from_file(self, file):
@@ -784,6 +765,7 @@ class NetworkTopology:
             error(f"{log_context} Rendering {file} template as format map: {e}")
         except yaml.scanner.ScannerError as e:
             error(f"{log_context} Can't parse {file} as YAML:", e)
+        return None
 
 
     def _get_template_params(self, ttype, platform):
@@ -1113,7 +1095,7 @@ def load_toml_config(filename):
         'export_configs': True,
         'templates_path': ["./templates", f"{nrx_config_dir()}/templates"],
         'formats_map': 'formats.yaml',
-        'platform_map': 'templates/platform_map.yml',
+        'platform_map': 'platform_map.yml',
         'output_dir': '',
         'nb_api_params': {
             'interfaces_block_size':    4,
