@@ -5,4 +5,5 @@ disable=C0103,C0301,R0903,C0116,W0603,W0718
 max-args=7
 max-attributes=10
 [FORMAT]
+# temporary mix until we break the code into smaller files
 max-module-lines=1200
