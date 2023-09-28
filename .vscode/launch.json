@@ -11,7 +11,7 @@
             "cwd": "${workspaceFolder}",
             "program": "nrx.py",
             "args": [
-                "-i", "cyjs", "-f", "tests/site1/data/site1.cyjs", "-o", "clab", "-d", "-D", "/tmp", "-P", "../templates/platform_map.yml", "-T", "../templates"
+                "-i", "cyjs", "-f", "tests/site1/data/site1.cyjs", "-o", "clab", "-d", "-D", "/tmp", "-T", "../templates"
             ],
             "console": "integratedTerminal",
             "justMyCode": true
@@ -23,7 +23,7 @@
             "cwd": "${workspaceFolder}",
             "program": "nrx.py",
             "args": [
-                "-i", "cyjs", "-f", "tests/h88/data/HQ.cyjs", "-o", "clab", "-d", "-D", "/tmp", "-P", "../templates/platform_map.yml", "-T", "../templates"
+                "-i", "cyjs", "-f", "tests/h88/data/HQ.cyjs", "-o", "clab", "-d", "-D", "/tmp", "-T", "../templates"
             ],
             "console": "integratedTerminal",
             "justMyCode": true
