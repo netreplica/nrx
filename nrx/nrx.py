@@ -973,7 +973,7 @@ def parse_args():
     parser.add_argument('-k', '--insecure',  required=False, help='allow insecure server connections when using TLS',
                                              action=argparse.BooleanOptionalAction)
     parser.add_argument('-f', '--file',      required=False, help='file with the network graph to import')
-    parser.add_argument('-M', '--map',       required=False, help=f"file with platform mappings to templates (default: {NRX_MAP_NAME} in templates folder)")
+    parser.add_argument('-M', '--map',       required=False, help=f"file with platform mappings to node parameters (default: {NRX_MAP_NAME} in templates folder)")
     parser.add_argument('-T', '--templates', required=False, help='directory with template files, \
                                                                    will be prepended to TEMPLATES_PATH list \
                                                                    in the configuration file')

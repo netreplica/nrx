@@ -22,7 +22,7 @@ This project is in early phase. We're experimenting with the best ways to automa
 
 The last release adds the following capabilities:
 * User-defined output formats using Jinja2 templates
-* Mapping between NetBox platform values and node templates via `platform_map.yml` file
+* Mapping between NetBox platform values and node parameters via `platform_map.yml` file
 
 Find detailed release notes on the [Releases page](https://github.com/netreplica/nrx/releases).
 
@@ -70,6 +70,7 @@ Export capabilities:
 * Exports the graph in formats for visualization with Graphite or D2
 * User-defined output formats using Jinja2 templates
 * Uses NetBox Device Platform `slug` field to identify node templates when rendering the export file
+* Customizable mapping between NetBox Platform values and node parameters via `platform_map.yml` file
 * Creates mapping between real interface names and interface names used by the supported lab tools
 * Calculates `level` and `rank` values for each node based on Device Role to help visualize the topology
 * Exports the graph into CYJS format that can be later converted into a topology definition file, or used by 3rd party software
@@ -158,7 +159,7 @@ optional arguments:
   -k, --insecure            allow insecure server connections when using TLS
   -f, --file FILE           file with the network graph to import
   -T, --templates TEMPLATES directory with template files, will be prepended to TEMPLATES_PATH list in the configuration file
-  -M, --map MAP             file with platform mappings to templates (default: platform_map.yml in templates folder)
+  -M, --map MAP             file with platform mappings to node parameters (default: platform_map.yml in templates folder)
   -D, --dir DIR             save files into directory DIR (topology name is used by default). nested relative and absolute paths are OK
 ```
 
@@ -192,11 +193,13 @@ To initialize the configuration directory, run `nrx.py --init`. This will create
 
 **nrx** renders all topology artifacts from [Jinja2](https://jinja.palletsprojects.com/en/3.1.x/) templates the user points `nrx` to using `--templates` parameter.
 
-By default, **nrx** searches for the template files in the `templates` folder in the current directory. You can provide a list of folders to search for the templates via `TEMPLATES_PATH` parameter in the [configuration file](#configuration-file), or use `--templates` argument.
+By default, **nrx** searches for the template files first in the `templates` folder in the current directory, followed by `$HOME/.nr/templates`. You can provide a list of folders to search for the templates via `TEMPLATES_PATH` parameter in the [configuration file](#configuration-file), or use `--templates` argument.
 
 Depending on the desired output format, the required templates are taken from a matching subfolder. For example, if the output format is `clab` for Containerlab, then templates are taken from `clab` subfolder. For Cisco Modelling Labs `cml` format the subfolder would be `cml`.
 
 A user can create their own templates for any output format and store them in a subfolder with a format name they would use for `--output` argument. To make the new output format available to **nrx**, an entry describing basic properties of the format must be added to [`formats.yaml`](templates/formats.yaml) file in the `templates` folder.
+
+**nrx** uses NetBox Device Platform `slug` field to identify which node templates to use for each device. If a template with a name matching the platform value exists, it would be used by default. Since naming of the platforms is unique for every NetBox deployment, it is not possible to create a generic library of templates that could work out-of-the box for all users. Instead, **nrx** uses a mapping file `platform_map.yml` to identify which template to use for each platform, with possible additional parameters.
 
 Most templates are unique for each node `kind`. Value of `kind` is taken from NetBox `device.platform.slug` field. The full list of template search rules:
 

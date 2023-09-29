@@ -26,6 +26,8 @@ OUTPUT_FORMAT        = 'clab'
 OUTPUT_DIR           = 'demo'
 # Templates path
 TEMPLATES_PATH       = ['templates']
+# Path to platform map file
+PLATFORM_MAP         = 'platform_map.yml'
 
 # List of NetBox Device Roles to export
 EXPORT_DEVICE_ROLES  = ['router', 'core-switch', 'distribution-switch', 'access-switch', 'tor-switch', 'server']
