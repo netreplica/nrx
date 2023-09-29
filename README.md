@@ -201,7 +201,7 @@ A user can create their own templates for any output format and store them in a 
 
 **nrx** uses NetBox Device Platform `slug` field to identify which node templates to use for each device. If a template with a name matching the platform value exists, it would be used by default. Since naming of the platforms is unique for every NetBox deployment, it is not possible to create a generic library of templates that could work out-of-the box for all users. Instead, **nrx** uses a mapping file `platform_map.yml` to identify which template to use for each platform, with possible additional parameters.
 
-Most templates are unique for each node `kind`. Value of `kind` is taken from NetBox `device.platform.slug` field. The full list of template search rules:
+The full list of template search rules:
 
 * `<format>/topology.j2`: template for the final topology file. Mandatory.
 * `<format>/kinds/<kind>.j2`: templates for individual node entries in the topology file, with `default.j2` being mandatory as a fallback template.
