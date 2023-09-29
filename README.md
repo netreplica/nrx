@@ -22,6 +22,7 @@ This project is in early phase. We're experimenting with the best ways to automa
 
 The last release adds the following capabilities:
 * User-defined output formats using Jinja2 templates
+* Mapping between NetBox platform values and node templates via `platform_map.yml` file
 
 Find detailed release notes on the [Releases page](https://github.com/netreplica/nrx/releases).
 
@@ -157,6 +158,7 @@ optional arguments:
   -k, --insecure            allow insecure server connections when using TLS
   -f, --file FILE           file with the network graph to import
   -T, --templates TEMPLATES directory with template files, will be prepended to TEMPLATES_PATH list in the configuration file
+  -M, --map MAP             file with platform mappings to templates (default: platform_map.yml in templates folder)
   -D, --dir DIR             save files into directory DIR (topology name is used by default). nested relative and absolute paths are OK
 ```
 

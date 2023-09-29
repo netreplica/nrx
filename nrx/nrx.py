@@ -53,6 +53,8 @@ DEBUG_ON = False
 NRX_CONFIG_DIR = ".nr"
 NRX_DEFAULT_CONFIG_NAME = "nrx.conf"
 NRX_VERSIONS_NAME = "versions.yaml"
+NRX_FORMATS_NAME = "formats.yaml"
+NRX_MAP_NAME = "platform_map.yml"
 NRX_REPOSITORY = "https://github.com/netreplica/nrx"
 NRX_TEMPLATES_REPOSITORY = "https://github.com/netreplica/templates"
 NRX_REPOSITORY_TIMEOUT = 10
@@ -153,6 +155,20 @@ def unzip_file(zip_path, dir_path, log_context="[UNZIP]"):
             debug(f"{log_context} Unzipped templates to {dir_path}")
     except (zipfile.BadZipFile, FileNotFoundError, Exception) as e:
         error(f"{log_context} Can't unzip {zip_path}: {e}")
+
+def load_yaml_from_file(file, log_context="[PLATFORM]"):
+    """Load YAML from a file"""
+    yaml_data = None
+    try:
+        with open(file, 'r', encoding='utf-8') as f:
+            try:
+                yaml_data = yaml.safe_load(f)
+            except yaml.YAMLError as e:
+                warning(f"{log_context} Can't parse {file}: {e}")
+            f.close()
+    except OSError as e:
+        debug(f"{log_context} Can't read {file}: {e}")
+    return yaml_data
 
 class TimeoutHTTPAdapter(HTTPAdapter):
     """HTTPAdapter with custom API timeout"""
@@ -489,7 +505,11 @@ class NetworkTopology:
     def _read_platform_map(self, file):
         """Read platform_map from a YAML file to locate templated for given platforms"""
         print(f"Reading platform map from: {file}")
-        platform_map = self._load_yaml_from_template_file(file, "[PLATFORM]")
+        # First try to open the file directly
+        platform_map = load_yaml_from_file(file, "[PLATFORM]")
+        if platform_map is None:
+            # Use templates to load the map
+            platform_map = self._load_yaml_from_template_file(file, "[PLATFORM]")
         if 'type' in platform_map and platform_map['type'] == 'platform_map' and 'version' in platform_map:
             if platform_map['version'] not in ['v1']:
                 error(f"[PLATFORM] Unsupported version of {file} as platform map")
@@ -953,7 +973,7 @@ def parse_args():
     parser.add_argument('-k', '--insecure',  required=False, help='allow insecure server connections when using TLS',
                                              action=argparse.BooleanOptionalAction)
     parser.add_argument('-f', '--file',      required=False, help='file with the network graph to import')
-    parser.add_argument('-P', '--platformmap', required=False, help='platform map file to locate templates for given platforms')
+    parser.add_argument('-M', '--map',       required=False, help=f"file with platform mappings to templates (default: {NRX_MAP_NAME} in templates folder)")
     parser.add_argument('-T', '--templates', required=False, help='directory with template files, \
                                                                    will be prepended to TEMPLATES_PATH list \
                                                                    in the configuration file')
@@ -1094,8 +1114,8 @@ def load_toml_config(filename):
         'export_tags': [],
         'export_configs': True,
         'templates_path': ["./templates", f"{nrx_config_dir()}/templates"],
-        'formats_map': 'formats.yaml',
-        'platform_map': 'platform_map.yml',
+        'formats_map': NRX_FORMATS_NAME,
+        'platform_map': NRX_MAP_NAME,
         'output_dir': '',
         'nb_api_params': {
             'interfaces_block_size':    4,
@@ -1166,8 +1186,8 @@ def load_config(args):
     if config['input_source'] == config['output_format']:
         error(f"Input and output formats must be different, got '{config['output_format']}'")
 
-    if args.platformmap is not None and len(args.platformmap) > 0:
-        config['platform_map'] = args.platformmap
+    if args.map is not None and len(args.map) > 0:
+        config['platform_map'] = args.map
 
     if args.templates is not None and len(args.templates) > 0:
         config['templates_path'].insert(0, args.templates)
