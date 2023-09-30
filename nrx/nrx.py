@@ -156,7 +156,7 @@ def unzip_file(zip_path, dir_path, log_context="[UNZIP]"):
     except (zipfile.BadZipFile, FileNotFoundError, Exception) as e:
         error(f"{log_context} Can't unzip {zip_path}: {e}")
 
-def load_yaml_from_file(file, log_context="[PLATFORM]"):
+def load_yaml_from_file(file, log_context="[LOAD_YAML]"):
     """Load YAML from a file"""
     yaml_data = None
     try:
@@ -503,7 +503,7 @@ class NetworkTopology:
 
 
     def _read_platform_map(self, file):
-        """Read platform_map from a YAML file to locate templated for given platforms"""
+        """Read platform_map from a YAML file to locate template parameters for a range of platforms"""
         print(f"Reading platform map from: {file}")
         # First try to open the file directly
         platform_map = load_yaml_from_file(file, "[PLATFORM]")
@@ -514,7 +514,7 @@ class NetworkTopology:
             if platform_map['version'] not in ['v1']:
                 error(f"[PLATFORM] Unsupported version of {file} as platform map")
             return platform_map
-        error(f"[PLATFORM] Unsupported 'type' in {file} under {self.config['templates_path']}, has to be a 'platform_map' with a 'version'")
+        error(f"[PLATFORM] Unsupported 'type' in {file}, has to be a 'platform_map' with a compatible 'version'")
         return {}
 
 
