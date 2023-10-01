@@ -727,35 +727,52 @@ class NetworkTopology:
         return default_map
 
 
-    def _get_template(self, ttype, platform, is_required = False):
-        """Get a Jinja2 template for a given type and platform, as well as initialize template params"""
-        template = None
+    def _get_platform_params(self, ttype, platform):
+        """Return template params for a given type and platform."""
+        params = None
         if ttype in self.templates and '_path_' in self.templates[ttype]:
-            desc = self.templates[ttype]['_description_']
             if platform not in self.templates[ttype]:
-                try:
-                    params = self._map_platform_to_template_params(ttype, platform)
-                    j2file = params['template']
-                    template = self.j2env.get_template(j2file)
-                    debug(f"[TEMPLATE] Found {desc} template {j2file} for platform {platform}")
-                except (OSError, jinja2.TemplateError) as e:
-                    m = f"[TEMPLATE] Unable to open {desc} template '{j2file}' for platform '{platform}' with path {self.config['templates_path']}."
-                    m += f" Reason: {e}"
-                    if is_required:
-                        if platform == 'default':
-                            error(m)
-                        else:
-                            # Render a default template
-                            debug(f"{m}. Rendering a default template instead.")
-                            return self._get_template(ttype, "default", True)
-                    else:
-                        debug(m)
+                params = self._map_platform_to_template_params(ttype, platform)
                 self.templates[ttype][platform] = {
-                    'template': template,
                     'params': params
                 }
             else:
-                template = self.templates[ttype][platform]['template']
+                params = self.templates[ttype][platform]['params']
+        return params
+
+
+    def _get_template(self, ttype, platform, is_required = False):
+        """Get a Jinja2 template for a given type and platform, as well as initialize template params"""
+        template = None
+        if ttype in self.templates and '_path_' in self.templates[ttype] and '_description_' in self.templates[ttype]:
+            desc = self.templates[ttype]['_description_']
+            params = self._get_platform_params(ttype, platform)
+            if (params is None or 'template' not in params) and is_required:
+                error(f"[TEMPLATE] No template for {desc} were found for platform '{platform}'")
+            if platform in self.templates[ttype]:
+                if 'template' not in self.templates[ttype][platform]:
+                    # Params were just initialized but not the j2 template
+                    try:
+                        j2file = params['template']
+                        template = self.j2env.get_template(j2file)
+                        debug(f"[TEMPLATE] Found {desc} template {j2file} for platform {platform}")
+                        self.templates[ttype][platform]['template'] = template
+                    except (OSError, jinja2.TemplateError) as e:
+                        m = f"[TEMPLATE] Unable to open {desc} template '{j2file}' for platform '{platform}' with path {self.config['templates_path']}."
+                        m += f" Reason: {e}"
+                        if is_required:
+                            if platform == 'default':
+                                error(m)
+                            else:
+                                # Render a default template
+                                debug(f"{m}. Rendering a default template instead.")
+                                return self._get_template(ttype, "default", True)
+                        else:
+                            debug(m)
+                else:
+                    template = self.templates[ttype][platform]['template']
+            elif is_required:
+                error(f"[TEMPLATE] Unable to map {desc} template for platform '{platform}'")
         elif is_required:
             error(f"No such template type as {ttype}")
         return template
