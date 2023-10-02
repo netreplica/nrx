@@ -815,6 +815,10 @@ class NetworkTopology:
         for n in self.topology['nodes']:
             if 'platform' in n.keys():
                 p = n['platform']
+                params = self._get_platform_params('kinds', p)
+                if params is not None:
+                    n.update(params)
+
                 int_map = self._render_interface_map(n)
                 if int_map is not None:
                     n['interface_map'] = int_map
@@ -824,9 +828,6 @@ class NetworkTopology:
                     n['startup_config'] = node_config
 
                 template = self._get_platform_template('kinds', p, True)
-                template_params = self._get_platform_params('kinds', p)
-                if template_params is not None:
-                    n.update(template_params)
                 if template is not None:
                     try:
                         topo_nodes.append(template.render(n))
