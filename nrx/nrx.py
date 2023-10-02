@@ -693,46 +693,50 @@ class NetworkTopology:
             link_id += 1
 
 
-    def _map_kind_to_template_params(self, ttype, kind):
+    def _map_kind_to_params(self, ttype, kind):
         """Map node kind to template parameters"""
         if len(kind) == 0:
             kind = "default"
-        kind_map = {
-            'template': f"{self.templates[ttype]['_path_']}/{kind}.j2"
-        }
-        if self.config['output_format'] in self.platform_map['kinds']:
-            if kind in self.platform_map['kinds'][self.config['output_format']]:
-                kind_map.update(self.platform_map['kinds'][self.config['output_format']][kind])
-                debug(f"[MAP] Mapped kind '{kind}' to '{kind_map}'")
-                return kind_map
-        debug(f"[MAP] No template for kind '{kind}' was found for '{self.config['output_format']}' output format, will use '{kind_map['template']}'")
+        kind_map = None
+        if ttype in self.templates and '_path_' in self.templates[ttype]:
+            kind_map = {
+                'template': f"{self.templates[ttype]['_path_']}/{kind}.j2"
+            }
+            if self.config['output_format'] in self.platform_map['kinds']:
+                if kind in self.platform_map['kinds'][self.config['output_format']]:
+                    kind_map.update(self.platform_map['kinds'][self.config['output_format']][kind])
+                    debug(f"[MAP] Mapped kind '{kind}' to '{kind_map}'")
+                    return kind_map
+            debug(f"[MAP] No template for kind '{kind}' was found for '{self.config['output_format']}' output format, will use '{kind_map['template']}'")
         return kind_map
 
 
-    def _map_platform_to_template_params(self, ttype, platform):
+    def _map_platform_to_params(self, ttype, platform):
         """Map platform name to a node kind and then return a template file path for that kind"""
-        default_map = {
-            'template': f"{self.templates[ttype]['_path_']}/{platform}.j2"
-        }
-        if ttype == "kinds":
-            kind = platform
-            if platform in self.platform_map['platforms'] and ttype in self.platform_map['platforms'][platform]:
-                platform_kinds = self.platform_map['platforms'][platform][ttype]
-                if self.config['output_format'] in platform_kinds:
-                    kind = platform_kinds[self.config['output_format']]
-                    debug(f"[MAP] Mapped platform '{platform}' to kind '{kind}'")
-            else:
-                debug(f"[MAP] No mapping for platform '{platform}' was found for '{self.config['output_format']}' output format, will use '{kind}'")
-            return self._map_kind_to_template_params(ttype, kind)
+        default_map = None
+        if ttype in self.templates and '_path_' in self.templates[ttype]:
+            default_map = {
+                'template': f"{self.templates[ttype]['_path_']}/{platform}.j2"
+            }
+            if ttype == "kinds":
+                kind = platform
+                if platform in self.platform_map['platforms'] and ttype in self.platform_map['platforms'][platform]:
+                    platform_kinds = self.platform_map['platforms'][platform][ttype]
+                    if self.config['output_format'] in platform_kinds:
+                        kind = platform_kinds[self.config['output_format']]
+                        debug(f"[MAP] Mapped platform '{platform}' to kind '{kind}'")
+                else:
+                    debug(f"[MAP] No mapping for platform '{platform}' was found for '{self.config['output_format']}' output format, will use '{kind}'")
+                return self._map_kind_to_params(ttype, kind)
         return default_map
 
 
     def _get_platform_params(self, ttype, platform):
         """Return template params for a given type and platform."""
         params = None
-        if ttype in self.templates and '_path_' in self.templates[ttype]:
+        if ttype in self.templates:
             if platform not in self.templates[ttype]:
-                params = self._map_platform_to_template_params(ttype, platform)
+                params = self._map_platform_to_params(ttype, platform)
                 self.templates[ttype][platform] = {
                     'params': params
                 }
@@ -741,14 +745,14 @@ class NetworkTopology:
         return params
 
 
-    def _get_template(self, ttype, platform, is_required = False):
+    def _get_platform_template(self, ttype, platform, is_required = False):
         """Get a Jinja2 template for a given type and platform, as well as initialize template params"""
         template = None
-        if ttype in self.templates and '_path_' in self.templates[ttype] and '_description_' in self.templates[ttype]:
+        if ttype in self.templates and '_description_' in self.templates[ttype]:
             desc = self.templates[ttype]['_description_']
             params = self._get_platform_params(ttype, platform)
             if (params is None or 'template' not in params) and is_required:
-                error(f"[TEMPLATE] No template for {desc} were found for platform '{platform}'")
+                error(f"[TEMPLATE] No mandatory template for {desc} was found for platform '{platform}'")
             if platform in self.templates[ttype]:
                 if 'template' not in self.templates[ttype][platform]:
                     # Params were just initialized but not the j2 template
@@ -766,15 +770,15 @@ class NetworkTopology:
                             else:
                                 # Render a default template
                                 debug(f"{m}. Rendering a default template instead.")
-                                return self._get_template(ttype, "default", True)
+                                return self._get_platform_template(ttype, "default", True)
                         else:
                             debug(m)
                 else:
                     template = self.templates[ttype][platform]['template']
             elif is_required:
-                error(f"[TEMPLATE] Unable to map {desc} template for platform '{platform}'")
+                error(f"[TEMPLATE] Unable to map mandatory {desc} template for platform '{platform}'")
         elif is_required:
-            error(f"No such template type as {ttype}")
+            error(f"[TEMPLATE] No such template type as {ttype}")
         return template
 
 
@@ -805,18 +809,6 @@ class NetworkTopology:
         return None
 
 
-    def _get_template_params(self, ttype, platform):
-        """
-            Return template params for a given type and platform.
-            Parameters are initialized in _get_template()
-        """
-        params = None
-        if ttype in self.templates and '_path_' in self.templates[ttype]:
-            if platform in self.templates[ttype] and 'params' in self.templates[ttype][platform]:
-                params = self.templates[ttype][platform]['params']
-        return params
-
-
     def _render_emulated_nodes(self):
         """Render device nodes via Jinja2 templates"""
         topo_nodes = []
@@ -831,8 +823,8 @@ class NetworkTopology:
                 if node_config is not None:
                     n['startup_config'] = node_config
 
-                template = self._get_template('kinds', p, True)
-                template_params = self._get_template_params('kinds', p)
+                template = self._get_platform_template('kinds', p, True)
+                template_params = self._get_platform_params('kinds', p)
                 if template_params is not None:
                     n.update(template_params)
                 if template is not None:
@@ -847,7 +839,7 @@ class NetworkTopology:
         """Render emulated interface name via Jinja2 templates"""
         # We assume interface with index `0` is reserved for management, and start with `1`
         default_name = f"eth{index+1}"
-        template = self._get_template('interface_names', platform)
+        template = self._get_platform_template('interface_names', platform)
         if template is not None:
             try:
                 return template.render({'interface': interface, 'index': index})
@@ -922,7 +914,7 @@ class NetworkTopology:
         if 'platform' in node.keys():
             p = node['platform']
             # Interface mapping file for cEOS
-            template = self._get_template('interface_maps', p)
+            template = self._get_platform_template('interface_maps', p)
             if template is not None:
                 m = self.device_interfaces_map[node['name']]
                 try:
