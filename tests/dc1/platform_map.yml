@@ -1,0 +1,65 @@
+type: platform_map
+version: v1
+platforms:
+  ubuntu:
+    kinds:
+      clab: linux
+  arista-eos:
+    kinds:
+      clab: ceos
+  eos:
+    kinds:
+      clab: frr
+  cisco-ios:
+    kinds:
+      clab: vr-cisco_csr1000v
+      cml: iosv
+  cisco-catalyst-ios:
+    kinds:
+      cml: iosvl2
+  cisco-nxos-9000:
+    kinds:
+      cml: nxosv9000
+  nokia_srlinux:
+    kinds:
+      clab: srl
+  srlinux:
+    kinds:
+      clab: srl
+  sr-linux:
+    kinds:
+      clab: srl
+  sonic:
+    kinds:
+      clab: sonic-vs
+kinds:
+  clab:
+    ceos:
+      template: clab/kinds/ceos.j2
+    frr:
+      template: clab/kinds/default.j2
+      image: frrouting/frr:latest
+    linux:
+      template: clab/kinds/default.j2
+      image: netreplica/ubuntu-host:1.4
+      cmd: /start.sh -rS
+      exec:
+        - bash -c "echo root:root123 | chpasswd"
+    rare:
+      template: clab/kinds/rare.j2
+    sonic-vs:
+      template: clab/kinds/sonic-vs.j2
+    srl:
+      template: clab/kinds/srl.j2
+      type: ixr6
+    vr-cisco_csr1000v:
+      template: clab/kinds/vr-cisco_csr1000v.j2
+  cml:
+    iosv:
+      template: cml/kinds/iosv.j2
+    iosvl2:
+      template: cml/kinds/iosvl2.j2
+    nxosv9000:
+      template: cml/kinds/nxosv9000.j2
+    ubuntu:
+      template: cml/kinds/ubuntu.j2

@@ -5,37 +5,25 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "colo",
+            "name": "site1_cyjs_2_clab",
             "type": "python",
             "request": "launch",
-            "cwd": "tmp",
-            "program": "../nrx.py",
+            "cwd": "${workspaceFolder}",
+            "program": "nrx.py",
             "args": [
-                "-c", "../tests/main.conf", "-s", "colo", "-o", "cyjs", "-d"
+                "-i", "cyjs", "-f", "tests/site1/data/site1.cyjs", "-o", "clab", "-d", "-D", "/tmp", "-T", "../templates"
             ],
             "console": "integratedTerminal",
             "justMyCode": true
         },
         {
-            "name": "dc1",
+            "name": "h88_cyjs_2_clab",
             "type": "python",
             "request": "launch",
-            "cwd": "tmp",
-            "program": "../nrx.py",
+            "cwd": "${workspaceFolder}",
+            "program": "nrx.py",
             "args": [
-                "-c", "../tests/main.conf", "-s", "dc1", "-o", "cyjs", "-d"
-            ],
-            "console": "integratedTerminal",
-            "justMyCode": true
-        },
-        {
-            "name": "demo",
-            "type": "python",
-            "request": "launch",
-            "cwd": "tmp",
-            "program": "../nrx.py",
-            "args": [
-                "-c", "../nrx.conf", "-o", "cyjs", "-d"
+                "-i", "cyjs", "-f", "tests/h88/data/HQ.cyjs", "-o", "clab", "-d", "-D", "/tmp", "-T", "../templates"
             ],
             "console": "integratedTerminal",
             "justMyCode": true

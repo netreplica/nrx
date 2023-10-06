@@ -53,6 +53,8 @@ DEBUG_ON = False
 NRX_CONFIG_DIR = ".nr"
 NRX_DEFAULT_CONFIG_NAME = "nrx.conf"
 NRX_VERSIONS_NAME = "versions.yaml"
+NRX_FORMATS_NAME = "formats.yaml"
+NRX_MAP_NAME = "platform_map.yml"
 NRX_REPOSITORY = "https://github.com/netreplica/nrx"
 NRX_TEMPLATES_REPOSITORY = "https://github.com/netreplica/templates"
 NRX_REPOSITORY_TIMEOUT = 10
@@ -154,7 +156,19 @@ def unzip_file(zip_path, dir_path, log_context="[UNZIP]"):
     except (zipfile.BadZipFile, FileNotFoundError, Exception) as e:
         error(f"{log_context} Can't unzip {zip_path}: {e}")
 
-
+def load_yaml_from_file(file, log_context="[LOAD_YAML]"):
+    """Load YAML from a file"""
+    yaml_data = None
+    try:
+        with open(file, 'r', encoding='utf-8') as f:
+            try:
+                yaml_data = yaml.safe_load(f)
+            except yaml.YAMLError as e:
+                warning(f"{log_context} Can't parse {file}: {e}")
+            f.close()
+    except OSError as e:
+        debug(f"{log_context} Can't read {file}: {e}")
+    return yaml_data
 
 class TimeoutHTTPAdapter(HTTPAdapter):
     """HTTPAdapter with custom API timeout"""
@@ -477,6 +491,7 @@ class NetworkTopology:
                     trim_blocks=True, lstrip_blocks=True
                 )
         self.j2env.filters['ceil'] = math.ceil
+        self.platform_map = self._read_platform_map(self.config['platform_map'])
         self.templates = {
             'interface_names': {'_path_': f"{self.config['output_format']}/interface_names", '_description_': 'interface name'},
             'interface_maps':  {'_path_': f"{self.config['output_format']}/interface_maps",  '_description_': 'interface map'},
@@ -486,13 +501,32 @@ class NetworkTopology:
         if self.config['output_format'] != 'cyjs':
             self.config['format'] = self._read_formats_map(config['formats_map'])
 
+
+    def _read_platform_map(self, file):
+        """Read platform_map from a YAML file to locate template parameters for a range of platforms"""
+        print(f"Reading platform map from: {file}")
+        # First try to open the file directly
+        platform_map = load_yaml_from_file(file, "[PLATFORM]")
+        if platform_map is None:
+            # Use templates to load the map
+            platform_map = self._load_yaml_from_template_file(file, "[PLATFORM]")
+        if 'type' in platform_map and platform_map['type'] == 'platform_map' and 'version' in platform_map:
+            if platform_map['version'] not in ['v1']:
+                error(f"[PLATFORM] Unsupported version of {file} as platform map")
+            return platform_map
+        error(f"[PLATFORM] Unsupported 'type' in {file}, has to be a 'platform_map' with a compatible 'version'")
+        return {}
+
+
     def build_from_file(self, file):
+        """Build network topology from a CYJS file"""
         self._read_network_graph(file)
         if "name" in self.G.graph.keys():
             self.topology['name'] = self.G.graph["name"]
         self._build_topology()
 
     def build_from_graph(self, graph):
+        """Build network topology from a NetworkX graph"""
         self.G = graph
         if "name" in self.G.graph.keys():
             self.topology['name'] = self.G.graph["name"]
@@ -502,13 +536,7 @@ class NetworkTopology:
     def _read_formats_map(self, file):
         """Read format_map from a YAML file to initialize output parameters"""
         debug(f"[FORMAT] Reading format map from: {file}")
-        template = self._get_template_with_file(file)
-        try:
-            formats_map = yaml.load(template.render(self.config), Loader=yaml.SafeLoader)
-        except jinja2.TemplateError as e:
-            error(f"[FORMAT] Rendering {file} template as format map: {e}")
-        except yaml.scanner.ScannerError as e:
-            error("[FORMAT] Can't parse formats map:", e)
+        formats_map = self._load_yaml_from_template_file(file, "[FORMAT]")
         if 'type' in formats_map and formats_map['type'] == 'formats_map' and 'version' in formats_map:
             if formats_map['version'] not in ['v1']:
                 error(f"[FORMAT] Unsupported version of {file} as format map")
@@ -520,6 +548,7 @@ class NetworkTopology:
 
 
     def _read_network_graph(self, file):
+        """Read network topology graph from a CYJS file"""
         print(f"Reading CYJS topology graph: {file}")
         cyjs = {}
         try:
@@ -532,6 +561,7 @@ class NetworkTopology:
         self.G = nx.cytoscape_graph(cyjs)
 
     def _append_if_node_is_device(self, n):
+        """Append a device node to the topology"""
         if self.G.nodes[n]['type'] == 'device':
             dev = self.G.nodes[n]['device']
             self.topology['nodes'].append(dev)
@@ -554,6 +584,7 @@ class NetworkTopology:
         return False
 
     def _append_if_node_is_interface(self, n):
+        """Append an interface node to the topology"""
         if self.G.nodes[n]['type'] == 'interface':
             int_name = self.G.nodes[n]['interface']['name']
             dev_name, dev_node_id = None, None
@@ -593,7 +624,7 @@ class NetworkTopology:
         return False
 
     def _initialize_emulated_interface_names(self):
-        # Initialize emulated interface names for each NOS interface name
+        """Initialize emulated interface names for each NOS interface name"""
         for node in self.topology['nodes']:
             if 'name' in node.keys():
                 name = node['name']
@@ -610,6 +641,7 @@ class NetworkTopology:
                     node['interfaces'] = self.device_interfaces_map[name]
 
     def _rank_nodes(self):
+        """Rank nodes by their role and device_index"""
         for device_indexes in self.topology['roles'].values():
             device_indexes.sort()
         for n in self.topology['nodes']:
@@ -623,8 +655,8 @@ class NetworkTopology:
                 n['rank'] = 0.5
 
     def _build_topology(self):
-        # Parse graph G into lists of: nodes and links.
-        # Keep list of interfaces per device in `device_interfaces_map`, and then add them to each device
+        """ Parse graph G into lists of: nodes and links.
+        Keep list of interfaces per device in `device_interfaces_map`, and then add them to each device"""
         try:
             for n in self.G.nodes:
                 if not self._append_if_node_is_device(n):
@@ -636,6 +668,7 @@ class NetworkTopology:
         self._rank_nodes()
 
     def export_topology(self):
+        """Export network topology through Jinja2 templates"""
         if self.topology['name'] is None or len(self.topology['name']) == 0:
             error("Cannot export a topology: missing a name")
 
@@ -649,6 +682,7 @@ class NetworkTopology:
         self._render_topology()
 
     def _initialize_emulated_links(self):
+        """Initialize emulated links"""
         link_id = 0
         for l in self.topology['links']:
             l['id'] = link_id
@@ -658,33 +692,94 @@ class NetworkTopology:
             l['b']['index'] = self.device_interfaces_map[l['b']['node']][l['b']['interface']]['index']
             link_id += 1
 
-    def _get_template(self, ttype, platform, is_required = False):
+
+    def _get_platform_template(self, ttype, platform, is_required = False):
+        """Get a Jinja2 template for a given type and platform, as well as initialize template params"""
         template = None
-        if ttype in self.templates and '_path_' in self.templates[ttype]:
+        if ttype in self.templates and '_description_' in self.templates[ttype]:
             desc = self.templates[ttype]['_description_']
-            if platform not in self.templates[ttype]:
-                try:
-                    j2file = f"{self.templates[ttype]['_path_']}/{platform}.j2"
-                    template = self.j2env.get_template(j2file)
-                    debug(f"Found {desc} template {j2file} for platform {platform}")
-                except (OSError, jinja2.TemplateError) as e:
-                    m = f"Unable to open {desc} template '{j2file}' for platform '{platform}' with path {self.config['templates_path']}."
-                    m += f" Reason: {e}"
-                    if is_required:
-                        if platform == 'default':
-                            error(m)
+            params = self._get_platform_params(ttype, platform)
+            if (params is None or 'template' not in params) and is_required:
+                error(f"[TEMPLATE] No mandatory template for {desc} was found for platform '{platform}'")
+            if platform in self.templates[ttype]:
+                if 'template' not in self.templates[ttype][platform]:
+                    # Params were just initialized but not the j2 template
+                    try:
+                        j2file = params['template']
+                        template = self.j2env.get_template(j2file)
+                        debug(f"[TEMPLATE] Found {desc} template {j2file} for platform {platform}")
+                        self.templates[ttype][platform]['template'] = template
+                    except (OSError, jinja2.TemplateError) as e:
+                        m = f"[TEMPLATE] Unable to open {desc} template '{j2file}' for platform '{platform}' with path {self.config['templates_path']}."
+                        m += f" Reason: {e}"
+                        if is_required:
+                            if platform == 'default':
+                                error(m)
+                            else:
+                                # Render a default template
+                                debug(f"{m}. Rendering a default template instead.")
+                                return self._get_platform_template(ttype, "default", True)
                         else:
-                            # Render a default template
-                            debug(f"{m}. Rendering a default template instead.")
-                            return self._get_template(ttype, "default", True)
-                    else:
-                        debug(m)
-                self.templates[ttype][platform] = template
-            else:
-                template = self.templates[ttype][platform]
+                            debug(m)
+                else:
+                    template = self.templates[ttype][platform]['template']
+            elif is_required:
+                error(f"[TEMPLATE] Unable to map mandatory {desc} template for platform '{platform}'")
         elif is_required:
-            error(f"No such template type as {ttype}")
+            error(f"[TEMPLATE] No such template type as {ttype}")
         return template
+
+
+    def _get_platform_params(self, ttype, platform):
+        """Return template params for a given type and platform."""
+        params = None
+        if ttype in self.templates:
+            if platform not in self.templates[ttype]:
+                params = self._map_platform_to_params(ttype, platform)
+                self.templates[ttype][platform] = {
+                    'params': params
+                }
+            else:
+                params = self.templates[ttype][platform]['params']
+        return params
+
+
+    def _map_platform_to_params(self, ttype, platform):
+        """Map platform name to a node kind and then return a template file path for that kind"""
+        default_map = None
+        if ttype in self.templates and '_path_' in self.templates[ttype]:
+            default_map = {
+                'template': f"{self.templates[ttype]['_path_']}/{platform}.j2"
+            }
+            if ttype == "kinds":
+                kind = platform
+                if platform in self.platform_map['platforms'] and ttype in self.platform_map['platforms'][platform]:
+                    platform_kinds = self.platform_map['platforms'][platform][ttype]
+                    if self.config['output_format'] in platform_kinds:
+                        kind = platform_kinds[self.config['output_format']]
+                        debug(f"[MAP] Mapped platform '{platform}' to kind '{kind}'")
+                else:
+                    debug(f"[MAP] No mapping for platform '{platform}' was found for '{self.config['output_format']}' output format, will use '{kind}'")
+                return self._map_kind_to_params(ttype, kind)
+        return default_map
+
+
+    def _map_kind_to_params(self, ttype, kind):
+        """Map node kind to template parameters"""
+        if len(kind) == 0:
+            kind = "default"
+        kind_map = None
+        if ttype in self.templates and '_path_' in self.templates[ttype]:
+            kind_map = {
+                'template': f"{self.templates[ttype]['_path_']}/{kind}.j2"
+            }
+            if self.config['output_format'] in self.platform_map['kinds']:
+                if kind in self.platform_map['kinds'][self.config['output_format']]:
+                    kind_map.update(self.platform_map['kinds'][self.config['output_format']][kind])
+                    debug(f"[MAP] Mapped kind '{kind}' to '{kind_map}'")
+                    return kind_map
+            debug(f"[MAP] No template for kind '{kind}' was found for '{self.config['output_format']}' output format, will use '{kind_map['template']}'")
+        return kind_map
 
 
     def _get_template_with_file(self, j2file):
@@ -703,20 +798,36 @@ class NetworkTopology:
         return template
 
 
+    def _load_yaml_from_template_file(self, file, log_context = "[LOAD_YAML]"):
+        template = self._get_template_with_file(file)
+        try:
+            return yaml.load(template.render(self.config), Loader=yaml.SafeLoader)
+        except jinja2.TemplateError as e:
+            error(f"{log_context} Rendering {file} template as format map: {e}")
+        except yaml.scanner.ScannerError as e:
+            error(f"{log_context} Can't parse {file} as YAML:", e)
+        return None
+
+
     def _render_emulated_nodes(self):
+        """Render device nodes via Jinja2 templates"""
         topo_nodes = []
         for n in self.topology['nodes']:
             if 'platform' in n.keys():
                 p = n['platform']
+                params = self._get_platform_params('kinds', p)
+                if params is not None:
+                    n.update(params)
+
                 int_map = self._render_interface_map(n)
                 if int_map is not None:
                     n['interface_map'] = int_map
 
                 node_config = self._save_node_configuration(n)
                 if node_config is not None:
-                    n['configuration_file'] = node_config
+                    n['startup_config'] = node_config
 
-                template = self._get_template('kinds', p, True)
+                template = self._get_platform_template('kinds', p, True)
                 if template is not None:
                     try:
                         topo_nodes.append(template.render(n))
@@ -726,9 +837,10 @@ class NetworkTopology:
         return topo_nodes
 
     def _render_emulated_interface_name(self, platform, interface, index):
+        """Render emulated interface name via Jinja2 templates"""
         # We assume interface with index `0` is reserved for management, and start with `1`
         default_name = f"eth{index+1}"
-        template = self._get_template('interface_names', platform)
+        template = self._get_platform_template('interface_names', platform)
         if template is not None:
             try:
                 return template.render({'interface': interface, 'index': index})
@@ -737,6 +849,7 @@ class NetworkTopology:
         return default_name
 
     def _render_topology(self):
+        """Render network topology via Jinja2 templates"""
         #debug("Topology data to render:", json.dumps(self.topology))
         # Load Jinja2 template to run the topology through
         try:
@@ -755,6 +868,7 @@ class NetworkTopology:
         self._print_motd(topo)
 
     def _write_topology(self, topo):
+        """Write network topology to a file"""
         topo_file = f"{self.topology['name']}"
         format_params = self.config['format']
         if 'file_extension' in format_params:
@@ -772,6 +886,7 @@ class NetworkTopology:
         print(f"Created {self.config['output_format']} topology: {topo_path}")
 
     def _print_motd(self, topo):
+        """Print a message on how to use the exported topology"""
         topo_dict = {}
         try:
             f = self.config['format']['file_format'].lower()
@@ -800,7 +915,7 @@ class NetworkTopology:
         if 'platform' in node.keys():
             p = node['platform']
             # Interface mapping file for cEOS
-            template = self._get_template('interface_maps', p)
+            template = self._get_platform_template('interface_maps', p)
             if template is not None:
                 m = self.device_interfaces_map[node['name']]
                 try:
@@ -868,6 +983,7 @@ def parse_args():
     parser.add_argument('-k', '--insecure',  required=False, help='allow insecure server connections when using TLS',
                                              action=argparse.BooleanOptionalAction)
     parser.add_argument('-f', '--file',      required=False, help='file with the network graph to import')
+    parser.add_argument('-M', '--map',       required=False, help=f"file with platform mappings to node parameters (default: {NRX_MAP_NAME} in templates folder)")
     parser.add_argument('-T', '--templates', required=False, help='directory with template files, \
                                                                    will be prepended to TEMPLATES_PATH list \
                                                                    in the configuration file')
@@ -1008,7 +1124,8 @@ def load_toml_config(filename):
         'export_tags': [],
         'export_configs': True,
         'templates_path': ["./templates", f"{nrx_config_dir()}/templates"],
-        'formats_map': 'formats.yaml',
+        'formats_map': NRX_FORMATS_NAME,
+        'platform_map': NRX_MAP_NAME,
         'output_dir': '',
         'nb_api_params': {
             'interfaces_block_size':    4,
@@ -1078,6 +1195,9 @@ def load_config(args):
 
     if config['input_source'] == config['output_format']:
         error(f"Input and output formats must be different, got '{config['output_format']}'")
+
+    if args.map is not None and len(args.map) > 0:
+        config['platform_map'] = args.map
 
     if args.templates is not None and len(args.templates) > 0:
         config['templates_path'].insert(0, args.templates)

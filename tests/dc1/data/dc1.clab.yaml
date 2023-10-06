@@ -30,9 +30,9 @@ topology:
                 model: 7220 IXR-D2
         dc1-spine-1:
             kind: ceos
-            image: ceos:latest
             binds:
                 - dc1-spine-1_interface_map.json:/mnt/flash/EosIntfMapping.json:ro
+            image: ceos:latest
             labels:
                 graph-icon: spine
                 graph-level: 8
@@ -43,9 +43,9 @@ topology:
                 model: DCS-7280CR3-32P4
         dc1-spine-2:
             kind: ceos
-            image: ceos:latest
             binds:
                 - dc1-spine-2_interface_map.json:/mnt/flash/EosIntfMapping.json:ro
+            image: ceos:latest
             labels:
                 graph-icon: spine
                 graph-level: 8
