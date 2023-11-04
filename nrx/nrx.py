@@ -751,15 +751,15 @@ class NetworkTopology:
             default_map = {
                 'template': f"{self.templates[ttype]['_path_']}/{platform}.j2"
             }
+            kind = platform
+            if platform in self.platform_map['platforms'] and ttype in self.platform_map['platforms'][platform]:
+                platform_ttype = self.platform_map['platforms'][platform][ttype]
+                if self.config['output_format'] in platform_ttype:
+                    kind = platform_ttype[self.config['output_format']]
+                    debug(f"[MAP] Mapped platform '{platform}' to '{kind}' for {ttype} template")
+            else:
+                debug(f"[MAP] No mapping for platform '{platform}' was found for '{self.config['output_format']}' output format, will use '{platform}' for {ttype} template")
             if ttype == "kinds":
-                kind = platform
-                if platform in self.platform_map['platforms'] and ttype in self.platform_map['platforms'][platform]:
-                    platform_kinds = self.platform_map['platforms'][platform][ttype]
-                    if self.config['output_format'] in platform_kinds:
-                        kind = platform_kinds[self.config['output_format']]
-                        debug(f"[MAP] Mapped platform '{platform}' to kind '{kind}'")
-                else:
-                    debug(f"[MAP] No mapping for platform '{platform}' was found for '{self.config['output_format']}' output format, will use '{kind}'")
                 return self._map_kind_to_params(ttype, kind)
         return default_map
 
