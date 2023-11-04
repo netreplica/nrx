@@ -703,13 +703,13 @@ class NetworkTopology:
             if (params is None or ttype_template not in params) and is_required:
                 error(f"[TEMPLATE] No mandatory template for {desc} was found for platform '{platform}'")
             if platform in self.templates[ttype]:
-                if ttype_template not in self.templates[ttype][platform]:
+                if 'template' not in self.templates[ttype][platform]:
                     # Params were just initialized but not the j2 template
                     try:
                         j2file = params[ttype_template]
                         template = self.j2env.get_template(j2file)
-                        debug(f"[TEMPLATE] Found {desc} template {j2file} for platform {platform}")
-                        self.templates[ttype][platform][ttype_template] = template
+                        debug(f"[TEMPLATE] Found {desc} template '{j2file}' for platform '{platform}'")
+                        self.templates[ttype][platform]['template'] = template
                     except (OSError, jinja2.TemplateError) as e:
                         m = f"[TEMPLATE] Unable to open {desc} template '{j2file}' for platform '{platform}' with path {self.config['templates_path']}."
                         m += f" Reason: {e}"
@@ -723,7 +723,7 @@ class NetworkTopology:
                         else:
                             debug(m)
                 else:
-                    template = self.templates[ttype][platform][ttype_template]
+                    template = self.templates[ttype][platform]['template']
             elif is_required:
                 error(f"[TEMPLATE] Unable to map mandatory {desc} template for platform '{platform}'")
         elif is_required:
