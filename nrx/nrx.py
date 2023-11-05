@@ -851,7 +851,7 @@ class NetworkTopology:
         """Render emulated interface name via Jinja2 templates"""
         # We assume interface with index `0` is reserved for management, and start with `1`
         default_name = f"eth{index+1}"
-        template = self._get_platform_template('interface_names', platform)
+        template = self._get_platform_template('interface_names', platform, True)
         if template is not None:
             try:
                 return template.render({'interface': interface, 'index': index})
