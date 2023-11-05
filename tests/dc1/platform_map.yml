@@ -35,31 +35,58 @@ platforms:
 kinds:
   clab:
     ceos:
-      template: clab/kinds/ceos.j2
+      nodes:
+        template: clab/nodes/ceos.j2
+      interface_names:
+        template: clab/interface_names/default.j2
+      interface_maps:
+        template: clab/interface_maps/ceos.j2
     frr:
-      template: clab/kinds/default.j2
-      image: frrouting/frr:latest
+      nodes:
+        template: clab/nodes/default.j2
+        image: frrouting/frr:latest
+      interface_names:
+        template: clab/interface_names/default.j2
     linux:
-      template: clab/kinds/default.j2
-      image: netreplica/ubuntu-host:1.4
-      cmd: /start.sh -rS
-      exec:
-        - bash -c "echo root:root123 | chpasswd"
+      nodes:
+        template: clab/nodes/default.j2
+        image: netreplica/ubuntu-host:1.4
+        cmd: /start.sh -rS
+        exec:
+          - bash -c "echo root:root123 | chpasswd"
+      interface_names:
+        template: clab/interface_names/default.j2
     rare:
-      template: clab/kinds/rare.j2
+      nodes:
+        template: clab/nodes/rare.j2
+      interface_names:
+        template: clab/interface_names/default.j2
     sonic-vs:
-      template: clab/kinds/sonic-vs.j2
+      nodes:
+        template: clab/nodes/sonic-vs.j2
+      interface_names:
+        template: clab/interface_names/default.j2
     srl:
-      template: clab/kinds/srl.j2
-      type: ixr6
+      nodes:
+        template: clab/nodes/srl.j2
+        type: ixr6
+      interface_names:
+        template: clab/interface_names/srl.j2
     vr-cisco_csr1000v:
-      template: clab/kinds/vr-cisco_csr1000v.j2
+      nodes:
+        template: clab/nodes/vr-cisco_csr1000v.j2
+      interface_names:
+        template: clab/interface_names/default.j2
   cml:
     iosv:
-      template: cml/kinds/iosv.j2
+      nodes:
+        template: cml/nodes/iosv.j2
     iosvl2:
-      template: cml/kinds/iosvl2.j2
+      nodes:
+        template: cml/nodes/iosvl2.j2
     nxosv9000:
-      template: cml/kinds/nxosv9000.j2
+      nodes:
+        template: cml/nodes/nxosv9000.j2
     ubuntu:
-      template: cml/kinds/ubuntu.j2
+      nodes:
+        template: cml/nodes/ubuntu.j2
