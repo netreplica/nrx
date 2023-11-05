@@ -720,7 +720,9 @@ class NetworkTopology:
                                 else:
                                     # Render a default template
                                     debug(f"{m}. Rendering a default template instead.")
-                                    return self._get_platform_template(ttype, "default", True)
+                                    template = self._get_platform_template(ttype, "default", True)
+                                    # Save the default template for this platform
+                                    self.templates[ttype][platform]['template'] = template
                             else:
                                 debug(m)
                 else:

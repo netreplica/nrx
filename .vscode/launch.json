@@ -18,6 +18,18 @@
             "justMyCode": true
         },
         {
+            "name": "dc1_cyjs_2_graphite",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "program": "nrx.py",
+            "args": [
+                "-i", "cyjs", "-f", "tests/dc1/data/dc1.cyjs", "-o", "graphite", "-d", "-D", "/tmp", "-T", "../templates"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
             "name": "site1_cyjs_2_clab",
             "type": "python",
             "request": "launch",
