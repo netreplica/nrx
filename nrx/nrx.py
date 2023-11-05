@@ -717,12 +717,11 @@ class NetworkTopology:
                             if is_required:
                                 if platform == 'default':
                                     error(m)
-                                else:
-                                    # Render a default template
-                                    debug(f"{m}. Rendering a default template instead.")
-                                    template = self._get_platform_template(ttype, "default", True)
-                                    # Save the default template for this platform
-                                    self.templates[ttype][platform]['template'] = template
+                                # Render a default template
+                                debug(f"{m}. Rendering a default template instead.")
+                                template = self._get_platform_template(ttype, "default", True)
+                                # Save the default template for this platform
+                                self.templates[ttype][platform]['template'] = template
                             else:
                                 debug(m)
                 else:
@@ -784,11 +783,11 @@ class NetworkTopology:
                     'template': f"{self.templates[ttype]['_path_']}/{kind}.j2"
                 }
             if self.config['output_format'] in self.platform_map['kinds'] and \
-               kind in self.platform_map['kinds'][self.config['output_format']] and \
-               ttype in self.platform_map['kinds'][self.config['output_format']][kind]:
-                    kind_map.update(self.platform_map['kinds'][self.config['output_format']][kind][ttype])
-                    debug(f"[MAP] Mapped kind '{kind}' to '{kind_map}'")
-                    return kind_map
+                kind in self.platform_map['kinds'][self.config['output_format']] and \
+                ttype in self.platform_map['kinds'][self.config['output_format']][kind]:
+                kind_map.update(self.platform_map['kinds'][self.config['output_format']][kind][ttype])
+                debug(f"[MAP] Mapped kind '{kind}' to '{kind_map}'")
+                return kind_map
             debug(f"[MAP] No {desc} template for kind '{kind}' was found for '{self.config['output_format']}' output format, will use '{kind_map['template']}'")
         return kind_map
 
