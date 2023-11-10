@@ -123,15 +123,17 @@ class NBFactory:
     def __init__(self, config):
         self.config = config
         self.nb_net = NBNetwork()
-        if len(config['export_site']) > 0:
-            self.topology_name = config['export_site']
+        if len(config['export_sites']) > 1:
+            self.topology_name = "__".join(config['export_sites'])
+        elif len(config['export_sites']) > 0:
+            self.topology_name = config['export_sites'][0]
         elif len(config['export_tags']) > 0:
             self.topology_name = "-".join(config['export_tags'])
         self.G = nx.Graph(name=self.topology_name)
         self.nb_session = pynetbox.api(self.config['nb_api_url'],
                                        token=self.config['nb_api_token'],
                                        threading=True)
-        self.nb_site = None
+        self.nb_sites = None
         if not config['tls_validate']:
             self.nb_session.http_session.verify = False
             urllib3.disable_warnings()
@@ -140,16 +142,16 @@ class NBFactory:
             self.nb_session.http_session.mount("http://", adapter)
             self.nb_session.http_session.mount("https://", adapter)
         print(f"Connecting to NetBox at: {config['nb_api_url']}")
-        if len(config['export_site']) > 0:
-            debug(f"Fetching site: {config['export_site']}")
+        if len(config['export_sites']) > 0:
+            debug(f"Fetching sites: {config['export_sites']}")
             try:
-                self.nb_site = self.nb_session.dcim.sites.get(name=config['export_site'])
+                self.nb_sites = self.nb_session.dcim.sites.filter(name=config['export_sites'])
             except (pynetbox.core.query.RequestError, pynetbox.core.query.ContentError) as e:
                 error("NetBox API failure at get site:", e)
-            if self.nb_site is None:
-                error(f"Site not found: {config['export_site']}")
+            if self.nb_sites is None:
+                error(f"One of these site not found: {config['export_site']}")
             else:
-                print(f"Fetching devices from site: {config['export_site']}")
+                print(f"Fetching devices from sites: {config['export_sites']}")
         else:
             print(f"Fetching devices with tags: {','.join(config['export_tags'])}")
 
@@ -189,15 +191,20 @@ class NBFactory:
 
     def _get_nb_devices(self):
         """Get device list from NetBox filtered by site, tags and device roles"""
-        devices = None
-        if self.nb_site is None:
-            devices = self.nb_session.dcim.devices.filter(tag=self.config['export_tags'],
+        devices = []
+        if len(self.nb_sites) == 0:
+            devices.append(self.nb_session.dcim.devices.filter(tag=self.config['export_tags'],
                                                           role=self.config['export_device_roles'])
+                           )
         else:
-            devices = self.nb_session.dcim.devices.filter(site_id=self.nb_site.id,
-                                                          tag=self.config['export_tags'],
-                                                          role=self.config['export_device_roles'])
-        for device in list(devices):
+            site_ids = []
+            for site in self.nb_sites:
+                debug(f'Site ID: {site.id} - Site Name: {site.name}')
+                site_ids.append(str(site.id))
+            devices = self.nb_session.dcim.devices.filter(site_id=site_ids,
+                                                        tag=self.config['export_tags'],
+                                                        role=self.config['export_device_roles'])
+        for device in devices:
             d = self._init_device(device)
             self.nb_net.nodes.append(d)
             d["node_id"] = len(self.nb_net.nodes) - 1
@@ -766,7 +773,7 @@ def parse_args():
     parser.add_argument('-o', '--output',    required=False, help='output format: cyjs | gml | clab | cml | graphite | d2',
                                              type=arg_output_check, )
     parser.add_argument('-a', '--api',       required=False, help='netbox API URL')
-    parser.add_argument('-s', '--site',      required=False, help='netbox site to export')
+    parser.add_argument('-s', '--sites',      required=False, help='netbox site to export')
     parser.add_argument('-t', '--tags',      required=False, help='netbox tags to export, for multiple tags use a comma-separated list: tag1,tag2,tag3 (uses AND logic)')
     parser.add_argument('-n', '--noconfigs', required=False, help='disable device configuration export (enabled by default)',
                                              action=argparse.BooleanOptionalAction)
@@ -810,7 +817,7 @@ def load_toml_config(filename):
             'super-spine':          3,
             'router':               4,
         },
-        'export_site': '',
+        'export_sites': [],
         'export_tags': [],
         'export_configs': True,
         'templates_path': ['.'],
@@ -846,13 +853,13 @@ def config_apply_netbox_args(config, args):
         error("Need an API URL to connect to NetBox.\nUse --api argument, NB_API_URL environment variable or key in --config file")
     if len(config['nb_api_token']) == 0:
         error("Need an API token to connect to NetBox.\nUse NB_API_TOKEN environment variable or key in --config file")
-    if args.site is not None and len(args.site) > 0:
-        config['export_site'] = args.site
+    if args.sites is not None and len(args.sites) > 0:
+        config['export_sites'] = args.sites.split(',')
     if args.tags is not None and len(args.tags) > 0:
         config['export_tags'] = args.tags.split(',')
         debug(f"List of tags to filter devices for export: {config['export_tags']}")
-    if len(config['export_site']) == 0 and len(config['export_tags']) == 0:
-        error("Need a Site name or Tags to export. Use --site/--tags arguments, or EXPORT_SITE/EXPORT_TAGS key in --config file")
+    if len(config['export_sites']) == 0 and len(config['export_tags']) == 0:
+        error("Need a Site name or Tags to export. Use --sites/--tags arguments, or EXPORT_SITE/EXPORT_TAGS key in --config file")
     if args.noconfigs is not None:
         if args.noconfigs:
             config['export_configs'] = False

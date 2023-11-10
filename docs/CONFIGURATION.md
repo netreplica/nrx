@@ -29,8 +29,8 @@ TEMPLATES_PATH       = ['templates']
 
 # List of NetBox Device Roles to export
 EXPORT_DEVICE_ROLES  = ['router', 'core-switch', 'distribution-switch', 'access-switch', 'tor-switch', 'server']
-# NetBox Site to export. Alternatively, use --site argument
-EXPORT_SITE          = 'DM-Akron'
+# NetBox Site to export. Alternatively, use --sites argument
+EXPORT_SITES          = ['DM-Akron']
 # NetBox tags to export. Alternatively, use --tags argument
 EXPORT_TAGS          = []
 # Export device configurations, when available
