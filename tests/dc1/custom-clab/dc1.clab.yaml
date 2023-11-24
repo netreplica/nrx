@@ -1,0 +1,157 @@
+name: dc1
+topology:
+    nodes:
+        graphite:
+            kind: linux
+            image: netreplica/graphite:latest
+            env:
+                HOST_CONNECTION: ${SSH_CONNECTION}
+            binds:
+                - __clabDir__/topology-data.json:/htdocs/default/default.json:ro
+                - __clabDir__/ansible-inventory.yml:/htdocs/lab/default/ansible-inventory.yml:ro
+            ports:
+                - 8080:80
+            exec:
+                - sh -c 'graphite_motd.sh 8080'
+            labels:
+                graph-hide: yes
+
+        dc1-leaf-1:
+            kind: nokia_srlinux
+            type: ixr6
+            image: ghcr.io/nokia/srlinux:latest
+            labels:
+                graph-icon: leaf
+                graph-level: 9
+                role: Leaf
+                group: dc1
+                platform: Nokia SR-Linux
+                vendor: Nokia
+                model: 7220 IXR-D2
+        dc1-spine-1:
+            kind: linux
+            image: frrouting/frr:latest
+            labels:
+                graph-icon: spine
+                graph-level: 8
+                role: Spine
+                group: dc1
+                platform: Arista EOS
+                vendor: Arista
+                model: DCS-7280CR3-32P4
+        dc1-spine-2:
+            kind: linux
+            image: frrouting/frr:latest
+            labels:
+                graph-icon: spine
+                graph-level: 8
+                role: Spine
+                group: dc1
+                platform: Arista EOS
+                vendor: Arista
+                model: DCS-7280CR3-32P4
+        dc1-leaf-2:
+            kind: nokia_srlinux
+            type: ixr6
+            image: ghcr.io/nokia/srlinux:latest
+            labels:
+                graph-icon: leaf
+                graph-level: 9
+                role: Leaf
+                group: dc1
+                platform: Nokia SR-Linux
+                vendor: Nokia
+                model: 7220 IXR-D2
+        dc1-leaf-3:
+            kind: nokia_srlinux
+            type: ixr6
+            image: ghcr.io/nokia/srlinux:latest
+            labels:
+                graph-icon: leaf
+                graph-level: 9
+                role: Leaf
+                group: dc1
+                platform: Nokia SR-Linux
+                vendor: Nokia
+                model: 7220 IXR-D2
+        dc1-leaf-4:
+            kind: nokia_srlinux
+            type: ixr6
+            image: ghcr.io/nokia/srlinux:latest
+            labels:
+                graph-icon: leaf
+                graph-level: 9
+                role: Leaf
+                group: dc1
+                platform: Nokia SR-Linux
+                vendor: Nokia
+                model: 7220 IXR-D2
+        dc1-srv-1:
+            kind: linux
+            image: netreplica/ubuntu-host:1.4
+            cmd: /start.sh -rS
+            exec:
+                - bash -c "echo root:root123 | chpasswd"
+            labels:
+                graph-icon: server
+                graph-level: 10
+                role: server
+                group: dc1
+                platform: Linux
+                vendor: Dell
+                model: PowerEdge R640
+        dc1-srv-2:
+            kind: linux
+            image: netreplica/ubuntu-host:1.4
+            cmd: /start.sh -rS
+            exec:
+                - bash -c "echo root:root123 | chpasswd"
+            labels:
+                graph-icon: server
+                graph-level: 10
+                role: server
+                group: dc1
+                platform: Linux
+                vendor: Dell
+                model: PowerEdge R640
+        dc1-srv-3:
+            kind: linux
+            image: netreplica/ubuntu-host:1.4
+            cmd: /start.sh -rS
+            exec:
+                - bash -c "echo root:root123 | chpasswd"
+            labels:
+                graph-icon: server
+                graph-level: 10
+                role: server
+                group: dc1
+                platform: Linux
+                vendor: Dell
+                model: PowerEdge R640
+        dc1-srv-4:
+            kind: linux
+            image: netreplica/ubuntu-host:1.4
+            cmd: /start.sh -rS
+            exec:
+                - bash -c "echo root:root123 | chpasswd"
+            labels:
+                graph-icon: server
+                graph-level: 10
+                role: server
+                group: dc1
+                platform: Linux
+                vendor: Dell
+                model: PowerEdge R640
+    links:
+        - endpoints: ["dc1-leaf-1:e1-49", "dc1-spine-1:eth1"]
+        - endpoints: ["dc1-leaf-1:e1-50", "dc1-spine-2:eth1"]
+        - endpoints: ["dc1-leaf-2:e1-49", "dc1-spine-1:eth2"]
+        - endpoints: ["dc1-leaf-2:e1-50", "dc1-spine-2:eth2"]
+        - endpoints: ["dc1-leaf-3:e1-49", "dc1-spine-1:eth3"]
+        - endpoints: ["dc1-leaf-3:e1-50", "dc1-spine-2:eth3"]
+        - endpoints: ["dc1-leaf-4:e1-49", "dc1-spine-1:eth4"]
+        - endpoints: ["dc1-leaf-4:e1-50", "dc1-spine-2:eth4"]
+        - endpoints: ["dc1-leaf-1:e1-1", "dc1-srv-1:eth1"]
+        - endpoints: ["dc1-leaf-2:e1-1", "dc1-srv-2:eth1"]
+        - endpoints: ["dc1-leaf-3:e1-1", "dc1-srv-3:eth1"]
+        - endpoints: ["dc1-leaf-4:e1-1", "dc1-srv-4:eth1"]

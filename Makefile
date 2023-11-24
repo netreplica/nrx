@@ -54,7 +54,7 @@ test-dc1-cyjs-2-clab-custom-platform-map:
 	@echo "#################################################################"
 	mkdir -p tests/dc1/test && cd tests/dc1/test && rm -rf * && \
 	../../../nrx.py -c ../nrx.conf -i cyjs -f ../data/dc1.cyjs -M ../platform_map.yaml -d && \
-	for f in *; do echo Comparing file $$f ...; diff $$f ../clab-custom/$$f || exit 1; done
+	for f in *; do echo Comparing file $$f ...; diff $$f ../custom-clab/$$f || exit 1; done
 	@echo
 
 test-dc1-cyjs-2-graphite:
