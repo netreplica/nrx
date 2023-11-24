@@ -197,15 +197,15 @@ By default, **nrx** searches for the template files first in the `templates` fol
 
 Depending on the desired output format, the required templates are taken from a matching subfolder. For example, if the output format is `clab` for Containerlab, then templates are taken from `clab` subfolder. For Cisco Modelling Labs `cml` format the subfolder would be `cml`.
 
-A user can create their own templates for any output format and store them in a subfolder with a format name they would use for `--output` argument. To make the new output format available to **nrx**, an entry describing basic properties of the format must be added to [`formats.yaml`](templates/formats.yaml) file in the `templates` folder.
+A user can create their own templates for any output format and store them in a subfolder with a format name they would use for `--output` argument. To make the new output format available to **nrx**, an entry describing basic properties of the format must be added to `formats.yaml` file in the `templates` folder.
 
-**nrx** uses NetBox Device Platform `slug` field to identify which node templates to use for each device. If a template with a name matching the platform value exists, it would be used by default. Since naming of the platforms is unique for every NetBox deployment, it is not possible to create a generic library of templates that could work out-of-the box for all users. Instead, **nrx** uses a mapping file `platform_map.yaml` to identify which template to use for each platform, with possible additional parameters.
+**nrx** uses NetBox Device Platform `slug` field to identify which template to use for each device. If a template with a name matching the platform value exists, it would be used by default. Since naming of the platforms is unique for every NetBox deployment, it is not possible to create a generic library of templates that could work out-of-the box for all users. Instead, **nrx** uses a mapping file `platform_map.yaml` to identify which template to use for each platform, with possible additional parameters like value of the `image` tag for Containerlab nodes.
 
 The full list of template search rules:
 
 * `<format>/topology.j2`: template for the final topology file. Mandatory.
-* `<format>/kinds/<kind>.j2`: templates for individual node entries in the topology file, with `default.j2` being mandatory as a fallback template.
-* `<format>/interface_names/<kind>.j2`: templates for generating emulated interface names used by this NOS `kind` with `default.j2` being a fallback template. Optional, as not all formats need emulated interface names.
+* `<format>/nodes/<kind>.j2`: templates for individual node entries in the topology file, with `default.j2` being mandatory as a fallback template.
+* `<format>/interface_names/<kind>.j2`: templates for generating emulated interface names used by each `kind` with `default.j2` being a fallback template. Optional, as not all output formats need emulated interface names. For example, not needed for visualization output formats.
 * `<format>/interface_maps/<kind>.j2`: templates for mappings between real interface names and emulated interface names used by this NOS `kind`. Optional, as not all `kinds` support such mappings.
 
 This repository includes a set of [netreplica/templates](https://github.com/netreplica/templates) as a submodule. See more details about available templates in the [templates/README.md](https://github.com/netreplica/templates).
