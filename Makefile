@@ -5,7 +5,12 @@ test-local: test-dc1 test-dc2 test-colo test-site1 test-h88
 test-local-lrg: test-lrg-nb-2-cyjs-latest
 test-current: test-dc1-nb-2-cyjs-current test-dc2-nb-2-cyjs-current test-colo-nb-2-cyjs-current test-site1-nb-2-cyjs-current test-h88-nb-2-cyjs-current
 test-latest: test-dc1-nb-2-cyjs-latest test-dc2-nb-2-cyjs-latest test-colo-nb-2-cyjs-latest test-site1-nb-2-cyjs-latest test-h88-nb-2-cyjs-latest
-test: test-dc1-cyjs-2-clab test-dc2-cyjs-2-cml test-site1-cyjs-2-clab test-dc1-cyjs-2-graphite test-dc2-cyjs-2-graphite test-h88-cyjs-2-clab test-dc1-cyjs-2-d2 test-lrg-cyjs-2-graphite
+test: test-dc1-cyjs-2-clab test-dc1-cyjs-2-clab-custom-platform-map test-dc2-cyjs-2-cml test-site1-cyjs-2-clab test-dc1-cyjs-2-graphite test-dc2-cyjs-2-graphite test-h88-cyjs-2-clab test-dc1-cyjs-2-d2 test-lrg-cyjs-2-graphite
+
+test-clab: test-dc1-cyjs-2-clab test-dc1-cyjs-2-clab-custom-platform-map test-site1-cyjs-2-clab test-h88-cyjs-2-clab
+test-cml: test-dc2-cyjs-2-cml
+test-graphite: test-dc1-cyjs-2-graphite test-dc2-cyjs-2-graphite test-lrg-cyjs-2-graphite
+test-d2: test-dc1-cyjs-2-d2
 
 test-dc1: test-dc1-nb-2-cyjs-current test-dc1-nb-2-cyjs-latest test-dc1-cyjs-2-clab test-dc1-cyjs-2-clab-custom-platform-map test-dc1-cyjs-2-graphite test-dc1-cyjs-2-d2
 test-dc2: test-dc2-nb-2-cyjs-current test-dc2-nb-2-cyjs-latest test-dc2-cyjs-2-cml test-dc2-cyjs-2-graphite
@@ -48,8 +53,8 @@ test-dc1-cyjs-2-clab-custom-platform-map:
 	@echo "# DC1: read from CYJS and export as Containerlab using custom platform map"
 	@echo "#################################################################"
 	mkdir -p tests/dc1/test && cd tests/dc1/test && rm -rf * && \
-	../../../nrx.py -c ../nrx.conf -i cyjs -f ../data/dc1.cyjs -M ../platform_map.yml -d && \
-	for f in *; do echo Comparing file $$f ...; diff $$f ../clab-custom/$$f || exit 1; done
+	../../../nrx.py -c ../nrx.conf -i cyjs -f ../data/dc1.cyjs -M ../platform_map.yaml -d && \
+	for f in *; do echo Comparing file $$f ...; diff $$f ../custom-clab/$$f || exit 1; done
 	@echo
 
 test-dc1-cyjs-2-graphite:
