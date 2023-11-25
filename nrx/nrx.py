@@ -27,7 +27,7 @@ nrx reads a network topology graph from NetBox DCIM system and exports it in one
 It can also read the topology graph previously saved as a CYJS file to convert it into the one of supported network emulation formats.
 """
 
-__version__ = 'v0.4.0'
+__version__ = 'v0.4.0-rc1'
 __author__ = 'Alex Bortok and Netreplica Team'
 
 import os
