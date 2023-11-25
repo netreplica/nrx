@@ -27,6 +27,7 @@ topology:
                 platform: Cisco IOS-XE
                 vendor: Cisco
                 model: C9200-48P
+
         HQ-DistSw:
             kind: nokia_srlinux
             type: ixrd2
@@ -40,6 +41,7 @@ topology:
                 platform: Nokia SR-Linux
                 vendor: Nokia
                 model: 7220 IXR-D2
+
         HQ-Switch2:
             kind: ceos
             binds:
@@ -54,6 +56,7 @@ topology:
                 platform: Arista EOS
                 vendor: Arista
                 model: DCS-7010T-48
+
     links:
         - endpoints: ["HQ-Switch1:eth1", "HQ-DistSw:e1-1"]
         - endpoints: ["HQ-Switch1:eth2", "HQ-DistSw:e1-2"]
