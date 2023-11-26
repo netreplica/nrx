@@ -210,6 +210,8 @@ The full list of template search rules:
 
 This repository includes a set of [netreplica/templates](https://github.com/netreplica/templates) as a submodule. See more details about available templates in the [templates/README.md](https://github.com/netreplica/templates).
 
+Although you can always customize the templates according to your needs directly, most typical changes you might want could be done via the platform map file. See [Platform Map](docs/platform_map.md) for details.
+
 # How to use
 
 Start with activating venv environment
