@@ -21,8 +21,9 @@ This project is in early phase. We're experimenting with the best ways to automa
 # Latest capabilities added
 
 The last release adds the following capabilities:
-* User-defined output formats using Jinja2 templates
-* Mapping between NetBox platform values and node parameters via `platform_map.yaml` file
+* User-defined output formats using Jinja2 templates via `formats.yaml` file
+* Mapping between NetBox platform values and node parameters via [`platform_map.yaml` file](docs/platform_map.md)
+* Configuration directory at `$HOME/.nr` with a way to initialize it via `--init` argument
 
 Find detailed release notes on the [Releases page](https://github.com/netreplica/nrx/releases).
 
