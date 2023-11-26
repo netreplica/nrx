@@ -27,7 +27,7 @@ nrx reads a network topology graph from NetBox DCIM system and exports it in one
 It can also read the topology graph previously saved as a CYJS file to convert it into the one of supported network emulation formats.
 """
 
-__version__ = 'v0.4.0-rc2'
+__version__ = 'v0.4.0-rc3'
 __author__ = 'Alex Bortok and Netreplica Team'
 
 import os
@@ -1158,6 +1158,12 @@ def load_toml_config(filename):
             error(f"Unable to parse configuration file {filename}: {e}")
         except argparse.ArgumentTypeError as e:
             error(f"Unsupported configuration: {e}")
+    path_config_keys = ['templates_path', 'platform_map', 'output_dir']
+    for k in path_config_keys:
+        if isinstance(config[k], str):
+            config[k] = os.path.expandvars(config[k])
+        elif isinstance(config[k], list):
+            config[k] = [os.path.expandvars(p) for p in config[k]]
     return config
 
 def config_apply_netbox_args(config, args):
