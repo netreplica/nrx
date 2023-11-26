@@ -28,13 +28,29 @@ platforms:
       cml: iosv
 ```
 
- ## Kinds section
+## Kinds section
 
-In the `kinds` section, it is possible to define multiple parameters for each node `kind` value. The key parameters are paths to the template files to render the node, its interface names and, when supported, an interface map. Equally important is the ability to override a value of the `image` parameter used in the template file.
+In the `kinds` section, it is possible to define multiple parameters for each node `kind` value. The following subsections describe key use cases.
 
-### Custom kind images
+### Template files
 
-By default, the templates supplied with with `nrx` use image names that have local significance. For example, for `ceos` node kind, the image is `ceos:latest`. A user may choose to tag an actual `ceos` image it has as `ceos:latest` locally. Using the platform map file, an alternative approach becomes possible by providing `image` parameter for the `ceos` node kind:
+The most important parameters are paths to the template files to render the node, its interface names and, when supported, an interface map. The example below demonstrates how to define the template files for the `ceos` node kind to be used with the Containerlab `clab` output format:
+
+```yaml
+kinds:
+  clab:
+    ceos:
+      nodes:
+        template: clab/nodes/ceos.j2
+      interface_names:
+        template: clab/interface_names/default.j2
+      interface_maps:
+        template: clab/interface_maps/ceos.j2
+```
+
+### Image tags
+
+The `image` parameter is useful to override the value of this parameter from the template file. By default, the templates supplied with with `nrx` use image names that have local significance. For example, for `ceos` node kind, the image is `ceos:latest`. A user may choose to tag an actual `ceos` image it has as `ceos:latest` locally. Using the platform map file, an alternative approach becomes possible by providing `image` parameter for the `ceos` node kind:
 
 ```yaml
 kinds:
@@ -43,10 +59,6 @@ kinds:
       nodes:
         template: clab/nodes/ceos.j2
         image: some_corporate_container_registry/ceos:4.28.3M
-      interface_names:
-        template: clab/interface_names/default.j2
-      interface_maps:
-        template: clab/interface_maps/ceos.j2
 ```
 
 ### Other custom kind parameters
