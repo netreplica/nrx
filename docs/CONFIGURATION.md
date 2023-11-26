@@ -4,6 +4,14 @@
 
 Use `--config <filename>` argument to specify a configuration file to use.
 
+## Support for environmental variables
+
+Several parameters in the configuration file that define paths in the file system an be set using environmental variables:
+
+- `OUTPUT_DIR`
+- `TEMPLATES_PATH`
+- `PLATFORM_MAP`
+
 ## Available options
 
 ```
@@ -22,12 +30,12 @@ cables_block_size =     64
 
 # Output format to use for export: 'gml' | 'cyjs' | 'clab'. Alternatively, use --output argument
 OUTPUT_FORMAT        = 'clab'
-# Override output directory. By default, a subdirectory matching topology name will be created. Alternatively, use --dir argument
-OUTPUT_DIR           = 'demo'
-# Templates path
-TEMPLATES_PATH       = ['templates']
-# Path to platform map file
-PLATFORM_MAP         = 'platform_map.yaml'
+# Override output directory. By default, a subdirectory matching topology name will be created. Alternatively, use --dir argument. Env vars are supported
+OUTPUT_DIR           = '$HOME/nrx'
+# Templates search path. Default path is ['./templates','$HOME/.nr/templates']. Env vars are supported
+TEMPLATES_PATH       = ['./templates','$HOME/.nr/custom','$HOME/.nr/templates']
+# Platform map path. If not provided, 'platform_map.yaml' in the current directory is checked first, and then in the TEMPLATES_PATH folders. Env vars are supported
+PLATFORM_MAP         = '$HOME/.nr/platform_map.yaml'
 
 # List of NetBox Device Roles to export
 EXPORT_DEVICE_ROLES  = ['router', 'core-switch', 'distribution-switch', 'access-switch', 'tor-switch', 'server']
