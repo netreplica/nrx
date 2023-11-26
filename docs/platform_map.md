@@ -62,3 +62,17 @@ kinds:
 ```
 
 ### Other custom kind parameters
+
+Depending on the output format, there could be other parameters that could be used in the templates. In case of Containerlab, there is a set of generic parameters that can be applied to any kind. In the templates supplied with `nrx`, there is a special file `clab/node_params.j2` that can render most of such parameters if included in the node template. In order to activate any of such parameters, define them in the platform map. For examples, use `cmd` parameter to specify the command to be executed after the node is started, or `exec` parameter list for the commands to be executed during the node startup. The example below demonstrates how to override the image for the `linux` node kind and specify a command to be executed after the node is started:
+
+```yaml
+kinds:
+  clab:
+    linux:
+      nodes:
+        template: clab/nodes/default.j2
+        image: netreplica/ubuntu-host:latest
+        cmd: /start.sh -sS
+        exec:
+          - bash -c "echo root:root | chpasswd"
+```
