@@ -210,7 +210,7 @@ The full list of template search rules:
 
 This repository includes a set of [netreplica/templates](https://github.com/netreplica/templates) as a submodule. See more details about available templates in the [templates/README.md](https://github.com/netreplica/templates).
 
-Although you can always directly customize the templates according to your needs, there is less intrusive way via the platform map file. See [Platform Map](docs/platform_map.md) for details.
+Although you can always directly customize the templates according to your needs, there is less intrusive way via the platform map file. It should be used if you need to tell `nrx` which templates to use for the Device Platform values in your NetBox system. Also, you can override node images to be used instead of the names specified in the templates, as well as many other node parameters. See [Platform Map](docs/platform_map.md) for details.
 
 # How to use
 
