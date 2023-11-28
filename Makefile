@@ -145,6 +145,15 @@ test-site1-cyjs-2-clab:
 	for f in *; do echo Comparing file $$f ...; diff $$f ../data/$$f || exit 1; done
 	@echo
 
+test-site1-cyjs-2-clab-rename:
+	@echo "#################################################################"
+	@echo "# Site1: read from CYJS and export as Containerlab with a custom name"
+	@echo "#################################################################"
+	mkdir -p tests/site1/test && cd tests/site1/test && rm -rf * && \
+	../../../nrx.py -c ../nrx.conf -i cyjs -f ../data/site1.cyjs -o clab --name ABC -d && \
+	for f in *; do echo Comparing file $$f ...; diff $$f ../data/$$f || exit 1; done
+	@echo
+
 test-site1-cyjs-template-2-clab:
 	@echo "#################################################################"
 	@echo "# Site1: replace Platform in the template, read from CYJS and export as Containerlab"
