@@ -1,0 +1,60 @@
+name: ABC
+topology:
+    nodes:
+        graphite:
+            kind: linux
+            image: netreplica/graphite:latest
+            env:
+                HOST_CONNECTION: ${SSH_CONNECTION}
+            binds:
+                - __clabDir__/topology-data.json:/htdocs/default/default.json:ro
+                - __clabDir__/ansible-inventory.yml:/htdocs/lab/default/ansible-inventory.yml:ro
+            ports:
+                - 8080:80
+            exec:
+                - sh -c 'graphite_motd.sh 8080'
+            labels:
+                graph-hide: yes
+
+        site1-r1:
+            kind: sonic-vs
+            image: netreplica/docker-sonic-vs:latest
+            labels:
+                graph-icon: router
+                graph-level: 6
+                role: Router
+                group: site1
+                platform: SONiC
+                vendor: Edgecore
+                model: 5912-54X-O-AC-F
+        site1-h1:
+            kind: linux
+            image: netreplica/ubuntu-host:latest
+            cmd: /start.sh -sS
+            exec:
+                - bash -c "echo root:root | chpasswd"
+            labels:
+                graph-icon: server
+                graph-level: 10
+                role: server
+                group: site1
+                platform: Linux
+                vendor: Dell
+                model: PowerEdge R640
+        site1-h2:
+            kind: linux
+            image: netreplica/ubuntu-host:latest
+            cmd: /start.sh -sS
+            exec:
+                - bash -c "echo root:root | chpasswd"
+            labels:
+                graph-icon: server
+                graph-level: 10
+                role: server
+                group: site1
+                platform: Linux
+                vendor: Dell
+                model: PowerEdge R640
+    links:
+        - endpoints: ["site1-r1:eth1", "site1-h1:eth1"]
+        - endpoints: ["site1-r1:eth2", "site1-h2:eth1"]
