@@ -20,6 +20,8 @@ API_TIMEOUT          = 10
 interfaces_block_size = 4
 cables_block_size =     64
 
+# Name of the topology, optional. Alternatively, use --name argument
+TOPOLOGY_NAME        = 'DemoSite'
 # Output format to use for export: 'gml' | 'cyjs' | 'clab'. Alternatively, use --output argument
 OUTPUT_FORMAT        = 'clab'
 # Override output directory. By default, a subdirectory matching topology name will be created. Alternatively, use --dir argument
