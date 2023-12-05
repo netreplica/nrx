@@ -5,7 +5,7 @@ test-local: test-dc1 test-dc2 test-colo test-site1 test-h88
 test-local-lrg: test-lrg-nb-2-cyjs-latest
 test-current: test-dc1-nb-2-cyjs-current test-dc2-nb-2-cyjs-current test-colo-nb-2-cyjs-current test-site1-nb-2-cyjs-current test-h88-nb-2-cyjs-current
 test-latest: test-dc1-nb-2-cyjs-latest test-dc2-nb-2-cyjs-latest test-colo-nb-2-cyjs-latest test-site1-nb-2-cyjs-latest test-h88-nb-2-cyjs-latest
-test: test-dc1-cyjs-2-clab test-dc1-cyjs-2-clab-custom-platform-map test-dc2-cyjs-2-cml test-site1-cyjs-2-clab test-dc1-cyjs-2-graphite test-dc2-cyjs-2-graphite test-h88-cyjs-2-clab test-dc1-cyjs-2-d2 test-lrg-cyjs-2-graphite
+test: test-dc1-cyjs-2-clab test-dc1-cyjs-2-clab-custom-platform-map test-dc2-cyjs-2-cml test-site1-cyjs-2-clab test-site1-cyjs-2-clab-rename test-dc1-cyjs-2-graphite test-dc2-cyjs-2-graphite test-h88-cyjs-2-clab test-dc1-cyjs-2-d2 test-lrg-cyjs-2-graphite
 
 test-clab: test-dc1-cyjs-2-clab test-dc1-cyjs-2-clab-custom-platform-map test-site1-cyjs-2-clab test-h88-cyjs-2-clab
 test-cml: test-dc2-cyjs-2-cml
@@ -15,7 +15,7 @@ test-d2: test-dc1-cyjs-2-d2
 test-dc1: test-dc1-nb-2-cyjs-current test-dc1-nb-2-cyjs-latest test-dc1-cyjs-2-clab test-dc1-cyjs-2-clab-custom-platform-map test-dc1-cyjs-2-graphite test-dc1-cyjs-2-d2
 test-dc2: test-dc2-nb-2-cyjs-current test-dc2-nb-2-cyjs-latest test-dc2-cyjs-2-cml test-dc2-cyjs-2-graphite
 test-colo: test-colo-nb-2-cyjs-current test-colo-nb-2-cyjs-latest
-test-site1: test-site1-nb-2-cyjs-current test-site1-nb-2-cyjs-latest test-site1-cyjs-2-clab
+test-site1: test-site1-nb-2-cyjs-current test-site1-nb-2-cyjs-latest test-site1-cyjs-2-clab test-site1-cyjs-2-clab-rename
 test-h88: test-h88-nb-2-cyjs-current test-h88-nb-2-cyjs-latest test-h88-nb-2-cyjs-latest-noconfigs test-h88-cyjs-2-clab
 test-lrg: test-lrg-nb-2-cyjs-latest test-lrg-cyjs-2-graphite
 
@@ -175,6 +175,15 @@ test-site1-cyjs-2-clab:
 	@echo "#################################################################"
 	mkdir -p tests/site1/test && cd tests/site1/test && rm -rf * && \
 	../../../nrx.py -c ../nrx.conf -i cyjs -f ../data/site1.cyjs -o clab -d && \
+	for f in *; do echo Comparing file $$f ...; diff $$f ../data/$$f || exit 1; done
+	@echo
+
+test-site1-cyjs-2-clab-rename:
+	@echo "#################################################################"
+	@echo "# Site1: read from CYJS and export as Containerlab with a custom name"
+	@echo "#################################################################"
+	mkdir -p tests/site1/test && cd tests/site1/test && rm -rf * && \
+	../../../nrx.py -c ../nrx.conf -i cyjs -f ../data/site1.cyjs -o clab --name ABC -d && \
 	for f in *; do echo Comparing file $$f ...; diff $$f ../data/$$f || exit 1; done
 	@echo
 

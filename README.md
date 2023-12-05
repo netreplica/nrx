@@ -156,7 +156,8 @@ optional arguments:
   -a, --api API             netbox API URL
   -s, --site SITE           netbox site to export
   -t, --tags TAGS           netbox tags to export, for multiple tags use a comma-separated list: tag1,tag2,tag3 (uses AND logic)
-  -n, --noconfigs           disable device configuration export (enabled by default)
+  -n, --name NAME           name of the exported topology (site name or tags by default)
+      --noconfigs           disable device configuration export (enabled by default)
   -k, --insecure            allow insecure server connections when using TLS
   -f, --file FILE           file with the network graph to import
   -T, --templates TEMPLATES directory with template files, will be prepended to TEMPLATES_PATH list in the configuration file
