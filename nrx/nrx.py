@@ -123,7 +123,10 @@ class NBFactory:
     def __init__(self, config):
         self.config = config
         self.nb_net = NBNetwork()
-        if len(config['export_sites']) > 1:
+        # Determine the name of the topology if not provided in the configuration
+        if len(config['topology_name']) > 0:
+            self.topology_name = config['topology_name']
+        elif len(config['export_sites']) > 1:
             self.topology_name = "__".join(config['export_sites'])
         elif len(config['export_sites']) > 0:
             self.topology_name = config['export_sites'][0]
@@ -417,6 +420,8 @@ class NetworkTopology:
             # lists of device_index values grouped by role (e.g. {'spine': [1, 2], 'leaf': [3, 4]})
             'roles': {},
         }
+        if len(config['topology_name']) > 0:
+            self.topology['name'] = config['topology_name']
         self.j2env = jinja2.Environment(
                     loader=jinja2.FileSystemLoader(self.config['templates_path'], followlinks=True),
                     extensions=['jinja2.ext.do'],
@@ -432,14 +437,10 @@ class NetworkTopology:
 
     def build_from_file(self, file):
         self._read_network_graph(file)
-        if "name" in self.G.graph.keys():
-            self.topology['name'] = self.G.graph["name"]
         self._build_topology()
 
     def build_from_graph(self, graph):
         self.G = graph
-        if "name" in self.G.graph.keys():
-            self.topology['name'] = self.G.graph["name"]
         self._build_topology()
 
     def _read_network_graph(self, file):
@@ -549,6 +550,8 @@ class NetworkTopology:
         # Parse graph G into lists of: nodes and links.
         # Keep list of interfaces per device in `device_interfaces_map`, and then add them to each device
         try:
+            if self.topology['name'] is None and "name" in self.G.graph.keys():
+                self.topology['name'] = self.G.graph["name"]
             for n in self.G.nodes:
                 if not self._append_if_node_is_device(n):
                     self._append_if_node_is_interface(n)
@@ -566,7 +569,6 @@ class NetworkTopology:
         # Create a directory for output files
         self.files_path = create_output_directory(self.topology['name'], self.config['output_dir'])
         # Generate topology data structure
-        self.topology['name'] = self.G.name
         self.topology['nodes'] = self._render_emulated_nodes()
         self._initialize_emulated_links()
         self._render_topology()
@@ -775,7 +777,8 @@ def parse_args():
     parser.add_argument('-a', '--api',       required=False, help='netbox API URL')
     parser.add_argument('-s', '--sites',      required=False, help='netbox site to export')
     parser.add_argument('-t', '--tags',      required=False, help='netbox tags to export, for multiple tags use a comma-separated list: tag1,tag2,tag3 (uses AND logic)')
-    parser.add_argument('-n', '--noconfigs', required=False, help='disable device configuration export (enabled by default)',
+    parser.add_argument('-n', '--name',      required=False, help='name of the exported topology (site name or tags by default)')
+    parser.add_argument('--noconfigs',       required=False, help='disable device configuration export (enabled by default)',
                                              action=argparse.BooleanOptionalAction)
     parser.add_argument('-k', '--insecure',  required=False, help='allow insecure server connections when using TLS',
                                              action=argparse.BooleanOptionalAction)
@@ -819,6 +822,7 @@ def load_toml_config(filename):
         },
         'export_sites': [],
         'export_tags': [],
+        'topology_name': '',
         'export_configs': True,
         'templates_path': ['.'],
         'output_dir': '',
@@ -884,6 +888,9 @@ def load_config(args):
 
     if args.insecure:
         config['tls_validate'] = False
+
+    if args.name is not None and len(args.name) > 0:
+        config['topology_name'] = args.name
 
     if args.output is not None and len(args.output) > 0:
         config['output_format'] = args.output
