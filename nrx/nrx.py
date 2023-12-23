@@ -127,7 +127,7 @@ class NBFactory:
         if len(config['topology_name']) > 0:
             self.topology_name = config['topology_name']
         elif len(config['export_sites']) > 1:
-            self.topology_name = "__".join(config['export_sites'])
+            self.topology_name = "-".join(config['export_sites'])
         elif len(config['export_sites']) > 0:
             self.topology_name = config['export_sites'][0]
         elif len(config['export_tags']) > 0:
@@ -768,31 +768,36 @@ def arg_output_check(s):
 
 def parse_args():
     """CLI arguments parser"""
-    parser = argparse.ArgumentParser(prog='nrx', description="nrx - network topology exporter by netreplica")
-    parser.add_argument('-c', '--config',    required=False, help='configuration file')
-    parser.add_argument('-i', '--input',     required=False, help='input source: netbox (default) | cyjs',
-                                             default='netbox', type=arg_input_check,)
-    parser.add_argument('-o', '--output',    required=False, help='output format: cyjs | gml | clab | cml | graphite | d2',
-                                             type=arg_output_check, )
-    parser.add_argument('-a', '--api',       required=False, help='netbox API URL')
-    parser.add_argument('-s', '--sites',      required=False, help='netbox site to export')
-    parser.add_argument('-t', '--tags',      required=False, help='netbox tags to export, for multiple tags use a comma-separated list: tag1,tag2,tag3 (uses AND logic)')
-    parser.add_argument('-n', '--name',      required=False, help='name of the exported topology (site name or tags by default)')
-    parser.add_argument('--noconfigs',       required=False, help='disable device configuration export (enabled by default)',
-                                             action=argparse.BooleanOptionalAction)
-    parser.add_argument('-k', '--insecure',  required=False, help='allow insecure server connections when using TLS',
-                                             action=argparse.BooleanOptionalAction)
-    parser.add_argument('-d', '--debug',     required=False, help='enable debug output',
-                                             action=argparse.BooleanOptionalAction)
-    parser.add_argument('-f', '--file',      required=False, help='file with the network graph to import')
-    parser.add_argument('-T', '--templates', required=False, help='directory with template files, \
-                                                                   will be prepended to TEMPLATES_PATH list \
-                                                                   in the configuration file')
-    parser.add_argument('-D', '--dir',       required=False, help='save files into specified directory. \
-                                                                   nested relative and absolute paths are OK \
-                                                                   (topology name is used by default)')
+    args_parser = argparse.ArgumentParser(prog='nrx', description="nrx - network topology exporter by netreplica")
 
-    args = parser.parse_args()
+    sites_group = args_parser.add_mutually_exclusive_group()
+
+    args_parser.add_argument('-c', '--config',      required=False, help='configuration file')
+    args_parser.add_argument('-i', '--input',       required=False, help='input source: netbox (default) | cyjs',
+                                                        default='netbox', type=arg_input_check,)
+    args_parser.add_argument('-o', '--output',      required=False, help='output format: cyjs | gml | clab | cml | graphite | d2',
+                                                        type=arg_output_check, )
+    args_parser.add_argument('-a', '--api',         required=False, help='netbox API URL')
+    sites_group.add_argument('-s', '--site',        required=False, help='netbox site to export')
+    sites_group.add_argument(      '--sites',       required=False, help='comma-separated list of netbox sites to export')
+    args_parser.add_argument('-t', '--tags',        required=False, help='netbox tags to export, for multiple tags use a comma-separated list: \
+                                                                          tag1,tag2,tag3 (uses AND logic)')
+    args_parser.add_argument('-n', '--name',        required=False, help='name of the exported topology (site name or tags by default)')
+    args_parser.add_argument(      '--noconfigs',   required=False, help='disable device configuration export (enabled by default)',
+                                                        action=argparse.BooleanOptionalAction)
+    args_parser.add_argument('-k', '--insecure',    required=False, help='allow insecure server connections when using TLS',
+                                                        action=argparse.BooleanOptionalAction)
+    args_parser.add_argument('-d', '--debug',       required=False, help='enable debug output',
+                                                        action=argparse.BooleanOptionalAction)
+    args_parser.add_argument('-f', '--file',        required=False, help='file with the network graph to import')
+    args_parser.add_argument('-T', '--templates',   required=False, help='directory with template files, \
+                                                                          will be prepended to TEMPLATES_PATH list \
+                                                                          in the configuration file')
+    args_parser.add_argument('-D', '--dir',         required=False, help='save files into specified directory. \
+                                                                          nested relative and absolute paths are OK \
+                                                                          (topology name is used by default)')
+
+    args = args_parser.parse_args()
     global DEBUG_ON
     DEBUG_ON = args.debug is True
     debug(f"arguments {args}")
@@ -857,7 +862,9 @@ def config_apply_netbox_args(config, args):
         error("Need an API URL to connect to NetBox.\nUse --api argument, NB_API_URL environment variable or key in --config file")
     if len(config['nb_api_token']) == 0:
         error("Need an API token to connect to NetBox.\nUse NB_API_TOKEN environment variable or key in --config file")
-    if args.sites is not None and len(args.sites) > 0:
+    if args.site is not None and len(args.site) > 0:
+        config['export_sites'] = args.site.split(',')  # --site and --sites can be used interchangeably but not at the same time
+    elif args.sites is not None and len(args.sites) > 0:
         config['export_sites'] = args.sites.split(',')
     if args.tags is not None and len(args.tags) > 0:
         config['export_tags'] = args.tags.split(',')
