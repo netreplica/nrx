@@ -778,8 +778,9 @@ def parse_args():
     args_parser.add_argument('-o', '--output',      required=False, help='output format: cyjs | gml | clab | cml | graphite | d2',
                                                         type=arg_output_check, )
     args_parser.add_argument('-a', '--api',         required=False, help='netbox API URL')
-    sites_group.add_argument('-s', '--site',        required=False, help='netbox site to export')
-    sites_group.add_argument(      '--sites',       required=False, help='comma-separated list of netbox sites to export')
+    sites_group.add_argument('-s', '--site',        required=False, help='netbox site to export, cannot be combined with --sites')
+    sites_group.add_argument(      '--sites',       required=False, help='netbox sites to export, for multiple tags use a comma-separated list: \
+                                                                          site1,site2,site3 (uses OR logic)')
     args_parser.add_argument('-t', '--tags',        required=False, help='netbox tags to export, for multiple tags use a comma-separated list: \
                                                                           tag1,tag2,tag3 (uses AND logic)')
     args_parser.add_argument('-n', '--name',        required=False, help='name of the exported topology (site name or tags by default)')

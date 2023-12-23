@@ -138,7 +138,8 @@ optional arguments:
   -i, --input INPUT         input source: netbox (default) | cyjs
   -o, --output OUTPUT       output format: cyjs | gml | clab | cml | graphite | d2
   -a, --api API             netbox API URL
-  -s, --sites SITES           netbox site(s) to export, for multiple sites use a comma-separated list: site1,site2,site3 (uses OR logic)
+  -s SITE, --site SITE      netbox site to export, cannot be combined with --sites
+           --sites SITES    netbox sites to export, for multiple tags use a comma-separated list: site1,site2,site3 (uses OR logic)
   -t, --tags TAGS           netbox tags to export, for multiple tags use a comma-separated list: tag1,tag2,tag3 (uses AND logic)
   -n, --name NAME           name of the exported topology (site name or tags by default)
       --noconfigs           disable device configuration export (enabled by default)
