@@ -6,16 +6,26 @@
 
 # nrx - netreplica exporter
 
-**nrx** reads a network topology graph from [NetBox](https://docs.netbox.dev/en/stable/) DCIM system and exports it in one of the following formats:
+**nrx** reads a network topology graph from [NetBox](https://docs.netbox.dev/en/stable/) DCIM system and exports as one of the following:
 
-* Topology file for [Containerlab](https://containerlab.dev) tool for container-based networking labs
-* Topology file for [Cisco Modeling Labs](https://developer.cisco.com/modeling-labs/) platform for network simulation
-* Topology data for visualization using [Graphite](https://github.com/netreplica/graphite) or [D2](https://d2lang.com/)
+* [Containerlab](https://containerlab.dev) topology for container-based networking labs
+* [Cisco Modeling Labs](https://developer.cisco.com/modeling-labs/) topology for VM-based labs
+* Network visualization format for [Graphite](https://github.com/netreplica/graphite) or [D2](https://d2lang.com/)
 * Graph data as a JSON file in [Cytoscape](https://cytoscape.org/) format [CYJS](http://manual.cytoscape.org/en/stable/Supported_Network_File_Formats.html#cytoscape-js-json)
+* Any other user-defined format using [Jinja2](https://palletsprojects.com/p/jinja/) templates
 
 It can also read the topology graph previously saved as a CYJS file to convert it into other formats.
 
 This project is in early phase. We're experimenting with the best ways to automate software network lab orchestration. If you have any feedback, questions or suggestions, please reach out to us via the Netreplica Discord server linked above, [#netreplica](https://netdev-community.slack.com/archives/C054GKBC4LB) channel in NetDev Community on Slack, or open a github issue in this repository.
+
+# Latest capabilities added
+
+The latest release has a significant set of the new capabilities:
+* Ability to create new output formats without a need for **nrx** code changes
+* Mapping between NetBox platform values and node parameters via [`platform_map.yaml`](docs/platform_map.md) file
+* `$HOME/.nr` configuration directory with automatic initialization using `--init` argument
+
+Find detailed release notes on the [Releases page](https://github.com/netreplica/nrx/releases).
 
 # Table of contents
 
@@ -27,6 +37,7 @@ This project is in early phase. We're experimenting with the best ways to automa
    * [Command-line arguments](#command-line-arguments)
    * [Environmental variables](#environmental-variables)
    * [Configuration file](#configuration-file)
+   * [Configuration directory](#configuration-directory)
 * [Templates](#templates)
 * [How to use](#how-to-use)
    * [Containerlab example](#containerlab-example)
@@ -41,11 +52,11 @@ This project is in early phase. We're experimenting with the best ways to automa
 Data sourcing capabilities:
 
 * Connects to a NetBox instance over an API using a user-provided authentication token
-* Exports a network topology graph for
-    * a specific Site
-    * multiple Sites interconnected via point-2-point Circuits
+* Exports a network topology graph with Devices that
+    * belong to a Site specified with `--site` parameter
+    * have a list of Tags specified with `--tags` paramater
+* A combination of the two methods above is possible
 * Only Devices with Roles from a customizable list will be exported
-* Uses Tags to further narrow down a list of Devices for export
 * Direct connections between Devices via Cables will be exported as topology edges
 * Connections via Patch Panels and Circuits will be exported as well with help of NetBox [Cable Tracing API](https://docs.netbox.dev/en/stable/models/dcim/cable/#tracing-cables)
 * Only Ethernet connections will be exported
@@ -54,27 +65,29 @@ Data sourcing capabilities:
 
 Export capabilities:
 
-* Exports the graph as a Containerlab topology definition file in YAML format
+* Exports the graph as a Containerlab (Clab) topology definition file in YAML format
 * Exports the graph as a Cisco Modeling Labs (CML) topology definition file in YAML format
-* Exported device configurations will be used as `startup-config` for Containerlab and CML
+* Exported device configurations can be used as `startup-config` for Containerlab and CML
 * Exports the graph in formats for visualization with Graphite or D2
+* User-defined output formats using Jinja2 templates
 * Uses NetBox Device Platform `slug` field to identify node templates when rendering the export file
+* Customizable mapping between NetBox Platform values and node parameters via `platform_map.yaml` file
 * Creates mapping between real interface names and interface names used by the supported lab tools
 * Calculates `level` and `rank` values for each node based on Device Role to help visualize the topology
 * Exports the graph into CYJS format that can be later converted into a topology definition file, or used by 3rd party software
 
 # Compatibility
 
-The following minimum software versions were tested for compatibility with `nrx`:
+The following software versions were tested for compatibility with `nrx`:
 
-* NetBox `v3.4`. For device configuration export, `v3.5` is the minimum version.
-* Containerlab `v0.39`
+* NetBox `v3.4`-`v3.5`. For device configuration export, `v3.5` is the minimum version.
+* Containerlab `v0.39`, but earlier and later versions should work fine
 * Cisco Modeling Labs `v2.5`
 * Netreplica Graphite `v0.4.0`
 
 # Prerequisites
 
-* Python 3.9+. In the commands below we assume use have `python3.9` executable. If you have a different name, change accordingly.
+* Python 3.9+. In the commands below we assume you have `python3.9` executable. If it is under a different name, change accordingly.
 * PIP
 
     ```Shell
@@ -86,16 +99,6 @@ The following minimum software versions were tested for compatibility with `nrx`
     ```Shell
     pip install virtualenv
     ```
-
-* [Containerlab](https://containerlab.dev/) – not required for **nrx**, but is needed to deploy Containerlab topologies
-
-    ```Shell
-    bash -c "$(curl -sL https://get.containerlab.dev)"
-    ```
-
-* [Cisco Modeling Labs](https://developer.cisco.com/modeling-labs/) – not required for **nrx**, but is needed to deploy CML topologies
-
-* [Netreplica Graphite](https://github.com/netreplica/graphite) – not required for **nrx**, but is needed for topology visualization
 
 # How to install
 
@@ -128,28 +131,32 @@ Command-line arguments take the highest priority.
 
 ```
 ./nrx.py --help
-usage: nrx [-h] [-c CONFIG] [-i INPUT] [-o OUTPUT] [-a API] [-s SITE] [-k] [-d] [-f FILE] [-T TEMPLATES]
+usage: nrx [-h] [-v] [-d] [-I] [-c CONFIG] [-i INPUT] [-o OUTPUT] [-a API] [-s SITE] [-t TAGS] [-n NAME]
+           [--noconfigs] [-k | --insecure] [-f FILE] [-M MAP] [-T TEMPLATES] [-D DIR]
 
 nrx - network topology exporter by netreplica
 
 optional arguments:
   -h, --help                show this help message and exit
-  -c, --config CONFIG       configuration file
+  -v, --version             show version number and exit
+  -d, --debug               enable debug output
+  -I, --init                initialize configuration directory in $HOME/.nr and exit
+  -c, --config CONFIG       configuration file, default: $HOME/.nr/nrx.conf
   -i, --input INPUT         input source: netbox (default) | cyjs
-  -o, --output OUTPUT       output format: cyjs | gml | clab | cml | graphite | d2
+  -o, --output OUTPUT       output format: cyjs | clab | cml | graphite | d2 or any other format supported by provided templates
   -a, --api API             netbox API URL
   -s, --site SITE           netbox site to export
   -t, --tags TAGS           netbox tags to export, for multiple tags use a comma-separated list: tag1,tag2,tag3 (uses AND logic)
   -n, --name NAME           name of the exported topology (site name or tags by default)
       --noconfigs           disable device configuration export (enabled by default)
   -k, --insecure            allow insecure server connections when using TLS
-  -d, --debug               enable debug output
   -f, --file FILE           file with the network graph to import
   -T, --templates TEMPLATES directory with template files, will be prepended to TEMPLATES_PATH list in the configuration file
+  -M, --map MAP             file with platform mappings to node parameters (default: platform_map.yaml in templates folder)
   -D, --dir DIR             save files into directory DIR (topology name is used by default). nested relative and absolute paths are OK
 ```
 
-Note: `NB_API_TOKEN` is not supported as an argument for security reasons.
+Note: for security reasons, there is no argument to pass an API token. Use either an environmental variable or a configuration file.
 
 ## Environmental variables
 
@@ -164,22 +171,39 @@ export NB_API_TOKEN='replace_with_valid_API_token'
 
 ## Configuration file
 
-Use `--config <filename>` argument to specify a configuration file to use. The sample configuration file is provided as [`nrx.conf`](nrx.conf). Detailed information on the configuration options can be found in [CONFIGURATION.md](docs/CONFIGURATION.md).
+Use `--config <filename>` argument to specify a configuration file to use. By default, **nrx** uses `$HOME/.nr/nrx.conf` if such file exists. The sample configuration file is provided as [`nrx.conf`](nrx.conf). Detailed information on the configuration options can be found in [CONFIGURATION.md](docs/CONFIGURATION.md).
+
+## Configuration directory
+
+By default, **nrx** looks up for the following assets in the `$HOME/.nr` directory:
+
+* Configuration file: `nrx.conf`, unless overridden by `--config` argument
+* Templates: `templates`, which can be supplemented by additional paths with `--templates` argument
+
+To initialize the configuration directory, run `nrx.py --init`. This will create the `$HOME/.nr` folder and populate it with a configuration file example and a compatible version of the templates.
 
 # Templates
 
-**nrx** renders all topology artifacts from [Jinja2](https://jinja.palletsprojects.com/en/3.1.x/) templates. Depending on the desired output format, the required templates are taken from a matching subfolder. For example, if the output format is `clab` for Containerlab, then templates are searched under `clab` subfolder. For Cisco Modelling Labs `cml` format the subfolder would be `cml`.
+**nrx** renders all topology artifacts using [Jinja2](https://jinja.palletsprojects.com/en/3.1.x/) templates. The user points `nrx` to the set of templates to use with `--templates` parameter.
 
-Most templates are unique for each node `kind`. Value of `kind` is taken from NetBox `device.platform.slug` field. Interface mapping templates do not depend on the output format, since they are determined by the NOS images used by each `kind`. Therefore, there is a single dedicated folder for them. The full list of template search rules:
+If `--templates` parameter is not provided, **nrx** will search for Jinja2 files in the `templates` folder in the current directory, as well as in `$HOME/.nr/templates`. You can also provide an alternative list of folders to search via `TEMPLATES_PATH` parameter in the [configuration file](#configuration-file).
 
-* `<format>/topology.j2`: template for the final topology file.
-* `<format>/kinds/<kind>.j2`: templates for individual node entries in the topology file.
-* `<format>/interface_names/<kind>.j2`: templates for generating emulated interface names used by this NOS `kind`.
-* `interface_maps/<kind>.j2`: templates for mappings between real interface names and emulated interface names used by this NOS `kind`. Not all `kinds` support such mappings.
+Inside the template folders, the required Jinja2 files are taken from a subfolder matching the desired output format. For example, if the output format is `clab` for Containerlab, then templates are taken from `clab` subfolder. For Cisco Modelling Labs `cml` format the subfolder would be `cml`.
 
-This repository includes a set of [netreplica/templates](https://github.com/netreplica/templates) as a submodule. See more details about available templates in the [templates/README.md](https://github.com/netreplica/templates).
+A user can create their own templates for any output format and store them in a subfolder with a format name they would use for `--output` argument. To make the new output format available to **nrx**, an entry describing basic properties of the format must be added to `formats.yaml` file in the `templates` folder.
 
-By default, **nrx** searches for the template files in the current directory. You can provide a list of folders to search for the templates via `TEMPLATES_PATH` parameter in the [configuration file](#configuration-file), or use `--templates` argument.
+To identify which template to use for each device in the topology, **nrx** uses the `slug` field of the device's **platform** field in NetBox. If a template with a name matching the platform `slug` exists, it would be used by default. Since naming of the platforms is unique for every NetBox deployment, it is not possible to create a generic library of templates that could work out-of-the box for all users. Instead, **nrx** uses a mapping file [`platform_map.yaml`](docs/platform_map.md) to identify which template to use for each platform, with possible additional parameters like value of the `image` tag for Containerlab nodes.
+
+The full list of template search rules:
+
+* `<format>/topology.j2`: template for the final topology file. Mandatory.
+* `<format>/nodes/<kind>.j2`: templates for individual node entries in the topology file, with `default.j2` being mandatory as a fallback template.
+* `<format>/interface_names/<kind>.j2`: templates for generating emulated interface names used by each `kind` with `default.j2` being a fallback template. Optional, as not all output formats need emulated interface names. For example, not needed for visualization output formats.
+* `<format>/interface_maps/<kind>.j2`: templates for mappings between real interface names and emulated interface names used by this NOS `kind`. Optional, as not all `kinds` support such mappings.
+
+The **nrx** repository includes a set of [netreplica/templates](https://github.com/netreplica/templates) as a submodule. See more details about available templates in the [templates/README.md](https://github.com/netreplica/templates).
+
+Although you can always directly customize the templates according to your needs, the platform map file often provides less intrusive way. It should be used if you need to tell `nrx` which templates to use for the Device Platform values in your NetBox system. Also, you can override node images to be used instead of the names specified in the templates, as well as many other node parameters. See [Platform Map](docs/platform_map.md) for details.
 
 # How to use
 
