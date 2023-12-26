@@ -1,0 +1,1776 @@
+{
+    "data": [
+        [
+            "name",
+            "dc1-dc2"
+        ]
+    ],
+    "directed": false,
+    "multigraph": false,
+    "elements": {
+        "nodes": [
+            {
+                "data": {
+                    "side": "a",
+                    "type": "device",
+                    "device": {
+                        "id": 15,
+                        "type": "device",
+                        "name": "dc1-leaf-1",
+                        "node_id": 0,
+                        "site": "dc1",
+                        "platform": "sr-linux",
+                        "platform_name": "Nokia SR-Linux",
+                        "vendor": "nokia",
+                        "vendor_name": "Nokia",
+                        "model": "7220-ixr-d2",
+                        "model_name": "7220 IXR-D2",
+                        "role": "leaf",
+                        "role_name": "Leaf",
+                        "primary_ip4": "",
+                        "primary_ip6": "",
+                        "config": "",
+                        "device_index": 0
+                    },
+                    "id": "0",
+                    "value": 0,
+                    "name": "0"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "device",
+                    "device": {
+                        "id": 13,
+                        "type": "device",
+                        "name": "dc1-spine-1",
+                        "node_id": 4,
+                        "site": "dc1",
+                        "platform": "eos",
+                        "platform_name": "Arista EOS",
+                        "vendor": "arista",
+                        "vendor_name": "Arista",
+                        "model": "dcs-7280cr3-32p4",
+                        "model_name": "DCS-7280CR3-32P4",
+                        "role": "spine",
+                        "role_name": "Spine",
+                        "primary_ip4": "",
+                        "primary_ip6": "",
+                        "config": "",
+                        "device_index": 4
+                    },
+                    "id": "4",
+                    "value": 4,
+                    "name": "4"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "interface",
+                    "interface": {
+                        "id": 671,
+                        "type": "interface",
+                        "name": "ethernet-1/49",
+                        "node_id": 21,
+                        "interface_index": 1
+                    },
+                    "id": "21",
+                    "value": 21,
+                    "name": "21"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "interface",
+                    "interface": {
+                        "id": 549,
+                        "type": "interface",
+                        "name": "Ethernet1/1",
+                        "node_id": 32,
+                        "interface_index": 12
+                    },
+                    "id": "32",
+                    "value": 32,
+                    "name": "32"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "device",
+                    "device": {
+                        "id": 14,
+                        "type": "device",
+                        "name": "dc1-spine-2",
+                        "node_id": 5,
+                        "site": "dc1",
+                        "platform": "eos",
+                        "platform_name": "Arista EOS",
+                        "vendor": "arista",
+                        "vendor_name": "Arista",
+                        "model": "dcs-7280cr3-32p4",
+                        "model_name": "DCS-7280CR3-32P4",
+                        "role": "spine",
+                        "role_name": "Spine",
+                        "primary_ip4": "",
+                        "primary_ip6": "",
+                        "config": "",
+                        "device_index": 5
+                    },
+                    "id": "5",
+                    "value": 5,
+                    "name": "5"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "interface",
+                    "interface": {
+                        "id": 672,
+                        "type": "interface",
+                        "name": "ethernet-1/50",
+                        "node_id": 22,
+                        "interface_index": 2
+                    },
+                    "id": "22",
+                    "value": 22,
+                    "name": "22"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "interface",
+                    "interface": {
+                        "id": 586,
+                        "type": "interface",
+                        "name": "Ethernet1/1",
+                        "node_id": 37,
+                        "interface_index": 17
+                    },
+                    "id": "37",
+                    "value": 37,
+                    "name": "37"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "device",
+                    "device": {
+                        "id": 16,
+                        "type": "device",
+                        "name": "dc1-leaf-2",
+                        "node_id": 1,
+                        "site": "dc1",
+                        "platform": "sr-linux",
+                        "platform_name": "Nokia SR-Linux",
+                        "vendor": "nokia",
+                        "vendor_name": "Nokia",
+                        "model": "7220-ixr-d2",
+                        "model_name": "7220 IXR-D2",
+                        "role": "leaf",
+                        "role_name": "Leaf",
+                        "primary_ip4": "",
+                        "primary_ip6": "",
+                        "config": "",
+                        "device_index": 1
+                    },
+                    "id": "1",
+                    "value": 1,
+                    "name": "1"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "interface",
+                    "interface": {
+                        "id": 727,
+                        "type": "interface",
+                        "name": "ethernet-1/49",
+                        "node_id": 24,
+                        "interface_index": 4
+                    },
+                    "id": "24",
+                    "value": 24,
+                    "name": "24"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "interface",
+                    "interface": {
+                        "id": 550,
+                        "type": "interface",
+                        "name": "Ethernet2/1",
+                        "node_id": 33,
+                        "interface_index": 13
+                    },
+                    "id": "33",
+                    "value": 33,
+                    "name": "33"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "interface",
+                    "interface": {
+                        "id": 728,
+                        "type": "interface",
+                        "name": "ethernet-1/50",
+                        "node_id": 25,
+                        "interface_index": 5
+                    },
+                    "id": "25",
+                    "value": 25,
+                    "name": "25"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "interface",
+                    "interface": {
+                        "id": 587,
+                        "type": "interface",
+                        "name": "Ethernet2/1",
+                        "node_id": 38,
+                        "interface_index": 18
+                    },
+                    "id": "38",
+                    "value": 38,
+                    "name": "38"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "device",
+                    "device": {
+                        "id": 17,
+                        "type": "device",
+                        "name": "dc1-leaf-3",
+                        "node_id": 2,
+                        "site": "dc1",
+                        "platform": "sr-linux",
+                        "platform_name": "Nokia SR-Linux",
+                        "vendor": "nokia",
+                        "vendor_name": "Nokia",
+                        "model": "7220-ixr-d2",
+                        "model_name": "7220 IXR-D2",
+                        "role": "leaf",
+                        "role_name": "Leaf",
+                        "primary_ip4": "",
+                        "primary_ip6": "",
+                        "config": "",
+                        "device_index": 2
+                    },
+                    "id": "2",
+                    "value": 2,
+                    "name": "2"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "interface",
+                    "interface": {
+                        "id": 783,
+                        "type": "interface",
+                        "name": "ethernet-1/49",
+                        "node_id": 27,
+                        "interface_index": 7
+                    },
+                    "id": "27",
+                    "value": 27,
+                    "name": "27"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "interface",
+                    "interface": {
+                        "id": 551,
+                        "type": "interface",
+                        "name": "Ethernet3/1",
+                        "node_id": 34,
+                        "interface_index": 14
+                    },
+                    "id": "34",
+                    "value": 34,
+                    "name": "34"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "interface",
+                    "interface": {
+                        "id": 784,
+                        "type": "interface",
+                        "name": "ethernet-1/50",
+                        "node_id": 28,
+                        "interface_index": 8
+                    },
+                    "id": "28",
+                    "value": 28,
+                    "name": "28"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "interface",
+                    "interface": {
+                        "id": 588,
+                        "type": "interface",
+                        "name": "Ethernet3/1",
+                        "node_id": 39,
+                        "interface_index": 19
+                    },
+                    "id": "39",
+                    "value": 39,
+                    "name": "39"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "device",
+                    "device": {
+                        "id": 18,
+                        "type": "device",
+                        "name": "dc1-leaf-4",
+                        "node_id": 3,
+                        "site": "dc1",
+                        "platform": "sr-linux",
+                        "platform_name": "Nokia SR-Linux",
+                        "vendor": "nokia",
+                        "vendor_name": "Nokia",
+                        "model": "7220-ixr-d2",
+                        "model_name": "7220 IXR-D2",
+                        "role": "leaf",
+                        "role_name": "Leaf",
+                        "primary_ip4": "",
+                        "primary_ip6": "",
+                        "config": "",
+                        "device_index": 3
+                    },
+                    "id": "3",
+                    "value": 3,
+                    "name": "3"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "interface",
+                    "interface": {
+                        "id": 839,
+                        "type": "interface",
+                        "name": "ethernet-1/49",
+                        "node_id": 30,
+                        "interface_index": 10
+                    },
+                    "id": "30",
+                    "value": 30,
+                    "name": "30"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "interface",
+                    "interface": {
+                        "id": 552,
+                        "type": "interface",
+                        "name": "Ethernet4/1",
+                        "node_id": 35,
+                        "interface_index": 15
+                    },
+                    "id": "35",
+                    "value": 35,
+                    "name": "35"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "interface",
+                    "interface": {
+                        "id": 840,
+                        "type": "interface",
+                        "name": "ethernet-1/50",
+                        "node_id": 31,
+                        "interface_index": 11
+                    },
+                    "id": "31",
+                    "value": 31,
+                    "name": "31"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "interface",
+                    "interface": {
+                        "id": 589,
+                        "type": "interface",
+                        "name": "Ethernet4/1",
+                        "node_id": 40,
+                        "interface_index": 20
+                    },
+                    "id": "40",
+                    "value": 40,
+                    "name": "40"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "device",
+                    "device": {
+                        "id": 21,
+                        "type": "device",
+                        "name": "dc2-tor-1",
+                        "node_id": 16,
+                        "site": "dc2",
+                        "platform": "cisco-nxos-9000",
+                        "platform_name": "Cisco NX-OS 9000",
+                        "vendor": "cisco",
+                        "vendor_name": "Cisco",
+                        "model": "n9k-c93108tc-ex",
+                        "model_name": "Nexus 93108TC-EX",
+                        "role": "tor-switch",
+                        "role_name": "TOR Switch",
+                        "primary_ip4": "",
+                        "primary_ip6": "",
+                        "config": "",
+                        "device_index": 16
+                    },
+                    "id": "16",
+                    "value": 16,
+                    "name": "16"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "device",
+                    "device": {
+                        "id": 19,
+                        "type": "device",
+                        "name": "dc2-spine-1",
+                        "node_id": 10,
+                        "site": "dc2",
+                        "platform": "cisco-nxos-9000",
+                        "platform_name": "Cisco NX-OS 9000",
+                        "vendor": "cisco",
+                        "vendor_name": "Cisco",
+                        "model": "n9k-c9336c-fx2",
+                        "model_name": "Nexus 9336C-FX2",
+                        "role": "spine",
+                        "role_name": "Spine",
+                        "primary_ip4": "",
+                        "primary_ip6": "",
+                        "config": "",
+                        "device_index": 10
+                    },
+                    "id": "10",
+                    "value": 10,
+                    "name": "10"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "interface",
+                    "interface": {
+                        "id": 969,
+                        "type": "interface",
+                        "name": "Ethernet1/49",
+                        "node_id": 58,
+                        "interface_index": 38
+                    },
+                    "id": "58",
+                    "value": 58,
+                    "name": "58"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "interface",
+                    "interface": {
+                        "id": 847,
+                        "type": "interface",
+                        "name": "Ethernet1/1",
+                        "node_id": 45,
+                        "interface_index": 25
+                    },
+                    "id": "45",
+                    "value": 45,
+                    "name": "45"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "device",
+                    "device": {
+                        "id": 20,
+                        "type": "device",
+                        "name": "dc2-spine-2",
+                        "node_id": 11,
+                        "site": "dc2",
+                        "platform": "cisco-nxos-9000",
+                        "platform_name": "Cisco NX-OS 9000",
+                        "vendor": "cisco",
+                        "vendor_name": "Cisco",
+                        "model": "n9k-c9336c-fx2",
+                        "model_name": "Nexus 9336C-FX2",
+                        "role": "spine",
+                        "role_name": "Spine",
+                        "primary_ip4": "",
+                        "primary_ip6": "",
+                        "config": "",
+                        "device_index": 11
+                    },
+                    "id": "11",
+                    "value": 11,
+                    "name": "11"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "interface",
+                    "interface": {
+                        "id": 970,
+                        "type": "interface",
+                        "name": "Ethernet1/50",
+                        "node_id": 59,
+                        "interface_index": 39
+                    },
+                    "id": "59",
+                    "value": 59,
+                    "name": "59"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "interface",
+                    "interface": {
+                        "id": 884,
+                        "type": "interface",
+                        "name": "Ethernet1/1",
+                        "node_id": 49,
+                        "interface_index": 29
+                    },
+                    "id": "49",
+                    "value": 49,
+                    "name": "49"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "device",
+                    "device": {
+                        "id": 22,
+                        "type": "device",
+                        "name": "dc2-tor-2",
+                        "node_id": 17,
+                        "site": "dc2",
+                        "platform": "cisco-nxos-9000",
+                        "platform_name": "Cisco NX-OS 9000",
+                        "vendor": "cisco",
+                        "vendor_name": "Cisco",
+                        "model": "n9k-c93108tc-ex",
+                        "model_name": "Nexus 93108TC-EX",
+                        "role": "tor-switch",
+                        "role_name": "TOR Switch",
+                        "primary_ip4": "",
+                        "primary_ip6": "",
+                        "config": "",
+                        "device_index": 17
+                    },
+                    "id": "17",
+                    "value": 17,
+                    "name": "17"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "interface",
+                    "interface": {
+                        "id": 1024,
+                        "type": "interface",
+                        "name": "Ethernet1/49",
+                        "node_id": 61,
+                        "interface_index": 41
+                    },
+                    "id": "61",
+                    "value": 61,
+                    "name": "61"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "interface",
+                    "interface": {
+                        "id": 848,
+                        "type": "interface",
+                        "name": "Ethernet1/2",
+                        "node_id": 46,
+                        "interface_index": 26
+                    },
+                    "id": "46",
+                    "value": 46,
+                    "name": "46"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "interface",
+                    "interface": {
+                        "id": 1025,
+                        "type": "interface",
+                        "name": "Ethernet1/50",
+                        "node_id": 62,
+                        "interface_index": 42
+                    },
+                    "id": "62",
+                    "value": 62,
+                    "name": "62"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "interface",
+                    "interface": {
+                        "id": 885,
+                        "type": "interface",
+                        "name": "Ethernet1/2",
+                        "node_id": 50,
+                        "interface_index": 30
+                    },
+                    "id": "50",
+                    "value": 50,
+                    "name": "50"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "device",
+                    "device": {
+                        "id": 23,
+                        "type": "device",
+                        "name": "dc2-tor-3",
+                        "node_id": 18,
+                        "site": "dc2",
+                        "platform": "cisco-nxos-9000",
+                        "platform_name": "Cisco NX-OS 9000",
+                        "vendor": "cisco",
+                        "vendor_name": "Cisco",
+                        "model": "n9k-c93108tc-ex",
+                        "model_name": "Nexus 93108TC-EX",
+                        "role": "tor-switch",
+                        "role_name": "TOR Switch",
+                        "primary_ip4": "",
+                        "primary_ip6": "",
+                        "config": "",
+                        "device_index": 18
+                    },
+                    "id": "18",
+                    "value": 18,
+                    "name": "18"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "interface",
+                    "interface": {
+                        "id": 1079,
+                        "type": "interface",
+                        "name": "Ethernet1/49",
+                        "node_id": 64,
+                        "interface_index": 44
+                    },
+                    "id": "64",
+                    "value": 64,
+                    "name": "64"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "interface",
+                    "interface": {
+                        "id": 849,
+                        "type": "interface",
+                        "name": "Ethernet1/3",
+                        "node_id": 47,
+                        "interface_index": 27
+                    },
+                    "id": "47",
+                    "value": 47,
+                    "name": "47"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "interface",
+                    "interface": {
+                        "id": 1080,
+                        "type": "interface",
+                        "name": "Ethernet1/50",
+                        "node_id": 65,
+                        "interface_index": 45
+                    },
+                    "id": "65",
+                    "value": 65,
+                    "name": "65"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "interface",
+                    "interface": {
+                        "id": 886,
+                        "type": "interface",
+                        "name": "Ethernet1/3",
+                        "node_id": 51,
+                        "interface_index": 31
+                    },
+                    "id": "51",
+                    "value": 51,
+                    "name": "51"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "device",
+                    "device": {
+                        "id": 24,
+                        "type": "device",
+                        "name": "dc2-tor-4",
+                        "node_id": 19,
+                        "site": "dc2",
+                        "platform": "cisco-nxos-9000",
+                        "platform_name": "Cisco NX-OS 9000",
+                        "vendor": "cisco",
+                        "vendor_name": "Cisco",
+                        "model": "n9k-c93108tc-ex",
+                        "model_name": "Nexus 93108TC-EX",
+                        "role": "tor-switch",
+                        "role_name": "TOR Switch",
+                        "primary_ip4": "",
+                        "primary_ip6": "",
+                        "config": "",
+                        "device_index": 19
+                    },
+                    "id": "19",
+                    "value": 19,
+                    "name": "19"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "interface",
+                    "interface": {
+                        "id": 1134,
+                        "type": "interface",
+                        "name": "Ethernet1/49",
+                        "node_id": 67,
+                        "interface_index": 47
+                    },
+                    "id": "67",
+                    "value": 67,
+                    "name": "67"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "interface",
+                    "interface": {
+                        "id": 850,
+                        "type": "interface",
+                        "name": "Ethernet1/4",
+                        "node_id": 48,
+                        "interface_index": 28
+                    },
+                    "id": "48",
+                    "value": 48,
+                    "name": "48"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "interface",
+                    "interface": {
+                        "id": 1135,
+                        "type": "interface",
+                        "name": "Ethernet1/50",
+                        "node_id": 68,
+                        "interface_index": 48
+                    },
+                    "id": "68",
+                    "value": 68,
+                    "name": "68"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "interface",
+                    "interface": {
+                        "id": 887,
+                        "type": "interface",
+                        "name": "Ethernet1/4",
+                        "node_id": 52,
+                        "interface_index": 32
+                    },
+                    "id": "52",
+                    "value": 52,
+                    "name": "52"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "device",
+                    "device": {
+                        "id": 25,
+                        "type": "device",
+                        "name": "dc2-srv-1",
+                        "node_id": 12,
+                        "site": "dc2",
+                        "platform": "ubuntu",
+                        "platform_name": "Ubuntu",
+                        "vendor": "dell",
+                        "vendor_name": "Dell",
+                        "model": "dell_poweredge_r640",
+                        "model_name": "PowerEdge R640",
+                        "role": "server",
+                        "role_name": "server",
+                        "primary_ip4": "",
+                        "primary_ip6": "",
+                        "config": "",
+                        "device_index": 12
+                    },
+                    "id": "12",
+                    "value": 12,
+                    "name": "12"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "interface",
+                    "interface": {
+                        "id": 921,
+                        "type": "interface",
+                        "name": "Ethernet1/1",
+                        "node_id": 57,
+                        "interface_index": 37
+                    },
+                    "id": "57",
+                    "value": 57,
+                    "name": "57"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "interface",
+                    "interface": {
+                        "id": 1141,
+                        "type": "interface",
+                        "name": "Gig-E 1",
+                        "node_id": 53,
+                        "interface_index": 33
+                    },
+                    "id": "53",
+                    "value": 53,
+                    "name": "53"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "device",
+                    "device": {
+                        "id": 26,
+                        "type": "device",
+                        "name": "dc2-srv-2",
+                        "node_id": 13,
+                        "site": "dc2",
+                        "platform": "ubuntu",
+                        "platform_name": "Ubuntu",
+                        "vendor": "dell",
+                        "vendor_name": "Dell",
+                        "model": "dell_poweredge_r640",
+                        "model_name": "PowerEdge R640",
+                        "role": "server",
+                        "role_name": "server",
+                        "primary_ip4": "",
+                        "primary_ip6": "",
+                        "config": "",
+                        "device_index": 13
+                    },
+                    "id": "13",
+                    "value": 13,
+                    "name": "13"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "interface",
+                    "interface": {
+                        "id": 976,
+                        "type": "interface",
+                        "name": "Ethernet1/1",
+                        "node_id": 60,
+                        "interface_index": 40
+                    },
+                    "id": "60",
+                    "value": 60,
+                    "name": "60"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "interface",
+                    "interface": {
+                        "id": 1146,
+                        "type": "interface",
+                        "name": "Gig-E 1",
+                        "node_id": 54,
+                        "interface_index": 34
+                    },
+                    "id": "54",
+                    "value": 54,
+                    "name": "54"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "device",
+                    "device": {
+                        "id": 27,
+                        "type": "device",
+                        "name": "dc2-srv-3",
+                        "node_id": 14,
+                        "site": "dc2",
+                        "platform": "ubuntu",
+                        "platform_name": "Ubuntu",
+                        "vendor": "dell",
+                        "vendor_name": "Dell",
+                        "model": "dell_poweredge_r640",
+                        "model_name": "PowerEdge R640",
+                        "role": "server",
+                        "role_name": "server",
+                        "primary_ip4": "",
+                        "primary_ip6": "",
+                        "config": "",
+                        "device_index": 14
+                    },
+                    "id": "14",
+                    "value": 14,
+                    "name": "14"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "interface",
+                    "interface": {
+                        "id": 1031,
+                        "type": "interface",
+                        "name": "Ethernet1/1",
+                        "node_id": 63,
+                        "interface_index": 43
+                    },
+                    "id": "63",
+                    "value": 63,
+                    "name": "63"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "interface",
+                    "interface": {
+                        "id": 1151,
+                        "type": "interface",
+                        "name": "Gig-E 1",
+                        "node_id": 55,
+                        "interface_index": 35
+                    },
+                    "id": "55",
+                    "value": 55,
+                    "name": "55"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "device",
+                    "device": {
+                        "id": 28,
+                        "type": "device",
+                        "name": "dc2-srv-4",
+                        "node_id": 15,
+                        "site": "dc2",
+                        "platform": "ubuntu",
+                        "platform_name": "Ubuntu",
+                        "vendor": "dell",
+                        "vendor_name": "Dell",
+                        "model": "dell_poweredge_r640",
+                        "model_name": "PowerEdge R640",
+                        "role": "server",
+                        "role_name": "server",
+                        "primary_ip4": "",
+                        "primary_ip6": "",
+                        "config": "",
+                        "device_index": 15
+                    },
+                    "id": "15",
+                    "value": 15,
+                    "name": "15"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "interface",
+                    "interface": {
+                        "id": 1086,
+                        "type": "interface",
+                        "name": "Ethernet1/1",
+                        "node_id": 66,
+                        "interface_index": 46
+                    },
+                    "id": "66",
+                    "value": 66,
+                    "name": "66"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "interface",
+                    "interface": {
+                        "id": 1156,
+                        "type": "interface",
+                        "name": "Gig-E 1",
+                        "node_id": 56,
+                        "interface_index": 36
+                    },
+                    "id": "56",
+                    "value": 56,
+                    "name": "56"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "device",
+                    "device": {
+                        "id": 29,
+                        "type": "device",
+                        "name": "dc1-srv-1",
+                        "node_id": 6,
+                        "site": "dc1",
+                        "platform": "linux",
+                        "platform_name": "Linux",
+                        "vendor": "dell",
+                        "vendor_name": "Dell",
+                        "model": "dell_poweredge_r640",
+                        "model_name": "PowerEdge R640",
+                        "role": "server",
+                        "role_name": "server",
+                        "primary_ip4": "",
+                        "primary_ip6": "",
+                        "config": "",
+                        "device_index": 6
+                    },
+                    "id": "6",
+                    "value": 6,
+                    "name": "6"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "interface",
+                    "interface": {
+                        "id": 623,
+                        "type": "interface",
+                        "name": "ethernet-1/1",
+                        "node_id": 20,
+                        "interface_index": 0
+                    },
+                    "id": "20",
+                    "value": 20,
+                    "name": "20"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "interface",
+                    "interface": {
+                        "id": 1161,
+                        "type": "interface",
+                        "name": "Gig-E 1",
+                        "node_id": 41,
+                        "interface_index": 21
+                    },
+                    "id": "41",
+                    "value": 41,
+                    "name": "41"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "device",
+                    "device": {
+                        "id": 30,
+                        "type": "device",
+                        "name": "dc1-srv-2",
+                        "node_id": 7,
+                        "site": "dc1",
+                        "platform": "linux",
+                        "platform_name": "Linux",
+                        "vendor": "dell",
+                        "vendor_name": "Dell",
+                        "model": "dell_poweredge_r640",
+                        "model_name": "PowerEdge R640",
+                        "role": "server",
+                        "role_name": "server",
+                        "primary_ip4": "",
+                        "primary_ip6": "",
+                        "config": "",
+                        "device_index": 7
+                    },
+                    "id": "7",
+                    "value": 7,
+                    "name": "7"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "interface",
+                    "interface": {
+                        "id": 679,
+                        "type": "interface",
+                        "name": "ethernet-1/1",
+                        "node_id": 23,
+                        "interface_index": 3
+                    },
+                    "id": "23",
+                    "value": 23,
+                    "name": "23"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "interface",
+                    "interface": {
+                        "id": 1166,
+                        "type": "interface",
+                        "name": "Gig-E 1",
+                        "node_id": 42,
+                        "interface_index": 22
+                    },
+                    "id": "42",
+                    "value": 42,
+                    "name": "42"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "device",
+                    "device": {
+                        "id": 31,
+                        "type": "device",
+                        "name": "dc1-srv-3",
+                        "node_id": 8,
+                        "site": "dc1",
+                        "platform": "linux",
+                        "platform_name": "Linux",
+                        "vendor": "dell",
+                        "vendor_name": "Dell",
+                        "model": "dell_poweredge_r640",
+                        "model_name": "PowerEdge R640",
+                        "role": "server",
+                        "role_name": "server",
+                        "primary_ip4": "",
+                        "primary_ip6": "",
+                        "config": "",
+                        "device_index": 8
+                    },
+                    "id": "8",
+                    "value": 8,
+                    "name": "8"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "interface",
+                    "interface": {
+                        "id": 735,
+                        "type": "interface",
+                        "name": "ethernet-1/1",
+                        "node_id": 26,
+                        "interface_index": 6
+                    },
+                    "id": "26",
+                    "value": 26,
+                    "name": "26"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "interface",
+                    "interface": {
+                        "id": 1171,
+                        "type": "interface",
+                        "name": "Gig-E 1",
+                        "node_id": 43,
+                        "interface_index": 23
+                    },
+                    "id": "43",
+                    "value": 43,
+                    "name": "43"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "device",
+                    "device": {
+                        "id": 32,
+                        "type": "device",
+                        "name": "dc1-srv-4",
+                        "node_id": 9,
+                        "site": "dc1",
+                        "platform": "linux",
+                        "platform_name": "Linux",
+                        "vendor": "dell",
+                        "vendor_name": "Dell",
+                        "model": "dell_poweredge_r640",
+                        "model_name": "PowerEdge R640",
+                        "role": "server",
+                        "role_name": "server",
+                        "primary_ip4": "",
+                        "primary_ip6": "",
+                        "config": "",
+                        "device_index": 9
+                    },
+                    "id": "9",
+                    "value": 9,
+                    "name": "9"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "interface",
+                    "interface": {
+                        "id": 791,
+                        "type": "interface",
+                        "name": "ethernet-1/1",
+                        "node_id": 29,
+                        "interface_index": 9
+                    },
+                    "id": "29",
+                    "value": 29,
+                    "name": "29"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "interface",
+                    "interface": {
+                        "id": 1176,
+                        "type": "interface",
+                        "name": "Gig-E 1",
+                        "node_id": 44,
+                        "interface_index": 24
+                    },
+                    "id": "44",
+                    "value": 44,
+                    "name": "44"
+                }
+            }
+        ],
+        "edges": [
+            {
+                "data": {
+                    "source": 0,
+                    "target": 21
+                }
+            },
+            {
+                "data": {
+                    "source": 0,
+                    "target": 22
+                }
+            },
+            {
+                "data": {
+                    "source": 0,
+                    "target": 20
+                }
+            },
+            {
+                "data": {
+                    "source": 4,
+                    "target": 32
+                }
+            },
+            {
+                "data": {
+                    "source": 4,
+                    "target": 33
+                }
+            },
+            {
+                "data": {
+                    "source": 4,
+                    "target": 34
+                }
+            },
+            {
+                "data": {
+                    "source": 4,
+                    "target": 35
+                }
+            },
+            {
+                "data": {
+                    "source": 21,
+                    "target": 32
+                }
+            },
+            {
+                "data": {
+                    "source": 5,
+                    "target": 37
+                }
+            },
+            {
+                "data": {
+                    "source": 5,
+                    "target": 38
+                }
+            },
+            {
+                "data": {
+                    "source": 5,
+                    "target": 39
+                }
+            },
+            {
+                "data": {
+                    "source": 5,
+                    "target": 40
+                }
+            },
+            {
+                "data": {
+                    "source": 22,
+                    "target": 37
+                }
+            },
+            {
+                "data": {
+                    "source": 1,
+                    "target": 24
+                }
+            },
+            {
+                "data": {
+                    "source": 1,
+                    "target": 25
+                }
+            },
+            {
+                "data": {
+                    "source": 1,
+                    "target": 23
+                }
+            },
+            {
+                "data": {
+                    "source": 24,
+                    "target": 33
+                }
+            },
+            {
+                "data": {
+                    "source": 25,
+                    "target": 38
+                }
+            },
+            {
+                "data": {
+                    "source": 2,
+                    "target": 27
+                }
+            },
+            {
+                "data": {
+                    "source": 2,
+                    "target": 28
+                }
+            },
+            {
+                "data": {
+                    "source": 2,
+                    "target": 26
+                }
+            },
+            {
+                "data": {
+                    "source": 27,
+                    "target": 34
+                }
+            },
+            {
+                "data": {
+                    "source": 28,
+                    "target": 39
+                }
+            },
+            {
+                "data": {
+                    "source": 3,
+                    "target": 30
+                }
+            },
+            {
+                "data": {
+                    "source": 3,
+                    "target": 31
+                }
+            },
+            {
+                "data": {
+                    "source": 3,
+                    "target": 29
+                }
+            },
+            {
+                "data": {
+                    "source": 30,
+                    "target": 35
+                }
+            },
+            {
+                "data": {
+                    "source": 31,
+                    "target": 40
+                }
+            },
+            {
+                "data": {
+                    "source": 16,
+                    "target": 58
+                }
+            },
+            {
+                "data": {
+                    "source": 16,
+                    "target": 59
+                }
+            },
+            {
+                "data": {
+                    "source": 16,
+                    "target": 57
+                }
+            },
+            {
+                "data": {
+                    "source": 10,
+                    "target": 45
+                }
+            },
+            {
+                "data": {
+                    "source": 10,
+                    "target": 46
+                }
+            },
+            {
+                "data": {
+                    "source": 10,
+                    "target": 47
+                }
+            },
+            {
+                "data": {
+                    "source": 10,
+                    "target": 48
+                }
+            },
+            {
+                "data": {
+                    "source": 58,
+                    "target": 45
+                }
+            },
+            {
+                "data": {
+                    "source": 11,
+                    "target": 49
+                }
+            },
+            {
+                "data": {
+                    "source": 11,
+                    "target": 50
+                }
+            },
+            {
+                "data": {
+                    "source": 11,
+                    "target": 51
+                }
+            },
+            {
+                "data": {
+                    "source": 11,
+                    "target": 52
+                }
+            },
+            {
+                "data": {
+                    "source": 59,
+                    "target": 49
+                }
+            },
+            {
+                "data": {
+                    "source": 17,
+                    "target": 61
+                }
+            },
+            {
+                "data": {
+                    "source": 17,
+                    "target": 62
+                }
+            },
+            {
+                "data": {
+                    "source": 17,
+                    "target": 60
+                }
+            },
+            {
+                "data": {
+                    "source": 61,
+                    "target": 46
+                }
+            },
+            {
+                "data": {
+                    "source": 62,
+                    "target": 50
+                }
+            },
+            {
+                "data": {
+                    "source": 18,
+                    "target": 64
+                }
+            },
+            {
+                "data": {
+                    "source": 18,
+                    "target": 65
+                }
+            },
+            {
+                "data": {
+                    "source": 18,
+                    "target": 63
+                }
+            },
+            {
+                "data": {
+                    "source": 64,
+                    "target": 47
+                }
+            },
+            {
+                "data": {
+                    "source": 65,
+                    "target": 51
+                }
+            },
+            {
+                "data": {
+                    "source": 19,
+                    "target": 67
+                }
+            },
+            {
+                "data": {
+                    "source": 19,
+                    "target": 68
+                }
+            },
+            {
+                "data": {
+                    "source": 19,
+                    "target": 66
+                }
+            },
+            {
+                "data": {
+                    "source": 67,
+                    "target": 48
+                }
+            },
+            {
+                "data": {
+                    "source": 68,
+                    "target": 52
+                }
+            },
+            {
+                "data": {
+                    "source": 12,
+                    "target": 53
+                }
+            },
+            {
+                "data": {
+                    "source": 57,
+                    "target": 53
+                }
+            },
+            {
+                "data": {
+                    "source": 13,
+                    "target": 54
+                }
+            },
+            {
+                "data": {
+                    "source": 60,
+                    "target": 54
+                }
+            },
+            {
+                "data": {
+                    "source": 14,
+                    "target": 55
+                }
+            },
+            {
+                "data": {
+                    "source": 63,
+                    "target": 55
+                }
+            },
+            {
+                "data": {
+                    "source": 15,
+                    "target": 56
+                }
+            },
+            {
+                "data": {
+                    "source": 66,
+                    "target": 56
+                }
+            },
+            {
+                "data": {
+                    "source": 6,
+                    "target": 41
+                }
+            },
+            {
+                "data": {
+                    "source": 20,
+                    "target": 41
+                }
+            },
+            {
+                "data": {
+                    "source": 7,
+                    "target": 42
+                }
+            },
+            {
+                "data": {
+                    "source": 23,
+                    "target": 42
+                }
+            },
+            {
+                "data": {
+                    "source": 8,
+                    "target": 43
+                }
+            },
+            {
+                "data": {
+                    "source": 26,
+                    "target": 43
+                }
+            },
+            {
+                "data": {
+                    "source": 9,
+                    "target": 44
+                }
+            },
+            {
+                "data": {
+                    "source": 29,
+                    "target": 44
+                }
+            }
+        ]
+    }
+}

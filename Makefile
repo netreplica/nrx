@@ -2,14 +2,23 @@ lint:
 	pylint nrx/*.py
 
 test-local: test-dc1 test-dc2 test-colo test-site1 test-h88 test-lrg
-test: test-dc1-cyjs-2-clab test-dc2-cyjs-2-cml test-site1-cyjs-2-clab test-site1-cyjs-2-clab-rename test-dc1-cyjs-2-graphite test-dc2-cyjs-2-graphite test-h88-cyjs-2-clab test-dc1-cyjs-2-d2 test-lrg-cyjs-2-graphite
+test: test-args test-dc1-cyjs-2-clab test-dc2-cyjs-2-cml test-site1-cyjs-2-clab test-site1-cyjs-2-clab-rename test-dc1-cyjs-2-graphite test-dc2-cyjs-2-graphite test-h88-cyjs-2-clab test-dc1-cyjs-2-d2 test-lrg-cyjs-2-graphite
 
-test-dc1: test-dc1-nb-2-cyjs-current test-dc1-nb-2-cyjs-latest test-dc1-cyjs-2-clab test-dc1-cyjs-2-graphite test-dc1-cyjs-2-d2
+test-args: test-args-site-and-sites
+test-dc1: test-dc1-nb-2-cyjs-current test-dc1-nb-2-cyjs-latest test-dc1-nb-2-cyjs-single-site test-dc1-nb-2-cyjs-single-sites test-dc1-cyjs-2-clab test-dc1-cyjs-2-graphite test-dc1-cyjs-2-d2 test-dc1-dc2-nb-2-cyjs-sites test-dc1-dc2-cyjs-2-graphite
+
 test-dc2: test-dc2-nb-2-cyjs-current test-dc2-nb-2-cyjs-latest test-dc2-cyjs-2-cml test-dc2-cyjs-2-graphite
 test-colo: test-colo-nb-2-cyjs-current test-colo-nb-2-cyjs-latest
 test-site1: test-site1-nb-2-cyjs-current test-site1-nb-2-cyjs-latest test-site1-cyjs-2-clab test-site1-cyjs-2-clab-rename
 test-h88: test-h88-nb-2-cyjs-current test-h88-nb-2-cyjs-latest test-h88-nb-2-cyjs-latest-noconfigs test-h88-cyjs-2-clab
 test-lrg: test-lrg-nb-2-cyjs-latest test-lrg-cyjs-2-graphite
+
+test-args-site-and-sites:
+	@echo "#################################################################"
+	@echo "# Simulteneous use of site and sites should fail"
+	@echo "#################################################################"
+	! ./nrx.py --site dc1 --sites dc1,dc2 -d
+	@echo
 
 test-dc1-nb-2-cyjs-current:
 	@echo "#################################################################"
@@ -31,6 +40,36 @@ test-dc1-nb-2-cyjs-latest:
 	diff dc1.cyjs ../data/dc1.cyjs
 	@echo
 
+test-dc1-nb-2-cyjs-single-site:
+	@echo "#################################################################"
+	@echo "# Single site DC1: read from NetBox current version and export as CYJS"
+	@echo "#################################################################"
+	mkdir -p tests/dc1/test && cd tests/dc1/test && rm -rf * && \
+	source ../../.env_current && \
+	../../../nrx.py -c ../nrx-no-site.conf -o cyjs --site dc1 -d && \
+	diff dc1.cyjs ../data/dc1.cyjs
+	@echo
+
+test-dc1-nb-2-cyjs-single-sites:
+	@echo "#################################################################"
+	@echo "# Single site DC1: read from NetBox current version and export as CYJS"
+	@echo "#################################################################"
+	mkdir -p tests/dc1/test && cd tests/dc1/test && rm -rf * && \
+	source ../../.env_current && \
+	../../../nrx.py -c ../nrx-no-site.conf -o cyjs --sites dc1 -d && \
+	diff dc1.cyjs ../data/dc1.cyjs
+	@echo
+
+test-dc1-dc2-nb-2-cyjs-sites:
+	@echo "#################################################################"
+	@echo "# Two site DC1 and DC2: read from NetBox current version and export as CYJS"
+	@echo "#################################################################"
+	mkdir -p tests/dc1/test && cd tests/dc1/test && rm -rf * && \
+	source ../../.env_current && \
+	../../../nrx.py -c ../nrx-no-site.conf -o cyjs --sites dc1,dc2 -d && \
+	diff dc1-dc2.cyjs ../data/dc1-dc2.cyjs
+	@echo
+
 test-dc1-cyjs-2-clab:
 	@echo "#################################################################"
 	@echo "# DC1: read from CYJS and export as Containerlab"
@@ -46,6 +85,15 @@ test-dc1-cyjs-2-graphite:
 	@echo "#################################################################"
 	mkdir -p tests/dc1/graphite && cd tests/dc1/graphite && rm -rf * && \
 	../../../nrx.py -c ../nrx.conf -i cyjs -f ../data/dc1.cyjs -o graphite -d && \
+	for f in *; do echo Comparing file $$f ...; diff $$f ../data/$$f || exit 1; done
+	@echo
+
+test-dc1-dc2-cyjs-2-graphite:
+	@echo "#################################################################"
+	@echo "# DC1 and DC2: read from CYJS and export as graphite"
+	@echo "#################################################################"
+	mkdir -p tests/dc1/graphite && cd tests/dc1/graphite && rm -rf * && \
+	../../../nrx.py -c ../nrx-no-site.conf -i cyjs -f ../data/dc1-dc2.cyjs -o graphite -d && \
 	for f in *; do echo Comparing file $$f ...; diff $$f ../data/$$f || exit 1; done
 	@echo
 
