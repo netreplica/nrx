@@ -224,7 +224,7 @@ test-h88-nb-2-cyjs-latest-noconfigs:
 	@echo "#################################################################"
 	mkdir -p tests/h88/test && cd tests/h88/test && rm -rf * && \
 	source ../../.env_latest && \
-	../../../nrx.py -c ../nrx.conf -o cyjs -d -n && \
+	../../../nrx.py -c ../nrx.conf -o cyjs -d --noconfigs && \
 	diff HQ.cyjs ../data/HQ.cyjs.noconfigs
 	@echo
 
