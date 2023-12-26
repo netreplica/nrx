@@ -43,6 +43,10 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Cache
+__pycache__/
+
 *.bak
 clab-*
 .idea/

@@ -18,7 +18,7 @@ topology:
 
         dc1-leaf-1:
             kind: nokia_srlinux
-            type: ixrd2
+            type: ixr6
             image: ghcr.io/nokia/srlinux:latest
             labels:
                 graph-icon: leaf
@@ -30,10 +30,8 @@ topology:
                 model: 7220 IXR-D2
 
         dc1-spine-1:
-            kind: ceos
-            binds:
-                - dc1-spine-1_interface_map.json:/mnt/flash/EosIntfMapping.json:ro
-            image: ceos:latest
+            kind: linux
+            image: frrouting/frr:latest
             labels:
                 graph-icon: spine
                 graph-level: 8
@@ -44,10 +42,8 @@ topology:
                 model: DCS-7280CR3-32P4
 
         dc1-spine-2:
-            kind: ceos
-            binds:
-                - dc1-spine-2_interface_map.json:/mnt/flash/EosIntfMapping.json:ro
-            image: ceos:latest
+            kind: linux
+            image: frrouting/frr:latest
             labels:
                 graph-icon: spine
                 graph-level: 8
@@ -59,7 +55,7 @@ topology:
 
         dc1-leaf-2:
             kind: nokia_srlinux
-            type: ixrd2
+            type: ixr6
             image: ghcr.io/nokia/srlinux:latest
             labels:
                 graph-icon: leaf
@@ -72,7 +68,7 @@ topology:
 
         dc1-leaf-3:
             kind: nokia_srlinux
-            type: ixrd2
+            type: ixr6
             image: ghcr.io/nokia/srlinux:latest
             labels:
                 graph-icon: leaf
@@ -85,7 +81,7 @@ topology:
 
         dc1-leaf-4:
             kind: nokia_srlinux
-            type: ixrd2
+            type: ixr6
             image: ghcr.io/nokia/srlinux:latest
             labels:
                 graph-icon: leaf
@@ -98,10 +94,10 @@ topology:
 
         dc1-srv-1:
             kind: linux
-            image: netreplica/ubuntu-host:latest
-            cmd: /start.sh -sS
+            image: netreplica/ubuntu-host:1.4
+            cmd: /start.sh -rS
             exec:
-                - bash -c "echo root:root | chpasswd"
+                - bash -c "echo root:root123 | chpasswd"
             labels:
                 graph-icon: server
                 graph-level: 10
@@ -113,10 +109,10 @@ topology:
 
         dc1-srv-2:
             kind: linux
-            image: netreplica/ubuntu-host:latest
-            cmd: /start.sh -sS
+            image: netreplica/ubuntu-host:1.4
+            cmd: /start.sh -rS
             exec:
-                - bash -c "echo root:root | chpasswd"
+                - bash -c "echo root:root123 | chpasswd"
             labels:
                 graph-icon: server
                 graph-level: 10
@@ -128,10 +124,10 @@ topology:
 
         dc1-srv-3:
             kind: linux
-            image: netreplica/ubuntu-host:latest
-            cmd: /start.sh -sS
+            image: netreplica/ubuntu-host:1.4
+            cmd: /start.sh -rS
             exec:
-                - bash -c "echo root:root | chpasswd"
+                - bash -c "echo root:root123 | chpasswd"
             labels:
                 graph-icon: server
                 graph-level: 10
@@ -143,10 +139,10 @@ topology:
 
         dc1-srv-4:
             kind: linux
-            image: netreplica/ubuntu-host:latest
-            cmd: /start.sh -sS
+            image: netreplica/ubuntu-host:1.4
+            cmd: /start.sh -rS
             exec:
-                - bash -c "echo root:root | chpasswd"
+                - bash -c "echo root:root123 | chpasswd"
             labels:
                 graph-icon: server
                 graph-level: 10
