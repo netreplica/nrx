@@ -4,38 +4,51 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+
         {
-            "name": "colo",
+            "name": "dc1_cyjs_2_clab",
             "type": "python",
             "request": "launch",
-            "cwd": "tmp",
-            "program": "../nrx.py",
+            "cwd": "${workspaceFolder}",
+            "program": "nrx.py",
             "args": [
-                "-c", "../tests/main.conf", "-s", "colo", "-o", "cyjs", "-d"
+                "-i", "cyjs", "-f", "tests/dc1/data/dc1.cyjs", "-o", "clab", "-d", "-D", "/tmp", "-T", "../templates"
             ],
             "console": "integratedTerminal",
             "justMyCode": true
         },
         {
-            "name": "dc1",
+            "name": "dc1_cyjs_2_graphite",
             "type": "python",
             "request": "launch",
-            "cwd": "tmp",
-            "program": "../nrx.py",
+            "cwd": "${workspaceFolder}",
+            "program": "nrx.py",
             "args": [
-                "-c", "../tests/main.conf", "-s", "dc1", "-o", "cyjs", "-d"
+                "-i", "cyjs", "-f", "tests/dc1/data/dc1.cyjs", "-o", "graphite", "-d", "-D", "/tmp", "-T", "../templates"
             ],
             "console": "integratedTerminal",
             "justMyCode": true
         },
         {
-            "name": "demo",
+            "name": "site1_cyjs_2_clab",
             "type": "python",
             "request": "launch",
-            "cwd": "tmp",
-            "program": "../nrx.py",
+            "cwd": "${workspaceFolder}",
+            "program": "nrx.py",
             "args": [
-                "-c", "../nrx.conf", "-o", "cyjs", "-d"
+                "-i", "cyjs", "-f", "tests/site1/data/site1.cyjs", "-o", "clab", "-d", "-D", "/tmp", "-T", "../templates"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "h88_cyjs_2_clab",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "program": "nrx.py",
+            "args": [
+                "-i", "cyjs", "-f", "tests/h88/data/HQ.cyjs", "-o", "clab", "-d", "-D", "/tmp", "-T", "../templates"
             ],
             "console": "integratedTerminal",
             "justMyCode": true

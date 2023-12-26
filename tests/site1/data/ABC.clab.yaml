@@ -1,4 +1,4 @@
-name: site1
+name: ABC
 topology:
     nodes:
         graphite:

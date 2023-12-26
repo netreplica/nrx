@@ -18,10 +18,7 @@ topology:
 
         HQ-Switch1:
             kind: linux
-            image: netreplica/ubuntu-host:latest
-            cmd: /start.sh -sS
-            exec:
-                - bash -c "echo root:root | chpasswd"
+            image: alpine:latest
             labels:
                 graph-icon: access-switch
                 graph-level: 9
@@ -30,6 +27,7 @@ topology:
                 platform: Cisco IOS-XE
                 vendor: Cisco
                 model: C9200-48P
+
         HQ-DistSw:
             kind: nokia_srlinux
             type: ixrd2
@@ -43,12 +41,13 @@ topology:
                 platform: Nokia SR-Linux
                 vendor: Nokia
                 model: 7220 IXR-D2
+
         HQ-Switch2:
             kind: ceos
-            image: ceos:latest
-            startup-config: HQ-Switch2.config
             binds:
                 - HQ-Switch2_interface_map.json:/mnt/flash/EosIntfMapping.json:ro
+            image: ceos:latest
+            startup-config: HQ-Switch2.config
             labels:
                 graph-icon: access-switch
                 graph-level: 9
@@ -57,6 +56,7 @@ topology:
                 platform: Arista EOS
                 vendor: Arista
                 model: DCS-7010T-48
+
     links:
         - endpoints: ["HQ-Switch1:eth1", "HQ-DistSw:e1-1"]
         - endpoints: ["HQ-Switch1:eth2", "HQ-DistSw:e1-2"]
