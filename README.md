@@ -220,7 +220,7 @@ source nrx39/bin/activate
 
     ```Shell
     export NB_API_TOKEN='replace_with_valid_API_token'
-    ./nrx.py --api https://demo.netbox.dev --templates templates --output clab --dir demo --sites DM-Albany
+    ./nrx.py --api https://demo.netbox.dev --templates templates --output clab --dir demo --site DM-Albany
     ```
 
 2. Now you're ready to start the Containerlab topology. Here is the example for "DM-Albany" site
@@ -233,7 +233,7 @@ source nrx39/bin/activate
 
     ```Shell
     export NB_API_TOKEN='replace_with_valid_API_token'
-    ./nrx.py --api https://demo.netbox.dev --sites DM-Albany --dir demo
+    ./nrx.py --api https://demo.netbox.dev --site DM-Albany --dir demo
     ```
 
 5. If you have a CYJS file, run `./nrx.py --input cyjs --file <site>.cyjs --output clab` to create a Containerlab topology file from the CYJS graph you exported in the previous step. For example, run:
@@ -248,7 +248,7 @@ source nrx39/bin/activate
 
     ```Shell
     export NB_API_TOKEN='replace_with_valid_API_token'
-    ./nrx.py --api https://demo.netbox.dev --templates templates --output cml --dir demo --sites DM-Akron
+    ./nrx.py --api https://demo.netbox.dev --templates templates --output cml --dir demo --site DM-Akron
     ```
 
 2. Now you're ready to start the "DM-Akron" topology in CML.
@@ -263,7 +263,7 @@ source nrx39/bin/activate
 
     ```Shell
     export NB_API_TOKEN='replace_with_valid_API_token'
-    ./nrx.py --api https://demo.netbox.dev --dir demo --sites DM-Akron
+    ./nrx.py --api https://demo.netbox.dev --dir demo --site DM-Akron
     ```
 
 4. If you have a CYJS file, run `./nrx.py --input cyjs --file <site>.cyjs --output cml` to create a topology file from the CYJS graph you exported in the previous step. For example, run:
@@ -282,7 +282,7 @@ Follow a two-step process:
 
     ```Shell
     export NB_API_TOKEN='replace_with_valid_API_token'
-    ./nrx.py --api https://demo.netbox.dev --sites DM-Akron --templates templates --output graphite
+    ./nrx.py --api https://demo.netbox.dev --site DM-Akron --templates templates --output graphite
     ```
 
 2. Start Graphite to visualize "DM-Akron" site:
