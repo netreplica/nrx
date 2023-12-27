@@ -1,0 +1,92 @@
+type: platform_map
+version: v1
+platforms:
+  ubuntu:
+    kinds:
+      clab: linux
+  arista-eos:
+    kinds:
+      clab: ceos
+  eos:
+    kinds:
+      clab: frr
+  cisco-ios:
+    kinds:
+      clab: vr-cisco_csr1000v
+      cml: iosv
+  cisco-catalyst-ios:
+    kinds:
+      cml: iosvl2
+  cisco-nxos-9000:
+    kinds:
+      cml: nxosv9000
+  nokia_srlinux:
+    kinds:
+      clab: srl
+  srlinux:
+    kinds:
+      clab: srl
+  sr-linux:
+    kinds:
+      clab: srl
+  sonic:
+    kinds:
+      clab: sonic-vs
+kinds:
+  clab:
+    ceos:
+      nodes:
+        template: clab/nodes/ceos.j2
+      interface_names:
+        template: clab/interface_names/default.j2
+      interface_maps:
+        template: clab/interface_maps/ceos.j2
+    frr:
+      nodes:
+        template: clab/nodes/default.j2
+        image: frrouting/frr:latest
+      interface_names:
+        template: clab/interface_names/default.j2
+    linux:
+      nodes:
+        template: clab/nodes/default.j2
+        image: netreplica/ubuntu-host:1.4
+        cmd: /start.sh -rS
+        exec:
+          - bash -c "echo root:root123 | chpasswd"
+      interface_names:
+        template: clab/interface_names/default.j2
+    rare:
+      nodes:
+        template: clab/nodes/rare.j2
+      interface_names:
+        template: clab/interface_names/default.j2
+    sonic-vs:
+      nodes:
+        template: clab/nodes/sonic-vs.j2
+      interface_names:
+        template: clab/interface_names/default.j2
+    srl:
+      nodes:
+        template: clab/nodes/srl.j2
+        type: ixr6
+      interface_names:
+        template: clab/interface_names/srl.j2
+    vr-cisco_csr1000v:
+      nodes:
+        template: clab/nodes/vr-cisco_csr1000v.j2
+      interface_names:
+        template: clab/interface_names/default.j2
+  cml:
+    iosv:
+      nodes:
+        template: cml/nodes/iosv.j2
+    iosvl2:
+      nodes:
+        template: cml/nodes/iosvl2.j2
+    nxosv9000:
+      nodes:
+        template: cml/nodes/nxosv9000.j2
+    ubuntu:
+      nodes:
+        template: cml/nodes/ubuntu.j2

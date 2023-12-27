@@ -1,12 +1,19 @@
 lint:
 	pylint nrx/*.py
 
-test-local: test-dc1 test-dc2 test-colo test-site1 test-h88 test-lrg
-test: test-args test-dc1-cyjs-2-clab test-dc2-cyjs-2-cml test-site1-cyjs-2-clab test-site1-cyjs-2-clab-rename test-dc1-cyjs-2-graphite test-dc2-cyjs-2-graphite test-h88-cyjs-2-clab test-dc1-cyjs-2-d2 test-lrg-cyjs-2-graphite
+test-local: test-dc1 test-dc2 test-colo test-site1 test-h88
+test-local-lrg: test-lrg-nb-2-cyjs-latest
+test-current: test-dc1-nb-2-cyjs-current test-dc2-nb-2-cyjs-current test-colo-nb-2-cyjs-current test-site1-nb-2-cyjs-current test-h88-nb-2-cyjs-current
+test-latest: test-dc1-nb-2-cyjs-latest test-dc2-nb-2-cyjs-latest test-colo-nb-2-cyjs-latest test-site1-nb-2-cyjs-latest test-h88-nb-2-cyjs-latest
+test: test-args test-dc1-cyjs-2-clab test-dc1-cyjs-2-clab-custom-platform-map test-dc2-cyjs-2-cml test-site1-cyjs-2-clab test-site1-cyjs-2-clab-rename test-dc1-cyjs-2-graphite test-dc2-cyjs-2-graphite test-h88-cyjs-2-clab test-dc1-cyjs-2-d2 test-lrg-cyjs-2-graphite
 
 test-args: test-args-site-and-sites
-test-dc1: test-dc1-nb-2-cyjs-current test-dc1-nb-2-cyjs-latest test-dc1-nb-2-cyjs-single-site test-dc1-nb-2-cyjs-single-sites test-dc1-cyjs-2-clab test-dc1-cyjs-2-graphite test-dc1-cyjs-2-d2 test-dc1-dc2-nb-2-cyjs-sites test-dc1-dc2-cyjs-2-graphite
+test-clab: test-dc1-cyjs-2-clab test-dc1-cyjs-2-clab-custom-platform-map test-site1-cyjs-2-clab test-h88-cyjs-2-clab
+test-cml: test-dc2-cyjs-2-cml
+test-graphite: test-dc1-cyjs-2-graphite test-dc2-cyjs-2-graphite test-lrg-cyjs-2-graphite
+test-d2: test-dc1-cyjs-2-d2
 
+test-dc1: test-dc1-nb-2-cyjs-current test-dc1-nb-2-cyjs-latest test-dc1-cyjs-2-clab test-dc1-cyjs-2-clab-custom-platform-map test-dc1-cyjs-2-graphite test-dc1-cyjs-2-d2
 test-dc2: test-dc2-nb-2-cyjs-current test-dc2-nb-2-cyjs-latest test-dc2-cyjs-2-cml test-dc2-cyjs-2-graphite
 test-colo: test-colo-nb-2-cyjs-current test-colo-nb-2-cyjs-latest
 test-site1: test-site1-nb-2-cyjs-current test-site1-nb-2-cyjs-latest test-site1-cyjs-2-clab test-site1-cyjs-2-clab-rename
@@ -79,6 +86,15 @@ test-dc1-cyjs-2-clab:
 	for f in *; do echo Comparing file $$f ...; diff $$f ../data/$$f || exit 1; done
 	@echo
 
+test-dc1-cyjs-2-clab-custom-platform-map:
+	@echo "#################################################################"
+	@echo "# DC1: read from CYJS and export as Containerlab using custom platform map"
+	@echo "#################################################################"
+	mkdir -p tests/dc1/test && cd tests/dc1/test && rm -rf * && \
+	../../../nrx.py -c ../nrx.conf -i cyjs -f ../data/dc1.cyjs -M ../platform_map.yaml -d && \
+	for f in *; do echo Comparing file $$f ...; diff $$f ../custom-clab/$$f || exit 1; done
+	@echo
+
 test-dc1-cyjs-2-graphite:
 	@echo "#################################################################"
 	@echo "# DC1: read from CYJS and export as graphite"
@@ -104,6 +120,14 @@ test-dc1-cyjs-2-d2:
 	mkdir -p tests/dc1/d2 && cd tests/dc1/d2 && rm -rf * && \
 	../../../nrx.py -c ../nrx.conf -i cyjs -f ../data/dc1.cyjs -o d2 -d && \
 	for f in *; do echo Comparing file $$f ...; diff $$f ../data/$$f || exit 1; done
+	@echo
+
+update-dc1:
+	@echo "#################################################################"
+	@echo "# Update reference data for DC1"
+	@echo "#################################################################"
+	cd tests/dc1/test && \
+	cp * ../data/
 	@echo
 
 test-dc2-nb-2-cyjs-current:
@@ -142,6 +166,14 @@ test-dc2-cyjs-2-cml:
 	mkdir -p tests/dc2/test && cd tests/dc2/test && rm -rf * && \
 	../../../nrx.py -c ../nrx.conf -i cyjs -f ../data/dc2.cyjs -d && \
 	for f in *; do echo Comparing file $$f ...; diff $$f ../data/$$f || exit 1; done
+	@echo
+
+update-dc2:
+	@echo "#################################################################"
+	@echo "# Update reference data for DC2"
+	@echo "#################################################################"
+	cd tests/dc2/test && \
+	cp * ../data/
 	@echo
 
 test-colo-nb-2-cyjs-current:
@@ -239,7 +271,7 @@ test-h88-nb-2-cyjs-latest-noconfigs:
 	@echo "#################################################################"
 	mkdir -p tests/h88/test && cd tests/h88/test && rm -rf * && \
 	source ../../.env_latest && \
-	../../../nrx.py -c ../nrx.conf -o cyjs -d -n && \
+	../../../nrx.py -c ../nrx.conf -o cyjs -d --noconfigs && \
 	diff HQ.cyjs ../data/HQ.cyjs.noconfigs
 	@echo
 
@@ -250,6 +282,14 @@ test-h88-cyjs-2-clab:
 	mkdir -p tests/h88/test && cd tests/h88/test && rm -rf * && \
 	../../../nrx.py -c ../nrx.conf -i cyjs -f ../data/HQ.cyjs -o clab -d && \
 	for f in *; do echo Comparing file $$f ...; diff $$f ../data/$$f || exit 1; done
+	@echo
+
+update-h88:
+	@echo "#################################################################"
+	@echo "# Update reference data for h88"
+	@echo "#################################################################"
+	cd tests/h88/test && \
+	cp * ../data/
 	@echo
 
 test-lrg-nb-2-cyjs-latest:

@@ -27,6 +27,7 @@ topology:
                 platform: SONiC
                 vendor: Edgecore
                 model: 5912-54X-O-AC-F
+
         site1-h1:
             kind: linux
             image: netreplica/ubuntu-host:latest
@@ -41,6 +42,7 @@ topology:
                 platform: Linux
                 vendor: Dell
                 model: PowerEdge R640
+
         site1-h2:
             kind: linux
             image: netreplica/ubuntu-host:latest
@@ -55,6 +57,7 @@ topology:
                 platform: Linux
                 vendor: Dell
                 model: PowerEdge R640
+
     links:
         - endpoints: ["site1-r1:eth1", "site1-h1:eth1"]
         - endpoints: ["site1-r1:eth2", "site1-h2:eth1"]
