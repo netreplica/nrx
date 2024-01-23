@@ -224,8 +224,8 @@ class NBFactory:
                 self.nb_sites = self.nb_session.dcim.sites.filter(name=config['export_sites'])
             except (pynetbox.core.query.RequestError, pynetbox.core.query.ContentError) as e:
                 error("NetBox API failure at get site:", e)
-            if self.nb_sites is None:
-                error(f"One of these site not found: {config['export_site']}")
+            if self.nb_sites is None or len(self.nb_sites) == 0:
+                error(f"No sites from the list were found: {config['export_sites']}")
             else:
                 print(f"Fetching devices from sites: {config['export_sites']}")
         else:
