@@ -201,15 +201,15 @@ class NBFactory:
         # Determine the name of the topology if not provided in the configuration
         if len(config['topology_name']) > 0:
             self.topology_name = config['topology_name']
-        elif len(config['export_site']) > 0:
-            self.topology_name = config['export_site']
+        elif len(config['export_sites']) > 0:
+            self.topology_name = "-".join(config['export_sites'])
         elif len(config['export_tags']) > 0:
             self.topology_name = "-".join(config['export_tags'])
         self.G = nx.Graph(name=self.topology_name)
         self.nb_session = pynetbox.api(self.config['nb_api_url'],
                                        token=self.config['nb_api_token'],
                                        threading=True)
-        self.nb_site = None
+        self.nb_sites = None
         if not config['tls_validate']:
             self.nb_session.http_session.verify = False
             urllib3.disable_warnings()
@@ -218,16 +218,16 @@ class NBFactory:
             self.nb_session.http_session.mount("http://", adapter)
             self.nb_session.http_session.mount("https://", adapter)
         print(f"Connecting to NetBox at: {config['nb_api_url']}")
-        if len(config['export_site']) > 0:
-            debug(f"Fetching site: {config['export_site']}")
+        if len(config['export_sites']) > 0:
+            debug(f"Fetching sites: {config['export_sites']}")
             try:
-                self.nb_site = self.nb_session.dcim.sites.get(name=config['export_site'])
+                self.nb_sites = self.nb_session.dcim.sites.filter(name=config['export_sites'])
             except (pynetbox.core.query.RequestError, pynetbox.core.query.ContentError) as e:
                 error("NetBox API failure at get site:", e)
-            if self.nb_site is None:
-                error(f"Site not found: {config['export_site']}")
+            if self.nb_sites is None or len(self.nb_sites) == 0:
+                error(f"No sites from the list were found: {config['export_sites']}")
             else:
-                print(f"Fetching devices from site: {config['export_site']}")
+                print(f"Fetching devices from sites: {config['export_sites']}")
         else:
             print(f"Fetching devices with tags: {','.join(config['export_tags'])}")
 
@@ -267,15 +267,20 @@ class NBFactory:
 
     def _get_nb_devices(self):
         """Get device list from NetBox filtered by site, tags and device roles"""
-        devices = None
-        if self.nb_site is None:
-            devices = self.nb_session.dcim.devices.filter(tag=self.config['export_tags'],
+        devices = []
+        if len(self.nb_sites) == 0:
+            devices.append(self.nb_session.dcim.devices.filter(tag=self.config['export_tags'],
                                                           role=self.config['export_device_roles'])
+                           )
         else:
-            devices = self.nb_session.dcim.devices.filter(site_id=self.nb_site.id,
-                                                          tag=self.config['export_tags'],
-                                                          role=self.config['export_device_roles'])
-        for device in list(devices):
+            site_ids = []
+            for site in self.nb_sites:
+                debug(f'Site ID: {site.id} - Site Name: {site.name}')
+                site_ids.append(str(site.id))
+            devices = self.nb_session.dcim.devices.filter(site_id=site_ids,
+                                                        tag=self.config['export_tags'],
+                                                        role=self.config['export_device_roles'])
+        for device in devices:
             d = self._init_device(device)
             self.nb_net.nodes.append(d)
             d["node_id"] = len(self.nb_net.nodes) - 1
@@ -978,33 +983,39 @@ def arg_input_check(s):
 
 def parse_args():
     """CLI arguments parser"""
-    parser = argparse.ArgumentParser(prog='nrx', description="nrx - network topology exporter by netreplica")
-    parser.add_argument('-v', '--version',   action='version', version=f'%(prog)s {__version__}')
-    parser.add_argument('-d', '--debug',     nargs=0, action=NrxDebugAction, help='enable debug output')
-    parser.add_argument('-I', '--init',      nargs=0, action=NrxInitAction, help=f"initialize configuration directory in $HOME/{NRX_CONFIG_DIR} and exit")
-    parser.add_argument('-c', '--config',    required=False, help=f"configuration file, default: $HOME/{NRX_CONFIG_DIR}/{NRX_DEFAULT_CONFIG_NAME}",
-                                             default=nrx_default_config_path())
-    parser.add_argument('-i', '--input',     required=False, help='input source: netbox (default) | cyjs',
-                                             default='netbox', type=arg_input_check,)
-    parser.add_argument('-o', '--output',    required=False, help='output format: cyjs | clab | cml | graphite | d2 or any other format supported by provided templates')
-    parser.add_argument('-a', '--api',       required=False, help='netbox API URL')
-    parser.add_argument('-s', '--site',      required=False, help='netbox site to export')
-    parser.add_argument('-t', '--tags',      required=False, help='netbox tags to export, for multiple tags use a comma-separated list: tag1,tag2,tag3 (uses AND logic)')
-    parser.add_argument('-n', '--name',      required=False, help='name of the exported topology (site name or tags by default)')
-    parser.add_argument('--noconfigs',       required=False, help='disable device configuration export (enabled by default)',
-                                             action=argparse.BooleanOptionalAction)
-    parser.add_argument('-k', '--insecure',  required=False, help='allow insecure server connections when using TLS',
-                                             action=argparse.BooleanOptionalAction)
-    parser.add_argument('-f', '--file',      required=False, help='file with the network graph to import')
-    parser.add_argument('-M', '--map',       required=False, help=f"file with platform mappings to node parameters (default: {NRX_MAP_NAME} in templates folder)")
-    parser.add_argument('-T', '--templates', required=False, help='directory with template files, \
-                                                                   will be prepended to TEMPLATES_PATH list \
-                                                                   in the configuration file')
-    parser.add_argument('-D', '--dir',       required=False, help='save files into specified directory. \
-                                                                   nested relative and absolute paths are OK \
-                                                                   (topology name is used by default)')
+    args_parser = argparse.ArgumentParser(prog='nrx', description="nrx - network topology exporter by netreplica")
 
-    args = parser.parse_args()
+    sites_group = args_parser.add_mutually_exclusive_group()
+
+    args_parser.add_argument('-v', '--version',     action='version', version=f'%(prog)s {__version__}')
+    args_parser.add_argument('-d', '--debug',       nargs=0, action=NrxDebugAction, help='enable debug output')
+    args_parser.add_argument('-I', '--init',        nargs=0, action=NrxInitAction, help=f"initialize configuration directory in $HOME/{NRX_CONFIG_DIR} and exit")
+    args_parser.add_argument('-c', '--config',      required=False, help=f"configuration file, default: $HOME/{NRX_CONFIG_DIR}/{NRX_DEFAULT_CONFIG_NAME}",
+                                                        default=nrx_default_config_path())
+    args_parser.add_argument('-i', '--input',       required=False, help='input source: netbox (default) | cyjs',
+                                                        default='netbox', type=arg_input_check,)
+    args_parser.add_argument('-o', '--output',      required=False, help='output format: cyjs | clab | cml | graphite | d2 or any other format supported by provided templates')
+    args_parser.add_argument('-a', '--api',         required=False, help='netbox API URL')
+    sites_group.add_argument('-s', '--site',        required=False, help='netbox site to export, cannot be combined with --sites')
+    sites_group.add_argument(      '--sites',       required=False, help='netbox sites to export, for multiple tags use a comma-separated list: \
+                                                                          site1,site2,site3 (uses OR logic)')
+    args_parser.add_argument('-t', '--tags',        required=False, help='netbox tags to export, for multiple tags use a comma-separated list: \
+                                                                          tag1,tag2,tag3 (uses AND logic)')
+    args_parser.add_argument('-n', '--name',        required=False, help='name of the exported topology (site name or tags by default)')
+    args_parser.add_argument(      '--noconfigs',   required=False, help='disable device configuration export (enabled by default)',
+                                                        action=argparse.BooleanOptionalAction)
+    args_parser.add_argument('-k', '--insecure',    required=False, help='allow insecure server connections when using TLS',
+                                                        action=argparse.BooleanOptionalAction)
+    args_parser.add_argument('-f', '--file',        required=False, help='file with the network graph to import')
+    args_parser.add_argument('-M', '--map',         required=False, help=f"file with platform mappings to node parameters (default: {NRX_MAP_NAME} in templates folder)")
+    args_parser.add_argument('-T', '--templates',   required=False, help='directory with template files, \
+                                                                          will be prepended to TEMPLATES_PATH list \
+                                                                          in the configuration file')
+    args_parser.add_argument('-D', '--dir',         required=False, help='save files into specified directory. \
+                                                                          nested relative and absolute paths are OK \
+                                                                          (topology name is used by default)')
+
+    args = args_parser.parse_args()
     debug(f"arguments {args}")
 
     return args
@@ -1133,7 +1144,7 @@ def load_toml_config(filename):
             'super-spine':          3,
             'router':               4,
         },
-        'export_site': '',
+        'export_sites': [],
         'export_tags': [],
         'topology_name': '',
         'export_configs': True,
@@ -1179,12 +1190,14 @@ def config_apply_netbox_args(config, args):
     if len(config['nb_api_token']) == 0:
         error("Need an API token to connect to NetBox.\nUse NB_API_TOKEN environment variable or key in --config file")
     if args.site is not None and len(args.site) > 0:
-        config['export_site'] = args.site
+        config['export_sites'] = args.site.split(',')  # --site and --sites can be used interchangeably but not at the same time
+    elif args.sites is not None and len(args.sites) > 0:
+        config['export_sites'] = args.sites.split(',')
     if args.tags is not None and len(args.tags) > 0:
         config['export_tags'] = args.tags.split(',')
         debug(f"List of tags to filter devices for export: {config['export_tags']}")
-    if len(config['export_site']) == 0 and len(config['export_tags']) == 0:
-        error("Need a Site name or Tags to export. Use --site/--tags arguments, or EXPORT_SITE/EXPORT_TAGS key in --config file")
+    if len(config['export_sites']) == 0 and len(config['export_tags']) == 0:
+        error("Need a Site name or Tags to export. Use --sites/--tags arguments, or EXPORT_SITE/EXPORT_TAGS key in --config file")
     if args.noconfigs is not None:
         if args.noconfigs:
             config['export_configs'] = False
