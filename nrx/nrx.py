@@ -201,10 +201,8 @@ class NBFactory:
         # Determine the name of the topology if not provided in the configuration
         if len(config['topology_name']) > 0:
             self.topology_name = config['topology_name']
-        elif len(config['export_sites']) > 1:
-            self.topology_name = "-".join(config['export_sites'])
         elif len(config['export_sites']) > 0:
-            self.topology_name = config['export_sites'][0]
+            self.topology_name = "-".join(config['export_sites'])
         elif len(config['export_tags']) > 0:
             self.topology_name = "-".join(config['export_tags'])
         self.G = nx.Graph(name=self.topology_name)
