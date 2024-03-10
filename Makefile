@@ -1,6 +1,15 @@
 lint:
 	pylint nrx/*.py
 
+build:
+	python3 -m build
+
+publish:
+	python3 -m twine upload --repository testpypi dist/*
+
+clean:
+	rm dist/*
+
 test-local: test-dc1 test-dc2 test-colo test-site1 test-h88
 test-local-lrg: test-lrg-nb-2-cyjs-latest
 test-current: test-dc1-nb-2-cyjs-current test-dc2-nb-2-cyjs-current test-colo-nb-2-cyjs-current test-site1-nb-2-cyjs-current test-h88-nb-2-cyjs-current
