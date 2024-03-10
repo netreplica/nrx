@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 [project]
 name = "nrx"
-version = "0.4.5"
+version = "0.4.6"
 authors = [
   { name="Netreplica", email="dev@netreplica.com" },
 ]
@@ -38,6 +38,6 @@ Issues = "https://github.com/netreplica/nrx/issues"
 nrx = "nrx:main"
 
 [tool.hatch.build.targets.wheel]
-sources = ["nrx"]
-only-include = ["nrx"]
+sources = ["src/nrx"]
+only-include = ["src/nrx"]
 
