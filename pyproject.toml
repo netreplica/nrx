@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 name = "nrx"
 version = "0.4.7"
 authors = [
-  { name="Netreplica", email="dev@netreplica.com" },
+  { name="Alex Bortok and Netreplica Team", email="dev@netreplica.com" },
 ]
 description = "nrx - netreplica exporter"
 readme = "README.md"

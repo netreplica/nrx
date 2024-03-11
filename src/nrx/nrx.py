@@ -46,7 +46,6 @@ import networkx as nx
 import jinja2
 import yaml
 
-__author__ = 'Alex Bortok and Netreplica Team'
 try:
     # Read version from the package metadata
     __version__ = importlib.metadata.version("nrx")
