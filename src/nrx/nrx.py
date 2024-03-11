@@ -27,11 +27,9 @@ nrx reads a network topology graph from NetBox DCIM system and exports it in one
 It can also read the topology graph previously saved as a CYJS file to convert it into the one of supported network emulation formats.
 """
 
-__version__ = 'v0.4.0'
-__author__ = 'Alex Bortok and Netreplica Team'
-
 import os
 import sys
+import importlib.metadata
 import argparse
 import json
 import math
@@ -40,12 +38,21 @@ import zipfile
 import toml
 import pynetbox
 import requests
+from pathlib import Path
 from requests.adapters import HTTPAdapter
 from requests.exceptions import RequestException, Timeout, HTTPError
 import urllib3
 import networkx as nx
 import jinja2
 import yaml
+
+__author__ = 'Alex Bortok and Netreplica Team'
+try:
+    # Read version from the package metadata
+    __version__ = importlib.metadata.version("nrx")
+except importlib.metadata.PackageNotFoundError:
+    # Set version from pyproject.toml
+    __version__ = toml.load(f"{Path(__file__).parent.parent.parent}/pyproject.toml")['project']['version']
 
 # DEFINE GLOBAL VARs HERE
 

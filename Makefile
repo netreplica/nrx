@@ -1,5 +1,5 @@
 lint:
-	pylint nrx/*.py
+	pylint src/nrx/*.py
 
 build:
 	python3 -m build
