@@ -3,7 +3,9 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 [project]
 name = "nrx"
-version = "0.4.8"
+dynamic = [
+  "version"
+]
 authors = [
   { name="Alex Bortok and Netreplica Team", email="dev@netreplica.com" },
 ]
@@ -41,3 +43,5 @@ nrx = "nrx:main"
 sources = ["src/nrx"]
 only-include = ["src/nrx"]
 
+[tool.hatch.version]
+path = "src/nrx/__about__.py"

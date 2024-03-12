@@ -46,13 +46,6 @@ import networkx as nx
 import jinja2
 import yaml
 
-try:
-    # Read version from the package metadata
-    __version__ = importlib.metadata.version("nrx")
-except importlib.metadata.PackageNotFoundError:
-    # Set version from pyproject.toml
-    __version__ = toml.load(f"{Path(__file__).parent.parent.parent}/pyproject.toml")['project']['version']
-
 # DEFINE GLOBAL VARs HERE
 
 DEBUG_ON = False
