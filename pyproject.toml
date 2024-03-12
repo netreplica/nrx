@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 [project]
 name = "nrx"
-version = "0.4.7"
+version = "0.4.8"
 authors = [
   { name="Alex Bortok and Netreplica Team", email="dev@netreplica.com" },
 ]
