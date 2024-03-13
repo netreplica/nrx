@@ -1247,8 +1247,8 @@ def load_config(args):
 
     return config
 
-def main():
-    """Main"""
+def cli():
+    """Main entry for CLI execution, called from main() in __init__.py"""
     # Parameters
     args = parse_args()
     config = load_config(args)
@@ -1289,7 +1289,3 @@ def main():
             error(f"Only --input netbox is supported for this type of export format: {config['output_format']}")
 
     return 0
-
-
-if __name__ == '__main__':
-    sys.exit(main())

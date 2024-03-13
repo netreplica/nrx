@@ -37,7 +37,7 @@ Homepage = "https://github.com/netreplica/nrx"
 Issues = "https://github.com/netreplica/nrx/issues"
 
 [project.scripts]
-nrx = "nrx.nrx:main"
+nrx = "nrx:main"
 
 [tool.hatch.build.targets.wheel]
 sources = ["src"]
