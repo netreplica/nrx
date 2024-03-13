@@ -23,9 +23,9 @@ import os
 # Get the directory containing the repository
 repo_directory = os.path.dirname(os.path.abspath(__file__))
 # Append to the system path for module imports
-sys.path.append(f"{repo_directory}/src/nrx")
+sys.path.append(f"{repo_directory}/src")
 # Import the main function and execute
-from nrx import main
+from nrx.nrx import main
 if __name__ == '__main__':
     sys.argv[0] = re.sub(r'(-script\.pyw|\.exe)?$', '', sys.argv[0])
     sys.exit(main())

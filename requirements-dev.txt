@@ -2,3 +2,4 @@ pylint
 rich
 build
 twine
+hatch
