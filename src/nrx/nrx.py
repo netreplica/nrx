@@ -43,6 +43,7 @@ import urllib3
 import networkx as nx
 import jinja2
 import yaml
+import semver
 
 # Single source version
 from nrx.__about__ import __version__
@@ -1051,8 +1052,12 @@ class NrxInitAction(argparse.Action):
 
 
 def get_versions(nrx_version):
-    """Download and parse NRX_VERSIONS_NAME asset file for a specific nrx version"""
-    versions_url = f"{NRX_REPOSITORY}/releases/download/{nrx_version}/{NRX_VERSIONS_NAME}"
+    """
+    Download and parse NRX_VERSIONS_NAME asset file for a matching nrx minor release version X.Y.0 (patch version is ignored).
+    """
+    v = semver.Version.parse(nrx_version)
+    release_version = f"v{v.major}.{v.minor}.0"
+    versions_url = f"{NRX_REPOSITORY}/releases/download/{release_version}/{NRX_VERSIONS_NAME}"
     try:
         r = requests.get(versions_url, timeout=NRX_REPOSITORY_TIMEOUT)
     except (HTTPError, Timeout, RequestException) as e:
