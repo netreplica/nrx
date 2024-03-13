@@ -29,7 +29,6 @@ It can also read the topology graph previously saved as a CYJS file to convert i
 
 import os
 import sys
-import importlib.metadata
 import argparse
 import json
 import math
@@ -38,13 +37,15 @@ import zipfile
 import toml
 import pynetbox
 import requests
-from pathlib import Path
 from requests.adapters import HTTPAdapter
 from requests.exceptions import RequestException, Timeout, HTTPError
 import urllib3
 import networkx as nx
 import jinja2
 import yaml
+
+# Single source version
+from nrx.__about__ import __version__
 
 # DEFINE GLOBAL VARs HERE
 
