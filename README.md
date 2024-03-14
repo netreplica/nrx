@@ -132,7 +132,7 @@ Command-line arguments take the highest priority.
 
 ```
 ./nrx --help
-usage: nrx [-h] [-v] [-d] [-I] [-c CONFIG] [-i INPUT] [-o OUTPUT] [-a API] [-s SITE] [-t TAGS] [-n NAME]
+usage: nrx [-h] [-v] [-d] [-I [VERSION]] [-c CONFIG] [-i INPUT] [-o OUTPUT] [-a API] [-s SITE] [-t TAGS] [-n NAME]
            [--noconfigs] [-k | --insecure] [-f FILE] [-M MAP] [-T TEMPLATES] [-D DIR]
 
 nrx - network topology exporter by netreplica
@@ -141,7 +141,7 @@ optional arguments:
   -h, --help                show this help message and exit
   -v, --version             show version number and exit
   -d, --debug               enable debug output
-  -I, --init                initialize configuration directory in $HOME/.nr and exit
+  -I, --init [VERSION]      initialize configuration directory in $HOME/.nr and exit. optionally, specify a VERSION to initialize with: -I 0.1.0
   -c, --config CONFIG       configuration file, default: $HOME/.nr/nrx.conf
   -i, --input INPUT         input source: netbox (default) | cyjs
   -o, --output OUTPUT       output format: cyjs | clab | cml | graphite | d2 or any other format supported by provided templates

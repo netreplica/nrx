@@ -43,7 +43,6 @@ import urllib3
 import networkx as nx
 import jinja2
 import yaml
-import semver
 
 # Single source version
 from nrx.__about__ import __version__
@@ -990,7 +989,9 @@ def parse_args():
 
     args_parser.add_argument('-v', '--version',     action='version', version=f'%(prog)s {__version__}')
     args_parser.add_argument('-d', '--debug',       nargs=0, action=NrxDebugAction, help='enable debug output')
-    args_parser.add_argument('-I', '--init',        nargs=0, action=NrxInitAction, help=f"initialize configuration directory in $HOME/{NRX_CONFIG_DIR} and exit")
+    args_parser.add_argument('-I', '--init',        nargs='?', help=f"initialize configuration directory in $HOME/{NRX_CONFIG_DIR} and exit. \
+                                                                      optionally, specify a VERSION to initialize with: -I 0.1.0",
+                                                        const=__version__, action=NrxInitAction, metavar='VERSION')
     args_parser.add_argument('-c', '--config',      required=False, help=f"configuration file, default: $HOME/{NRX_CONFIG_DIR}/{NRX_DEFAULT_CONFIG_NAME}",
                                                         default=nrx_default_config_path())
     args_parser.add_argument('-i', '--input',       required=False, help='input source: netbox (default) | cyjs',
@@ -1033,11 +1034,12 @@ class NrxInitAction(argparse.Action):
     """Argparse action to initialize configuration directory"""
     def __call__(self, parser, namespace, values, option_string=None):
         # Create a NRX_CONFIG_DIR directory in the user's home directory, or in the current directory if HOME is not set
+        debug(f"[INIT] version to use: {values}")
         config_dir_path = nrx_config_dir()
         print(f"[INIT] Initializing configuration directory in {config_dir_path}")
         config_dir = create_dirs(config_dir_path)
         # Get asset NRX_VERSIONS_NAME with versions compatibility matrix
-        versions = get_versions(__version__)
+        versions = get_versions(values)
         templates_path = get_templates(versions, config_dir)
         if templates_path is not None:
             print(f"[INIT] Saved templates to: {templates_path}")
@@ -1053,11 +1055,9 @@ class NrxInitAction(argparse.Action):
 
 def get_versions(nrx_version):
     """
-    Download and parse NRX_VERSIONS_NAME asset file for a matching nrx minor release version X.Y.0 (patch version is ignored).
+    Download and parse NRX_VERSIONS_NAME asset file for a matching nrx release version
     """
-    v = semver.Version.parse(nrx_version)
-    release_version = f"v{v.major}.{v.minor}.0"
-    versions_url = f"{NRX_REPOSITORY}/releases/download/{release_version}/{NRX_VERSIONS_NAME}"
+    versions_url = f"{NRX_REPOSITORY}/releases/download/v{nrx_version}/{NRX_VERSIONS_NAME}"
     try:
         r = requests.get(versions_url, timeout=NRX_REPOSITORY_TIMEOUT)
     except (HTTPError, Timeout, RequestException) as e:
