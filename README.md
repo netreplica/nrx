@@ -20,11 +20,11 @@ This project is in early phase. We're experimenting with the best ways to automa
 
 # Latest capabilities added
 
-The latest release has a significant set of the new capabilities:
-* PyPA packaging and distribution: `pip install nrx`
-* Ability to create new output formats without a need for **nrx** code changes
-* Mapping between NetBox platform values and node parameters via [`platform_map.yaml`](docs/platform_map.md) file
-* `$HOME/.nr` configuration directory with automatic initialization using `--init` argument
+The latest releases have a significant set of the new capabilities:
+* `0.5.0` PyPA packaging and distribution: `pip install nrx`
+* `0.4.0` Ability to create new output formats without a need for **nrx** code changes
+* `0.4.0` Mapping between NetBox platform values and node parameters via [`platform_map.yaml`](docs/platform_map.md) file
+* `0.4.0` `$HOME/.nr` configuration directory with automatic initialization using `--init` argument
 
 Find detailed release notes on the [Releases page](https://github.com/netreplica/nrx/releases).
 
@@ -103,20 +103,26 @@ The following software versions were tested for compatibility with `nrx`:
 
 # How to install
 
-1. Clone this repository and create Python virtual environment
+## PyPI package (recommended)
 
-    ```Shell
-    git clone https://github.com/netreplica/nrx.git --recursive
-    cd nrx
-    python3.9 -m venv nrx39
-    source nrx39/bin/activate
-    ```
+```Shell
+mkdir -p ~/.venv
+python3.9 -m venv ~/.venv/nrx
+source ~/.venv/nrx/bin/activate
+pip install nrx
+```
 
-2. Install required modules
+## From source code (development)
 
-    ```Shell
-    pip3 install -r requirements.txt
-    ```
+After running the following commands, you will have a working `nrx` command in the current directory.
+
+```Shell
+git clone https://github.com/netreplica/nrx.git --recursive
+cd nrx
+python3.9 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
 
 # How to configure
 
@@ -131,7 +137,7 @@ The following software versions were tested for compatibility with `nrx`:
 Command-line arguments take the highest priority.
 
 ```
-./nrx --help
+nrx --help
 usage: nrx [-h] [-v] [-d] [-I [VERSION]] [-c CONFIG] [-i INPUT] [-o OUTPUT] [-a API] [-s SITE] [-t TAGS] [-n NAME]
            [--noconfigs] [-k | --insecure] [-f FILE] [-M MAP] [-T TEMPLATES] [-D DIR]
 
@@ -217,11 +223,11 @@ source nrx39/bin/activate
 
 ## Containerlab example
 
-1. Run `./nrx --output clab` to export a topology graph from NetBox in Containerlab format. See [How to configure](#how-to-configure) for details. Here is an example of running `nrx` to export a graph for NetBox Site "DM-Albany" from [NetBox Demo](https://demo.netbox.dev) instance:
+1. Run `nrx --output clab` to export a topology graph from NetBox in Containerlab format. See [How to configure](#how-to-configure) for details. Here is an example of running `nrx` to export a graph for NetBox Site "DM-Albany" from [NetBox Demo](https://demo.netbox.dev) instance:
 
     ```Shell
     export NB_API_TOKEN='replace_with_valid_API_token'
-    ./nrx --api https://demo.netbox.dev --templates templates --output clab --dir demo --site DM-Albany
+    nrx --api https://demo.netbox.dev --templates templates --output clab --dir demo --site DM-Albany
     ```
 
 2. Now you're ready to start the Containerlab topology. Here is the example for "DM-Albany" site
@@ -234,22 +240,22 @@ source nrx39/bin/activate
 
     ```Shell
     export NB_API_TOKEN='replace_with_valid_API_token'
-    ./nrx --api https://demo.netbox.dev --site DM-Albany --dir demo
+    nrx --api https://demo.netbox.dev --site DM-Albany --dir demo
     ```
 
-5. If you have a CYJS file, run `./nrx --input cyjs --file <site>.cyjs --output clab` to create a Containerlab topology file from the CYJS graph you exported in the previous step. For example, run:
+5. If you have a CYJS file, run `nrx --input cyjs --file <site>.cyjs --output clab` to create a Containerlab topology file from the CYJS graph you exported in the previous step. For example, run:
 
     ```Shell
-    ./nrx --input cyjs --file demo/DM-Albany.cyjs --templates templates --output clab --dir demo
+    nrx --input cyjs --file demo/DM-Albany.cyjs --templates templates --output clab --dir demo
     ```
 
 ## Cisco Modeling Labs example
 
-1. Run `./nrx --output cml` to export a topology graph from NetBox in CML format. See [How to configure](#how-to-configure) for details. Here is an example of running `nrx` to export a graph for NetBox Site "DM-Akron" from [NetBox Demo](https://demo.netbox.dev) instance:
+1. Run `nrx --output cml` to export a topology graph from NetBox in CML format. See [How to configure](#how-to-configure) for details. Here is an example of running `nrx` to export a graph for NetBox Site "DM-Akron" from [NetBox Demo](https://demo.netbox.dev) instance:
 
     ```Shell
     export NB_API_TOKEN='replace_with_valid_API_token'
-    ./nrx --api https://demo.netbox.dev --templates templates --output cml --dir demo --site DM-Akron
+    nrx --api https://demo.netbox.dev --templates templates --output cml --dir demo --site DM-Akron
     ```
 
 2. Now you're ready to start the "DM-Akron" topology in CML.
@@ -264,13 +270,13 @@ source nrx39/bin/activate
 
     ```Shell
     export NB_API_TOKEN='replace_with_valid_API_token'
-    ./nrx --api https://demo.netbox.dev --dir demo --site DM-Akron
+    nrx --api https://demo.netbox.dev --dir demo --site DM-Akron
     ```
 
-4. If you have a CYJS file, run `./nrx --input cyjs --file <site>.cyjs --output cml` to create a topology file from the CYJS graph you exported in the previous step. For example, run:
+4. If you have a CYJS file, run `nrx --input cyjs --file <site>.cyjs --output cml` to create a topology file from the CYJS graph you exported in the previous step. For example, run:
 
     ```Shell
-    ./nrx --input cyjs --file demo/DM-Akron.cyjs --templates templates --output cml --dir demo
+    nrx --input cyjs --file demo/DM-Akron.cyjs --templates templates --output cml --dir demo
     ```
 
 ## Topology Visualization with Graphite
@@ -283,7 +289,7 @@ Follow a two-step process:
 
     ```Shell
     export NB_API_TOKEN='replace_with_valid_API_token'
-    ./nrx --api https://demo.netbox.dev --site DM-Akron --templates templates --output graphite
+    nrx --api https://demo.netbox.dev --site DM-Akron --templates templates --output graphite
     ```
 
 2. Start Graphite to visualize "DM-Akron" site:
