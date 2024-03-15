@@ -143,6 +143,8 @@ usage: nrx [-h] [-v] [-d] [-I [VERSION]] [-c CONFIG] [-i INPUT] [-o OUTPUT] [-a 
 
 nrx - network topology exporter by netreplica
 
+online documentation: https://github.com/netreplica/nrx/blob/main/README.md
+
 optional arguments:
   -h, --help                show this help message and exit
   -v, --version             show version number and exit
@@ -162,6 +164,9 @@ optional arguments:
   -T, --templates TEMPLATES directory with template files, will be prepended to TEMPLATES_PATH list in the configuration file
   -M, --map MAP             file with platform mappings to node parameters (default: platform_map.yaml in templates folder)
   -D, --dir DIR             save files into directory DIR (topology name is used by default). nested relative and absolute paths are OK
+
+To pass authentication token, use configuration file or environment variable:
+export NB_API_TOKEN='replace_with_valid_API_token'
 ```
 
 Note: for security reasons, there is no argument to pass an API token. Use either an environmental variable or a configuration file.

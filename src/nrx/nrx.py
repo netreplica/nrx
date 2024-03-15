@@ -26,14 +26,17 @@ nrx reads a network topology graph from NetBox DCIM system and exports it in one
 
 It can also read the topology graph previously saved as a CYJS file to convert it into the one of supported network emulation formats.
 """
-
+# Standard library imports
 import os
 import sys
 import argparse
+from argparse import RawDescriptionHelpFormatter
 import json
 import math
 import ast
+import textwrap
 import zipfile
+# Third-party library imports
 import toml
 import pynetbox
 import requests
@@ -983,7 +986,15 @@ def arg_input_check(s):
 
 def parse_args():
     """CLI arguments parser"""
-    args_parser = argparse.ArgumentParser(prog='nrx', description="nrx - network topology exporter by netreplica")
+    args_parser = argparse.ArgumentParser(prog='nrx',
+                                          formatter_class=RawDescriptionHelpFormatter,
+                                          description=textwrap.dedent("""
+                                            nrx - network topology exporter by netreplica
+
+                                            online documentation: https://github.com/netreplica/nrx/blob/main/README.md"""),
+                                          epilog=textwrap.dedent("""
+                                            To pass authentication token, use configuration file or environment variable:
+                                            export NB_API_TOKEN='replace_with_valid_API_token'"""))
 
     sites_group = args_parser.add_mutually_exclusive_group()
 
