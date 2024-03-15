@@ -983,7 +983,13 @@ def arg_input_check(s):
 
 def parse_args():
     """CLI arguments parser"""
-    args_parser = argparse.ArgumentParser(prog='nrx', description="nrx - network topology exporter by netreplica")
+    from argparse import RawDescriptionHelpFormatter
+    args_parser = argparse.ArgumentParser(prog='nrx', formatter_class=RawDescriptionHelpFormatter,
+    description="""
+    nrx - network topology exporter by netreplica
+
+    online documentation: https://github.com/netreplica/nrx/blob/main/README.md
+    """)
 
     sites_group = args_parser.add_mutually_exclusive_group()
 
