@@ -43,6 +43,7 @@ import urllib3
 import networkx as nx
 import jinja2
 import yaml
+import textwrap
 
 # Single source version
 from nrx.__about__ import __version__
@@ -984,12 +985,13 @@ def arg_input_check(s):
 def parse_args():
     """CLI arguments parser"""
     from argparse import RawDescriptionHelpFormatter
-    args_parser = argparse.ArgumentParser(prog='nrx', formatter_class=RawDescriptionHelpFormatter,
-    description="""
-    nrx - network topology exporter by netreplica
+    args_parser = argparse.ArgumentParser(prog='nrx',
+                                          formatter_class=RawDescriptionHelpFormatter,
+                                          description=textwrap.dedent("""
+                                                nrx - network topology exporter by netreplica
 
-    online documentation: https://github.com/netreplica/nrx/blob/main/README.md
-    """)
+                                                online documentation: https://github.com/netreplica/nrx/blob/main/README.md
+                                          """))
 
     sites_group = args_parser.add_mutually_exclusive_group()
 
