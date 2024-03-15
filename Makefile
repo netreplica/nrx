@@ -4,8 +4,11 @@ lint:
 build:
 	python3 -m build
 
-publish:
+pubdev:
 	python3 -m twine upload --repository testpypi dist/*
+
+publish:
+	python3 -m twine upload dist/*
 
 clean:
 	rm dist/*
