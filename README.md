@@ -220,10 +220,16 @@ Although you can always directly customize the templates according to your needs
 
 # How to use
 
-Start with activating venv environment
+Start with activating venv environment. See [How to install](#how-to-install) if you didn't install `nrx` yet.
 
 ```Shell
-source nrx39/bin/activate
+source ~/.venv/nrx/bin/activate
+```
+
+If this is first time you're running `nrx`, you need to initialize the configuration directory. This will create the `$HOME/.nr` folder and populate it with a configuration file example and a compatible version of the templates. All the examples below doesn't require a configuration file, but do require the templates to present in the configuration directory.
+
+```Shell
+nrx --init
 ```
 
 ## Containerlab example
@@ -300,7 +306,7 @@ Follow a two-step process:
 2. Start Graphite to visualize "DM-Akron" site:
 
     ```Shell
-    TOPOLOGY="$(pwd)/DM-Akron.graphite.json"
+    TOPOLOGY="$(pwd)/DM-Akron/DM-Akron.graphite.json"
     docker run -d -t --rm \
         --mount type=bind,source="${TOPOLOGY}",target=/htdocs/default/default.json,readonly \
         -p 8080:80 \
