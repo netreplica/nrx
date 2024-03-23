@@ -1,11 +1,8 @@
 name: Publish Python distribution to PyPI and TestPyPI
 
 on:
-    pull_request:
-        branches: [ "main" ]
     push:
         branches: [ "main", "dev" ]
-        tags: [ "v*" ]
 
 jobs:
     build:
@@ -58,7 +55,7 @@ jobs:
 
     publish-to-pypi:
         name: Publish to PyPI
-        if: startsWith(github.ref, 'refs/tags/')  # only publish to PyPI on tag pushes
+        if: startsWith(github.ref, 'refs/tags/v')  # only publish to PyPI on tag pushes that start with 'v'
         needs:
           - build
         runs-on: ubuntu-latest
