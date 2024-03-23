@@ -226,7 +226,7 @@ Start with activating venv environment. See [How to install](#how-to-install) if
 source ~/.venv/nrx/bin/activate
 ```
 
-If this is first time you're running `nrx`, you need to initialize the configuration directory. This will create the `$HOME/.nr` folder and populate it with a configuration file example and a compatible version of the templates. All the examples below doesn't require a configuration file, but do require the templates to present in the configuration directory.
+If this is first time you're running `nrx`, you need to initialize its configuration directory. This will create the `$HOME/.nr` folder and populate it with a configuration file example and a compatible version of the templates. The examples below don't require a configuration file, but do require the templates to be present in the configuration directory.
 
 ```Shell
 nrx --init
