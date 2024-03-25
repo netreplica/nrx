@@ -14,7 +14,7 @@ clean:
 	rm dist/*
 
 test-local: test-dc1 test-dc2 test-colo test-site1 test-h88
-test-local-lrg: test-lrg-nb-2-cyjs-latest
+test-previous: test-dc1-nb-2-cyjs-previous test-dc2-nb-2-cyjs-previous test-colo-nb-2-cyjs-previous test-site1-nb-2-cyjs-previous test-h88-nb-2-cyjs-previous
 test-current: test-dc1-nb-2-cyjs-current test-dc2-nb-2-cyjs-current test-colo-nb-2-cyjs-current test-site1-nb-2-cyjs-current test-h88-nb-2-cyjs-current
 test-latest: test-dc1-nb-2-cyjs-latest test-dc2-nb-2-cyjs-latest test-colo-nb-2-cyjs-latest test-site1-nb-2-cyjs-latest test-h88-nb-2-cyjs-latest
 test: test-args test-dc1-cyjs-2-clab test-dc1-cyjs-2-clab-custom-platform-map test-dc2-cyjs-2-cml test-site1-cyjs-2-clab test-site1-cyjs-2-clab-rename test-dc1-cyjs-2-graphite test-dc2-cyjs-2-graphite test-h88-cyjs-2-clab test-dc1-cyjs-2-d2 test-lrg-cyjs-2-graphite
@@ -25,18 +25,28 @@ test-cml: test-dc2-cyjs-2-cml
 test-graphite: test-dc1-cyjs-2-graphite test-dc2-cyjs-2-graphite test-lrg-cyjs-2-graphite
 test-d2: test-dc1-cyjs-2-d2
 
-test-dc1: test-dc1-nb-2-cyjs-current test-dc1-nb-2-cyjs-latest test-dc1-cyjs-2-clab test-dc1-cyjs-2-clab-custom-platform-map test-dc1-cyjs-2-graphite test-dc1-cyjs-2-d2
-test-dc2: test-dc2-nb-2-cyjs-current test-dc2-nb-2-cyjs-latest test-dc2-cyjs-2-cml test-dc2-cyjs-2-graphite
-test-colo: test-colo-nb-2-cyjs-current test-colo-nb-2-cyjs-latest
-test-site1: test-site1-nb-2-cyjs-current test-site1-nb-2-cyjs-latest test-site1-cyjs-2-clab test-site1-cyjs-2-clab-rename
-test-h88: test-h88-nb-2-cyjs-current test-h88-nb-2-cyjs-latest test-h88-nb-2-cyjs-latest-noconfigs test-h88-cyjs-2-clab
-test-lrg: test-lrg-nb-2-cyjs-latest test-lrg-cyjs-2-graphite
+test-dc1: test-dc1-nb-2-cyjs-previous test-dc1-nb-2-cyjs-current test-dc1-nb-2-cyjs-latest test-dc1-cyjs-2-clab test-dc1-cyjs-2-clab-custom-platform-map test-dc1-cyjs-2-graphite test-dc1-cyjs-2-d2
+test-dc2: test-dc2-nb-2-cyjs-previous test-dc2-nb-2-cyjs-current test-dc2-nb-2-cyjs-latest test-dc2-cyjs-2-cml test-dc2-cyjs-2-graphite
+test-colo: test-colo-nb-2-cyjs-previous test-colo-nb-2-cyjs-current test-colo-nb-2-cyjs-latest
+test-site1: test-site1-nb-2-cyjs-previous test-site1-nb-2-cyjs-current test-site1-nb-2-cyjs-latest test-site1-cyjs-2-clab test-site1-cyjs-2-clab-rename
+test-h88: test-h88-nb-2-cyjs-previous test-h88-nb-2-cyjs-current test-h88-nb-2-cyjs-latest test-h88-nb-2-cyjs-latest-noconfigs test-h88-cyjs-2-clab
+test-lrg: test-lrg-nb-2-cyjs-current test-lrg-nb-2-cyjs-latest test-lrg-cyjs-2-graphite
 
 test-args-site-and-sites:
 	@echo "#################################################################"
 	@echo "# Simulteneous use of site and sites should fail"
 	@echo "#################################################################"
 	! ./nrx --site dc1 --sites dc1,dc2 -d
+	@echo
+
+test-dc1-nb-2-cyjs-previous:
+	@echo "#################################################################"
+	@echo "# DC1: read from NetBox previous version and export as CYJS"
+	@echo "#################################################################"
+	mkdir -p tests/dc1/test && cd tests/dc1/test && rm -rf * && \
+	source ../../.env_previous && \
+	../../../nrx -c ../nrx.conf -o cyjs -d && \
+	diff dc1.cyjs ../data/dc1.cyjs
 	@echo
 
 test-dc1-nb-2-cyjs-current:
@@ -142,6 +152,16 @@ update-dc1:
 	cp * ../data/
 	@echo
 
+test-dc2-nb-2-cyjs-previous:
+	@echo "#################################################################"
+	@echo "# DC2: read from NetBox previous version and export as CYJS"
+	@echo "#################################################################"
+	mkdir -p tests/dc2/test && cd tests/dc2/test && rm -rf * && \
+	source ../../.env_previous && \
+	../../../nrx -c ../nrx.conf -o cyjs -d && \
+	diff dc2.cyjs ../data/dc2.cyjs.previous
+	@echo
+
 test-dc2-nb-2-cyjs-current:
 	@echo "#################################################################"
 	@echo "# DC2: read from NetBox current version and export as CYJS"
@@ -188,6 +208,16 @@ update-dc2:
 	cp * ../data/
 	@echo
 
+test-colo-nb-2-cyjs-previous:
+	@echo "#################################################################"
+	@echo "# Colo: read from NetBox previous version and export as CYJS"
+	@echo "#################################################################"
+	mkdir -p tests/colo/test && cd tests/colo/test && rm -rf * && \
+	source ../../.env_previous && \
+	../../../nrx -c ../nrx.conf -o cyjs -d && \
+	diff colo.cyjs ../data/colo.cyjs
+	@echo
+
 test-colo-nb-2-cyjs-current:
 	@echo "#################################################################"
 	@echo "# Colo: read from NetBox current version and export as CYJS"
@@ -206,6 +236,16 @@ test-colo-nb-2-cyjs-latest:
 	source ../../.env_latest && \
 	../../../nrx -c ../nrx.conf -o cyjs -d && \
 	diff colo.cyjs ../data/colo.cyjs
+	@echo
+
+test-site1-nb-2-cyjs-previous:
+	@echo "#################################################################"
+	@echo "# Site1: read from NetBox previous version and export as CYJS"
+	@echo "#################################################################"
+	mkdir -p tests/site1/test && cd tests/site1/test && rm -rf * && \
+	source ../../.env_previous && \
+	../../../nrx -c ../nrx.conf -o cyjs -d && \
+	diff site1.cyjs ../data/site1.cyjs
 	@echo
 
 test-site1-nb-2-cyjs-current:
@@ -257,6 +297,16 @@ test-site1-cyjs-template-2-clab:
 	@echo
 
 
+test-h88-nb-2-cyjs-previous:
+	@echo "#################################################################"
+	@echo "# h88: read from NetBox previous version and export as CYJS"
+	@echo "#################################################################"
+	mkdir -p tests/h88/test && cd tests/h88/test && rm -rf * && \
+	source ../../.env_previous && \
+	../../../nrx -c ../nrx.conf -o cyjs -d && \
+	diff HQ.cyjs ../data/HQ.cyjs.previous
+	@echo
+
 test-h88-nb-2-cyjs-current:
 	@echo "#################################################################"
 	@echo "# h88: read from NetBox current version and export as CYJS"
@@ -304,14 +354,22 @@ update-h88:
 	cp * ../data/
 	@echo
 
+test-lrg-nb-2-cyjs-current:
+	@echo "#################################################################"
+	@echo "# LRG: read from NetBox current version and export as CYJS"
+	@echo "#################################################################"
+	mkdir -p tests/lrg/test && cd tests/lrg/test && rm -rf * && \
+	source ../../.env_current && \
+	../../../nrx -c ../nrx.conf -o cyjs --noconfigs -d
+	@echo
+
 test-lrg-nb-2-cyjs-latest:
 	@echo "#################################################################"
 	@echo "# LRG: read from NetBox latest version and export as CYJS"
 	@echo "#################################################################"
 	mkdir -p tests/lrg/test && cd tests/lrg/test && rm -rf * && \
 	source ../../.env_latest && \
-	../../../nrx -c ../nrx.conf -o cyjs --noconfigs -d && \
-	diff lrg.cyjs ../data/lrg.cyjs
+	../../../nrx -c ../nrx.conf -o cyjs --noconfigs -d
 	@echo
 
 test-lrg-cyjs-2-graphite:

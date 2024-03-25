@@ -1,0 +1,300 @@
+{
+    "data": [
+        [
+            "name",
+            "HQ"
+        ]
+    ],
+    "directed": false,
+    "multigraph": false,
+    "elements": {
+        "nodes": [
+            {
+                "data": {
+                    "side": "a",
+                    "type": "device",
+                    "device": {
+                        "id": 40,
+                        "type": "device",
+                        "name": "HQ-Switch1",
+                        "node_id": 1,
+                        "site": "HQ",
+                        "platform": "cisco-ios-xe",
+                        "platform_name": "Cisco IOS-XE",
+                        "vendor": "cisco",
+                        "vendor_name": "Cisco",
+                        "model": "c9200-48p",
+                        "model_name": "C9200-48P",
+                        "role": "access-switch",
+                        "role_name": "Access Switch",
+                        "primary_ip4": "10.113.0.10/24",
+                        "primary_ip6": "",
+                        "config": "",
+                        "device_index": 1
+                    },
+                    "id": "1",
+                    "value": 1,
+                    "name": "1"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "device",
+                    "device": {
+                        "id": 42,
+                        "type": "device",
+                        "name": "HQ-DistSw",
+                        "node_id": 0,
+                        "site": "HQ",
+                        "platform": "sr-linux",
+                        "platform_name": "Nokia SR-Linux",
+                        "vendor": "nokia",
+                        "vendor_name": "Nokia",
+                        "model": "7220-ixr-d2",
+                        "model_name": "7220 IXR-D2",
+                        "role": "distribution-switch",
+                        "role_name": "Distribution Switch",
+                        "primary_ip4": "",
+                        "primary_ip6": "",
+                        "config": "",
+                        "device_index": 0
+                    },
+                    "id": "0",
+                    "value": 0,
+                    "name": "0"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "interface",
+                    "interface": {
+                        "id": 1466,
+                        "type": "interface",
+                        "name": "TenGigabitEthernet1/1/1",
+                        "node_id": 7,
+                        "interface_index": 4
+                    },
+                    "id": "7",
+                    "value": 7,
+                    "name": "7"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "interface",
+                    "interface": {
+                        "id": 1410,
+                        "type": "interface",
+                        "name": "ethernet-1/1",
+                        "node_id": 3,
+                        "interface_index": 0
+                    },
+                    "id": "3",
+                    "value": 3,
+                    "name": "3"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "interface",
+                    "interface": {
+                        "id": 1467,
+                        "type": "interface",
+                        "name": "TenGigabitEthernet1/1/2",
+                        "node_id": 8,
+                        "interface_index": 5
+                    },
+                    "id": "8",
+                    "value": 8,
+                    "name": "8"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "interface",
+                    "interface": {
+                        "id": 1411,
+                        "type": "interface",
+                        "name": "ethernet-1/2",
+                        "node_id": 4,
+                        "interface_index": 1
+                    },
+                    "id": "4",
+                    "value": 4,
+                    "name": "4"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "device",
+                    "device": {
+                        "id": 41,
+                        "type": "device",
+                        "name": "HQ-Switch2",
+                        "node_id": 2,
+                        "site": "HQ",
+                        "platform": "eos",
+                        "platform_name": "Arista EOS",
+                        "vendor": "arista",
+                        "vendor_name": "Arista",
+                        "model": "dcs-7010t-48",
+                        "model_name": "DCS-7010T-48",
+                        "role": "access-switch",
+                        "role_name": "Access Switch",
+                        "primary_ip4": "10.113.0.11/24",
+                        "primary_ip6": "",
+                        "config": "",
+                        "device_index": 2
+                    },
+                    "id": "2",
+                    "value": 2,
+                    "name": "2"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "interface",
+                    "interface": {
+                        "id": 1405,
+                        "type": "interface",
+                        "name": "Ethernet49",
+                        "node_id": 9,
+                        "interface_index": 6
+                    },
+                    "id": "9",
+                    "value": 9,
+                    "name": "9"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "interface",
+                    "interface": {
+                        "id": 1412,
+                        "type": "interface",
+                        "name": "ethernet-1/3",
+                        "node_id": 5,
+                        "interface_index": 2
+                    },
+                    "id": "5",
+                    "value": 5,
+                    "name": "5"
+                }
+            },
+            {
+                "data": {
+                    "side": "a",
+                    "type": "interface",
+                    "interface": {
+                        "id": 1406,
+                        "type": "interface",
+                        "name": "Ethernet50",
+                        "node_id": 10,
+                        "interface_index": 7
+                    },
+                    "id": "10",
+                    "value": 10,
+                    "name": "10"
+                }
+            },
+            {
+                "data": {
+                    "side": "b",
+                    "type": "interface",
+                    "interface": {
+                        "id": 1413,
+                        "type": "interface",
+                        "name": "ethernet-1/4",
+                        "node_id": 6,
+                        "interface_index": 3
+                    },
+                    "id": "6",
+                    "value": 6,
+                    "name": "6"
+                }
+            }
+        ],
+        "edges": [
+            {
+                "data": {
+                    "source": 1,
+                    "target": 7
+                }
+            },
+            {
+                "data": {
+                    "source": 1,
+                    "target": 8
+                }
+            },
+            {
+                "data": {
+                    "source": 0,
+                    "target": 3
+                }
+            },
+            {
+                "data": {
+                    "source": 0,
+                    "target": 4
+                }
+            },
+            {
+                "data": {
+                    "source": 0,
+                    "target": 5
+                }
+            },
+            {
+                "data": {
+                    "source": 0,
+                    "target": 6
+                }
+            },
+            {
+                "data": {
+                    "source": 7,
+                    "target": 3
+                }
+            },
+            {
+                "data": {
+                    "source": 8,
+                    "target": 4
+                }
+            },
+            {
+                "data": {
+                    "source": 2,
+                    "target": 9
+                }
+            },
+            {
+                "data": {
+                    "source": 2,
+                    "target": 10
+                }
+            },
+            {
+                "data": {
+                    "source": 9,
+                    "target": 5
+                }
+            },
+            {
+                "data": {
+                    "source": 10,
+                    "target": 6
+                }
+            }
+        ]
+    }
+}
