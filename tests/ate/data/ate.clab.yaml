@@ -1,0 +1,89 @@
+name: ate
+topology:
+    nodes:
+        graphite:
+            kind: linux
+            image: netreplica/graphite:latest
+            env:
+                HOST_CONNECTION: ${SSH_CONNECTION}
+            binds:
+                - __clabDir__/topology-data.json:/htdocs/default/default.json:ro
+                - __clabDir__/ansible-inventory.yml:/htdocs/lab/default/ansible-inventory.yml:ro
+            ports:
+                - 8080:80
+            exec:
+                - sh -c 'graphite_motd.sh 8080'
+            labels:
+                graph-hide: yes
+
+        ate1:
+            kind: linux
+            image: ghcr.io/open-traffic-generator/ixia-c-traffic-engine:latest
+            env:
+              OPT_LISTEN_PORT: 5555
+              ARG_IFACE_LIST:  virtual@af_packet,eth1 virtual@af_packet,eth2
+              OPT_NO_HUGEPAGES: Yes
+              OPT_NO_PINNING: Yes
+              WAIT_FOR_IFACE: Yes
+            labels:
+                graph-icon: ate
+                graph-level: 10
+                role: ATE
+                group: ate
+                platform: Keysight Ixia-c
+                vendor: Keysight
+                model: Ixia-c Test Node
+        ate1-pe:
+            kind: linux
+            image: ghcr.io/open-traffic-generator/ixia-c-protocol-engine:latest
+            network-mode: container:ate1
+            startup-delay: 5
+            env:
+              INTF_LIST: eth1,eth2,
+            labels:
+                graph-icon: ate
+                graph-level: 10
+                role: ATE
+                group: ate
+                platform: Keysight Ixia-c
+                vendor: Keysight
+                model: Ixia-c Test Node
+                graph-hide: yes
+
+        ate2:
+            kind: linux
+            image: ghcr.io/open-traffic-generator/ixia-c-traffic-engine:latest
+            env:
+              OPT_LISTEN_PORT: 5555
+              ARG_IFACE_LIST:  virtual@af_packet,eth1 virtual@af_packet,eth2
+              OPT_NO_HUGEPAGES: Yes
+              OPT_NO_PINNING: Yes
+              WAIT_FOR_IFACE: Yes
+            labels:
+                graph-icon: ate
+                graph-level: 10
+                role: ATE
+                group: ate
+                platform: Keysight Ixia-c
+                vendor: Keysight
+                model: Ixia-c Test Node
+        ate2-pe:
+            kind: linux
+            image: ghcr.io/open-traffic-generator/ixia-c-protocol-engine:latest
+            network-mode: container:ate2
+            startup-delay: 5
+            env:
+              INTF_LIST: eth1,eth2,
+            labels:
+                graph-icon: ate
+                graph-level: 10
+                role: ATE
+                group: ate
+                platform: Keysight Ixia-c
+                vendor: Keysight
+                model: Ixia-c Test Node
+                graph-hide: yes
+
+    links:
+        - endpoints: ["ate1:eth1", "ate2:eth1"]
+        - endpoints: ["ate1:eth2", "ate2:eth2"]

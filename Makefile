@@ -381,3 +381,22 @@ test-lrg-cyjs-2-graphite:
 	for f in *; do echo Comparing file $$f ...; diff $$f ../data/$$f || exit 1; done
 	@echo
 
+test-ate-nb-2-cyjs-latest:
+	@echo "#################################################################"
+	@echo "# ate: read from NetBox latest version and export as CYJS"
+	@echo "#################################################################"
+	mkdir -p tests/ate/test && cd tests/ate/test && rm -rf * && \
+	source ../../.env_latest && \
+	../../../nrx -c ../nrx.conf -o cyjs --noconfigs -d && \
+	diff ate.cyjs ../data/ate.cyjs
+	@echo
+
+test-ate2x2-cyjs-2-clab:
+	@echo "#################################################################"
+	@echo "# ate: read from CYJS and export as Containerlab"
+	@echo "#################################################################"
+	mkdir -p tests/ate/test && cd tests/ate/test && rm -rf * && \
+	../../../nrx -c ../nrx.conf -i cyjs -f ../data/ate.cyjs -o clab -d && \
+	diff ate.clab.yaml ../data/ate.clab.yaml
+	@echo
+

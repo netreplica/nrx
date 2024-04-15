@@ -1,0 +1,5 @@
+device,name,type
+ate1,eth1,1000base-t
+ate1,eth2,1000base-t
+ate2,eth1,1000base-t
+ate2,eth2,1000base-t
