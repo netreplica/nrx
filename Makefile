@@ -117,6 +117,15 @@ test-dc1-cyjs-2-clab-custom-platform-map:
 	for f in *; do echo Comparing file $$f ...; diff $$f ../custom-clab/$$f || exit 1; done
 	@echo
 
+test-dc1-cyjs-2-clab-simulate:
+	@echo "#################################################################"
+	@echo "# DC1: read from CYJS and export as Containerlab with role:server being simulated"
+	@echo "#################################################################"
+	mkdir -p tests/dc1/test && cd tests/dc1/test && rm -rf * && \
+	../../../nrx -c ../nrx.conf -d -i cyjs -f ../data/dc1.cyjs --simulate role:server by:ixia-c-one && \
+	for f in *; do echo Comparing file $$f ...; diff $$f ../simulate-clab/$$f || exit 1; done
+	@echo
+
 test-dc1-cyjs-2-graphite:
 	@echo "#################################################################"
 	@echo "# DC1: read from CYJS and export as graphite"

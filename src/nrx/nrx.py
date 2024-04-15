@@ -1015,6 +1015,8 @@ def parse_args():
     args_parser.add_argument('-t', '--tags',        required=False, help='netbox tags to export, for multiple tags use a comma-separated list: \
                                                                           tag1,tag2,tag3 (uses AND logic)')
     args_parser.add_argument('-n', '--name',        required=False, help='name of the exported topology (site name or tags by default)')
+    args_parser.add_argument(      '--simulate',    required=False, help='simulate nodes in the topology matching provided properties by a single node specified as by:NODE_KIND',\
+                                                        nargs='+', type=str, action=NrxSimulateAction, metavar='PROPERTY:VALUE')
     args_parser.add_argument(      '--noconfigs',   required=False, help='disable device configuration export (enabled by default)',
                                                         action=argparse.BooleanOptionalAction)
     args_parser.add_argument('-k', '--insecure',    required=False, help='allow insecure server connections when using TLS',
@@ -1062,6 +1064,23 @@ class NrxInitAction(argparse.Action):
         else:
             error("[INIT] Can't download default config")
         sys.exit(0)
+
+
+class NrxSimulateAction(argparse.Action):
+    """Argparse action to validate --simulate parameters"""
+    def __call__(self, parser, namespace, values, option_string=None):
+        debug(f"[SIMULATE] parameters: {values}")
+        by_provided = False
+        for parameter in values:
+            p = parameter.split(':')
+            if len(p) == 2 and all(len(v) > 0 for v in p):
+                if p[0] == 'by':
+                    by_provided = True
+            else:
+                error(f"invalid parameter format for --simulate, should have two parts separated by ':'. Got: {parameter}")
+        if not by_provided:
+            error("missing 'by' parameter for --simulate")
+        setattr(namespace, self.dest, values)
 
 
 def get_versions(nrx_version):
@@ -1171,6 +1190,9 @@ def load_toml_config(filename):
         'nb_api_params': {
             'interfaces_block_size':    4,
             'cables_block_size':        64,
+        },
+        'simulate_params': {
+            'by': None,
         },
     }
     if filename is not None and len(filename) > 0:
