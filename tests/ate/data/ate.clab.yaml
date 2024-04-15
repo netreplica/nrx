@@ -1,21 +1,12 @@
 name: ate
 topology:
     nodes:
-        graphite:
+        otg:
             kind: linux
-            image: netreplica/graphite:latest
-            env:
-                HOST_CONNECTION: ${SSH_CONNECTION}
-            binds:
-                - __clabDir__/topology-data.json:/htdocs/default/default.json:ro
-                - __clabDir__/ansible-inventory.yml:/htdocs/lab/default/ansible-inventory.yml:ro
+            image: ghcr.io/open-traffic-generator/keng-controller:latest
+            cmd: --accept-eula --http-port 8443
             ports:
-                - 8080:80
-            exec:
-                - sh -c 'graphite_motd.sh 8080'
-            labels:
-                graph-hide: yes
-
+                - 8443:8443
         ate1:
             kind: linux
             image: ghcr.io/open-traffic-generator/ixia-c-traffic-engine:latest

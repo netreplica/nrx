@@ -391,7 +391,7 @@ test-ate-nb-2-cyjs-latest:
 	diff ate.cyjs ../data/ate.cyjs
 	@echo
 
-test-ate2x2-cyjs-2-clab:
+test-ate-cyjs-2-clab:
 	@echo "#################################################################"
 	@echo "# ate: read from CYJS and export as Containerlab"
 	@echo "#################################################################"
@@ -400,3 +400,17 @@ test-ate2x2-cyjs-2-clab:
 	diff ate.clab.yaml ../data/ate.clab.yaml
 	@echo
 
+test-ate-clab-run-otgen:
+	@echo "#################################################################"
+	@echo "# ate: deploy Containerlab topology and run traffic with otgen"
+	@echo "#################################################################"
+	cd tests/ate/test && \
+	sudo -E containerlab deploy -t ate.clab.yaml --reconfigure && \
+	echo "Running traffic with otgen" && \
+	otgen create flow --name ate1to2port1 --count 1210 --tx ate1.p1 --rx ate2.p1 --txl "clab-ate-ate1:5555;1" --rxl "clab-ate-ate2:5555;1" | \
+	otgen add    flow --name ate2to1port1 --count 2110 --tx ate2.p1 --rx ate1.p1 --txl "clab-ate-ate2:5555;1" --rxl "clab-ate-ate1:5555;1" | \
+	otgen add    flow --name ate1to2port2 --count 1220 --tx ate1.p2 --rx ate2.p2 --txl "clab-ate-ate1:5555;2" --rxl "clab-ate-ate2:5555;2" | \
+	otgen add    flow --name ate2to1port2 --count 2120 --tx ate2.p2 --rx ate1.p2 --txl "clab-ate-ate2:5555;2" --rxl "clab-ate-ate1:5555;2" | \
+	otgen run -k | otgen transform -m port | otgen display -m table && \
+	sudo -E containerlab destroy -t ate.clab.yaml
+	@echo
