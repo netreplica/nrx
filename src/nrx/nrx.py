@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Copyright 2023 Netreplica Team
+# Copyright 2023,2024 Netreplica Team
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -26,17 +26,17 @@ nrx reads a network topology graph from NetBox DCIM system and exports it in one
 
 It can also read the topology graph previously saved as a CYJS file to convert it into the one of supported network emulation formats.
 """
-
-__version__ = 'v0.4.0'
-__author__ = 'Alex Bortok and Netreplica Team'
-
+# Standard library imports
 import os
 import sys
 import argparse
+from argparse import RawDescriptionHelpFormatter
 import json
 import math
 import ast
+import textwrap
 import zipfile
+# Third-party library imports
 import toml
 import pynetbox
 import requests
@@ -46,6 +46,9 @@ import urllib3
 import networkx as nx
 import jinja2
 import yaml
+
+# Single source version
+from nrx.__about__ import __version__
 
 # DEFINE GLOBAL VARs HERE
 
@@ -983,13 +986,23 @@ def arg_input_check(s):
 
 def parse_args():
     """CLI arguments parser"""
-    args_parser = argparse.ArgumentParser(prog='nrx', description="nrx - network topology exporter by netreplica")
+    args_parser = argparse.ArgumentParser(prog='nrx',
+                                          formatter_class=RawDescriptionHelpFormatter,
+                                          description=textwrap.dedent("""
+                                            nrx - network topology exporter by netreplica
+
+                                            online documentation: https://github.com/netreplica/nrx/blob/main/README.md"""),
+                                          epilog=textwrap.dedent("""
+                                            To pass authentication token, use configuration file or environment variable:
+                                            export NB_API_TOKEN='replace_with_valid_API_token'"""))
 
     sites_group = args_parser.add_mutually_exclusive_group()
 
     args_parser.add_argument('-v', '--version',     action='version', version=f'%(prog)s {__version__}')
     args_parser.add_argument('-d', '--debug',       nargs=0, action=NrxDebugAction, help='enable debug output')
-    args_parser.add_argument('-I', '--init',        nargs=0, action=NrxInitAction, help=f"initialize configuration directory in $HOME/{NRX_CONFIG_DIR} and exit")
+    args_parser.add_argument('-I', '--init',        nargs='?', help=f"initialize configuration directory in $HOME/{NRX_CONFIG_DIR} and exit. \
+                                                                      optionally, specify a VERSION to initialize with: -I 0.1.0",
+                                                        const=__version__, action=NrxInitAction, metavar='VERSION')
     args_parser.add_argument('-c', '--config',      required=False, help=f"configuration file, default: $HOME/{NRX_CONFIG_DIR}/{NRX_DEFAULT_CONFIG_NAME}",
                                                         default=nrx_default_config_path())
     args_parser.add_argument('-i', '--input',       required=False, help='input source: netbox (default) | cyjs',
@@ -1032,11 +1045,12 @@ class NrxInitAction(argparse.Action):
     """Argparse action to initialize configuration directory"""
     def __call__(self, parser, namespace, values, option_string=None):
         # Create a NRX_CONFIG_DIR directory in the user's home directory, or in the current directory if HOME is not set
+        debug(f"[INIT] version to use: {values}")
         config_dir_path = nrx_config_dir()
         print(f"[INIT] Initializing configuration directory in {config_dir_path}")
         config_dir = create_dirs(config_dir_path)
         # Get asset NRX_VERSIONS_NAME with versions compatibility matrix
-        versions = get_versions(__version__)
+        versions = get_versions(values)
         templates_path = get_templates(versions, config_dir)
         if templates_path is not None:
             print(f"[INIT] Saved templates to: {templates_path}")
@@ -1051,8 +1065,10 @@ class NrxInitAction(argparse.Action):
 
 
 def get_versions(nrx_version):
-    """Download and parse NRX_VERSIONS_NAME asset file for a specific nrx version"""
-    versions_url = f"{NRX_REPOSITORY}/releases/download/{nrx_version}/{NRX_VERSIONS_NAME}"
+    """
+    Download and parse NRX_VERSIONS_NAME asset file for a matching nrx release version
+    """
+    versions_url = f"{NRX_REPOSITORY}/releases/download/v{nrx_version}/{NRX_VERSIONS_NAME}"
     try:
         r = requests.get(versions_url, timeout=NRX_REPOSITORY_TIMEOUT)
     except (HTTPError, Timeout, RequestException) as e:
@@ -1247,8 +1263,8 @@ def load_config(args):
 
     return config
 
-def main():
-    """Main"""
+def cli():
+    """Main entry for CLI execution, called from main() in __init__.py"""
     # Parameters
     args = parse_args()
     config = load_config(args)
@@ -1289,7 +1305,3 @@ def main():
             error(f"Only --input netbox is supported for this type of export format: {config['output_format']}")
 
     return 0
-
-
-if __name__ == '__main__':
-    sys.exit(main())

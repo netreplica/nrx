@@ -14,7 +14,7 @@
                     "side": "a",
                     "type": "device",
                     "device": {
-                        "id": 40,
+                        "id": 124,
                         "type": "device",
                         "name": "HQ-Switch1",
                         "node_id": 1,
@@ -29,7 +29,7 @@
                         "role_name": "Access Switch",
                         "primary_ip4": "10.113.0.10/24",
                         "primary_ip6": "",
-                        "config": "hostname HQ-Switch1\n\n\nvlan 100\n name Data\nvlan 200\n name Voice\nvlan 300\n name Wireless\nvlan 900\n name NetMgmt\n\n\nip name-server 8.8.8.8\nip name-server 9.9.9.9\n\n\ninterface GigabitEthernet0/0\n description Management VLAN\n no shutdown\n ip address 10.113.0.10/24 255.255.255.0\ninterface GigabitEthernet1/0/1\n no shutdown\n switchport mode access\n switchport access vlan 200\n\ninterface GigabitEthernet1/0/2\n no shutdown\n switchport mode access\n switchport access vlan 100\n\ninterface GigabitEthernet1/0/3\n no shutdown\n switchport mode access\n switchport access vlan 100\n\ninterface GigabitEthernet1/0/4\n no shutdown\n switchport mode access\n switchport access vlan 100\n\ninterface GigabitEthernet1/0/5\n no shutdown\n switchport mode access\n switchport access vlan 100\n\ninterface GigabitEthernet1/0/6\n no shutdown\n\ninterface GigabitEthernet1/0/7\n no shutdown\n\ninterface GigabitEthernet1/0/8\n no shutdown\n\ninterface GigabitEthernet1/0/9\n no shutdown\n\ninterface GigabitEthernet1/0/10\n no shutdown\n\ninterface GigabitEthernet1/0/11\n no shutdown\n\ninterface GigabitEthernet1/0/12\n no shutdown\n\ninterface GigabitEthernet1/0/13\n no shutdown\n\ninterface GigabitEthernet1/0/14\n no shutdown\n\ninterface GigabitEthernet1/0/15\n no shutdown\n\ninterface GigabitEthernet1/0/16\n no shutdown\n\ninterface GigabitEthernet1/0/17\n no shutdown\n\ninterface GigabitEthernet1/0/18\n no shutdown\n\ninterface GigabitEthernet1/0/19\n no shutdown\n\ninterface GigabitEthernet1/0/20\n no shutdown\n\ninterface GigabitEthernet1/0/21\n no shutdown\n\ninterface GigabitEthernet1/0/22\n no shutdown\n\ninterface GigabitEthernet1/0/23\n no shutdown\n\ninterface GigabitEthernet1/0/24\n no shutdown\n\ninterface GigabitEthernet1/0/25\n no shutdown\n\ninterface GigabitEthernet1/0/26\n no shutdown\n\ninterface GigabitEthernet1/0/27\n no shutdown\n\ninterface GigabitEthernet1/0/28\n no shutdown\n\ninterface GigabitEthernet1/0/29\n no shutdown\n\ninterface GigabitEthernet1/0/30\n no shutdown\n\ninterface GigabitEthernet1/0/31\n no shutdown\n\ninterface GigabitEthernet1/0/32\n no shutdown\n\ninterface GigabitEthernet1/0/33\n no shutdown\n\ninterface GigabitEthernet1/0/34\n no shutdown\n\ninterface GigabitEthernet1/0/35\n no shutdown\n\ninterface GigabitEthernet1/0/36\n no shutdown\n\ninterface GigabitEthernet1/0/37\n no shutdown\n\ninterface GigabitEthernet1/0/38\n no shutdown\n\ninterface GigabitEthernet1/0/39\n no shutdown\n\ninterface GigabitEthernet1/0/40\n no shutdown\n\ninterface GigabitEthernet1/0/41\n no shutdown\n\ninterface GigabitEthernet1/0/42\n no shutdown\n\ninterface GigabitEthernet1/0/43\n no shutdown\n\ninterface GigabitEthernet1/0/44\n no shutdown\n\ninterface GigabitEthernet1/0/45\n no shutdown\n\ninterface GigabitEthernet1/0/46\n no shutdown\n\ninterface GigabitEthernet1/0/47\n no shutdown\n\ninterface GigabitEthernet1/0/48\n no shutdown\n\ninterface TenGigabitEthernet1/1/1\n no shutdown\n\ninterface TenGigabitEthernet1/1/2\n no shutdown\n\ninterface Vlan900\n no shutdown\n\n\nsnmp-server community R34d0nlY RO\n\n\nlogging host 192.168.4.12 transport udp port 1514\nlogging host 192.168.4.13 transport udp port 1514\n\n\nntp server 192.168.4.10\nntp server 192.168.4.11",
+                        "config": "!\nhostname HQ-Switch1\n!\nvlan 100\n name Data\nvlan 200\n name Voice\nvlan 300\n name Wireless\nvlan 900\n name NetMgmt\n!\nip name-server 8.8.8.8\nip name-server 9.9.9.9\n!\ninterface GigabitEthernet0/0\n description Management VLAN\n no shutdown\n ip address 10.113.0.10/24 255.255.255.0\ninterface GigabitEthernet1/0/1\n no shutdown\n switchport mode access\n switchport access vlan 200\ninterface GigabitEthernet1/0/2\n no shutdown\n switchport mode access\n switchport access vlan 100\ninterface GigabitEthernet1/0/3\n no shutdown\n switchport mode access\n switchport access vlan 100\ninterface GigabitEthernet1/0/4\n no shutdown\n switchport mode access\n switchport access vlan 100\ninterface GigabitEthernet1/0/5\n no shutdown\n switchport mode access\n switchport access vlan 100\ninterface GigabitEthernet1/0/6\n no shutdown\ninterface GigabitEthernet1/0/7\n no shutdown\ninterface GigabitEthernet1/0/8\n no shutdown\ninterface GigabitEthernet1/0/9\n no shutdown\ninterface GigabitEthernet1/0/10\n no shutdown\ninterface GigabitEthernet1/0/11\n no shutdown\ninterface GigabitEthernet1/0/12\n no shutdown\ninterface GigabitEthernet1/0/13\n no shutdown\ninterface GigabitEthernet1/0/14\n no shutdown\ninterface GigabitEthernet1/0/15\n no shutdown\ninterface GigabitEthernet1/0/16\n no shutdown\ninterface GigabitEthernet1/0/17\n no shutdown\ninterface GigabitEthernet1/0/18\n no shutdown\ninterface GigabitEthernet1/0/19\n no shutdown\ninterface GigabitEthernet1/0/20\n no shutdown\ninterface GigabitEthernet1/0/21\n no shutdown\ninterface GigabitEthernet1/0/22\n no shutdown\ninterface GigabitEthernet1/0/23\n no shutdown\ninterface GigabitEthernet1/0/24\n no shutdown\ninterface GigabitEthernet1/0/25\n no shutdown\ninterface GigabitEthernet1/0/26\n no shutdown\ninterface GigabitEthernet1/0/27\n no shutdown\ninterface GigabitEthernet1/0/28\n no shutdown\ninterface GigabitEthernet1/0/29\n no shutdown\ninterface GigabitEthernet1/0/30\n no shutdown\ninterface GigabitEthernet1/0/31\n no shutdown\ninterface GigabitEthernet1/0/32\n no shutdown\ninterface GigabitEthernet1/0/33\n no shutdown\ninterface GigabitEthernet1/0/34\n no shutdown\ninterface GigabitEthernet1/0/35\n no shutdown\ninterface GigabitEthernet1/0/36\n no shutdown\ninterface GigabitEthernet1/0/37\n no shutdown\ninterface GigabitEthernet1/0/38\n no shutdown\ninterface GigabitEthernet1/0/39\n no shutdown\ninterface GigabitEthernet1/0/40\n no shutdown\ninterface GigabitEthernet1/0/41\n no shutdown\ninterface GigabitEthernet1/0/42\n no shutdown\ninterface GigabitEthernet1/0/43\n no shutdown\ninterface GigabitEthernet1/0/44\n no shutdown\ninterface GigabitEthernet1/0/45\n no shutdown\ninterface GigabitEthernet1/0/46\n no shutdown\ninterface GigabitEthernet1/0/47\n no shutdown\ninterface GigabitEthernet1/0/48\n no shutdown\ninterface TenGigabitEthernet1/1/1\n no shutdown\n channel-group 10 mode on\ninterface TenGigabitEthernet1/1/2\n no shutdown\n channel-group 10 mode on\ninterface Port-Channel10\n no shutdown\n switchport mode trunk\n switchport trunk allowed vlan add 100\n switchport trunk allowed vlan add 200\n switchport trunk allowed vlan add 900\ninterface Vlan900\n no shutdown\n!\nsnmp-server community R34d0nlY RO\n!\nlogging host 192.168.4.12 transport udp port 1514\nlogging host 192.168.4.13 transport udp port 1514\n!\nntp server 192.168.4.10\nntp server 192.168.4.11\n!\nend",
                         "device_index": 1
                     },
                     "id": "1",
@@ -42,7 +42,7 @@
                     "side": "b",
                     "type": "device",
                     "device": {
-                        "id": 42,
+                        "id": 126,
                         "type": "device",
                         "name": "HQ-DistSw",
                         "node_id": 0,
@@ -70,7 +70,7 @@
                     "side": "a",
                     "type": "interface",
                     "interface": {
-                        "id": 1466,
+                        "id": 5782,
                         "type": "interface",
                         "name": "TenGigabitEthernet1/1/1",
                         "node_id": 7,
@@ -86,7 +86,7 @@
                     "side": "b",
                     "type": "interface",
                     "interface": {
-                        "id": 1410,
+                        "id": 5726,
                         "type": "interface",
                         "name": "ethernet-1/1",
                         "node_id": 3,
@@ -102,7 +102,7 @@
                     "side": "a",
                     "type": "interface",
                     "interface": {
-                        "id": 1467,
+                        "id": 5783,
                         "type": "interface",
                         "name": "TenGigabitEthernet1/1/2",
                         "node_id": 8,
@@ -118,7 +118,7 @@
                     "side": "b",
                     "type": "interface",
                     "interface": {
-                        "id": 1411,
+                        "id": 5727,
                         "type": "interface",
                         "name": "ethernet-1/2",
                         "node_id": 4,
@@ -134,7 +134,7 @@
                     "side": "a",
                     "type": "device",
                     "device": {
-                        "id": 41,
+                        "id": 125,
                         "type": "device",
                         "name": "HQ-Switch2",
                         "node_id": 2,
@@ -149,7 +149,7 @@
                         "role_name": "Access Switch",
                         "primary_ip4": "10.113.0.11/24",
                         "primary_ip6": "",
-                        "config": "hostname HQ-Switch2\n\n\nvlan 100\n name Data\nvlan 200\n name Voice\nvlan 300\n name Wireless\nvlan 900\n name NetMgmt\n\n\nip name-server 8.8.8.8\nip name-server 9.9.9.9\n\n\ninterface Ethernet1\n no shutdown\n switchport mode access\n switchport access vlan 200\n\ninterface Ethernet2\n no shutdown\n switchport mode access\n switchport access vlan 100\n\ninterface Ethernet3\n no shutdown\n switchport mode access\n switchport access vlan 200\n\ninterface Ethernet4\n no shutdown\n switchport mode access\n switchport access vlan 100\n\ninterface Ethernet5\n no shutdown\n\ninterface Ethernet6\n no shutdown\n\ninterface Ethernet7\n no shutdown\n\ninterface Ethernet8\n no shutdown\n\ninterface Ethernet9\n no shutdown\n\ninterface Ethernet10\n no shutdown\n\ninterface Ethernet11\n no shutdown\n\ninterface Ethernet12\n no shutdown\n\ninterface Ethernet13\n no shutdown\n\ninterface Ethernet14\n no shutdown\n\ninterface Ethernet15\n no shutdown\n\ninterface Ethernet16\n no shutdown\n\ninterface Ethernet17\n no shutdown\n\ninterface Ethernet18\n no shutdown\n\ninterface Ethernet19\n no shutdown\n\ninterface Ethernet20\n no shutdown\n\ninterface Ethernet21\n no shutdown\n\ninterface Ethernet22\n no shutdown\n\ninterface Ethernet23\n no shutdown\n\ninterface Ethernet24\n no shutdown\n\ninterface Ethernet25\n no shutdown\n\ninterface Ethernet26\n no shutdown\n\ninterface Ethernet27\n no shutdown\n\ninterface Ethernet28\n no shutdown\n\ninterface Ethernet29\n no shutdown\n\ninterface Ethernet30\n no shutdown\n\ninterface Ethernet31\n no shutdown\n\ninterface Ethernet32\n no shutdown\n\ninterface Ethernet33\n no shutdown\n\ninterface Ethernet34\n no shutdown\n\ninterface Ethernet35\n no shutdown\n\ninterface Ethernet36\n no shutdown\n\ninterface Ethernet37\n no shutdown\n\ninterface Ethernet38\n no shutdown\n\ninterface Ethernet39\n no shutdown\n\ninterface Ethernet40\n no shutdown\n\ninterface Ethernet41\n no shutdown\n\ninterface Ethernet42\n no shutdown\n\ninterface Ethernet43\n no shutdown\n\ninterface Ethernet44\n no shutdown\n\ninterface Ethernet45\n no shutdown\n\ninterface Ethernet46\n no shutdown\n\ninterface Ethernet47\n no shutdown\n\ninterface Ethernet48\n no shutdown\n\ninterface Ethernet49\n no shutdown\n channel-group 10 mode on\n\ninterface Ethernet50\n no shutdown\n channel-group 10 mode on\n\ninterface Ethernet51\n no shutdown\n\ninterface Ethernet52\n no shutdown\n\ninterface Management1\n description Management VLAN\n no shutdown\n ip address 10.113.0.11/24 255.255.255.0\ninterface Port-Channel10\n no shutdown\n switchport mode trunk\n switchport trunk allowed vlan add 100\n switchport trunk allowed vlan add 200\n switchport trunk allowed vlan add 900\n\ninterface Vlan900\n no shutdown\n\n\nsnmp-server community R34d0nlY RO\n\n\nlogging host 192.168.4.12 1514 protocol udp\nlogging host 192.168.4.13 1514 protocol udp\n\n\nntp server 192.168.4.10\nntp server 192.168.4.11",
+                        "config": "hostname HQ-Switch2\n\n\nvlan 100\n name Data\nvlan 200\n name Voice\nvlan 300\n name Wireless\nvlan 900\n name NetMgmt\n\n\nip name-server 8.8.8.8\nip name-server 9.9.9.9\n\n\ninterface Ethernet1\n no shutdown\n switchport mode access\n switchport access vlan 200\n\ninterface Ethernet2\n no shutdown\n switchport mode access\n switchport access vlan 100\n\ninterface Ethernet3\n no shutdown\n switchport mode access\n switchport access vlan 100\n\ninterface Ethernet4\n no shutdown\n switchport mode access\n switchport access vlan 100\n\ninterface Ethernet5\n no shutdown\n switchport mode access\n switchport access vlan 100\n\ninterface Ethernet6\n no shutdown\n\ninterface Ethernet7\n no shutdown\n\ninterface Ethernet8\n no shutdown\n\ninterface Ethernet9\n no shutdown\n\ninterface Ethernet10\n no shutdown\n\ninterface Ethernet11\n no shutdown\n\ninterface Ethernet12\n no shutdown\n\ninterface Ethernet13\n no shutdown\n\ninterface Ethernet14\n no shutdown\n\ninterface Ethernet15\n no shutdown\n\ninterface Ethernet16\n no shutdown\n\ninterface Ethernet17\n no shutdown\n\ninterface Ethernet18\n no shutdown\n\ninterface Ethernet19\n no shutdown\n\ninterface Ethernet20\n no shutdown\n\ninterface Ethernet21\n no shutdown\n\ninterface Ethernet22\n no shutdown\n\ninterface Ethernet23\n no shutdown\n\ninterface Ethernet24\n no shutdown\n\ninterface Ethernet25\n no shutdown\n\ninterface Ethernet26\n no shutdown\n\ninterface Ethernet27\n no shutdown\n\ninterface Ethernet28\n no shutdown\n\ninterface Ethernet29\n no shutdown\n\ninterface Ethernet30\n no shutdown\n\ninterface Ethernet31\n no shutdown\n\ninterface Ethernet32\n no shutdown\n\ninterface Ethernet33\n no shutdown\n\ninterface Ethernet34\n no shutdown\n\ninterface Ethernet35\n no shutdown\n\ninterface Ethernet36\n no shutdown\n\ninterface Ethernet37\n no shutdown\n\ninterface Ethernet38\n no shutdown\n\ninterface Ethernet39\n no shutdown\n\ninterface Ethernet40\n no shutdown\n\ninterface Ethernet41\n no shutdown\n\ninterface Ethernet42\n no shutdown\n\ninterface Ethernet43\n no shutdown\n\ninterface Ethernet44\n no shutdown\n\ninterface Ethernet45\n no shutdown\n\ninterface Ethernet46\n no shutdown\n\ninterface Ethernet47\n no shutdown\n\ninterface Ethernet48\n no shutdown\n\ninterface Ethernet49\n no shutdown\n channel-group 10 mode on\n\ninterface Ethernet50\n no shutdown\n channel-group 10 mode on\n\ninterface Ethernet51\n no shutdown\n\ninterface Ethernet52\n no shutdown\n\ninterface Management1\n description Management VLAN\n no shutdown\n ip address 10.113.0.11/24 255.255.255.0\ninterface Port-Channel10\n no shutdown\n switchport mode trunk\n switchport trunk allowed vlan add 100\n switchport trunk allowed vlan add 200\n switchport trunk allowed vlan add 900\n\ninterface Vlan900\n no shutdown\n\n\nsnmp-server community R34d0nlY RO\n\n\nlogging host 192.168.4.12 1514 protocol udp\nlogging host 192.168.4.13 1514 protocol udp\n\n\nntp server 192.168.4.10\nntp server 192.168.4.11",
                         "device_index": 2
                     },
                     "id": "2",
@@ -162,7 +162,7 @@
                     "side": "a",
                     "type": "interface",
                     "interface": {
-                        "id": 1405,
+                        "id": 5721,
                         "type": "interface",
                         "name": "Ethernet49",
                         "node_id": 9,
@@ -178,7 +178,7 @@
                     "side": "b",
                     "type": "interface",
                     "interface": {
-                        "id": 1412,
+                        "id": 5728,
                         "type": "interface",
                         "name": "ethernet-1/3",
                         "node_id": 5,
@@ -194,7 +194,7 @@
                     "side": "a",
                     "type": "interface",
                     "interface": {
-                        "id": 1406,
+                        "id": 5722,
                         "type": "interface",
                         "name": "Ethernet50",
                         "node_id": 10,
@@ -210,7 +210,7 @@
                     "side": "b",
                     "type": "interface",
                     "interface": {
-                        "id": 1413,
+                        "id": 5729,
                         "type": "interface",
                         "name": "ethernet-1/4",
                         "node_id": 6,
