@@ -27,7 +27,7 @@ test-d2: test-dc1-cyjs-2-d2
 
 test-dc1: test-dc1-nb-2-cyjs-previous test-dc1-nb-2-cyjs-current test-dc1-nb-2-cyjs-latest test-dc1-cyjs-2-clab test-dc1-cyjs-2-clab-custom-platform-map test-dc1-cyjs-2-graphite test-dc1-cyjs-2-d2
 test-dc2: test-dc2-nb-2-cyjs-previous test-dc2-nb-2-cyjs-current test-dc2-nb-2-cyjs-latest test-dc2-cyjs-2-cml test-dc2-cyjs-2-graphite
-test-colo: test-colo-nb-2-cyjs-previous test-colo-nb-2-cyjs-current test-colo-nb-2-cyjs-latest
+test-colo: test-colo-nb-2-cyjs-previous test-colo-nb-2-cyjs-current test-colo-nb-2-cyjs-latest test-colo-nb-2-cyjs-interface-tags
 test-site1: test-site1-nb-2-cyjs-previous test-site1-nb-2-cyjs-current test-site1-nb-2-cyjs-latest test-site1-cyjs-2-clab test-site1-cyjs-2-clab-rename
 test-h88: test-h88-nb-2-cyjs-previous test-h88-nb-2-cyjs-current test-h88-nb-2-cyjs-latest test-h88-nb-2-cyjs-latest-noconfigs test-h88-cyjs-2-clab
 test-lrg: test-lrg-nb-2-cyjs-current test-lrg-nb-2-cyjs-latest test-lrg-cyjs-2-graphite
@@ -235,7 +235,17 @@ test-colo-nb-2-cyjs-latest:
 	mkdir -p tests/colo/test && cd tests/colo/test && rm -rf * && \
 	source ../../.env_latest && \
 	../../../nrx -c ../nrx.conf -o cyjs -d && \
-	diff colo.cyjs ../data/colo.cyjs
+	diff colo.cyjs ../data/colo-latest.cyjs
+	@echo
+
+test-colo-nb-2-cyjs-interface-tags:
+	@echo "#################################################################"
+	@echo "# Colo: read from NetBox latest version and export as CYJS using interface tags"
+	@echo "#################################################################"
+	mkdir -p tests/colo/test && cd tests/colo/test && rm -rf * && \
+	source ../../.env_latest && \
+	../../../nrx -c ../nrx.conf -o cyjs --interface-tags one,two,four -d && \
+	diff colo.cyjs ../data/colo-tags.cyjs
 	@echo
 
 test-site1-nb-2-cyjs-previous:
