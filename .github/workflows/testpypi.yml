@@ -1,8 +1,8 @@
-name: Publish Python distribution to PyPI
+name: Publish Python distribution to TestPyPI
 
 on:
     push:
-        branches: [ "main" ]
+        branches: [ "dev" ]
     workflow_dispatch:
 
 jobs:
@@ -31,14 +31,14 @@ jobs:
                 path: dist/
 
     publish-to-pypi:
-        name: Publish to PyPI
+        name: Publish to TestPyPI
         needs:
           - build
         runs-on: ubuntu-latest
 
         environment:
-            name: release
-            url: https://pypi.org/p/nrx
+            name: devtest
+            url: https://test.pypi.org/p/nrx
 
         permissions:
             id-token: write  # IMPORTANT: mandatory for trusted publishing
@@ -49,5 +49,7 @@ jobs:
             with:
                 name: python-package-distributions
                 path: dist/
-          - name: Publish distribution to PyPI
+          - name: Publish distribution to TestPyPI
             uses: pypa/gh-action-pypi-publish@release/v1
+            with:
+              repository-url: https://test.pypi.org/legacy/
