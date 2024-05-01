@@ -157,6 +157,7 @@ optional arguments:
   -s, --site SITE           netbox site to export, cannot be combined with --sites
       --sites SITES         netbox sites to export, for multiple tags use a comma-separated list: site1,site2,site3 (uses OR logic)
   -t, --tags TAGS           netbox tags to export, for multiple tags use a comma-separated list: tag1,tag2,tag3 (uses AND logic)
+      --interface-tags TAGS netbox tags to filter interfaces to export, for multiple tags use a comma-separated list: tag1,tag2,tag3 (uses OR logic)
   -n, --name NAME           name of the exported topology (site name or tags by default)
       --noconfigs           disable device configuration export (enabled by default)
   -k, --insecure            allow insecure server connections when using TLS
