@@ -46,6 +46,7 @@ import urllib3
 import networkx as nx
 import jinja2
 import yaml
+from packaging import version
 
 # Single source version
 from nrx.__about__ import __version__
@@ -212,6 +213,7 @@ class NBFactory:
         self.nb_session = pynetbox.api(self.config['nb_api_url'],
                                        token=self.config['nb_api_token'],
                                        threading=True)
+        self.nb_api_version = version.parse(self.nb_session.version)
         self.nb_sites = None
         if not config['tls_validate']:
             self.nb_session.http_session.verify = False
@@ -355,11 +357,17 @@ class NBFactory:
             if device.device_type.manufacturer is not None:
                 d["vendor"] = device.device_type.manufacturer.slug
                 d["vendor_name"] = device.device_type.manufacturer.name
-        if device.device_role is not None:
-            d["role"] = device.device_role.slug
-            d["role_name"] = device.device_role.name
-            if d["name"] is None:
-                d["name"] = f"{d['role']}-{device.id}"
+
+        if device.role is not None:
+            if self.nb_api_version >= version.parse("4.0"):
+                d["role"] = device.role.slug
+                d["role_name"] = device.role.name
+            else:
+                d["role"] = device.device_role.slug
+                d["role_name"] = device.device_role.name
+
+        if d["name"] is None:
+            d["name"] = f"{d['role']}-{device.id}"
         if device.primary_ip4 is not None:
             d["primary_ip4"] = device.primary_ip4.address
         if device.primary_ip6 is not None:
