@@ -215,7 +215,7 @@ test-colo-nb-2-cyjs-previous:
 	mkdir -p tests/colo/test && cd tests/colo/test && rm -rf * && \
 	source ../../.env_previous && \
 	../../../nrx -c ../nrx.conf -o cyjs -d && \
-	diff colo.cyjs ../data/colo.cyjs
+	diff colo.cyjs ../data/colo.previous.cyjs
 	@echo
 
 test-colo-nb-2-cyjs-current:
@@ -225,7 +225,7 @@ test-colo-nb-2-cyjs-current:
 	mkdir -p tests/colo/test && cd tests/colo/test && rm -rf * && \
 	source ../../.env_current && \
 	../../../nrx -c ../nrx.conf -o cyjs -d && \
-	diff colo.cyjs ../data/colo.cyjs
+	diff colo.cyjs ../data/colo.current.cyjs
 	@echo
 
 test-colo-nb-2-cyjs-latest:
@@ -235,7 +235,7 @@ test-colo-nb-2-cyjs-latest:
 	mkdir -p tests/colo/test && cd tests/colo/test && rm -rf * && \
 	source ../../.env_latest && \
 	../../../nrx -c ../nrx.conf -o cyjs -d && \
-	diff colo.cyjs ../data/colo-latest.cyjs
+	diff colo.cyjs ../data/colo.latest.cyjs
 	@echo
 
 test-colo-nb-2-cyjs-interface-tags:

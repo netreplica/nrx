@@ -606,8 +606,8 @@ class NetworkTopology:
         """Append an interface node to the topology"""
         if self.G.nodes[n]['type'] == 'interface':
             int_name = self.G.nodes[n]['interface']['name']
-            dev_name, dev_node_id = None, None
-            peer_name, peer_dev_name, peer_dev_node_id = None, None, None
+            dev_name, dev_node_id, dev_index = None, None, None
+            peer_name, peer_dev_name, peer_dev_node_id, peer_dev_index = None, None, None, None
             for a_adj in self.G.adj[n].items():
                 if self.G.nodes[a_adj[0]]['type'] == 'device':
                     dev_name = self.G.nodes[a_adj[0]]['device']['name']
