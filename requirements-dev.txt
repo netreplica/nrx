@@ -1,2 +1,5 @@
-pylint
+pylint ~= 3.2.6
 rich
+build
+twine
+hatch
