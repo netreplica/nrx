@@ -307,7 +307,16 @@ class NBFactory:
                                                                          cabled=True,
                                                                          connected=True)):
                 if "base" in interface.type.value: # only ethernet interfaces
-                    debug(interface.device, ":", interface, ":", interface.type.value)
+                    if len(self.config['export_interface_tags']) > 0:
+                        tag_match = False
+                    for tag in interface.tags:
+                        if tag.name in self.config['export_interface_tags']: # implementing OR tag matching logic
+                            tag_match = True
+                            break
+                    if len(self.config['export_interface_tags']) > 0 and not tag_match:
+                        debug(f"{interface.device} : {interface} skipping, doesn't have any of the required tags")
+                        continue
+                    debug(f"{interface.device} : {interface} adding as {interface.type.value}")
                     i = {
                         "id": interface.id,
                         "type": "interface",
@@ -605,8 +614,8 @@ class NetworkTopology:
         """Append an interface node to the topology"""
         if self.G.nodes[n]['type'] == 'interface':
             int_name = self.G.nodes[n]['interface']['name']
-            dev_name, dev_node_id = None, None
-            peer_name, peer_dev_name, peer_dev_node_id = None, None, None
+            dev_name, dev_node_id, dev_index = None, None, None
+            peer_name, peer_dev_name, peer_dev_node_id, peer_dev_index = None, None, None, None
             for a_adj in self.G.adj[n].items():
                 if self.G.nodes[a_adj[0]]['type'] == 'device':
                     dev_name = self.G.nodes[a_adj[0]]['device']['name']
@@ -1022,6 +1031,9 @@ def parse_args():
                                                                           site1,site2,site3 (uses OR logic)')
     args_parser.add_argument('-t', '--tags',        required=False, help='netbox tags to export, for multiple tags use a comma-separated list: \
                                                                           tag1,tag2,tag3 (uses AND logic)')
+    args_parser.add_argument('--interface-tags',    required=False, help='netbox tags to filter interfaces to export, for multiple tags use a comma-separated list: \
+                                                                          tag1,tag2,tag3 (uses OR logic)',
+                                                                    metavar='TAGS')
     args_parser.add_argument('-n', '--name',        required=False, help='name of the exported topology (site name or tags by default)')
     args_parser.add_argument(      '--noconfigs',   required=False, help='disable device configuration export (enabled by default)',
                                                         action=argparse.BooleanOptionalAction)
@@ -1170,6 +1182,7 @@ def load_toml_config(filename):
         },
         'export_sites': [],
         'export_tags': [],
+        'export_interface_tags': [],
         'topology_name': '',
         'export_configs': True,
         'templates_path': ["./templates", f"{nrx_config_dir()}/templates"],
@@ -1220,6 +1233,9 @@ def config_apply_netbox_args(config, args):
     if args.tags is not None and len(args.tags) > 0:
         config['export_tags'] = args.tags.split(',')
         debug(f"List of tags to filter devices for export: {config['export_tags']}")
+    if args.interface_tags is not None and len(args.interface_tags) > 0:
+        config['export_interface_tags'] = args.interface_tags.split(',')
+        debug(f"List of tags to filter interfaces for export: {config['export_interface_tags']}")
     if len(config['export_sites']) == 0 and len(config['export_tags']) == 0:
         error("Need a Site name or Tags to export. Use --sites/--tags arguments, or EXPORT_SITE/EXPORT_TAGS key in --config file")
     if args.noconfigs is not None:
