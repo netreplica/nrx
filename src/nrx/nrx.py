@@ -374,9 +374,9 @@ class NBFactory:
             else:
                 d["role"] = device.device_role.slug
                 d["role_name"] = device.device_role.name
+            if d["name"] is None:
+                d["name"] = f"{d['role']}-{device.id}"
 
-        if d["name"] is None:
-            d["name"] = f"{d['role']}-{device.id}"
         if device.primary_ip4 is not None:
             d["primary_ip4"] = device.primary_ip4.address
         if device.primary_ip6 is not None:
