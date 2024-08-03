@@ -9,5 +9,6 @@
   },
   "pip_requirements": {
     "fileMatch": ["requirements.txt", "requirements-dev.txt"]
-  }
+  },
+  "baseBranches": ["dev"]
 }
