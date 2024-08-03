@@ -62,3 +62,4 @@ tests/*/d2/*
 tests/main.conf
 tmp
 demo
+dist
