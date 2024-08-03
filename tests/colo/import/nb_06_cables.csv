@@ -27,3 +27,6 @@ sw1,dcim.interface,Ethernet1,pp1,dcim.frontport,Port 1
 sw1,dcim.interface,Ethernet2,pp1,dcim.frontport,Port 2
 sw2,dcim.interface,Ethernet1,pp2,dcim.frontport,Port 1
 sw2,dcim.interface,Ethernet2,pp2,dcim.frontport,Port 2
+sw1,dcim.interface,Ethernet4,sw2,dcim.interface,Ethernet4
+sw1,dcim.interface,Ethernet5,sw2,dcim.interface,Ethernet5
+sw1,dcim.interface,Ethernet6,sw2,dcim.interface,Ethernet6
