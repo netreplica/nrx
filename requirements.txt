@@ -3,7 +3,7 @@ charset-normalizer==3.3.2
 idna==3.7
 Jinja2==3.1.4
 MarkupSafe==2.1.5
-networkx==3.2.1
+networkx==3.4.1
 pynetbox==7.3.4
 requests==2.32.3
 toml==0.10.2
