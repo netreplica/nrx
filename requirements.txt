@@ -4,7 +4,7 @@ idna==3.7
 Jinja2==3.1.4
 MarkupSafe==2.1.5
 networkx==3.2.1
-pynetbox==7.3.4
+pynetbox==7.4.1
 requests==2.32.3
 toml==0.10.2
 urllib3==2.2.2
