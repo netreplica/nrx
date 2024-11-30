@@ -21,7 +21,7 @@ This project is in early phase. We're experimenting with the best ways to automa
 # Latest capabilities added
 
 The latest releases have a significant set of the new capabilities:
-* `0.6.0` NetBox `v4.0` compatibility
+* `0.6.2` NetBox `v4.1` compatibility
 * `0.6.0` Filter links between devices via interface tags
 * `0.5.0` PyPA packaging and distribution: `pip install nrx`
 * `0.4.0` Ability to create new output formats without a need for **nrx** code changes
