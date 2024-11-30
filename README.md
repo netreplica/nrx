@@ -83,7 +83,7 @@ Export capabilities:
 
 The following software versions were tested for compatibility with `nrx`:
 
-* NetBox `v3.6`-`v4.0`. We no longer run tests with previously supported `v3.4-3.5`
+* NetBox `v3.7`-`v4.1`. We no longer run tests with previously supported `v3.4-3.6`
 * Containerlab `v0.39`, but earlier and later versions should work fine
 * Cisco Modeling Labs `v2.5`
 * Netreplica Graphite `v0.4.0`
