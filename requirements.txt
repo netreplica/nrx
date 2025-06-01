@@ -1,4 +1,4 @@
-certifi==2024.12.14
+certifi==2025.4.26
 charset-normalizer==3.4.2
 idna==3.10
 Jinja2==3.1.4
