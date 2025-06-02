@@ -83,7 +83,7 @@ Export capabilities:
 
 The following software versions were tested for compatibility with `nrx`:
 
-* NetBox `v3.7`-`v4.1`. We no longer run tests with previously supported `v3.4-3.6`
+* NetBox `v4.1`-`v4.2`. We no longer run tests with previously supported `v3.4-4.0` versions, and underlying [`pynetbox`](https://github.com/netbox-community/pynetbox) library is no longer tested with these older versions.
 * Containerlab `v0.39`, but earlier and later versions should work fine
 * Cisco Modeling Labs `v2.5`
 * Netreplica Graphite `v0.4.0`
