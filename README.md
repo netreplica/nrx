@@ -90,11 +90,11 @@ The following software versions were tested for compatibility with `nrx`:
 
 # Prerequisites
 
-* Python 3.9+. In the commands below we assume you have `python3.9` executable. If it is under a different name, change accordingly.
+* Python 3.10+. In the commands below we assume you have `python3.10` executable. If it is under a different name, change accordingly.
 * PIP
 
     ```Shell
-    curl -sL https://bootstrap.pypa.io/get-pip.py | python3.9 -
+    curl -sL https://bootstrap.pypa.io/get-pip.py | python3.10 -
     ```
 
 * Virtualenv (recommended)
@@ -109,7 +109,7 @@ The following software versions were tested for compatibility with `nrx`:
 
 ```Shell
 mkdir -p ~/.venv
-python3.9 -m venv ~/.venv/nrx
+python3.10 -m venv ~/.venv/nrx
 source ~/.venv/nrx/bin/activate
 pip install nrx
 ```
@@ -121,7 +121,7 @@ After running the following commands, you will have a working `nrx` command in t
 ```Shell
 git clone https://github.com/netreplica/nrx.git --recursive
 cd nrx
-python3.9 -m venv venv
+python3.10 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 ```
