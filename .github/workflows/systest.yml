@@ -16,7 +16,7 @@ on:
   workflow_dispatch:
 
 env:
-  PYVER: 3.10
+  PYVER: '3.10'
 
 permissions:
   contents: read
