@@ -213,7 +213,6 @@ class NBFactory:
         self.nb_session = pynetbox.api(self.config['nb_api_url'],
                                        token=self.config['nb_api_token'],
                                        threading=True)
-        self.nb_api_version = version.parse(self.nb_session.version)
         self.nb_sites = None
         if not config['tls_validate']:
             self.nb_session.http_session.verify = False
@@ -223,6 +222,7 @@ class NBFactory:
             self.nb_session.http_session.mount("http://", adapter)
             self.nb_session.http_session.mount("https://", adapter)
         print(f"Connecting to NetBox at: {config['nb_api_url']}")
+        self.nb_api_version = version.parse(self.nb_session.version)
         if len(config['export_sites']) > 0:
             debug(f"Fetching sites: {config['export_sites']}")
             try:
