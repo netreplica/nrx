@@ -21,6 +21,7 @@ This project is in early phase. We're experimenting with the best ways to automa
 # Latest capabilities added
 
 The latest releases have a significant set of the new capabilities:
+* `0.7.0` NetBox `v4.2` compatibility. Bug fixes. Minimum Python version `3.10`.
 * `0.6.2` NetBox `v4.1` compatibility
 * `0.6.0` Filter links between devices via interface tags
 * `0.5.0` PyPA packaging and distribution: `pip install nrx`

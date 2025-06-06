@@ -2,12 +2,14 @@
 
 ## Publishing development commits to TestPyPI
 
-Automatic publishing to TestPyPI is done via GitHub Actions from the `dev` branch. To trigger the process, push a commit to the `dev` branch. Make sure to bump the version number first:
+Automatic publishing to TestPyPI is done via GitHub Actions from pull requests into `main` branch. Make sure to bump the version number first:
 
 ```Shell
 hatch version # this will show the current version
 hatch version patch # or "rc" for a release candidate
 ```
+
+After that update the version compatibility in `versions.yml`.
 
 ## Publishing releases to PyPI
 
