@@ -21,6 +21,7 @@ This project is in early phase. We're experimenting with the best ways to automa
 # Latest capabilities added
 
 The latest releases have a significant set of the new capabilities:
+* `0.7.0` NetBox `v4.2` compatibility. Bug fixes. Minimum Python version `3.10`.
 * `0.6.2` NetBox `v4.1` compatibility
 * `0.6.0` Filter links between devices via interface tags
 * `0.5.0` PyPA packaging and distribution: `pip install nrx`
@@ -83,18 +84,18 @@ Export capabilities:
 
 The following software versions were tested for compatibility with `nrx`:
 
-* NetBox `v3.7`-`v4.1`. We no longer run tests with previously supported `v3.4-3.6`
+* NetBox `v4.1`-`v4.2`. We no longer run tests with previously supported `v3.4-4.0` versions, and underlying [`pynetbox`](https://github.com/netbox-community/pynetbox) library is no longer tested with these older versions.
 * Containerlab `v0.39`, but earlier and later versions should work fine
 * Cisco Modeling Labs `v2.5`
 * Netreplica Graphite `v0.4.0`
 
 # Prerequisites
 
-* Python 3.9+. In the commands below we assume you have `python3.9` executable. If it is under a different name, change accordingly.
+* Python 3.10+. In the commands below we assume you have `python3.10` executable. If it is under a different name, change accordingly.
 * PIP
 
     ```Shell
-    curl -sL https://bootstrap.pypa.io/get-pip.py | python3.9 -
+    curl -sL https://bootstrap.pypa.io/get-pip.py | python3.10 -
     ```
 
 * Virtualenv (recommended)
@@ -109,7 +110,7 @@ The following software versions were tested for compatibility with `nrx`:
 
 ```Shell
 mkdir -p ~/.venv
-python3.9 -m venv ~/.venv/nrx
+python3.10 -m venv ~/.venv/nrx
 source ~/.venv/nrx/bin/activate
 pip install nrx
 ```
@@ -121,7 +122,7 @@ After running the following commands, you will have a working `nrx` command in t
 ```Shell
 git clone https://github.com/netreplica/nrx.git --recursive
 cd nrx
-python3.9 -m venv venv
+python3.10 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 ```
