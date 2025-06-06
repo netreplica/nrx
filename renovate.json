@@ -1,14 +1,19 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:base",
+    "config:recommended",
     ":dependencyDashboard"
   ],
   "git-submodules": {
     "enabled": true
   },
   "pip_requirements": {
-    "fileMatch": ["requirements.txt", "requirements-dev.txt"]
+    "managerFilePatterns": [
+      "/requirements.txt/",
+      "/requirements-dev.txt/"
+    ]
   },
-  "baseBranches": ["dev"]
+  "baseBranches": [
+    "dev"
+  ]
 }
