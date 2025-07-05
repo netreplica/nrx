@@ -942,6 +942,8 @@ class NetworkTopology:
             print(f"To deploy this topology, run: sudo -E clab dep -t {self.files_path}/{self.topology['name']}.clab.yaml")
         elif self.config['output_format'] == 'd2':
             print(f"To visualize this D2 topology, open https://play.d2lang.com and paste content of the file: {self.files_path}/{self.topology['name']}.d2")
+        elif self.config['output_format'] == 'air':
+            print(f"To deploy this Nvidia Air topology, open https://air.nvidia.com/, create a Simulation with JSON type and upload the file: {self.files_path}/{self.topology['name']}.air.json")
 
     def _render_interface_map(self, node):
         """Render interface mapping file for a node"""
@@ -1024,7 +1026,7 @@ def parse_args():
                                                         default=nrx_default_config_path())
     args_parser.add_argument('-i', '--input',       required=False, help='input source: netbox (default) | cyjs',
                                                         default='netbox', type=arg_input_check,)
-    args_parser.add_argument('-o', '--output',      required=False, help='output format: cyjs | clab | cml | graphite | d2 or any other format supported by provided templates')
+    args_parser.add_argument('-o', '--output',      required=False, help='output format: cyjs | clab | air | cml | graphite | d2 or any other format supported by provided templates')
     args_parser.add_argument('-a', '--api',         required=False, help='netbox API URL')
     sites_group.add_argument('-s', '--site',        required=False, help='netbox site to export, cannot be combined with --sites')
     sites_group.add_argument(      '--sites',       required=False, help='netbox sites to export, for multiple tags use a comma-separated list: \
