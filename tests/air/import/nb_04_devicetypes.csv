@@ -1,0 +1,4 @@
+manufacturer,model,slug,u_height
+Nvidia,SN4700,nvidia-sn4700,1
+Nvidia,SN4700 (SONiC),nvidia-sn4700-sonic,1
+Nvidia,DGX-H100,nvidia-dgx-h100,4
