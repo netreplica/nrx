@@ -5,7 +5,7 @@ Jinja2==3.1.6
 MarkupSafe==3.0.2
 networkx==3.4.2
 pynetbox==7.5.0
-requests==2.32.3
+requests==2.32.4
 toml==0.10.2
 urllib3==2.5.0
 pyyaml==6.0.2
