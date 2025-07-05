@@ -38,7 +38,7 @@ test-args-site-and-sites:
 	@echo "#################################################################"
 	@echo "# Simulteneous use of site and sites should fail"
 	@echo "#################################################################"
-	! ./nrx --site dc1 --sites dc1,air -d
+	! ./nrx --site dc1 --sites dc1,dc2 -d
 	@echo
 
 test-dc1-nb-2-cyjs-previous:
