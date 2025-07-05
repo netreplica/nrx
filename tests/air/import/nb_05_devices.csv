@@ -1,0 +1,11 @@
+name,role,manufacturer,device_type,status,site,platform
+air-spine-1,Spine,Nvidia,SN4700,active,air,Cumulus
+air-spine-2,Spine,Nvidia,SN4700,active,air,Cumulus
+air-leaf-1,Leaf,Nvidia,SN4700 (SONiC),active,air,SONiC
+air-leaf-2,Leaf,Nvidia,SN4700 (SONiC),active,air,SONiC
+air-leaf-3,Leaf,Nvidia,SN4700 (SONiC),active,air,SONiC
+air-leaf-4,Leaf,Nvidia,SN4700 (SONiC),active,air,SONiC
+air-srv-1,server,Nvidia,DGX-H100,active,air,Ubuntu
+air-srv-2,server,Nvidia,DGX-H100,active,air,Ubuntu
+air-srv-3,server,Nvidia,DGX-H100,active,air,Ubuntu
+air-srv-4,server,Nvidia,DGX-H100,active,air,Ubuntu
