@@ -1,0 +1,302 @@
+{
+  "format": "JSON",
+  "title": "air",
+  "content": {
+    "nodes": {
+      "air-leaf-1": {
+        "cpu": 2,
+        "memory": 2048,
+        "positioning": {
+          "x": 275,
+          "y": -550
+        },
+        "os": "sonic-vs-202305"
+      },
+      "air-spine-1": {
+        "cpu": 2,
+        "memory": 2048,
+        "positioning": {
+          "x": 275,
+          "y": -825
+        },
+        "os": "cumulus-vx-5.13.1"
+      },
+      "air-spine-2": {
+        "cpu": 2,
+        "memory": 2048,
+        "positioning": {
+          "x": 1650,
+          "y": -825
+        },
+        "os": "cumulus-vx-5.13.1"
+      },
+      "air-leaf-2": {
+        "cpu": 2,
+        "memory": 2048,
+        "positioning": {
+          "x": 733,
+          "y": -550
+        },
+        "os": "sonic-vs-202305"
+      },
+      "air-leaf-3": {
+        "cpu": 2,
+        "memory": 2048,
+        "positioning": {
+          "x": 1191,
+          "y": -550
+        },
+        "os": "sonic-vs-202305"
+      },
+      "air-leaf-4": {
+        "cpu": 2,
+        "memory": 2048,
+        "positioning": {
+          "x": 1650,
+          "y": -550
+        },
+        "os": "sonic-vs-202305"
+      },
+      "air-srv-1": {
+        "positioning": {
+          "x": 275,
+          "y": -275
+        },
+        "os": "generic/ubuntu2204"
+      },
+      "air-srv-2": {
+        "positioning": {
+          "x": 733,
+          "y": -275
+        },
+        "os": "generic/ubuntu2204"
+      },
+      "air-srv-3": {
+        "positioning": {
+          "x": 1191,
+          "y": -275
+        },
+        "os": "generic/ubuntu2204"
+      },
+      "air-srv-4": {
+        "positioning": {
+          "x": 1650,
+          "y": -275
+        },
+        "os": "generic/ubuntu2204"
+      }
+    },
+    "links": [
+      [{"node": "air-leaf-1", "interface": "Ethernet0"}, {"node": "air-spine-1", "interface": "swp1"}],
+      [{"node": "air-leaf-1", "interface": "Ethernet4"}, {"node": "air-spine-2", "interface": "swp1"}],
+      [{"node": "air-leaf-2", "interface": "Ethernet0"}, {"node": "air-spine-1", "interface": "swp2"}],
+      [{"node": "air-leaf-2", "interface": "Ethernet4"}, {"node": "air-spine-2", "interface": "swp2"}],
+      [{"node": "air-leaf-3", "interface": "Ethernet0"}, {"node": "air-spine-1", "interface": "swp3"}],
+      [{"node": "air-leaf-3", "interface": "Ethernet4"}, {"node": "air-spine-2", "interface": "swp3"}],
+      [{"node": "air-leaf-4", "interface": "Ethernet0"}, {"node": "air-spine-1", "interface": "swp4"}],
+      [{"node": "air-leaf-4", "interface": "Ethernet4"}, {"node": "air-spine-2", "interface": "swp4"}],
+      [{"node": "air-srv-1", "interface": "enp59s0f0"}, {"node": "air-leaf-1", "interface": "Ethernet64"}],
+      [{"node": "air-srv-1", "interface": "enp59s0f1"}, {"node": "air-leaf-2", "interface": "Ethernet64"}],
+      [{"node": "air-srv-1", "interface": "enp60s0f0"}, {"node": "air-leaf-3", "interface": "Ethernet64"}],
+      [{"node": "air-srv-1", "interface": "enp60s0f1"}, {"node": "air-leaf-4", "interface": "Ethernet64"}],
+      [{"node": "air-srv-2", "interface": "enp59s0f0"}, {"node": "air-leaf-1", "interface": "Ethernet68"}],
+      [{"node": "air-srv-2", "interface": "enp59s0f1"}, {"node": "air-leaf-2", "interface": "Ethernet68"}],
+      [{"node": "air-srv-2", "interface": "enp60s0f0"}, {"node": "air-leaf-3", "interface": "Ethernet68"}],
+      [{"node": "air-srv-2", "interface": "enp60s0f1"}, {"node": "air-leaf-4", "interface": "Ethernet68"}],
+      [{"node": "air-srv-3", "interface": "enp59s0f0"}, {"node": "air-leaf-1", "interface": "Ethernet72"}],
+      [{"node": "air-srv-3", "interface": "enp59s0f1"}, {"node": "air-leaf-2", "interface": "Ethernet72"}],
+      [{"node": "air-srv-3", "interface": "enp60s0f0"}, {"node": "air-leaf-3", "interface": "Ethernet72"}],
+      [{"node": "air-srv-3", "interface": "enp60s0f1"}, {"node": "air-leaf-4", "interface": "Ethernet72"}],
+      [{"node": "air-srv-4", "interface": "enp59s0f0"}, {"node": "air-leaf-1", "interface": "Ethernet76"}],
+      [{"node": "air-srv-4", "interface": "enp59s0f1"}, {"node": "air-leaf-2", "interface": "Ethernet76"}],
+      [{"node": "air-srv-4", "interface": "enp60s0f0"}, {"node": "air-leaf-3", "interface": "Ethernet76"}],
+      [{"node": "air-srv-4", "interface": "enp60s0f1"}, {"node": "air-leaf-4", "interface": "Ethernet76"}],
+
+      [{"node": "air-leaf-1", "interface": "Ethernet8"}, "unconnected"],
+      [{"node": "air-leaf-1", "interface": "Ethernet12"}, "unconnected"],
+      [{"node": "air-leaf-1", "interface": "Ethernet16"}, "unconnected"],
+      [{"node": "air-leaf-1", "interface": "Ethernet20"}, "unconnected"],
+      [{"node": "air-leaf-1", "interface": "Ethernet24"}, "unconnected"],
+      [{"node": "air-leaf-1", "interface": "Ethernet28"}, "unconnected"],
+      [{"node": "air-leaf-1", "interface": "Ethernet32"}, "unconnected"],
+      [{"node": "air-leaf-1", "interface": "Ethernet36"}, "unconnected"],
+      [{"node": "air-leaf-1", "interface": "Ethernet40"}, "unconnected"],
+      [{"node": "air-leaf-1", "interface": "Ethernet44"}, "unconnected"],
+      [{"node": "air-leaf-1", "interface": "Ethernet48"}, "unconnected"],
+      [{"node": "air-leaf-1", "interface": "Ethernet52"}, "unconnected"],
+      [{"node": "air-leaf-1", "interface": "Ethernet56"}, "unconnected"],
+      [{"node": "air-leaf-1", "interface": "Ethernet60"}, "unconnected"],
+      [{"node": "air-leaf-1", "interface": "Ethernet80"}, "unconnected"],
+      [{"node": "air-leaf-1", "interface": "Ethernet84"}, "unconnected"],
+      [{"node": "air-leaf-1", "interface": "Ethernet88"}, "unconnected"],
+      [{"node": "air-leaf-1", "interface": "Ethernet92"}, "unconnected"],
+      [{"node": "air-leaf-1", "interface": "Ethernet96"}, "unconnected"],
+      [{"node": "air-leaf-1", "interface": "Ethernet100"}, "unconnected"],
+      [{"node": "air-leaf-1", "interface": "Ethernet104"}, "unconnected"],
+      [{"node": "air-leaf-1", "interface": "Ethernet108"}, "unconnected"],
+      [{"node": "air-leaf-1", "interface": "Ethernet112"}, "unconnected"],
+      [{"node": "air-leaf-1", "interface": "Ethernet116"}, "unconnected"],
+      [{"node": "air-leaf-1", "interface": "Ethernet120"}, "unconnected"],
+      [{"node": "air-leaf-1", "interface": "Ethernet124"}, "unconnected"],
+
+      [{"node": "air-spine-1", "interface": "swp5"}, "unconnected"],
+      [{"node": "air-spine-1", "interface": "swp6"}, "unconnected"],
+      [{"node": "air-spine-1", "interface": "swp7"}, "unconnected"],
+      [{"node": "air-spine-1", "interface": "swp8"}, "unconnected"],
+      [{"node": "air-spine-1", "interface": "swp9"}, "unconnected"],
+      [{"node": "air-spine-1", "interface": "swp10"}, "unconnected"],
+      [{"node": "air-spine-1", "interface": "swp11"}, "unconnected"],
+      [{"node": "air-spine-1", "interface": "swp12"}, "unconnected"],
+      [{"node": "air-spine-1", "interface": "swp13"}, "unconnected"],
+      [{"node": "air-spine-1", "interface": "swp14"}, "unconnected"],
+      [{"node": "air-spine-1", "interface": "swp15"}, "unconnected"],
+      [{"node": "air-spine-1", "interface": "swp16"}, "unconnected"],
+      [{"node": "air-spine-1", "interface": "swp17"}, "unconnected"],
+      [{"node": "air-spine-1", "interface": "swp18"}, "unconnected"],
+      [{"node": "air-spine-1", "interface": "swp19"}, "unconnected"],
+      [{"node": "air-spine-1", "interface": "swp20"}, "unconnected"],
+      [{"node": "air-spine-1", "interface": "swp21"}, "unconnected"],
+      [{"node": "air-spine-1", "interface": "swp22"}, "unconnected"],
+      [{"node": "air-spine-1", "interface": "swp23"}, "unconnected"],
+      [{"node": "air-spine-1", "interface": "swp24"}, "unconnected"],
+      [{"node": "air-spine-1", "interface": "swp25"}, "unconnected"],
+      [{"node": "air-spine-1", "interface": "swp26"}, "unconnected"],
+      [{"node": "air-spine-1", "interface": "swp27"}, "unconnected"],
+      [{"node": "air-spine-1", "interface": "swp28"}, "unconnected"],
+      [{"node": "air-spine-1", "interface": "swp29"}, "unconnected"],
+      [{"node": "air-spine-1", "interface": "swp30"}, "unconnected"],
+      [{"node": "air-spine-1", "interface": "swp31"}, "unconnected"],
+      [{"node": "air-spine-1", "interface": "swp32"}, "unconnected"],
+
+      [{"node": "air-spine-2", "interface": "swp5"}, "unconnected"],
+      [{"node": "air-spine-2", "interface": "swp6"}, "unconnected"],
+      [{"node": "air-spine-2", "interface": "swp7"}, "unconnected"],
+      [{"node": "air-spine-2", "interface": "swp8"}, "unconnected"],
+      [{"node": "air-spine-2", "interface": "swp9"}, "unconnected"],
+      [{"node": "air-spine-2", "interface": "swp10"}, "unconnected"],
+      [{"node": "air-spine-2", "interface": "swp11"}, "unconnected"],
+      [{"node": "air-spine-2", "interface": "swp12"}, "unconnected"],
+      [{"node": "air-spine-2", "interface": "swp13"}, "unconnected"],
+      [{"node": "air-spine-2", "interface": "swp14"}, "unconnected"],
+      [{"node": "air-spine-2", "interface": "swp15"}, "unconnected"],
+      [{"node": "air-spine-2", "interface": "swp16"}, "unconnected"],
+      [{"node": "air-spine-2", "interface": "swp17"}, "unconnected"],
+      [{"node": "air-spine-2", "interface": "swp18"}, "unconnected"],
+      [{"node": "air-spine-2", "interface": "swp19"}, "unconnected"],
+      [{"node": "air-spine-2", "interface": "swp20"}, "unconnected"],
+      [{"node": "air-spine-2", "interface": "swp21"}, "unconnected"],
+      [{"node": "air-spine-2", "interface": "swp22"}, "unconnected"],
+      [{"node": "air-spine-2", "interface": "swp23"}, "unconnected"],
+      [{"node": "air-spine-2", "interface": "swp24"}, "unconnected"],
+      [{"node": "air-spine-2", "interface": "swp25"}, "unconnected"],
+      [{"node": "air-spine-2", "interface": "swp26"}, "unconnected"],
+      [{"node": "air-spine-2", "interface": "swp27"}, "unconnected"],
+      [{"node": "air-spine-2", "interface": "swp28"}, "unconnected"],
+      [{"node": "air-spine-2", "interface": "swp29"}, "unconnected"],
+      [{"node": "air-spine-2", "interface": "swp30"}, "unconnected"],
+      [{"node": "air-spine-2", "interface": "swp31"}, "unconnected"],
+      [{"node": "air-spine-2", "interface": "swp32"}, "unconnected"],
+
+      [{"node": "air-leaf-2", "interface": "Ethernet8"}, "unconnected"],
+      [{"node": "air-leaf-2", "interface": "Ethernet12"}, "unconnected"],
+      [{"node": "air-leaf-2", "interface": "Ethernet16"}, "unconnected"],
+      [{"node": "air-leaf-2", "interface": "Ethernet20"}, "unconnected"],
+      [{"node": "air-leaf-2", "interface": "Ethernet24"}, "unconnected"],
+      [{"node": "air-leaf-2", "interface": "Ethernet28"}, "unconnected"],
+      [{"node": "air-leaf-2", "interface": "Ethernet32"}, "unconnected"],
+      [{"node": "air-leaf-2", "interface": "Ethernet36"}, "unconnected"],
+      [{"node": "air-leaf-2", "interface": "Ethernet40"}, "unconnected"],
+      [{"node": "air-leaf-2", "interface": "Ethernet44"}, "unconnected"],
+      [{"node": "air-leaf-2", "interface": "Ethernet48"}, "unconnected"],
+      [{"node": "air-leaf-2", "interface": "Ethernet52"}, "unconnected"],
+      [{"node": "air-leaf-2", "interface": "Ethernet56"}, "unconnected"],
+      [{"node": "air-leaf-2", "interface": "Ethernet60"}, "unconnected"],
+      [{"node": "air-leaf-2", "interface": "Ethernet80"}, "unconnected"],
+      [{"node": "air-leaf-2", "interface": "Ethernet84"}, "unconnected"],
+      [{"node": "air-leaf-2", "interface": "Ethernet88"}, "unconnected"],
+      [{"node": "air-leaf-2", "interface": "Ethernet92"}, "unconnected"],
+      [{"node": "air-leaf-2", "interface": "Ethernet96"}, "unconnected"],
+      [{"node": "air-leaf-2", "interface": "Ethernet100"}, "unconnected"],
+      [{"node": "air-leaf-2", "interface": "Ethernet104"}, "unconnected"],
+      [{"node": "air-leaf-2", "interface": "Ethernet108"}, "unconnected"],
+      [{"node": "air-leaf-2", "interface": "Ethernet112"}, "unconnected"],
+      [{"node": "air-leaf-2", "interface": "Ethernet116"}, "unconnected"],
+      [{"node": "air-leaf-2", "interface": "Ethernet120"}, "unconnected"],
+      [{"node": "air-leaf-2", "interface": "Ethernet124"}, "unconnected"],
+
+      [{"node": "air-leaf-3", "interface": "Ethernet8"}, "unconnected"],
+      [{"node": "air-leaf-3", "interface": "Ethernet12"}, "unconnected"],
+      [{"node": "air-leaf-3", "interface": "Ethernet16"}, "unconnected"],
+      [{"node": "air-leaf-3", "interface": "Ethernet20"}, "unconnected"],
+      [{"node": "air-leaf-3", "interface": "Ethernet24"}, "unconnected"],
+      [{"node": "air-leaf-3", "interface": "Ethernet28"}, "unconnected"],
+      [{"node": "air-leaf-3", "interface": "Ethernet32"}, "unconnected"],
+      [{"node": "air-leaf-3", "interface": "Ethernet36"}, "unconnected"],
+      [{"node": "air-leaf-3", "interface": "Ethernet40"}, "unconnected"],
+      [{"node": "air-leaf-3", "interface": "Ethernet44"}, "unconnected"],
+      [{"node": "air-leaf-3", "interface": "Ethernet48"}, "unconnected"],
+      [{"node": "air-leaf-3", "interface": "Ethernet52"}, "unconnected"],
+      [{"node": "air-leaf-3", "interface": "Ethernet56"}, "unconnected"],
+      [{"node": "air-leaf-3", "interface": "Ethernet60"}, "unconnected"],
+      [{"node": "air-leaf-3", "interface": "Ethernet80"}, "unconnected"],
+      [{"node": "air-leaf-3", "interface": "Ethernet84"}, "unconnected"],
+      [{"node": "air-leaf-3", "interface": "Ethernet88"}, "unconnected"],
+      [{"node": "air-leaf-3", "interface": "Ethernet92"}, "unconnected"],
+      [{"node": "air-leaf-3", "interface": "Ethernet96"}, "unconnected"],
+      [{"node": "air-leaf-3", "interface": "Ethernet100"}, "unconnected"],
+      [{"node": "air-leaf-3", "interface": "Ethernet104"}, "unconnected"],
+      [{"node": "air-leaf-3", "interface": "Ethernet108"}, "unconnected"],
+      [{"node": "air-leaf-3", "interface": "Ethernet112"}, "unconnected"],
+      [{"node": "air-leaf-3", "interface": "Ethernet116"}, "unconnected"],
+      [{"node": "air-leaf-3", "interface": "Ethernet120"}, "unconnected"],
+      [{"node": "air-leaf-3", "interface": "Ethernet124"}, "unconnected"],
+
+      [{"node": "air-leaf-4", "interface": "Ethernet8"}, "unconnected"],
+      [{"node": "air-leaf-4", "interface": "Ethernet12"}, "unconnected"],
+      [{"node": "air-leaf-4", "interface": "Ethernet16"}, "unconnected"],
+      [{"node": "air-leaf-4", "interface": "Ethernet20"}, "unconnected"],
+      [{"node": "air-leaf-4", "interface": "Ethernet24"}, "unconnected"],
+      [{"node": "air-leaf-4", "interface": "Ethernet28"}, "unconnected"],
+      [{"node": "air-leaf-4", "interface": "Ethernet32"}, "unconnected"],
+      [{"node": "air-leaf-4", "interface": "Ethernet36"}, "unconnected"],
+      [{"node": "air-leaf-4", "interface": "Ethernet40"}, "unconnected"],
+      [{"node": "air-leaf-4", "interface": "Ethernet44"}, "unconnected"],
+      [{"node": "air-leaf-4", "interface": "Ethernet48"}, "unconnected"],
+      [{"node": "air-leaf-4", "interface": "Ethernet52"}, "unconnected"],
+      [{"node": "air-leaf-4", "interface": "Ethernet56"}, "unconnected"],
+      [{"node": "air-leaf-4", "interface": "Ethernet60"}, "unconnected"],
+      [{"node": "air-leaf-4", "interface": "Ethernet80"}, "unconnected"],
+      [{"node": "air-leaf-4", "interface": "Ethernet84"}, "unconnected"],
+      [{"node": "air-leaf-4", "interface": "Ethernet88"}, "unconnected"],
+      [{"node": "air-leaf-4", "interface": "Ethernet92"}, "unconnected"],
+      [{"node": "air-leaf-4", "interface": "Ethernet96"}, "unconnected"],
+      [{"node": "air-leaf-4", "interface": "Ethernet100"}, "unconnected"],
+      [{"node": "air-leaf-4", "interface": "Ethernet104"}, "unconnected"],
+      [{"node": "air-leaf-4", "interface": "Ethernet108"}, "unconnected"],
+      [{"node": "air-leaf-4", "interface": "Ethernet112"}, "unconnected"],
+      [{"node": "air-leaf-4", "interface": "Ethernet116"}, "unconnected"],
+      [{"node": "air-leaf-4", "interface": "Ethernet120"}, "unconnected"],
+      [{"node": "air-leaf-4", "interface": "Ethernet124"}, "unconnected"],
+
+      [{"node": "air-srv-1", "interface": "enp59"}, "unconnected"],
+      [{"node": "air-srv-1", "interface": "enp60"}, "unconnected"],
+      [{"node": "air-srv-1", "interface": "enp61"}, "unconnected"],
+      [{"node": "air-srv-1", "interface": "enp62"}, "unconnected"],
+
+      [{"node": "air-srv-2", "interface": "enp59"}, "unconnected"],
+      [{"node": "air-srv-2", "interface": "enp60"}, "unconnected"],
+      [{"node": "air-srv-2", "interface": "enp61"}, "unconnected"],
+      [{"node": "air-srv-2", "interface": "enp62"}, "unconnected"],
+
+      [{"node": "air-srv-3", "interface": "enp59"}, "unconnected"],
+      [{"node": "air-srv-3", "interface": "enp60"}, "unconnected"],
+      [{"node": "air-srv-3", "interface": "enp61"}, "unconnected"],
+      [{"node": "air-srv-3", "interface": "enp62"}, "unconnected"],
+
+      [{"node": "air-srv-4", "interface": "enp59"}, "unconnected"],
+      [{"node": "air-srv-4", "interface": "enp60"}, "unconnected"],
+      [{"node": "air-srv-4", "interface": "enp61"}, "unconnected"],
+      [{"node": "air-srv-4", "interface": "enp62"}, "unconnected"]
+    ]
+  }
+}

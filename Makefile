@@ -17,12 +17,13 @@ test-local: test-dc1 test-dc2 test-colo test-site1 test-h88
 test-previous: test-dc1-nb-2-cyjs-previous test-dc2-nb-2-cyjs-previous test-colo-nb-2-cyjs-previous test-site1-nb-2-cyjs-previous test-h88-nb-2-cyjs-previous
 test-current: test-dc1-nb-2-cyjs-current test-dc2-nb-2-cyjs-current test-colo-nb-2-cyjs-current test-site1-nb-2-cyjs-current test-h88-nb-2-cyjs-current
 test-latest: test-dc1-nb-2-cyjs-latest test-dc2-nb-2-cyjs-latest test-colo-nb-2-cyjs-latest test-site1-nb-2-cyjs-latest test-h88-nb-2-cyjs-latest
-test-cloud: test-dc1-nb-2-cyjs-cloud test-dc2-nb-2-cyjs-cloud test-colo-nb-2-cyjs-cloud test-site1-nb-2-cyjs-cloud test-h88-nb-2-cyjs-cloud
-test: test-args test-dc1-cyjs-2-clab test-dc1-cyjs-2-clab-custom-platform-map test-dc2-cyjs-2-cml test-site1-cyjs-2-clab test-site1-cyjs-2-clab-rename test-dc1-cyjs-2-graphite test-dc2-cyjs-2-graphite test-h88-cyjs-2-clab test-dc1-cyjs-2-d2 test-lrg-cyjs-2-graphite
+test-cloud: test-dc1-nb-2-cyjs-cloud test-dc2-nb-2-cyjs-cloud test-colo-nb-2-cyjs-cloud test-site1-nb-2-cyjs-cloud test-h88-nb-2-cyjs-cloud test-air-nb-2-cyjs-cloud
+test: test-args test-dc1-cyjs-2-clab test-dc1-cyjs-2-clab-custom-platform-map test-dc2-cyjs-2-cml test-site1-cyjs-2-clab test-site1-cyjs-2-clab-rename test-dc1-cyjs-2-graphite test-dc2-cyjs-2-graphite test-h88-cyjs-2-clab test-dc1-cyjs-2-d2 test-lrg-cyjs-2-graphite test-air-cyjs-2-air
 
 test-args: test-args-site-and-sites
 test-clab: test-dc1-cyjs-2-clab test-dc1-cyjs-2-clab-custom-platform-map test-site1-cyjs-2-clab test-h88-cyjs-2-clab
 test-cml: test-dc2-cyjs-2-cml
+test-air: test-air-nb-2-cyjs-cloud test-air-cyjs-2-air
 test-graphite: test-dc1-cyjs-2-graphite test-dc2-cyjs-2-graphite test-lrg-cyjs-2-graphite
 test-d2: test-dc1-cyjs-2-d2
 
@@ -77,6 +78,15 @@ test-dc1-nb-2-cyjs-cloud:
 	mkdir -p tests/dc1/test && cd tests/dc1/test && rm -rf * && \
 	../../../nrx -c ../nrx.conf -o cyjs -d && \
 	diff dc1.cyjs ../data/dc1.cyjs
+	@echo
+
+test-air-nb-2-cyjs-cloud:
+	@echo "#################################################################"
+	@echo "# Air: read from NetBox cloud version and export as CYJS"
+	@echo "#################################################################"
+	mkdir -p tests/air/test && cd tests/air/test && rm -rf * && \
+	../../../nrx -c ../nrx.conf -o cyjs -d && \
+	diff air.cyjs ../data/air.cyjs
 	@echo
 
 test-dc1-nb-2-cyjs-single-site:
@@ -225,6 +235,15 @@ update-dc2:
 	@echo "#################################################################"
 	cd tests/dc2/test && \
 	cp * ../data/
+	@echo
+
+test-air-cyjs-2-air:
+	@echo "#################################################################"
+	@echo "# Air: read from CYJS and export as Nvidia Air"
+	@echo "#################################################################"
+	mkdir -p tests/air/test && cd tests/air/test && rm -rf * && \
+	../../../nrx -c ../nrx.conf -i cyjs -f ../data/air.cyjs -d && \
+	for f in *; do echo Comparing file $$f ...; diff $$f ../data/$$f || exit 1; done
 	@echo
 
 test-colo-nb-2-cyjs-previous:

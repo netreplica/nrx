@@ -21,6 +21,7 @@ This project is in early phase. We're experimenting with the best ways to automa
 # Latest capabilities added
 
 The latest releases have a significant set of the new capabilities:
+* `0.8.0` Nvidia Air support
 * `0.7.0` NetBox `v4.2` compatibility. Bug fixes. Minimum Python version `3.10`.
 * `0.6.2` NetBox `v4.1` compatibility
 * `0.6.0` Filter links between devices via interface tags
@@ -70,6 +71,7 @@ Data sourcing capabilities:
 Export capabilities:
 
 * Exports the graph as a Containerlab (Clab) topology definition file in YAML format
+* Exports the graph as a Nvidia Air topology definition file in JSON format
 * Exports the graph as a Cisco Modeling Labs (CML) topology definition file in YAML format
 * Exported device configurations can be used as `startup-config` for Containerlab and CML
 * Exports the graph in formats for visualization with Graphite or D2
@@ -86,6 +88,7 @@ The following software versions were tested for compatibility with `nrx`:
 
 * NetBox `v4.1`-`v4.2`. We no longer run tests with previously supported `v3.4-4.0` versions, and underlying [`pynetbox`](https://github.com/netbox-community/pynetbox) library is no longer tested with these older versions.
 * Containerlab `v0.39`, but earlier and later versions should work fine
+* Nvidia Air API starting with `v9.15.8` (API v2 is used)
 * Cisco Modeling Labs `v2.5`
 * Netreplica Graphite `v0.4.0`
 
@@ -155,7 +158,7 @@ optional arguments:
   -I, --init [VERSION]      initialize configuration directory in $HOME/.nr and exit. optionally, specify a VERSION to initialize with: -I 0.1.0
   -c, --config CONFIG       configuration file, default: $HOME/.nr/nrx.conf
   -i, --input INPUT         input source: netbox (default) | cyjs
-  -o, --output OUTPUT       output format: cyjs | clab | cml | graphite | d2 or any other format supported by provided templates
+  -o, --output OUTPUT       output format: cyjs | air | clab | cml | graphite | d2 or any other format supported by provided templates
   -a, --api API             netbox API URL
   -s, --site SITE           netbox site to export, cannot be combined with --sites
       --sites SITES         netbox sites to export, for multiple tags use a comma-separated list: site1,site2,site3 (uses OR logic)
