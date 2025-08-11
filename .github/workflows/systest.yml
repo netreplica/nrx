@@ -31,7 +31,7 @@ jobs:
       NB_API_TOKEN: ${{ secrets.NB_API_TOKEN }}
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         submodules: 'true'
     - name: Set up Python 3.10
