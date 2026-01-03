@@ -41,7 +41,7 @@ pip install -r requirements.txt -r requirements-dev.txt
 Run unit tests:
 
 ```Shell
-make test-unit
+make unit-test
 ```
 
 Run system tests:
