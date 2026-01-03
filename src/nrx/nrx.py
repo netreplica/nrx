@@ -1160,6 +1160,19 @@ def get_default_config(versions, dir_path):
     return None
 
 
+def apply_export_site_backward_compatibility(nb_config, config):
+    """Apply backward compatibility for EXPORT_SITE (singular) config key.
+
+    Converts EXPORT_SITE to export_sites if needed for backward compatibility
+    with config files from before Nov 2023.
+    """
+    if 'EXPORT_SITE' in nb_config and len(config['export_sites']) == 0:
+        site_value = nb_config['EXPORT_SITE']
+        if isinstance(site_value, str):
+            config['export_sites'] = [site_value]
+        elif isinstance(site_value, list):
+            config['export_sites'] = site_value
+
 def load_toml_config(filename):
     """Load configuration from a config file in TOML format"""
     config = {
@@ -1203,13 +1216,8 @@ def load_toml_config(filename):
                     if k.upper() in nb_config:
                         config[k] = nb_config[k.upper()]
 
-                # Backward compatibility: support EXPORT_SITE (singular) in addition to EXPORT_SITES (plural)
-                if 'EXPORT_SITE' in nb_config and len(config['export_sites']) == 0:
-                    site_value = nb_config['EXPORT_SITE']
-                    if isinstance(site_value, str):
-                        config['export_sites'] = [site_value]
-                    elif isinstance(site_value, list):
-                        config['export_sites'] = site_value
+                # Apply backward compatibility for EXPORT_SITE
+                apply_export_site_backward_compatibility(nb_config, config)
         except OSError as e:
             if filename == nrx_default_config_path():
                 debug("Can't open default configuration file, ignoring.", e)
