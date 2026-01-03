@@ -213,7 +213,7 @@ class NBFactory:
         self.nb_session = pynetbox.api(self.config['nb_api_url'],
                                        token=self.config['nb_api_token'],
                                        threading=True)
-        self.nb_sites = None
+        self.nb_sites = []
         if not config['tls_validate']:
             self.nb_session.http_session.verify = False
             urllib3.disable_warnings()
@@ -274,9 +274,8 @@ class NBFactory:
         """Get device list from NetBox filtered by site, tags and device roles"""
         devices = []
         if len(self.nb_sites) == 0:
-            devices.append(self.nb_session.dcim.devices.filter(tag=self.config['export_tags'],
+            devices = self.nb_session.dcim.devices.filter(tag=self.config['export_tags'],
                                                           role=self.config['export_device_roles'])
-                           )
         else:
             site_ids = []
             for site in self.nb_sites:
@@ -1203,6 +1202,14 @@ def load_toml_config(filename):
                 for k in config:
                     if k.upper() in nb_config:
                         config[k] = nb_config[k.upper()]
+
+                # Backward compatibility: support EXPORT_SITE (singular) in addition to EXPORT_SITES (plural)
+                if 'EXPORT_SITE' in nb_config and len(config['export_sites']) == 0:
+                    site_value = nb_config['EXPORT_SITE']
+                    if isinstance(site_value, str):
+                        config['export_sites'] = [site_value]
+                    elif isinstance(site_value, list):
+                        config['export_sites'] = site_value
         except OSError as e:
             if filename == nrx_default_config_path():
                 debug("Can't open default configuration file, ignoring.", e)
@@ -1212,6 +1219,7 @@ def load_toml_config(filename):
             error(f"Unable to parse configuration file {filename}: {e}")
         except argparse.ArgumentTypeError as e:
             error(f"Unsupported configuration: {e}")
+
     path_config_keys = ['templates_path', 'platform_map', 'output_dir']
     for k in path_config_keys:
         if isinstance(config[k], str):
