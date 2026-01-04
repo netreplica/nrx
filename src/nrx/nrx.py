@@ -1173,6 +1173,7 @@ def apply_export_site_backward_compatibility(nb_config, config):
         elif isinstance(site_value, list):
             config['export_sites'] = site_value
 
+
 def load_toml_config(filename):
     """Load configuration from a config file in TOML format"""
     config = {
@@ -1255,7 +1256,7 @@ def config_apply_netbox_args(config, args):
         config['export_interface_tags'] = args.interface_tags.split(',')
         debug(f"List of tags to filter interfaces for export: {config['export_interface_tags']}")
     if len(config['export_sites']) == 0 and len(config['export_tags']) == 0:
-        error("Need a Site name or Tags to export. Use --sites/--tags arguments, or EXPORT_SITE/EXPORT_TAGS key in --config file")
+        error("Need a Site name or Tags to export. Use --sites/--tags arguments, or EXPORT_SITES/EXPORT_TAGS key in --config file")
     if args.noconfigs is not None:
         if args.noconfigs:
             config['export_configs'] = False
