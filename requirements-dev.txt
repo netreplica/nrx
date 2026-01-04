@@ -1,4 +1,6 @@
 pylint ~=3.3.1
+pytest ~=8.0
+pytest-mock ~=3.14
 rich
 build
 twine

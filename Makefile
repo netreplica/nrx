@@ -1,17 +1,32 @@
 lint:
 	pylint src/nrx/*.py
 
+unit-test:
+	PYTHONPATH=./src pytest tests/unit/ -v
+
 build:
 	python3 -m build
 
-pubdev:
-	python3 -m twine upload --repository testpypi dist/*
+test-publish:
+	@echo "Creating and pushing pre-release tag to trigger TestPyPI publish..."
+	@VERSION=$$(hatch version); \
+	if echo "$$VERSION" | grep -qE 'rc|dev|alpha|beta'; then \
+		git tag "v$$VERSION" && git push --tags; \
+		echo "Tag v$$VERSION pushed. Check GitHub Actions for TestPyPI publish."; \
+	else \
+		echo "Error: Version $$VERSION is not a pre-release (must contain rc/dev/alpha/beta)"; \
+		echo "Run: hatch version rc"; \
+		exit 1; \
+	fi
 
 publish:
 	python3 -m twine upload dist/*
 
 clean:
-	rm dist/*
+	rm -rf dist/*
+
+# Legacy aliases
+pubdev: test-publish
 
 test-local: test-dc1 test-dc2 test-colo test-site1 test-h88
 test-previous: test-dc1-nb-2-cyjs-previous test-dc2-nb-2-cyjs-previous test-colo-nb-2-cyjs-previous test-site1-nb-2-cyjs-previous test-h88-nb-2-cyjs-previous

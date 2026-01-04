@@ -7,12 +7,18 @@ on:
       - '**'
       - '!**.md'
       - '!**.png'
+      - '!**/__about__.py'
+      - '!.github/workflows/**'
+      - '.github/workflows/systest.yml'
   pull_request:
     branches: [ "main", "dev" ]
     paths:
       - '**'
       - '!**.md'
       - '!**.png'
+      - '!**/__about__.py'
+      - '!.github/workflows/**'
+      - '.github/workflows/systest.yml'
   workflow_dispatch:
 
 env:
@@ -31,11 +37,11 @@ jobs:
       NB_API_TOKEN: ${{ secrets.NB_API_TOKEN }}
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         submodules: 'true'
     - name: Set up Python 3.10
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: ${{ env.PYVER }}
     - name: Install dependencies
