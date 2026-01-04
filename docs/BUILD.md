@@ -6,7 +6,8 @@ Automatic publishing to TestPyPI is done via GitHub Actions from pull requests i
 
 ```Shell
 hatch version # this will show the current version
-hatch version patch # or "rc" for a release candidate
+hatch version patch # or "minor"
+hatch version rc # to make it a candidate release
 ```
 
 After that update the version compatibility in `versions.yml`.

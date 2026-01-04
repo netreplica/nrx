@@ -213,7 +213,7 @@ class NBFactory:
         self.nb_session = pynetbox.api(self.config['nb_api_url'],
                                        token=self.config['nb_api_token'],
                                        threading=True)
-        self.nb_sites = None
+        self.nb_sites = []
         if not config['tls_validate']:
             self.nb_session.http_session.verify = False
             urllib3.disable_warnings()
@@ -274,9 +274,8 @@ class NBFactory:
         """Get device list from NetBox filtered by site, tags and device roles"""
         devices = []
         if len(self.nb_sites) == 0:
-            devices.append(self.nb_session.dcim.devices.filter(tag=self.config['export_tags'],
+            devices = self.nb_session.dcim.devices.filter(tag=self.config['export_tags'],
                                                           role=self.config['export_device_roles'])
-                           )
         else:
             site_ids = []
             for site in self.nb_sites:
@@ -1161,6 +1160,20 @@ def get_default_config(versions, dir_path):
     return None
 
 
+def apply_export_site_backward_compatibility(nb_config, config):
+    """Apply backward compatibility for EXPORT_SITE (singular) config key.
+
+    Converts EXPORT_SITE to export_sites if needed for backward compatibility
+    with config files from before Nov 2023.
+    """
+    if 'EXPORT_SITE' in nb_config and len(config['export_sites']) == 0:
+        site_value = nb_config['EXPORT_SITE']
+        if isinstance(site_value, str):
+            config['export_sites'] = [site_value]
+        elif isinstance(site_value, list):
+            config['export_sites'] = site_value
+
+
 def load_toml_config(filename):
     """Load configuration from a config file in TOML format"""
     config = {
@@ -1203,6 +1216,9 @@ def load_toml_config(filename):
                 for k in config:
                     if k.upper() in nb_config:
                         config[k] = nb_config[k.upper()]
+
+                # Apply backward compatibility for EXPORT_SITE
+                apply_export_site_backward_compatibility(nb_config, config)
         except OSError as e:
             if filename == nrx_default_config_path():
                 debug("Can't open default configuration file, ignoring.", e)
@@ -1212,6 +1228,7 @@ def load_toml_config(filename):
             error(f"Unable to parse configuration file {filename}: {e}")
         except argparse.ArgumentTypeError as e:
             error(f"Unsupported configuration: {e}")
+
     path_config_keys = ['templates_path', 'platform_map', 'output_dir']
     for k in path_config_keys:
         if isinstance(config[k], str):
@@ -1239,7 +1256,7 @@ def config_apply_netbox_args(config, args):
         config['export_interface_tags'] = args.interface_tags.split(',')
         debug(f"List of tags to filter interfaces for export: {config['export_interface_tags']}")
     if len(config['export_sites']) == 0 and len(config['export_tags']) == 0:
-        error("Need a Site name or Tags to export. Use --sites/--tags arguments, or EXPORT_SITE/EXPORT_TAGS key in --config file")
+        error("Need a Site name or Tags to export. Use --sites/--tags arguments, or EXPORT_SITES/EXPORT_TAGS key in --config file")
     if args.noconfigs is not None:
         if args.noconfigs:
             config['export_configs'] = False

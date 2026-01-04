@@ -1,6 +1,9 @@
 lint:
 	pylint src/nrx/*.py
 
+unit-test:
+	PYTHONPATH=./src pytest tests/unit/ -v
+
 build:
 	python3 -m build
 
