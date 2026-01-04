@@ -1,8 +1,6 @@
 name: Publish Python distribution to TestPyPI
 
 on:
-    release:
-        types: [created, prereleased]
     push:
         tags:
             - 'v*rc*'

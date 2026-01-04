@@ -7,12 +7,18 @@ on:
       - '**'
       - '!**.md'
       - '!**.png'
+      - '!**/__about__.py'
+      - '!.github/workflows/**'
+      - '.github/workflows/systest.yml'
   pull_request:
     branches: [ "main", "dev" ]
     paths:
       - '**'
       - '!**.md'
       - '!**.png'
+      - '!**/__about__.py'
+      - '!.github/workflows/**'
+      - '.github/workflows/systest.yml'
   workflow_dispatch:
 
 env:
