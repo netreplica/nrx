@@ -2,7 +2,6 @@
 
 import os
 import tempfile
-import pytest
 from nrx.nrx import load_toml_config
 
 
@@ -88,7 +87,7 @@ class TestConfigBackwardCompatibility:
             config = load_toml_config(config_path)
 
             # Should use default empty list
-            assert config['export_sites'] == []
+            assert not config['export_sites']
             assert isinstance(config['export_sites'], list)
         finally:
             os.unlink(config_path)
@@ -114,9 +113,9 @@ class TestConfigBackwardCompatibility:
         config = load_toml_config(None)
 
         # Verify default values
-        assert config['export_sites'] == []
-        assert config['export_tags'] == []
-        assert config['export_interface_tags'] == []
+        assert not config['export_sites']
+        assert not config['export_tags']
+        assert not config['export_interface_tags']
         assert config['topology_name'] == ''
         assert config['export_configs'] is True
 
@@ -131,7 +130,7 @@ class TestConfigBackwardCompatibility:
             config = load_toml_config(config_path)
 
             # Should use default values
-            assert config['export_sites'] == []
-            assert config['export_tags'] == []
+            assert not config['export_sites']
+            assert not config['export_tags']
         finally:
             os.unlink(config_path)

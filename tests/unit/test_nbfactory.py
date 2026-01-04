@@ -1,8 +1,7 @@
 """Unit tests for NBFactory class."""
 
-import pytest
-from unittest.mock import Mock, MagicMock, patch, PropertyMock
 import sys
+from unittest.mock import Mock, MagicMock, patch
 
 # Mock pynetbox exceptions before importing nrx
 mock_pynetbox_module = MagicMock()
@@ -12,7 +11,7 @@ sys.modules['pynetbox'] = mock_pynetbox_module
 sys.modules['pynetbox.core'] = mock_pynetbox_module.core
 sys.modules['pynetbox.core.query'] = mock_pynetbox_module.core.query
 
-from nrx.nrx import NBFactory
+from nrx.nrx import NBFactory  # pylint: disable=wrong-import-position
 
 
 class TestNBFactoryInitialization:
