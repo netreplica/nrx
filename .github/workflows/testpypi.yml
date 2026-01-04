@@ -1,8 +1,14 @@
 name: Publish Python distribution to TestPyPI
 
 on:
-    pull_request:
-        branches: [ "main" ]
+    release:
+        types: [created, prereleased]
+    push:
+        tags:
+            - 'v*rc*'
+            - 'v*-dev*'
+            - 'v*-alpha*'
+            - 'v*-beta*'
     workflow_dispatch:
 
 jobs:
