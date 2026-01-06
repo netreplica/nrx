@@ -31,7 +31,7 @@ This approach ensures a single code path for data collection that benefits all e
 | Cable | Infrastructure.Edge | One-to-one with proper endpoints |
 | Interface speed | Link.bandwidth | Extract from interface data |
 
-### Key Insight from infragraph_service.py
+### Key Insights from infragraph_service.py
 
 The `InfraGraphService` module reveals that:
 
@@ -39,6 +39,40 @@ The `InfraGraphService` module reveals that:
 2. **Service generates graph**: `InfraGraphService.set_graph()` converts Infrastructure → NetworkX
 3. **Built-in validation**: We can validate our output by loading it back
 4. **Component indexing is critical**: Must map interface names to component indices precisely
+5. **Indices must be 0-based and sequential**: Component indices start at 0 and increment
+
+### Critical Design Decision: Use Names, Not IDs
+
+**NetBox IDs are not suitable for portable exports:**
+
+```python
+# NetBox Instance A
+Device ID: 42 → "leaf01" (Arista DCS-7050)
+Interface ID: 156 → "Ethernet1" on device 42
+
+# Same data imported into NetBox Instance B
+Device ID: 108 → "leaf01" (same Arista DCS-7050)
+Interface ID: 423 → "Ethernet1" on device 108
+
+# Result: Same topology, different IDs!
+```
+
+**Infragraph requires consistent, portable identifiers:**
+
+```python
+# Both NetBox instances produce:
+instance: "leaf01"           # Device name (portable)
+component: "port"            # Component type
+component_idx: 0             # 0-based index (Ethernet1 = first interface alphabetically)
+
+# Infragraph node: leaf01.0.port.0
+# Always the same, regardless of NetBox instance!
+```
+
+**Solution:**
+- Use **device names** as instance identifiers
+- Use **interface names** sorted alphabetically to generate **0-based sequential indices**
+- Never use NetBox database IDs in exported data
 
 ## Current State Analysis
 
@@ -136,7 +170,7 @@ i = {
 **Enhanced:**
 ```python
 i = {
-    "id": interface.id,
+    "id": interface.id,  # Keep for internal nrx lookups only
     "type": "interface",
     "name": interface.name,
     "label": interface.label or "",
@@ -145,8 +179,7 @@ i = {
     "speed": interface.speed or 0,  # Kbps - CRITICAL for infragraph!
     "mtu": interface.mtu or 0,
     "enabled": interface.enabled,
-    "device_id": interface.device.id,  # Direct reference
-    "device_name": interface.device.name,  # Direct reference
+    "device_name": interface.device.name,  # Portable device reference!
     "tags": [tag.name for tag in interface.tags] if interface.tags else [],
     "node_id": -1,
     "interface_index": -1,
@@ -155,8 +188,10 @@ i = {
 
 **Implementation location:** `NBFactory._get_nb_interfaces()` around line 319
 
+**Important:** Store `device_name` NOT `device_id`. NetBox IDs are database primary keys that change between NetBox instances. Device names are portable identifiers.
+
 **Benefits:**
-- Direct device lookup without graph traversal
+- Direct device lookup by name (portable across NetBox instances)
 - Speed data for infragraph link bandwidth calculation
 - Tags for filtering/annotation
 - Description for infragraph component descriptions
@@ -202,7 +237,8 @@ class NBNetwork:
     def __init__(self):
         # ... existing fields ...
         self.device_types = {}  # (vendor, model) → device_type_info
-        self.device_type_interfaces = {}  # (vendor, model) → [interface_list]
+        self.device_type_interfaces = {}  # (vendor, model) → [sorted interface list]
+        self.device_name_to_type = {}  # device_name → (vendor, model)
 ```
 
 **Build during device collection:**
@@ -214,6 +250,10 @@ def _get_nb_devices(self):
 
         # Cache device type
         device_type_key = (d['vendor'], d['model'])
+
+        # Map device name to type for quick lookup
+        self.nb_net.device_name_to_type[d['name']] = device_type_key
+
         if device_type_key not in self.nb_net.device_types:
             self.nb_net.device_types[device_type_key] = {
                 'vendor': d['vendor'],
@@ -222,11 +262,11 @@ def _get_nb_devices(self):
                 'model_name': d['model_name'],
                 'platform': d['platform'],
                 'platform_name': d['platform_name'],
-                'devices': [],  # List of device IDs
-                'first_device_id': d['id'],  # For interface template
+                'sample_device_name': d['name'],  # Use name for interface template
             }
-        self.nb_net.device_types[device_type_key]['devices'].append(d['id'])
 ```
+
+**Important:** Use device names, not IDs. NetBox IDs are instance-specific database keys that change when data is imported into different NetBox instances.
 
 **Build interface inventory:**
 ```python
@@ -234,13 +274,14 @@ def _get_nb_interfaces(self, block_size=4):
     # ... existing code to fetch interfaces ...
 
     # After creating interface dict
-    device_id = i['device_id']
-    device = self._find_device_by_id(device_id)
-    if device:
-        device_type_key = (device['vendor'], device['model'])
+    device_name = i['device_name']
+    device_type_key = self.nb_net.device_name_to_type.get(device_name)
 
-        # Build interface list for first device of each type
-        if device_id == self.nb_net.device_types[device_type_key]['first_device_id']:
+    if device_type_key:
+        # Build interface list using first device of each type as template
+        sample_name = self.nb_net.device_types[device_type_key]['sample_device_name']
+
+        if device_name == sample_name:
             if device_type_key not in self.nb_net.device_type_interfaces:
                 self.nb_net.device_type_interfaces[device_type_key] = []
             self.nb_net.device_type_interfaces[device_type_key].append(i)
@@ -248,19 +289,19 @@ def _get_nb_interfaces(self, block_size=4):
 
 **Helper method:**
 ```python
-def _find_device_by_id(self, device_id):
-    """Find device dict by NetBox device ID"""
-    try:
-        idx = self.nb_net.device_ids.index(device_id)
-        return self.nb_net.devices[idx]
-    except (ValueError, IndexError):
-        return None
+def _find_device_by_name(self, device_name):
+    """Find device dict by device name"""
+    for device in self.nb_net.devices:
+        if device['name'] == device_name:
+            return device
+    return None
 ```
 
 **Benefits:**
 - Fast device type iteration for infragraph Device creation
 - Pre-built interface lists per device type
-- O(1) device lookup by ID
+- Device name-based lookups (portable across NetBox instances)
+- Proper 0-based sequential indexing for infragraph components
 
 **Backward compatibility:** ✅ Additive only, no changes to existing data
 
@@ -308,7 +349,7 @@ infragraph>=0.6.1
 
 ### B2: InterfaceMapper Class
 
-Purpose: Map NetBox interface names to infragraph component indices
+Purpose: Map NetBox interface names to infragraph component indices (0-based, sequential)
 
 ```python
 class InterfaceMapper:
@@ -316,27 +357,46 @@ class InterfaceMapper:
 
     def __init__(self, nb_net):
         self.nb_net = nb_net
-        self.interface_to_component = {}  # "device_id.interface_name" → (component_name, idx)
+        # "device_name.interface_name" → (component_name, idx)
+        # Using device_name (not ID) for portability across NetBox instances
+        self.interface_to_component = {}
 
     def build_mappings(self):
-        """Build interface→component mapping using cached device type data"""
-        # For each device type, map interfaces to component indices
+        """Build interface→component mapping with 0-based sequential indices"""
+        # For each device type, create consistent component index mapping
         for device_type_key, interfaces in self.nb_net.device_type_interfaces.items():
-            # Sort interfaces for consistent ordering
+            # CRITICAL: Sort interfaces by name for consistent 0-based indexing
+            # This ensures port.0, port.1, port.2... are always the same interfaces
             sorted_interfaces = sorted(interfaces, key=lambda x: x['name'])
 
-            # Map each interface to component index
-            for idx, iface in enumerate(sorted_interfaces):
-                # Apply mapping to ALL devices of this type
-                for device_id in self.nb_net.device_types[device_type_key]['devices']:
-                    mapping_key = f"{device_id}.{iface['name']}"
-                    self.interface_to_component[mapping_key] = ("port", idx)
+            # Apply mapping to ALL devices of this type
+            for device in self.nb_net.devices:
+                if (device['vendor'], device['model']) == device_type_key:
+                    # Map each interface: device_name.interface_name → (component, idx)
+                    for idx, iface_template in enumerate(sorted_interfaces):
+                        mapping_key = f"{device['name']}.{iface_template['name']}"
+                        # idx is 0-based sequential, as required by infragraph
+                        self.interface_to_component[mapping_key] = ("port", idx)
 
-    def get_component_index(self, device_id, interface_name):
-        """Get (component_name, component_idx) for an interface"""
-        key = f"{device_id}.{interface_name}"
+    def get_component_index(self, device_name, interface_name):
+        """Get (component_name, component_idx) for an interface
+
+        Args:
+            device_name: NetBox device name (portable identifier)
+            interface_name: NetBox interface name
+
+        Returns:
+            Tuple of (component_name, component_idx) where idx is 0-based
+        """
+        key = f"{device_name}.{interface_name}"
         return self.interface_to_component.get(key, ("port", 0))
 ```
+
+**Key design decisions:**
+- Use device **names** not IDs (portable across NetBox instances)
+- Sort interfaces by name for consistent ordering
+- Generate 0-based sequential indices (infragraph requirement)
+- Same device type always has same component indices
 
 ### B3: InfragraphExporter Class
 
@@ -462,7 +522,7 @@ def _build_links(self, infra):
 
 ```python
 def _build_edges(self, infra):
-    """Convert cables to Infrastructure edges"""
+    """Convert cables to Infrastructure edges using device names"""
     for edge in self.G.edges(data=True):
         node_a_name, node_b_name, edge_data = edge
 
@@ -474,50 +534,40 @@ def _build_edges(self, infra):
         if node_a.get('type') != 'interface' or node_b.get('type') != 'interface':
             continue
 
-        # Get interface data (now with device_id!)
+        # Get interface data (now with device_name!)
         iface_a = node_a['interface']
         iface_b = node_b['interface']
 
-        # Direct device lookup using cached device_id
-        device_a = self._find_device_by_id(iface_a['device_id'])
-        device_b = self._find_device_by_id(iface_b['device_id'])
+        # Get device names directly from interface data
+        device_name_a = iface_a['device_name']
+        device_name_b = iface_b['device_name']
 
-        if not device_a or not device_b:
-            continue
-
-        # Map to component indices
+        # Map to component indices using device names
         component_a, idx_a = self.mapper.get_component_index(
-            iface_a['device_id'], iface_a['name']
+            device_name_a, iface_a['name']
         )
         component_b, idx_b = self.mapper.get_component_index(
-            iface_b['device_id'], iface_b['name']
+            device_name_b, iface_b['name']
         )
 
         # Determine link type from interface speed
         link_name = self._get_link_name(iface_a.get('speed', 0))
 
-        # Create edge
+        # Create edge using ONE2ONE scheme (point-to-point cable)
         infra_edge = infra.edges.add(
             scheme=InfrastructureEdge.ONE2ONE,
             link=link_name
         )
 
-        # Set endpoints (instance[device_idx].component[component_idx])
-        instance_a = self._sanitize_name(device_a['name'])
-        instance_b = self._sanitize_name(device_b['name'])
+        # Set endpoints: instance[device_idx].component[component_idx]
+        # device_idx is always 0 since each NetBox device maps to instance with count=1
+        instance_a = self._sanitize_name(device_name_a)
+        instance_b = self._sanitize_name(device_name_b)
 
         infra_edge.ep1.instance = f"{instance_a}[0]"
         infra_edge.ep1.component = f"{component_a}[{idx_a}]"
         infra_edge.ep2.instance = f"{instance_b}[0]"
         infra_edge.ep2.component = f"{component_b}[{idx_b}]"
-
-def _find_device_by_id(self, device_id):
-    """Find device dict by ID using cached index"""
-    try:
-        idx = self.nb_net.device_ids.index(device_id)
-        return self.nb_net.devices[idx]
-    except (ValueError, IndexError):
-        return None
 
 def _get_link_name(self, speed_kbps):
     """Determine link name from interface speed"""
@@ -526,6 +576,12 @@ def _get_link_name(self, speed_kbps):
         return f"ethernet_{int(speed_gbps)}g"
     return "ethernet"
 ```
+
+**Key improvements:**
+- Use `device_name` from interface data (portable identifier)
+- No need for device lookup by ID
+- Clearer endpoint notation with comments
+- Component indices are 0-based sequential from InterfaceMapper
 
 ### B8: Export Method in NBFactory
 
