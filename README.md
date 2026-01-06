@@ -109,7 +109,20 @@ The following software versions were tested for compatibility with `nrx`:
 
 # How to install
 
-## PyPI package (recommended)
+## uv (fastest)
+
+[uv](https://docs.astral.sh/uv/) is a fast Python package installer and runner. It allows running Python tools without installation, or installing them without creating and managing virtual environments manually:
+
+```Shell
+# Install nrx as a persistent tool
+uv tool install nrx
+nrx --version
+
+# Run nrx directly without installation
+uv tool run nrx --version
+```
+
+## PyPI package (traditional method)
 
 ```Shell
 mkdir -p ~/.venv
@@ -227,11 +240,14 @@ Although you can always directly customize the templates according to your needs
 
 # How to use
 
-Start with activating venv environment. See [How to install](#how-to-install) if you didn't install `nrx` yet.
+If you installed `nrx` with `uv tool install`, you can skip directly to the next step.
+
+If you're using the traditional venv installation, start by activating the environment:
 
 ```Shell
 source ~/.venv/nrx/bin/activate
 ```
+## Initialize configuration directory
 
 If this is first time you're running `nrx`, you need to initialize its configuration directory. This will create the `$HOME/.nr` folder and populate it with a configuration file example and a compatible version of the templates. The examples below don't require a configuration file, but do require the templates to be present in the configuration directory.
 

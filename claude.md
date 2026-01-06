@@ -124,6 +124,31 @@ make build
 make clean
 ```
 
+## Using uv for Development
+
+For local development with uv:
+
+```bash
+# Install the project in editable mode
+uv pip install -e .
+
+# Now you can run from source:
+uv run nrx --version
+
+# Or run tests
+uv run pytest tests/unit/ -v
+```
+
+For testing the published PyPI version:
+
+```bash
+# Test without local installation
+uv tool run nrx --version
+
+# Or with specific package
+uv run --with nrx nrx --version
+```
+
 ## Debugging
 
 ### Run with debug output
