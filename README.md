@@ -9,7 +9,7 @@
 **nrx** reads a network topology graph from [NetBox](https://docs.netbox.dev/en/stable/) DCIM system and exports as one of the following:
 
 * [Containerlab](https://containerlab.dev) topology for container-based networking labs
-* [Nvidia Air](https://www.nvidia.com/en-us/networking/ethernet-switching/air/) topology for cloud-based networking labs
+* [NVIDIA Air](https://www.nvidia.com/en-us/networking/ethernet-switching/air/) topology for cloud-based networking labs
 * [Cisco Modeling Labs](https://developer.cisco.com/modeling-labs/) topology for VM-based labs
 * Network visualization format for [Graphite](https://github.com/netreplica/graphite) or [D2](https://d2lang.com/)
 * Graph data as a JSON file in [Cytoscape](https://cytoscape.org/) format [CYJS](http://manual.cytoscape.org/en/stable/Supported_Network_File_Formats.html#cytoscape-js-json)
@@ -22,7 +22,7 @@ This project is in early phase. We're experimenting with the best ways to automa
 # Latest capabilities added
 
 The latest releases have a significant set of the new capabilities:
-* `0.8.0` Nvidia Air support
+* `0.8.0` NVIDIA Air support
 * `0.7.0` NetBox `v4.2` compatibility. Bug fixes. Minimum Python version `3.10`.
 * `0.6.2` NetBox `v4.1` compatibility
 * `0.6.0` Filter links between devices via interface tags
@@ -72,7 +72,7 @@ Data sourcing capabilities:
 Export capabilities:
 
 * Exports the graph as a Containerlab (Clab) topology definition file in YAML format
-* Exports the graph as a Nvidia Air topology definition file in JSON format
+* Exports the graph as a NVIDIA Air topology definition file in JSON format
 * Exports the graph as a Cisco Modeling Labs (CML) topology definition file in YAML format
 * Exported device configurations can be used as `startup-config` for Containerlab and CML
 * Exports the graph in formats for visualization with Graphite or D2
@@ -89,7 +89,7 @@ The following software versions were tested for compatibility with `nrx`:
 
 * NetBox `v4.1`-`v4.2`. We no longer run tests with previously supported `v3.4-4.0` versions, and underlying [`pynetbox`](https://github.com/netbox-community/pynetbox) library is no longer tested with these older versions.
 * Containerlab `v0.39`, but earlier and later versions should work fine
-* Nvidia Air API starting with `v9.15.8` (API v2 is used)
+* NVIDIA Air API starting with `v9.15.8` (API v2 is used)
 * Cisco Modeling Labs `v2.5`
 * Netreplica Graphite `v0.4.0`
 
