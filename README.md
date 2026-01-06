@@ -95,44 +95,49 @@ The following software versions were tested for compatibility with `nrx`:
 
 # Prerequisites
 
-* Python 3.10+. In the commands below we assume you have `python3.10` executable. If it is under a different name, change accordingly.
-* PIP
+Python 3.10+. In the commands below we assume you have `python3.10` executable. If it is under a different name, change accordingly.
 
-    ```Shell
-    curl -sL https://bootstrap.pypa.io/get-pip.py | python3.10 -
-    ```
+Choose one of the following installation methods:
 
-* Virtualenv (recommended)
+**Option 1: uv (fast)**
 
-    ```Shell
-    pip install virtualenv
-    ```
+[uv](https://docs.astral.sh/uv/) is a fast Python package installer and runner. It allows running Python tools without installation, or installing them without creating and managing virtual environments manually.
+
+```Shell
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+**Option 2: pip (traditional)**
+
+```Shell
+curl -sL https://bootstrap.pypa.io/get-pip.py | python3.10 -
+pip install virtualenv
+```
 
 # How to install
 
-## uv (fastest)
-
-[uv](https://docs.astral.sh/uv/) is a fast Python package installer and runner. It allows running Python tools without installation, or installing them without creating and managing virtual environments manually:
+**Option 1: uv**
 
 ```Shell
 # Install nrx as a persistent tool
 uv tool install nrx
 nrx --version
 
-# Run nrx directly without installation
+# Or run nrx directly without installation
 uv tool run nrx --version
 ```
 
-## PyPI package (traditional method)
+**Option 2: pip**
 
 ```Shell
 mkdir -p ~/.venv
 python3.10 -m venv ~/.venv/nrx
 source ~/.venv/nrx/bin/activate
 pip install nrx
+nrx --version
 ```
 
-## From source code (development)
+**Development: git**
 
 After running the following commands, you will have a working `nrx` command in the current directory.
 
@@ -142,6 +147,7 @@ cd nrx
 python3.10 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
+nrx --version
 ```
 
 # How to configure
