@@ -9,7 +9,7 @@
 **nrx** reads a network topology graph from [NetBox](https://docs.netbox.dev/en/stable/) DCIM system and exports as one of the following:
 
 * [Containerlab](https://containerlab.dev) topology for container-based networking labs
-* [Nvidia Air](https://www.nvidia.com/en-us/networking/network-simulation/) topology for cloud-based networking labs
+* [Nvidia Air](https://www.nvidia.com/en-us/networking/ethernet-switching/air/) topology for cloud-based networking labs
 * [Cisco Modeling Labs](https://developer.cisco.com/modeling-labs/) topology for VM-based labs
 * Network visualization format for [Graphite](https://github.com/netreplica/graphite) or [D2](https://d2lang.com/)
 * Graph data as a JSON file in [Cytoscape](https://cytoscape.org/) format [CYJS](http://manual.cytoscape.org/en/stable/Supported_Network_File_Formats.html#cytoscape-js-json)
