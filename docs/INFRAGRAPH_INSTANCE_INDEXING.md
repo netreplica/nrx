@@ -1359,156 +1359,42 @@ ANNOTATION_FIELDS = "device_name,site,role,platform"
 
 ### Q4: Multi-site Handling ✅ DECIDED
 
-**Decision:** Use compaction routine to detect and resolve multi-site conflicts
+**Decision:** Always start with maximal grouping (site included), then use compaction routine to automatically remove unnecessary parts
 
-**Problem:** When exporting from multiple sites, the same role+model combination creates conflicts if site is not part of instance grouping.
+**Key Insight:** The compaction routine works in reverse - start with the longest, most detailed name, then progressively remove parts that don't add distinction. No user configuration needed!
 
-**Example Conflict Scenario:**
-
-```python
-# NetBox has same devices across two sites
-Site: dc1
-  - leaf01 (role=leaf, type=arista/dcs-7050sx-64)
-  - leaf02 (role=leaf, type=arista/dcs-7050sx-64)
-
-Site: dc2
-  - leaf01 (role=leaf, type=arista/dcs-7050sx-64)
-  - leaf02 (role=leaf, type=arista/dcs-7050sx-64)
-
-# If INSTANCE_GROUPING = "role" (no site):
-Instance key: ('leaf', 'arista', 'dcs-7050sx-64')
-Devices in group: [dc1-leaf01, dc1-leaf02, dc2-leaf01, dc2-leaf02]
-Instance name: leaf_7050
-Count: 4  # Mixes devices from both sites! ❌
-
-# But user likely wants per-site grouping:
-# INSTANCE_GROUPING = "site,role"
-Instance keys:
-  ('dc1', 'leaf', 'arista', 'dcs-7050sx-64')
-  ('dc2', 'leaf', 'arista', 'dcs-7050sx-64')
-
-Minimal names (collision detected):
-  dc1_leaf_7050  ✓ Unique with site prefix
-  dc2_leaf_7050  ✓ Unique with site prefix
-
-# Compaction routine result:
-  dc1_leaf_7050  # 2 instances (leaf01, leaf02)
-  dc2_leaf_7050  # 2 instances (leaf01, leaf02)
-```
-
-**Solution Strategy:**
-
-1. **User-configurable grouping** determines scope:
-   ```toml
-   [INFRAGRAPH]
-   # For multi-site exports, include site in grouping
-   INSTANCE_GROUPING = "site,role"
-
-   # For single-site exports, role alone may suffice
-   # INSTANCE_GROUPING = "role"
-
-   # For pod-based architectures (custom field)
-   # INSTANCE_GROUPING = "site,pod,role"
-   ```
-
-2. **Compaction routine ensures uniqueness:**
-   - If `INSTANCE_GROUPING = "role"` and multiple sites export same role+model:
-     - Compaction detects NO conflict (all same instance_key)
-     - Devices from all sites grouped together
-     - User must add `site` to grouping if per-site separation desired
-
-   - If `INSTANCE_GROUPING = "site,role"`:
-     - Each site creates separate instance_key
-     - Compaction generates unique names automatically
-
-3. **Conflict detection at export time:**
-   ```python
-   def _validate_instance_grouping(self, instance_groups):
-       """Warn if instance groups span multiple sites unexpectedly"""
-
-       for instance_key, devices in instance_groups.items():
-           sites = {d.get('site', 'unknown') for d in devices}
-
-           if len(sites) > 1 and 'site' not in self.grouping_fields:
-               site_list = ', '.join(sorted(sites))
-               logging.warning(
-                   f"Instance '{instance_key}' contains devices from "
-                   f"multiple sites: {site_list}. "
-                   f"Consider adding 'site' to INSTANCE_GROUPING config."
-               )
-   ```
-
-**Real-world Examples:**
-
-**Scenario A: Multi-site, want combined instances** (intentional)
-```toml
-# User wants to see total leaf count across all sites
-INSTANCE_GROUPING = "role"
-
-# Result:
-leaf_7050: count=10  # 4 from dc1, 6 from dc2
-spine_7280: count=6  # 2 from dc1, 4 from dc2
-```
-
-**Scenario B: Multi-site, want separate instances** (typical)
-```toml
-# User wants per-site separation
-INSTANCE_GROUPING = "site,role"
-
-# Result:
-dc1_leaf_7050: count=4
-dc1_spine_7280: count=2
-dc2_leaf_7050: count=6
-dc2_spine_7280: count=4
-```
-
-**Scenario C: Multi-site with pod architecture**
-```toml
-# Custom field 'pod' used for grouping
-INSTANCE_GROUPING = "site,pod,role"
-
-# Result (more granular):
-dc1_pod1_leaf_7050: count=2
-dc1_pod2_leaf_7050: count=2
-dc2_pod1_leaf_7050: count=3
-dc2_pod2_leaf_7050: count=3
-```
-
-**Implementation Detail:**
+**Algorithm:**
 
 ```python
-def _build_instance_index(self):
-    """Build instance indexing with conflict validation"""
+def _build_instance_index_with_auto_grouping(self):
+    """
+    Build instance indexing with automatic site detection
 
-    # Get grouping fields from config
-    grouping_fields = self.config.get('infragraph_grouping', 'role').split(',')
-    self.grouping_fields = [f.strip() for f in grouping_fields]
+    Strategy:
+    1. Always group by (site, role, vendor, model) initially
+    2. Compaction routine removes 'site' if it doesn't add distinction
+    3. User gets shortest possible names automatically
+    """
 
     instance_groups = {}
 
     for device in self.nb_net.devices:
-        # Build instance key from configured fields
-        key_parts = []
-        for field in self.grouping_fields:
-            value = self._get_device_field(device, field)
-            if value:
-                key_parts.append(value)
-
-        # Always append vendor + model
-        key_parts.extend([device['vendor'], device['model']])
-        instance_key = tuple(key_parts)
+        # Always start with maximal grouping
+        instance_key = (
+            device.get('site', ''),
+            device.get('role', ''),
+            device['vendor'],
+            device['model']
+        )
 
         if instance_key not in instance_groups:
             instance_groups[instance_key] = []
         instance_groups[instance_key].append(device)
 
-    # Validate grouping (warn if multi-site without 'site' in grouping)
-    self._validate_instance_grouping(instance_groups)
-
-    # Smart compaction: shortest conflict-free names
+    # Compaction routine automatically optimizes names
     optimal_names = self._compact_instance_names(instance_groups)
 
-    # Assign indices
+    # Assign instance names and indices
     for instance_key, devices in instance_groups.items():
         devices.sort(key=lambda d: d['id'])
         instance_name = optimal_names[instance_key]
@@ -1518,20 +1404,215 @@ def _build_instance_index(self):
             device['instance_index'] = idx
 ```
 
-**Key Insights:**
+**Compaction Logic (Updated):**
 
-- ✅ **Compaction routine handles conflicts** automatically via progressive name expansion
-- ✅ **User controls grouping scope** via `INSTANCE_GROUPING` config
-- ✅ **Multi-site conflicts detected** when site not in grouping but devices span sites
-- ✅ **Flexible for different architectures:** single-site, multi-site, pod-based
-- ✅ **Warning system** alerts users to potential grouping issues at export time
+```python
+def _compact_instance_names(self, instance_groups):
+    """
+    Generate shortest possible instance names by removing unnecessary parts
+
+    Strategy:
+    1. Start with full name: site_role_vendor_model
+    2. Try removing site (if doesn't create conflict)
+    3. Try removing vendor (if doesn't create conflict)
+    4. Try compacting model (7050sx64 → 7050sx → 7050)
+    5. Return shortest conflict-free names
+    """
+
+    final_names = {}
+
+    # Try progressively shorter names for each instance_key
+    for instance_key in instance_groups.keys():
+        site, role, vendor, model = instance_key
+
+        # Level 1: Try without site
+        candidate = self._build_name_without_site(role, vendor, model)
+        if self._is_unique_across_groups(candidate, instance_key, instance_groups):
+            final_names[instance_key] = candidate
+            continue
+
+        # Level 2: Try without vendor (but with site)
+        candidate = self._build_name_without_vendor(site, role, model)
+        if self._is_unique_across_groups(candidate, instance_key, instance_groups):
+            final_names[instance_key] = candidate
+            continue
+
+        # Level 3: Try compact model without site
+        model_compact = self._extract_model_core(model)
+        candidate = f"{role}_{model_compact}"
+        if self._is_unique_across_groups(candidate, instance_key, instance_groups):
+            final_names[instance_key] = candidate
+            continue
+
+        # Level 4: Try compact model with site (no vendor)
+        candidate = f"{site}_{role}_{model_compact}"
+        if self._is_unique_across_groups(candidate, instance_key, instance_groups):
+            final_names[instance_key] = candidate
+            continue
+
+        # Level 5: Full detail (guaranteed unique)
+        final_names[instance_key] = f"{site}_{role}_{vendor}_{model_compact}"
+
+    return final_names
+
+def _is_unique_across_groups(self, candidate_name, instance_key, instance_groups):
+    """Check if candidate name would be unique across all instance groups"""
+
+    # Count how many instance_keys would map to this candidate
+    matches = 0
+    for other_key in instance_groups.keys():
+        # Try generating the same candidate for other_key
+        if self._would_generate_same_name(candidate_name, other_key):
+            matches += 1
+
+    # Unique if only this instance_key generates this name
+    return matches == 1
+```
+
+**Example Scenarios:**
+
+**Scenario 1: Single-site export**
+```python
+# NetBox data (single site)
+Site: dc1
+  - leaf01 (role=leaf, type=arista/dcs-7050sx-64)
+  - leaf02 (role=leaf, type=arista/dcs-7050sx-64)
+  - spine01 (role=spine, type=arista/dcs-7280sr-48c6)
+
+# Initial grouping (maximal):
+instance_keys:
+  ('dc1', 'leaf', 'arista', 'dcs-7050sx-64')
+  ('dc1', 'spine', 'arista', 'dcs-7280sr-48c6')
+
+# Compaction routine:
+Try without site:
+  leaf_7050  ✓ Unique! (no other site has leaf/arista/7050)
+  spine_7280 ✓ Unique! (no other site has spine/arista/7280)
+
+# Final result (site removed automatically):
+leaf_7050: count=2
+spine_7280: count=1
+```
+
+**Scenario 2: Multi-site with same devices**
+```python
+# NetBox data (two sites, same devices)
+Site: dc1
+  - leaf01 (role=leaf, type=arista/dcs-7050sx-64)
+  - leaf02 (role=leaf, type=arista/dcs-7050sx-64)
+
+Site: dc2
+  - leaf01 (role=leaf, type=arista/dcs-7050sx-64)
+  - leaf02 (role=leaf, type=arista/dcs-7050sx-64)
+
+# Initial grouping (maximal):
+instance_keys:
+  ('dc1', 'leaf', 'arista', 'dcs-7050sx-64')
+  ('dc2', 'leaf', 'arista', 'dcs-7050sx-64')
+
+# Compaction routine:
+Try without site:
+  leaf_7050  ❌ Collision! (both dc1 and dc2 would map to this)
+
+Try with site:
+  dc1_leaf_7050  ✓ Unique!
+  dc2_leaf_7050  ✓ Unique!
+
+# Final result (site kept automatically):
+dc1_leaf_7050: count=2
+dc2_leaf_7050: count=2
+```
+
+**Scenario 3: Multi-site with different devices**
+```python
+# NetBox data (two sites, different devices)
+Site: dc1
+  - leaf01 (role=leaf, type=arista/dcs-7050sx-64)
+  - leaf02 (role=leaf, type=arista/dcs-7050sx-64)
+
+Site: dc2
+  - leaf01 (role=leaf, type=cisco/nexus-9300)
+  - leaf02 (role=leaf, type=cisco/nexus-9300)
+
+# Initial grouping (maximal):
+instance_keys:
+  ('dc1', 'leaf', 'arista', 'dcs-7050sx-64')
+  ('dc2', 'leaf', 'cisco', 'nexus-9300')
+
+# Compaction routine:
+Try without site:
+  leaf_7050  ✓ Unique! (only dc1 has arista/7050)
+  leaf_9300  ✓ Unique! (only dc2 has cisco/9300)
+
+# Final result (site removed, vendor removed automatically):
+leaf_7050: count=2
+leaf_9300: count=2
+```
+
+**Scenario 4: Multi-site with partial overlap**
+```python
+# NetBox data (three sites, mixed)
+Site: dc1
+  - leaf01 (role=leaf, type=arista/dcs-7050sx-64)
+  - spine01 (role=spine, type=arista/dcs-7280sr-48c6)
+
+Site: dc2
+  - leaf01 (role=leaf, type=arista/dcs-7050sx-64)  # Same as dc1!
+  - spine01 (role=spine, type=cisco/nexus-9500)
+
+Site: dc3
+  - leaf01 (role=leaf, type=cisco/nexus-9300)
+  - spine01 (role=spine, type=cisco/nexus-9500)
+
+# Initial grouping (maximal):
+instance_keys:
+  ('dc1', 'leaf', 'arista', 'dcs-7050sx-64')
+  ('dc1', 'spine', 'arista', 'dcs-7280sr-48c6')
+  ('dc2', 'leaf', 'arista', 'dcs-7050sx-64')  # Collision with dc1!
+  ('dc2', 'spine', 'cisco', 'nexus-9500')
+  ('dc3', 'leaf', 'cisco', 'nexus-9300')
+  ('dc3', 'spine', 'cisco', 'nexus-9500')  # Collision with dc2!
+
+# Compaction routine:
+leaf_7050  ❌ Collision (dc1 and dc2)
+  → dc1_leaf_7050  ✓ Unique
+  → dc2_leaf_7050  ✓ Unique
+
+spine_7280  ✓ Unique (only dc1)
+  → spine_7280  ✓ Keep short
+
+spine_9500  ❌ Collision (dc2 and dc3)
+  → dc2_spine_9500  ✓ Unique
+  → dc3_spine_9500  ✓ Unique
+
+leaf_9300  ✓ Unique (only dc3)
+  → leaf_9300  ✓ Keep short
+
+# Final result (mix of site-prefixed and non-prefixed):
+dc1_leaf_7050: count=1   # Site needed (collision)
+spine_7280: count=1      # Site not needed (unique)
+dc2_leaf_7050: count=1   # Site needed (collision)
+dc2_spine_9500: count=1  # Site needed (collision)
+leaf_9300: count=1       # Site not needed (unique)
+dc3_spine_9500: count=1  # Site needed (collision)
+```
+
+**Key Benefits:**
+
+- ✅ **No user configuration required** - algorithm automatically optimizes
+- ✅ **Always shortest possible names** - removes unnecessary parts
+- ✅ **Handles all scenarios** - single-site, multi-site, partial overlap
+- ✅ **Deterministic** - same input always produces same output
+- ✅ **No false grouping** - devices from different sites never accidentally combined
+- ✅ **Optimal readability** - site only included when needed for distinction
 
 **Trade-offs:**
 
-- ❌ Requires users to understand their grouping needs (site vs. global)
-- ❌ No automatic detection of "correct" grouping level
-- ✅ But: Explicit configuration prevents unexpected behavior
-- ✅ Warning messages guide users when grouping may be incorrect
+- ✅ Fully automatic (no decisions needed)
+- ✅ Always produces shortest conflict-free names
+- ✅ Handles complex multi-site scenarios transparently
+- ⚠️ Users cannot force global grouping (devices always separated by site first)
+  - If truly global view desired across sites, would need post-processing step
 
 ## Next Steps
 
