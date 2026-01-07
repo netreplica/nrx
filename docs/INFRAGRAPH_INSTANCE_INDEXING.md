@@ -667,7 +667,9 @@ class NBFactory:
 
         # Build instance metadata
         for instance_key, devices in instance_groups.items():
-            devices.sort(key=lambda d: d['name'])  # Deterministic ordering
+            # CRITICAL: Sort by NetBox device ID for stable, chronological ordering
+            # This preserves indices across device renames and has high portability
+            devices.sort(key=lambda d: d['id'])
 
             # Generate instance name from key parts
             instance_name = self._generate_instance_name(instance_key, grouping_fields)
@@ -874,24 +876,62 @@ nrx --output infragraph --infragraph-grouping "site,role"
 
 ## Open Questions
 
-### Q1: Sorting Stability
+### Q1: Sorting Stability ✅ DECIDED
 
-**Current approach:** Sort devices by name at export time
+**Decision:** Sort devices by NetBox device ID
 
-**Problem:** If device is renamed in NetBox:
+**Rationale:**
+
+NetBox device IDs provide the best balance of stability and portability:
+
+1. **Stable across renames:**
+   ```
+   leaf01 (ID=42) → leaf_7050.0
+   Rename to: access-sw-01 (ID=42) → leaf_7050.0 ✓ Same index
+   ```
+
+2. **Preserves deployment/creation order:**
+   ```
+   Day 1: leaf01 created → ID=100
+   Day 2: leaf02 created → ID=101
+   Sorted by ID = chronological deployment
+   ```
+
+3. **Consistent across multiple exports:**
+   ```
+   Export 1: ID sort → [42, 43, 44] → indices [0, 1, 2]
+   Export 2: ID sort → [42, 43, 44] → indices [0, 1, 2] ✓
+   ```
+
+4. **High portability probability:**
+   - Most NetBox imports preserve chronological order
+   - Bulk imports typically maintain relative ID ordering
+   - Even if absolute IDs differ, sort order usually matches
+
+   ```python
+   # Instance A
+   leaf01 → ID 42, leaf02 → ID 43, leaf03 → ID 44
+   Sorted: [42, 43, 44] → indices [0, 1, 2]
+
+   # Instance B (imported from A)
+   leaf01 → ID 108, leaf02 → ID 109, leaf03 → ID 110
+   Sorted: [108, 109, 110] → indices [0, 1, 2] ✓ Same order!
+   ```
+
+5. **Annotations provide safety net:**
+   - If indices do change between instances, annotations preserve mapping
+   - `annotations.netbox_device_name` allows reconstruction
+
+**Trade-off accepted:**
+- ❌ Not alphabetically ordered (less predictable for humans)
+- ❌ Could break if selective/out-of-order import to new instance
+- ✅ But: annotations preserve device name mapping regardless
+
+**Implementation:**
+```python
+# Sort by NetBox device ID
+devices.sort(key=lambda d: d['id'])
 ```
-Export 1: [leaf01, leaf02] → leaf_7050.0, leaf_7050.1
-Rename: leaf01 → leaf-new-01
-Export 2: [leaf-new-01, leaf02] → leaf_7050.0=leaf02, leaf_7050.1=leaf-new-01 ❌ Changed!
-```
-
-**Options:**
-1. Sort by device name (current) - indices can change on rename
-2. Sort by NetBox device ID - stable but not portable
-3. Sort by custom field (e.g., "infragraph_index") - requires setup
-4. Store original sort order in nrx graph - maintain across exports
-
-**Recommendation needed:** What's the priority - stability across renames or portability?
 
 ### Q2: Instance Name Collisions
 

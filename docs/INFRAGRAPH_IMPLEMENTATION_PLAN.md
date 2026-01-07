@@ -367,6 +367,8 @@ class InterfaceMapper:
         for device_type_key, interfaces in self.nb_net.device_type_interfaces.items():
             # CRITICAL: Sort interfaces by name for consistent 0-based indexing
             # This ensures port.0, port.1, port.2... are always the same interfaces
+            # Note: For devices, we sort by ID; for interfaces, we sort by name
+            # because interface IDs are less stable and names are more meaningful
             sorted_interfaces = sorted(interfaces, key=lambda x: x['name'])
 
             # Apply mapping to ALL devices of this type
