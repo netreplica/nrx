@@ -561,6 +561,317 @@ NetBox: access-switch-01 → infragraph: leaf_7050sx.0 (annotation: "access-swit
 
 **Question:** Should we preserve original sort order or re-sort on each export?
 
+## User-Configurable Instance Grouping
+
+### The Scoping Problem
+
+Infragraph's compression via `count` only makes sense within a logical scope:
+
+**Example - Multi-site topology:**
+```
+Site DC1:
+  leaf01, leaf02, leaf03, leaf04 (role=leaf, same hardware)
+Site DC2:
+  leaf01, leaf02, leaf03, leaf04 (role=leaf, same hardware)
+
+BAD grouping (no scope):
+  Instance: leaf_7050, count=8  ❌
+  Result: leaf_7050.0 through leaf_7050.7 (which is which site?)
+
+GOOD grouping (site scope):
+  Instance: dc1_leaf_7050, count=4  ✓
+  Instance: dc2_leaf_7050, count=4  ✓
+  Result: Clear separation by site
+```
+
+**Example - Pod-based topology:**
+```
+Pod1:
+  leaf01, leaf02 (role=leaf)
+  spine01 (role=spine)
+Pod2:
+  leaf03, leaf04 (role=leaf)
+  spine02 (role=spine)
+
+GOOD grouping (pod scope):
+  Instance: pod1_leaf_7050, count=2
+  Instance: pod1_spine_7280, count=1
+  Instance: pod2_leaf_7050, count=2
+  Instance: pod2_spine_7280, count=1
+```
+
+### Proposed Solution: Configuration-Based Grouping
+
+**Add configuration parameter for instance grouping strategy:**
+
+```toml
+# nrx.conf
+[INFRAGRAPH]
+# Define how to group devices into instances
+# Available fields: site, location, rack, role, tenant, custom_field_name
+INSTANCE_GROUPING = "site,role"
+
+# Or for pod-based architectures (using custom field):
+# INSTANCE_GROUPING = "pod,role"
+
+# Or rack-level granularity:
+# INSTANCE_GROUPING = "site,rack,role"
+
+# Or minimal (just role+type):
+# INSTANCE_GROUPING = "role"
+```
+
+**Command-line override:**
+
+```bash
+nrx --output infragraph --sites DC1 \
+    --infragraph-grouping site,role
+
+# Or use environment variable
+export NRX_INFRAGRAPH_GROUPING="pod,role"
+```
+
+### Implementation: Dynamic Instance Key Generation
+
+```python
+class NBFactory:
+    def _build_instance_index(self):
+        """Build instance indexing based on configured grouping"""
+
+        # Get grouping fields from config (comma-separated)
+        grouping_fields = self.config.get('infragraph_grouping', 'role').split(',')
+        grouping_fields = [f.strip() for f in grouping_fields]
+
+        # Always include device type (required for consistency)
+        # Format: [user_fields..., vendor, model]
+
+        instance_groups = {}  # instance_key → [device_list]
+
+        for device in self.nb_net.devices:
+            # Build instance key from configured fields
+            key_parts = []
+
+            for field in grouping_fields:
+                value = self._get_device_field(device, field)
+                if value:
+                    key_parts.append(value)
+
+            # Always append device type for template consistency
+            key_parts.extend([device['vendor'], device['model']])
+
+            instance_key = tuple(key_parts)
+
+            if instance_key not in instance_groups:
+                instance_groups[instance_key] = []
+            instance_groups[instance_key].append(device)
+
+        # Build instance metadata
+        for instance_key, devices in instance_groups.items():
+            devices.sort(key=lambda d: d['name'])  # Deterministic ordering
+
+            # Generate instance name from key parts
+            instance_name = self._generate_instance_name(instance_key, grouping_fields)
+
+            device_type_key = instance_key[-2:]  # Last two: (vendor, model)
+
+            self.nb_net.instances[instance_key] = {
+                'name': instance_name,
+                'grouping_fields': grouping_fields,
+                'device_type_key': device_type_key,
+                'count': len(devices),
+                'devices': [d['name'] for d in devices]
+            }
+
+            # Map devices to instances
+            for idx, device in enumerate(devices):
+                self.nb_net.device_to_instance[device['name']] = (instance_name, idx)
+                device['instance_name'] = instance_name
+                device['instance_index'] = idx
+                device['instance_key'] = instance_key
+
+    def _get_device_field(self, device, field_name):
+        """Get device field value by name, supporting custom fields"""
+
+        # Standard NetBox fields
+        standard_fields = {
+            'site': lambda d: d.get('site', ''),
+            'role': lambda d: d.get('role', ''),
+            'tenant': lambda d: d.get('tenant', ''),
+            'location': lambda d: d.get('location', ''),
+            'rack': lambda d: d.get('rack', ''),
+        }
+
+        if field_name in standard_fields:
+            return standard_fields[field_name](device)
+
+        # Custom fields (if stored in device dict)
+        if 'custom_fields' in device and field_name in device['custom_fields']:
+            return device['custom_fields'][field_name]
+
+        return None
+
+    def _generate_instance_name(self, instance_key, grouping_fields):
+        """Generate instance name from key components
+
+        Args:
+            instance_key: Tuple of (field_values..., vendor, model)
+            grouping_fields: List of field names used
+
+        Returns:
+            Sanitized instance name like "dc1_pod1_leaf_7050"
+        """
+        # Take all parts except vendor/model (last 2)
+        name_parts = list(instance_key[:-2])
+
+        # Add short model name
+        model = instance_key[-1]
+        model_short = self._create_model_shortname(model)
+        name_parts.append(model_short)
+
+        # Join and sanitize
+        instance_name = '_'.join(str(p) for p in name_parts if p)
+        instance_name = self._sanitize_name(instance_name)
+
+        return instance_name
+```
+
+### Example Configurations
+
+**1. Single site - role only:**
+```toml
+INSTANCE_GROUPING = "role"
+```
+Result: `leaf_7050`, `spine_7280`
+
+**2. Multi-site - site + role:**
+```toml
+INSTANCE_GROUPING = "site,role"
+```
+Result: `dc1_leaf_7050`, `dc1_spine_7280`, `dc2_leaf_7050`, `dc2_spine_7280`
+
+**3. Pod architecture - custom field + role:**
+```toml
+INSTANCE_GROUPING = "pod,role"
+```
+NetBox devices have custom field `pod` = `pod1`, `pod2`, etc.
+Result: `pod1_leaf_7050`, `pod1_spine_7280`, `pod2_leaf_7050`
+
+**4. Rack-level granularity:**
+```toml
+INSTANCE_GROUPING = "site,rack,role"
+```
+Result: `dc1_rack01_leaf_7050`, `dc1_rack01_spine_7280`, `dc1_rack02_leaf_7050`
+
+**5. Tenant-based (MSP use case):**
+```toml
+INSTANCE_GROUPING = "tenant,role"
+```
+Result: `customer_a_leaf_7050`, `customer_b_leaf_7050`
+
+### Default Configuration
+
+**Recommended default:**
+```toml
+# Default to site,role for multi-site compatibility
+INSTANCE_GROUPING = "site,role"
+```
+
+**Special handling for single-site exports:**
+```python
+def _build_instance_index(self):
+    # Check if all devices are in same site
+    sites = set(d.get('site', '') for d in self.nb_net.devices)
+
+    if len(sites) == 1 and 'site' in self.config['infragraph_grouping'].split(','):
+        # Single site - omit site from instance name
+        # "dc1_leaf_7050" → "leaf_7050"
+        # But still group by site to avoid cross-site mixing if topology expands
+        pass
+```
+
+### Future: Hierarchical Grouping (Pods)
+
+When infragraph adds support for reusable blocks/pods:
+
+```python
+# Future enhancement: Export pods as separate structures
+INSTANCE_GROUPING = "pod,role"
+INFRAGRAPH_USE_PODS = true
+
+# Would generate:
+{
+  "pods": [
+    {
+      "name": "pod1",
+      "instances": [
+        {"name": "leaf_7050", "count": 2},
+        {"name": "spine_7280", "count": 1}
+      ]
+    }
+  ]
+}
+```
+
+### Configuration Validation
+
+```python
+def validate_infragraph_config(config):
+    """Validate infragraph configuration"""
+
+    grouping = config.get('infragraph_grouping', 'role')
+    fields = [f.strip() for f in grouping.split(',')]
+
+    supported_fields = ['site', 'location', 'rack', 'role', 'tenant']
+
+    for field in fields:
+        if field not in supported_fields and not field.startswith('custom_'):
+            warning(f"Infragraph grouping field '{field}' may not be supported. "
+                   f"Supported fields: {', '.join(supported_fields)}, custom_*")
+
+    # Warn if 'role' not included
+    if 'role' not in fields:
+        warning("Infragraph grouping does not include 'role'. "
+               "This may result in unexpected instance grouping.")
+
+    return fields
+```
+
+### Documentation for Users
+
+**In README.md:**
+
+```markdown
+### Infragraph Instance Grouping
+
+When exporting to infragraph format, devices are grouped into instances based on:
+1. **User-configured grouping fields** (site, rack, role, etc.)
+2. **Device type** (vendor + model) - always included automatically
+
+Configure in `nrx.conf`:
+```toml
+[INFRAGRAPH]
+# Group by site and role (recommended for multi-site)
+INSTANCE_GROUPING = "site,role"
+
+# Group by role only (single site)
+INSTANCE_GROUPING = "role"
+
+# Group by custom pod field and role
+INSTANCE_GROUPING = "pod,role"
+```
+
+Or via command line:
+```bash
+nrx --output infragraph --infragraph-grouping "site,role"
+```
+
+**Example:**
+- NetBox devices: `dc1-leaf01`, `dc1-leaf02`, `dc2-leaf01`
+- Grouping: `site,role`
+- Infragraph instances: `dc1_leaf`, `dc2_leaf`
+- Result: `dc1_leaf.0`, `dc1_leaf.1`, `dc2_leaf.0`
+```
+
 ## Open Questions
 
 ### Q1: Sorting Stability
