@@ -850,16 +850,16 @@ When exporting to infragraph format, devices are grouped into instances based on
 2. **Device type** (vendor + model) - always included automatically
 
 Configure in `nrx.conf`:
-```toml
-[INFRAGRAPH]
-# Group by site and role (recommended for multi-site)
-INSTANCE_GROUPING = "site,role"
 
-# Group by role only (single site)
-INSTANCE_GROUPING = "role"
+    [INFRAGRAPH]
+    # Group by site and role (recommended for multi-site)
+    INSTANCE_GROUPING = "site,role"
 
-# Group by custom pod field and role
-INSTANCE_GROUPING = "pod,role"
+    # Group by role only (single site)
+    INSTANCE_GROUPING = "role"
+
+    # Group by custom pod field and role
+    INSTANCE_GROUPING = "pod,role"
 ```
 
 Or via command line:
@@ -872,7 +872,6 @@ nrx --output infragraph --infragraph-grouping "site,role"
 - Grouping: `site,role`
 - Infragraph instances: `dc1_leaf`, `dc2_leaf`
 - Result: `dc1_leaf.0`, `dc1_leaf.1`, `dc2_leaf.0`
-```
 
 ## Open Questions
 
@@ -1218,15 +1217,145 @@ def _build_instance_index(self):
         # ... rest of instance building ...
 ```
 
-### Q3: Annotation Format
+### Q3: Annotation Format ✅ DECIDED
 
-**Where to store NetBox metadata?**
+**Decision:** Use infragraph's `annotate_graph` API after export
 
-1. **Infragraph annotations API** - if available, most proper
-2. **Custom JSON section** - `"netbox_metadata": {...}`
-3. **Separate file** - `topology.infragraph.json` + `topology.netbox.json`
+**How infragraph annotations work:**
 
-**Recommendation needed:** Check if infragraph SDK supports annotations in export.
+Infragraph provides an `annotate_graph` API specifically designed to "separate the infrastructure model from specific use-case models." Annotations extend the graph with custom data without modifying the core infrastructure.
+
+**API Pattern:**
+```python
+from infragraph import AnnotateRequest
+
+# After creating infrastructure and calling set_graph()
+annotate_request = AnnotateRequest()
+
+# Add annotation for each node
+annotate_request.nodes.add(
+    name="leaf_7050.0",           # Node ID
+    attribute="netbox_device_name",  # Attribute key
+    value="leaf01"                   # Attribute value (string)
+)
+
+# Apply annotations
+service.annotate_graph(annotate_request)
+```
+
+**Implementation in nrx:**
+
+```python
+def export_graph_infragraph(self):
+    """Export network topology in infragraph format with annotations"""
+
+    # Phase 1: Create and export base infrastructure
+    exporter = InfragraphExporter(self.G, self.nb_net, self.topology_name, self.config)
+    infrastructure = exporter.build_infrastructure()
+    json_output = infrastructure.serialize(encoding=Infrastructure.JSON)
+
+    # Write base infragraph file
+    dir_path = create_output_directory(self.topology_name, self.config['output_dir'])
+    export_file = f"{self.topology_name}.infragraph.json"
+    export_path = f"{dir_path}/{export_file}"
+
+    with open(export_path, 'w', encoding='utf-8') as f:
+        f.write(json_output)
+    print(f"Infragraph JSON saved to: {export_path}")
+
+    # Phase 2: Add NetBox annotations via InfraGraphService
+    if self.config.get('infragraph_add_annotations', True):
+        try:
+            from infragraph import InfraGraphService, AnnotateRequest
+
+            # Load the infrastructure into service
+            service = InfraGraphService()
+            service.set_graph(json_output)
+
+            # Build annotation request
+            annotate_request = AnnotateRequest()
+
+            for device in self.nb_net.devices:
+                instance_name = device['instance_name']
+                instance_idx = device['instance_index']
+                node_id = f"{instance_name}.{instance_idx}"
+
+                # Add NetBox device metadata as annotations
+                annotate_request.nodes.add(
+                    name=node_id,
+                    attribute="netbox_device_name",
+                    value=device['name']
+                )
+                annotate_request.nodes.add(
+                    name=node_id,
+                    attribute="netbox_site",
+                    value=device.get('site', '')
+                )
+                annotate_request.nodes.add(
+                    name=node_id,
+                    attribute="netbox_role",
+                    value=device.get('role', '')
+                )
+                annotate_request.nodes.add(
+                    name=node_id,
+                    attribute="netbox_platform",
+                    value=device.get('platform', '')
+                )
+                # Optional: Add NetBox ID for reference (not for portability)
+                annotate_request.nodes.add(
+                    name=node_id,
+                    attribute="netbox_id",
+                    value=str(device['id'])
+                )
+
+            # Apply annotations
+            service.annotate_graph(annotate_request)
+
+            # Export annotated graph
+            annotated_output = service.get_graph()
+            annotated_file = f"{self.topology_name}.infragraph.annotated.json"
+            annotated_path = f"{dir_path}/{annotated_file}"
+
+            with open(annotated_path, 'w', encoding='utf-8') as f:
+                f.write(annotated_output)
+            print(f"Annotated infragraph saved to: {annotated_path}")
+
+        except ImportError:
+            print("⚠ infragraph package not available, skipping annotations")
+        except Exception as e:
+            print(f"⚠ Annotation failed: {e}")
+```
+
+**Benefits of using infragraph API:**
+- ✅ Standard infragraph pattern (not custom format)
+- ✅ Annotations queryable via `query_graph` API
+- ✅ Separates infrastructure from metadata (clean design)
+- ✅ Two-file output:
+  - `topology.infragraph.json` - Clean infrastructure
+  - `topology.infragraph.annotated.json` - With NetBox metadata
+
+**Querying annotations:**
+```python
+# Later, can query by NetBox device name
+filter = QueryNodeFilter()
+filter.choice = QueryNodeFilter.ATTRIBUTE_FILTER
+filter.attribute_filter.name = "netbox_device_name"
+filter.attribute_filter.operator = QueryNodeId.EQ
+filter.attribute_filter.value = "leaf01"
+
+matches = service.query_graph(filter)
+# Returns: leaf_7050.0 (or whichever node has that annotation)
+```
+
+**Configuration option:**
+```toml
+[INFRAGRAPH]
+# Add NetBox annotations to exported graph (default: true)
+ADD_ANNOTATIONS = true
+
+# Annotations to include (comma-separated)
+ANNOTATION_FIELDS = "device_name,site,role,platform"
+```
 
 ### Q4: Multi-site Handling
 
