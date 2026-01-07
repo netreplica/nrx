@@ -1357,16 +1357,181 @@ ADD_ANNOTATIONS = true
 ANNOTATION_FIELDS = "device_name,site,role,platform"
 ```
 
-### Q4: Multi-site Handling
+### Q4: Multi-site Handling ✅ DECIDED
 
-**Should site be part of instance grouping by default?**
+**Decision:** Use compaction routine to detect and resolve multi-site conflicts
 
-**Current:** No (role + type only)
-**Alternative:** Add `--instance-grouping` config option
+**Problem:** When exporting from multiple sites, the same role+model combination creates conflicts if site is not part of instance grouping.
+
+**Example Conflict Scenario:**
+
+```python
+# NetBox has same devices across two sites
+Site: dc1
+  - leaf01 (role=leaf, type=arista/dcs-7050sx-64)
+  - leaf02 (role=leaf, type=arista/dcs-7050sx-64)
+
+Site: dc2
+  - leaf01 (role=leaf, type=arista/dcs-7050sx-64)
+  - leaf02 (role=leaf, type=arista/dcs-7050sx-64)
+
+# If INSTANCE_GROUPING = "role" (no site):
+Instance key: ('leaf', 'arista', 'dcs-7050sx-64')
+Devices in group: [dc1-leaf01, dc1-leaf02, dc2-leaf01, dc2-leaf02]
+Instance name: leaf_7050
+Count: 4  # Mixes devices from both sites! ❌
+
+# But user likely wants per-site grouping:
+# INSTANCE_GROUPING = "site,role"
+Instance keys:
+  ('dc1', 'leaf', 'arista', 'dcs-7050sx-64')
+  ('dc2', 'leaf', 'arista', 'dcs-7050sx-64')
+
+Minimal names (collision detected):
+  dc1_leaf_7050  ✓ Unique with site prefix
+  dc2_leaf_7050  ✓ Unique with site prefix
+
+# Compaction routine result:
+  dc1_leaf_7050  # 2 instances (leaf01, leaf02)
+  dc2_leaf_7050  # 2 instances (leaf01, leaf02)
 ```
---instance-grouping role_type  # leaf_7050
---instance-grouping site_role_type  # dc1_leaf_7050
+
+**Solution Strategy:**
+
+1. **User-configurable grouping** determines scope:
+   ```toml
+   [INFRAGRAPH]
+   # For multi-site exports, include site in grouping
+   INSTANCE_GROUPING = "site,role"
+
+   # For single-site exports, role alone may suffice
+   # INSTANCE_GROUPING = "role"
+
+   # For pod-based architectures (custom field)
+   # INSTANCE_GROUPING = "site,pod,role"
+   ```
+
+2. **Compaction routine ensures uniqueness:**
+   - If `INSTANCE_GROUPING = "role"` and multiple sites export same role+model:
+     - Compaction detects NO conflict (all same instance_key)
+     - Devices from all sites grouped together
+     - User must add `site` to grouping if per-site separation desired
+
+   - If `INSTANCE_GROUPING = "site,role"`:
+     - Each site creates separate instance_key
+     - Compaction generates unique names automatically
+
+3. **Conflict detection at export time:**
+   ```python
+   def _validate_instance_grouping(self, instance_groups):
+       """Warn if instance groups span multiple sites unexpectedly"""
+
+       for instance_key, devices in instance_groups.items():
+           sites = {d.get('site', 'unknown') for d in devices}
+
+           if len(sites) > 1 and 'site' not in self.grouping_fields:
+               site_list = ', '.join(sorted(sites))
+               logging.warning(
+                   f"Instance '{instance_key}' contains devices from "
+                   f"multiple sites: {site_list}. "
+                   f"Consider adding 'site' to INSTANCE_GROUPING config."
+               )
+   ```
+
+**Real-world Examples:**
+
+**Scenario A: Multi-site, want combined instances** (intentional)
+```toml
+# User wants to see total leaf count across all sites
+INSTANCE_GROUPING = "role"
+
+# Result:
+leaf_7050: count=10  # 4 from dc1, 6 from dc2
+spine_7280: count=6  # 2 from dc1, 4 from dc2
 ```
+
+**Scenario B: Multi-site, want separate instances** (typical)
+```toml
+# User wants per-site separation
+INSTANCE_GROUPING = "site,role"
+
+# Result:
+dc1_leaf_7050: count=4
+dc1_spine_7280: count=2
+dc2_leaf_7050: count=6
+dc2_spine_7280: count=4
+```
+
+**Scenario C: Multi-site with pod architecture**
+```toml
+# Custom field 'pod' used for grouping
+INSTANCE_GROUPING = "site,pod,role"
+
+# Result (more granular):
+dc1_pod1_leaf_7050: count=2
+dc1_pod2_leaf_7050: count=2
+dc2_pod1_leaf_7050: count=3
+dc2_pod2_leaf_7050: count=3
+```
+
+**Implementation Detail:**
+
+```python
+def _build_instance_index(self):
+    """Build instance indexing with conflict validation"""
+
+    # Get grouping fields from config
+    grouping_fields = self.config.get('infragraph_grouping', 'role').split(',')
+    self.grouping_fields = [f.strip() for f in grouping_fields]
+
+    instance_groups = {}
+
+    for device in self.nb_net.devices:
+        # Build instance key from configured fields
+        key_parts = []
+        for field in self.grouping_fields:
+            value = self._get_device_field(device, field)
+            if value:
+                key_parts.append(value)
+
+        # Always append vendor + model
+        key_parts.extend([device['vendor'], device['model']])
+        instance_key = tuple(key_parts)
+
+        if instance_key not in instance_groups:
+            instance_groups[instance_key] = []
+        instance_groups[instance_key].append(device)
+
+    # Validate grouping (warn if multi-site without 'site' in grouping)
+    self._validate_instance_grouping(instance_groups)
+
+    # Smart compaction: shortest conflict-free names
+    optimal_names = self._compact_instance_names(instance_groups)
+
+    # Assign indices
+    for instance_key, devices in instance_groups.items():
+        devices.sort(key=lambda d: d['id'])
+        instance_name = optimal_names[instance_key]
+
+        for idx, device in enumerate(devices):
+            device['instance_name'] = instance_name
+            device['instance_index'] = idx
+```
+
+**Key Insights:**
+
+- ✅ **Compaction routine handles conflicts** automatically via progressive name expansion
+- ✅ **User controls grouping scope** via `INSTANCE_GROUPING` config
+- ✅ **Multi-site conflicts detected** when site not in grouping but devices span sites
+- ✅ **Flexible for different architectures:** single-site, multi-site, pod-based
+- ✅ **Warning system** alerts users to potential grouping issues at export time
+
+**Trade-offs:**
+
+- ❌ Requires users to understand their grouping needs (site vs. global)
+- ❌ No automatic detection of "correct" grouping level
+- ✅ But: Explicit configuration prevents unexpected behavior
+- ✅ Warning messages guide users when grouping may be incorrect
 
 ## Next Steps
 
