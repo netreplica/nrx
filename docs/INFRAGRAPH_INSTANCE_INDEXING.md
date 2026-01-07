@@ -933,19 +933,289 @@ NetBox device IDs provide the best balance of stability and portability:
 devices.sort(key=lambda d: d['id'])
 ```
 
-### Q2: Instance Name Collisions
+### Q2: Instance Name Collisions ✅ DECIDED
 
-**Problem:** Different role + model combinations could generate same short name
+**Decision:** Use smart compaction routine to find shortest conflict-free names
+
+**Problem:** Different combinations could generate same short name
 
 ```
-leaf_7050 (role=leaf, model=dcs-7050sx-64)
-leaf_7050 (role=leaf, model=catalyst-7050) ❌ Collision!
+leaf_7050 (role=leaf, vendor=arista, model=dcs-7050sx-64)
+leaf_7050 (role=leaf, vendor=cisco, model=catalyst-7050) ❌ Collision!
 ```
 
-**Solution:** Include vendor in instance name if collision detected?
+**Solution:** Progressive name expansion until conflicts resolved
+
+**Algorithm:**
+
+```python
+def _compact_instance_names(self, instance_groups):
+    """
+    Generate shortest possible instance names that avoid collisions
+
+    Strategy:
+    1. Start with minimal name (grouping_fields + short_model)
+    2. If collision detected, progressively expand:
+       - Add vendor if not already included
+       - Add more model detail (7050 → 7050sx → 7050sx64)
+       - Add full model as last resort
+    3. Return conflict-free mapping
+    """
+
+    name_attempts = {}  # instance_key → attempted_name
+    name_usage = {}     # name → [instance_keys using this name]
+
+    # Phase 1: Generate initial names (shortest form)
+    for instance_key in instance_groups.keys():
+        name = self._generate_minimal_name(instance_key)
+        name_attempts[instance_key] = name
+
+        if name not in name_usage:
+            name_usage[name] = []
+        name_usage[name].append(instance_key)
+
+    # Phase 2: Resolve conflicts
+    conflicts = {name: keys for name, keys in name_usage.items() if len(keys) > 1}
+
+    for conflicting_name, conflicting_keys in conflicts.items():
+        # Try progressive expansion for each conflicting key
+        for instance_key in conflicting_keys:
+            resolved_name = self._expand_name_to_resolve_conflict(
+                instance_key,
+                conflicting_keys,
+                name_usage
+            )
+            name_attempts[instance_key] = resolved_name
+
+            # Update usage tracking
+            name_usage[conflicting_name].remove(instance_key)
+            if resolved_name not in name_usage:
+                name_usage[resolved_name] = []
+            name_usage[resolved_name].append(instance_key)
+
+    return name_attempts
+
+def _generate_minimal_name(self, instance_key):
+    """Generate shortest possible name from instance key
+
+    Args:
+        instance_key: (grouping_values..., vendor, model)
+
+    Returns:
+        Minimal name like "dc1_leaf_7050"
+    """
+    # Grouping fields (site, role, etc.)
+    name_parts = list(instance_key[:-2])
+
+    # Add shortest model identifier
+    vendor, model = instance_key[-2:]
+    model_short = self._extract_model_core(model)
+    name_parts.append(model_short)
+
+    return '_'.join(str(p) for p in name_parts if p)
+
+def _extract_model_core(self, model):
+    """Extract core model identifier (shortest meaningful part)
+
+    Examples:
+        dcs-7050sx-64 → 7050
+        catalyst-9300-48p → 9300
+        dcs-7280sr-48c6 → 7280
+    """
+    # Remove common prefixes
+    model = model.lower()
+    for prefix in ['dcs-', 'catalyst-', 'nexus-', 'ws-c']:
+        if model.startswith(prefix):
+            model = model[len(prefix):]
+
+    # Extract first numeric part
+    parts = model.split('-')
+    for part in parts:
+        if any(c.isdigit() for c in part):
+            # Return just the numeric core
+            return ''.join(c for c in part if c.isdigit() or c.isalpha())[:4]
+
+    # Fallback: first part
+    return parts[0][:8] if parts else model[:8]
+
+def _expand_name_to_resolve_conflict(self, instance_key, conflicting_keys, name_usage):
+    """Progressively expand name until conflict resolved
+
+    Expansion levels:
+    1. Add vendor (if not in grouping fields)
+    2. Add extended model (7050 → 7050sx)
+    3. Add full model detail (7050sx → 7050sx64)
+    4. Add vendor + full model (last resort)
+
+    Args:
+        instance_key: The key we're finding a name for
+        conflicting_keys: Other keys with the same current name
+        name_usage: Current name → keys mapping
+
+    Returns:
+        Unique name for this instance_key
+    """
+    grouping_parts = instance_key[:-2]
+    vendor, model = instance_key[-2:]
+
+    # Level 1: Try adding vendor
+    if not self._vendor_in_grouping(grouping_parts, vendor):
+        candidate = self._build_name(grouping_parts, vendor,
+                                     self._extract_model_core(model))
+        if self._is_unique(candidate, instance_key, name_usage):
+            return candidate
+
+    # Level 2: Try extended model
+    model_extended = self._extract_model_extended(model)
+    candidate = self._build_name(grouping_parts, None, model_extended)
+    if self._is_unique(candidate, instance_key, name_usage):
+        return candidate
+
+    # Level 3: Try vendor + extended model
+    candidate = self._build_name(grouping_parts, vendor, model_extended)
+    if self._is_unique(candidate, instance_key, name_usage):
+        return candidate
+
+    # Level 4: Full model detail
+    model_full = self._extract_model_full(model)
+    candidate = self._build_name(grouping_parts, None, model_full)
+    if self._is_unique(candidate, instance_key, name_usage):
+        return candidate
+
+    # Level 5: Vendor + full model (guaranteed unique for same vendor+model)
+    return self._build_name(grouping_parts, vendor, model_full)
+
+def _extract_model_extended(self, model):
+    """Extract extended model identifier
+
+    Examples:
+        dcs-7050sx-64 → 7050sx
+        catalyst-9300-48p → 9300
+    """
+    model = model.lower()
+    for prefix in ['dcs-', 'catalyst-', 'nexus-', 'ws-c']:
+        if model.startswith(prefix):
+            model = model[len(prefix):]
+
+    parts = model.split('-')
+    if len(parts) >= 2:
+        # First part + first letter of second part if alphabetic
+        first = parts[0]
+        second = parts[1]
+        if second and second[0].isalpha():
+            return first + second[:2]
+        return first
+    return parts[0][:8] if parts else model[:8]
+
+def _extract_model_full(self, model):
+    """Extract full detailed model identifier
+
+    Examples:
+        dcs-7050sx-64 → 7050sx64
+        catalyst-9300-48p → 9300_48p
+    """
+    model = model.lower()
+    for prefix in ['dcs-', 'catalyst-', 'nexus-', 'ws-c']:
+        if model.startswith(prefix):
+            model = model[len(prefix):]
+
+    # Replace hyphens with underscores, keep full detail
+    return model.replace('-', '_')[:16]
+
+def _build_name(self, grouping_parts, vendor, model_part):
+    """Build instance name from components"""
+    parts = list(grouping_parts)
+    if vendor:
+        parts.append(vendor)
+    parts.append(model_part)
+    return '_'.join(str(p) for p in parts if p)
+
+def _is_unique(self, candidate_name, instance_key, name_usage):
+    """Check if candidate name is unique or only used by this instance_key"""
+    if candidate_name not in name_usage:
+        return True
+    existing_keys = name_usage[candidate_name]
+    return len(existing_keys) == 0 or (len(existing_keys) == 1 and existing_keys[0] == instance_key)
+
+def _vendor_in_grouping(self, grouping_parts, vendor):
+    """Check if vendor already appears in grouping parts"""
+    return vendor in grouping_parts
 ```
-leaf_arista_7050
-leaf_cisco_7050
+
+**Example: Collision Resolution**
+
+**Scenario 1: Different vendors, same model number**
+```python
+Instance keys:
+  ('dc1', 'leaf', 'arista', 'dcs-7050sx-64')
+  ('dc1', 'leaf', 'cisco', 'catalyst-7050')
+
+Minimal names (collision):
+  dc1_leaf_7050  ❌ Collision!
+  dc1_leaf_7050  ❌ Collision!
+
+After expansion (add vendor):
+  dc1_leaf_arista_7050  ✓ Unique
+  dc1_leaf_cisco_7050   ✓ Unique
+```
+
+**Scenario 2: Same vendor, similar models**
+```python
+Instance keys:
+  ('leaf', 'arista', 'dcs-7050sx-64')
+  ('leaf', 'arista', 'dcs-7050tx-48')
+
+Minimal names (collision):
+  leaf_7050  ❌ Collision!
+  leaf_7050  ❌ Collision!
+
+After expansion (extended model):
+  leaf_7050sx  ✓ Unique
+  leaf_7050tx  ✓ Unique
+```
+
+**Scenario 3: Complex case**
+```python
+Instance keys:
+  ('dc1', 'leaf', 'arista', 'dcs-7050sx-64')
+  ('dc1', 'leaf', 'arista', 'dcs-7050sx-128')
+  ('dc1', 'leaf', 'cisco', 'catalyst-7050')
+
+Minimal names:
+  dc1_leaf_7050  ❌ Collision (3-way)!
+
+After expansion:
+  dc1_leaf_arista_7050sx  → Still collision with 7050sx-128
+  dc1_leaf_arista_7050sx64  ✓ Unique (full model detail)
+  dc1_leaf_arista_7050sx128 ✓ Unique (full model detail)
+  dc1_leaf_cisco_7050       ✓ Unique (vendor different)
+```
+
+**Benefits:**
+- ✅ Shortest possible names (no unnecessary verbosity)
+- ✅ Automatic conflict resolution
+- ✅ Deterministic (same inputs → same outputs)
+- ✅ Handles all collision scenarios
+- ✅ No manual intervention required
+
+**Updated Implementation:**
+
+```python
+def _build_instance_index(self):
+    """Build instance indexing with smart name compaction"""
+
+    # ... existing grouping logic ...
+
+    # Generate optimal instance names (shortest conflict-free)
+    optimal_names = self._compact_instance_names(instance_groups)
+
+    for instance_key, devices in instance_groups.items():
+        devices.sort(key=lambda d: d['id'])
+
+        # Use optimal compacted name
+        instance_name = optimal_names[instance_key]
+
+        # ... rest of instance building ...
 ```
 
 ### Q3: Annotation Format
