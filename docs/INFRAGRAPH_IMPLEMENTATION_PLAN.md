@@ -472,22 +472,183 @@ def _build_device_templates(self, infra):
         infra.devices.append(device)
 ```
 
-### B5: Instance Creation
+### B5: Instance Creation with Automatic Grouping
+
+**Key Decision (from INFRAGRAPH_INSTANCE_INDEXING.md):**
+- Group devices by (site, role, vendor, model) initially
+- Use compaction routine to automatically remove unnecessary parts from names
+- Devices with same (site, role, type) become instances with count > 1
+- Sort by NetBox device ID for stable, chronological ordering
 
 ```python
-def _build_instances(self, infra):
-    """Create Instance for each NetBox device using cached data"""
+def _build_instance_index(self):
+    """
+    Build instance indexing with automatic grouping and name optimization
+
+    Strategy:
+    1. Always group by (site, role, vendor, model) initially
+    2. Compaction routine removes unnecessary parts (site, vendor) if they don't add distinction
+    3. Assign sequential indices within each group based on device ID sort
+    """
+    instance_groups = {}
+
     for device in self.nb_net.devices:
-        device_type_key = (device['vendor'], device['model'])
+        # Always start with maximal grouping
+        instance_key = (
+            device.get('site', ''),
+            device.get('role', ''),
+            device['vendor'],
+            device['model']
+        )
+
+        if instance_key not in instance_groups:
+            instance_groups[instance_key] = []
+        instance_groups[instance_key].append(device)
+
+    # Smart compaction: find shortest conflict-free names
+    optimal_names = self._compact_instance_names(instance_groups)
+
+    # Assign instance names and indices
+    for instance_key, devices in instance_groups.items():
+        # Sort by NetBox device ID (stable, chronological)
+        devices.sort(key=lambda d: d['id'])
+        instance_name = optimal_names[instance_key]
+
+        for idx, device in enumerate(devices):
+            device['instance_name'] = instance_name
+            device['instance_index'] = idx
+
+def _compact_instance_names(self, instance_groups):
+    """
+    Generate shortest possible instance names by removing unnecessary parts
+
+    Progressive compaction:
+    1. Try without site (leaf_7050)
+    2. Try without vendor but with site (dc1_leaf_7050)
+    3. Try compact model without site (leaf_7050)
+    4. Try compact model with site (dc1_leaf_7050)
+    5. Full detail (dc1_leaf_arista_7050)
+
+    Returns: {instance_key → optimized_name}
+    """
+    final_names = {}
+
+    for instance_key in instance_groups.keys():
+        site, role, vendor, model = instance_key
+        model_compact = self._extract_model_core(model)
+
+        # Level 1: Try without site (shortest)
+        candidate = f"{role}_{model_compact}"
+        if self._is_unique_across_groups(candidate, instance_key, instance_groups):
+            final_names[instance_key] = candidate
+            continue
+
+        # Level 2: Try with site, no vendor
+        candidate = f"{site}_{role}_{model_compact}"
+        if self._is_unique_across_groups(candidate, instance_key, instance_groups):
+            final_names[instance_key] = candidate
+            continue
+
+        # Level 3: Add vendor (without site)
+        candidate = f"{role}_{vendor}_{model_compact}"
+        if self._is_unique_across_groups(candidate, instance_key, instance_groups):
+            final_names[instance_key] = candidate
+            continue
+
+        # Level 4: Full detail (guaranteed unique)
+        final_names[instance_key] = f"{site}_{role}_{vendor}_{model_compact}"
+
+    return final_names
+
+def _extract_model_core(self, model):
+    """
+    Extract shortest meaningful model identifier
+
+    Examples:
+        dcs-7050sx-64 → 7050
+        nexus-9300-48p → 9300
+        catalyst-9500 → 9500
+    """
+    model = model.lower()
+    # Remove common prefixes
+    for prefix in ['dcs-', 'catalyst-', 'nexus-', 'ws-c']:
+        if model.startswith(prefix):
+            model = model[len(prefix):]
+
+    # Extract first numeric part
+    parts = model.split('-')
+    for part in parts:
+        if any(c.isdigit() for c in part):
+            return ''.join(c for c in part if c.isdigit() or c.isalpha())[:4]
+
+    return parts[0][:8] if parts else model[:8]
+
+def _is_unique_across_groups(self, candidate_name, instance_key, instance_groups):
+    """Check if candidate name would be unique across all instance groups"""
+    # Count how many other instance_keys would generate this same candidate
+    count = 0
+    for other_key in instance_groups.keys():
+        if other_key == instance_key:
+            count += 1
+        # Check if other_key would produce same candidate
+        # (implementation depends on level of compaction being tested)
+
+    return count == 1
+
+def _build_instances(self, infra):
+    """
+    Create infragraph Instances from grouped NetBox devices
+
+    After _build_instance_index() has assigned instance_name and instance_index
+    to each device, group them and create Instance objects with proper count.
+    """
+    # Build instance index first
+    self._build_instance_index()
+
+    # Group devices by instance_name
+    instances_map = {}  # instance_name → [devices]
+    for device in self.nb_net.devices:
+        instance_name = device['instance_name']
+        if instance_name not in instances_map:
+            instances_map[instance_name] = []
+        instances_map[instance_name].append(device)
+
+    # Create Instance objects
+    for instance_name, devices in instances_map.items():
+        # All devices in group have same type
+        device_type_key = (devices[0]['vendor'], devices[0]['model'])
         device_template = self.device_templates[device_type_key]
 
+        # Get representative site/role for description
+        site = devices[0].get('site', 'unknown')
+        role = devices[0].get('role_name', 'unknown')
+
         instance = infra.instances.add(
-            name=self._sanitize_name(device['name']),
-            description=f"{device['role_name']} - {device['site']}",
+            name=self._sanitize_name(instance_name),
+            description=f"{role} - {site} (count: {len(devices)})",
             device=device_template.name,
-            count=1
+            count=len(devices)  # Multiple devices → count > 1!
         )
+
+# Example Results:
+# Single-site export:
+#   leaf_7050: count=4  (site removed by compaction)
+#   spine_7280: count=2
+#
+# Multi-site with same devices:
+#   dc1_leaf_7050: count=4  (site kept - needed for distinction)
+#   dc2_leaf_7050: count=4
+#
+# Multi-site with different devices:
+#   leaf_7050: count=2  (site removed - arista unique to dc1)
+#   leaf_9300: count=2  (site removed - cisco unique to dc2)
 ```
+
+**Key Benefits:**
+- ✅ Automatic grouping (no user configuration needed)
+- ✅ Shortest possible names via compaction
+- ✅ Stable indices via device ID sorting
+- ✅ Handles single-site, multi-site, and mixed scenarios
 
 ### B6: Link Creation
 
@@ -520,11 +681,11 @@ def _build_links(self, infra):
     default_link.physical.bandwidth.gigabits_per_second = 10  # Default
 ```
 
-### B7: Edge Creation
+### B7: Edge Creation with Instance Indexing
 
 ```python
 def _build_edges(self, infra):
-    """Convert cables to Infrastructure edges using device names"""
+    """Convert cables to Infrastructure edges using instance names and indices"""
     for edge in self.G.edges(data=True):
         node_a_name, node_b_name, edge_data = edge
 
@@ -544,6 +705,10 @@ def _build_edges(self, infra):
         device_name_a = iface_a['device_name']
         device_name_b = iface_b['device_name']
 
+        # Find device objects to get instance_name and instance_index
+        device_a = self._find_device_by_name(device_name_a)
+        device_b = self._find_device_by_name(device_name_b)
+
         # Map to component indices using device names
         component_a, idx_a = self.mapper.get_component_index(
             device_name_a, iface_a['name']
@@ -562,14 +727,23 @@ def _build_edges(self, infra):
         )
 
         # Set endpoints: instance[device_idx].component[component_idx]
-        # device_idx is always 0 since each NetBox device maps to instance with count=1
-        instance_a = self._sanitize_name(device_name_a)
-        instance_b = self._sanitize_name(device_name_b)
+        # CRITICAL: device_idx comes from instance_index (not always 0!)
+        instance_name_a = self._sanitize_name(device_a['instance_name'])
+        instance_name_b = self._sanitize_name(device_b['instance_name'])
+        instance_idx_a = device_a['instance_index']
+        instance_idx_b = device_b['instance_index']
 
-        infra_edge.ep1.instance = f"{instance_a}[0]"
+        infra_edge.ep1.instance = f"{instance_name_a}[{instance_idx_a}]"
         infra_edge.ep1.component = f"{component_a}[{idx_a}]"
-        infra_edge.ep2.instance = f"{instance_b}[0]"
+        infra_edge.ep2.instance = f"{instance_name_b}[{instance_idx_b}]"
         infra_edge.ep2.component = f"{component_b}[{idx_b}]"
+
+def _find_device_by_name(self, device_name):
+    """Find device in nb_net.devices by name"""
+    for device in self.nb_net.devices:
+        if device['name'] == device_name:
+            return device
+    raise ValueError(f"Device not found: {device_name}")
 
 def _get_link_name(self, speed_kbps):
     """Determine link name from interface speed"""
@@ -581,15 +755,119 @@ def _get_link_name(self, speed_kbps):
 
 **Key improvements:**
 - Use `device_name` from interface data (portable identifier)
-- No need for device lookup by ID
-- Clearer endpoint notation with comments
+- Use `instance_name` and `instance_index` from device (from grouping)
+- Correctly reference devices within instance groups (not always [0])
 - Component indices are 0-based sequential from InterfaceMapper
 
-### B8: Export Method in NBFactory
+### B8: NetBox Metadata Annotations
+
+**Key Decision (from INFRAGRAPH_INSTANCE_INDEXING.md Q3):**
+- Use infragraph's standard `annotate_graph` API to preserve NetBox metadata
+- Annotations separate infrastructure model from use-case-specific data
+- Produces two files: clean infrastructure + annotated version
+
+```python
+def _add_netbox_annotations(self, json_output, output_dir):
+    """
+    Add NetBox metadata as annotations using infragraph API
+
+    Annotations preserve the mapping between infragraph nodes and NetBox devices,
+    enabling reverse lookups and metadata queries.
+    """
+    try:
+        from infragraph import InfraGraphService, AnnotateRequest
+
+        # Load infrastructure into service
+        service = InfraGraphService()
+        service.set_graph(json_output)
+
+        # Build annotation request
+        annotate_request = AnnotateRequest()
+
+        for device in self.nb_net.devices:
+            # Node ID format: instance_name.instance_index
+            instance_name = self._sanitize_name(device['instance_name'])
+            instance_idx = device['instance_index']
+            node_id = f"{instance_name}.{instance_idx}"
+
+            # Add NetBox device metadata
+            annotate_request.nodes.add(
+                name=node_id,
+                attribute="netbox_device_name",
+                value=device['name']
+            )
+            annotate_request.nodes.add(
+                name=node_id,
+                attribute="netbox_site",
+                value=device.get('site', '')
+            )
+            annotate_request.nodes.add(
+                name=node_id,
+                attribute="netbox_role",
+                value=device.get('role', '')
+            )
+            annotate_request.nodes.add(
+                name=node_id,
+                attribute="netbox_platform",
+                value=device.get('platform', '')
+            )
+            # Optional: Add NetBox ID for reference (not for portability!)
+            annotate_request.nodes.add(
+                name=node_id,
+                attribute="netbox_id",
+                value=str(device['id'])
+            )
+
+        # Apply annotations
+        service.annotate_graph(annotate_request)
+
+        # Export annotated graph
+        annotated_output = service.get_graph()
+        annotated_file = f"{self.topology_name}.infragraph.annotated.json"
+        annotated_path = f"{output_dir}/{annotated_file}"
+
+        with open(annotated_path, 'w', encoding='utf-8') as f:
+            f.write(annotated_output)
+        print(f"Annotated infragraph saved to: {annotated_path}")
+
+        return True
+
+    except ImportError:
+        print("⚠ infragraph package not available, skipping annotations")
+        return False
+    except Exception as e:
+        print(f"⚠ Annotation failed: {e}")
+        return False
+
+# Example annotations usage:
+# Query devices by NetBox name:
+# filter = QueryNodeFilter()
+# filter.choice = QueryNodeFilter.ATTRIBUTE_FILTER
+# filter.attribute_filter.name = "netbox_device_name"
+# filter.attribute_filter.operator = QueryNodeId.EQ
+# filter.attribute_filter.value = "leaf01"
+# matches = service.query_graph(filter)  # Returns: leaf_7050.0
+```
+
+**Benefits:**
+- ✅ Preserves NetBox device names for reverse lookup
+- ✅ Queryable via infragraph `query_graph` API
+- ✅ Standard infragraph pattern (not custom format)
+- ✅ Two-file output: clean + annotated
+- ✅ Site, role, platform metadata available
+
+**Configuration:**
+```toml
+[INFRAGRAPH]
+# Add NetBox annotations to exported graph (default: true)
+ADD_ANNOTATIONS = true
+```
+
+### B9: Export Method in NBFactory
 
 ```python
 def export_graph_infragraph(self):
-    """Export network topology in infragraph format"""
+    """Export network topology in infragraph format with annotations"""
     print(f"Exporting topology to infragraph format...")
 
     # Create exporter
@@ -616,7 +894,7 @@ def export_graph_infragraph(self):
         except Exception as e:
             print(f"⚠ Infragraph validation warning: {e}")
 
-    # Write to file
+    # Write base infrastructure file
     dir_path = create_output_directory(self.topology_name, self.config['output_dir'])
     export_file = f"{self.topology_name}.infragraph.json"
     export_path = f"{dir_path}/{export_file}"
@@ -627,9 +905,13 @@ def export_graph_infragraph(self):
         print(f"Infragraph JSON saved to: {export_path}")
     except OSError as e:
         error(f"Writing to {export_path}:", e)
+
+    # Add NetBox annotations (optional, enabled by default)
+    if self.config.get('infragraph_add_annotations', True):
+        exporter._add_netbox_annotations(json_output, dir_path)
 ```
 
-### B9: CLI Integration
+### B10: CLI Integration
 
 ```python
 # In cli() function around line 1333
@@ -638,7 +920,7 @@ if config['output_format'] == 'infragraph':
     return 0
 ```
 
-### B10: Testing
+### B11: Testing
 
 **Unit tests:**
 
@@ -647,23 +929,40 @@ if config['output_format'] == 'infragraph':
    - Test consistent ordering
    - Test mapping retrieval
 
-2. `test_infragraph_exporter.py`
-   - Test device template creation
-   - Test instance creation
-   - Test link creation with speeds
-   - Test edge creation
+2. `test_instance_grouping.py`
+   - Test automatic grouping by (site, role, vendor, model)
+   - Test name compaction algorithm
+   - Test single-site exports (site removed)
+   - Test multi-site exports (site kept when needed)
+   - Test device ID sorting for stable indices
 
-3. `test_infragraph_validation.py`
+3. `test_infragraph_exporter.py`
+   - Test device template creation
+   - Test instance creation with proper count
+   - Test instance indexing within groups
+   - Test link creation with speeds
+   - Test edge creation with correct instance indices
+
+4. `test_infragraph_annotations.py`
+   - Test NetBox metadata annotation
+   - Test annotate_graph API integration
+   - Test reverse lookup by NetBox device name
+   - Test two-file output (clean + annotated)
+
+5. `test_infragraph_validation.py`
    - Test output validates with InfraGraphService
    - Test generated graph has correct nodes
    - Test edge connectivity
+   - Test annotations queryable
 
 **System tests:**
 
-1. Export real NetBox topology
-2. Validate JSON with infragraph schema
-3. Load with InfraGraphService
-4. Verify graph structure
+1. Export real NetBox topology (single-site)
+2. Export real NetBox topology (multi-site)
+3. Validate JSON with infragraph schema
+4. Load with InfraGraphService
+5. Verify graph structure and node naming
+6. Test annotation queries
 
 ## Implementation Checklist
 
@@ -707,29 +1006,52 @@ if config['output_format'] == 'infragraph':
   - [ ] Build from cached device types
   - [ ] Add components
 
-- [ ] B5: Implement instance creation
-  - [ ] Map NetBox devices to instances
+- [ ] B5: Implement instance grouping and indexing
+  - [ ] `_build_instance_index()` - Group by (site, role, vendor, model)
+  - [ ] `_compact_instance_names()` - Optimize names by removing unnecessary parts
+  - [ ] `_extract_model_core()` - Extract short model identifiers
+  - [ ] `_is_unique_across_groups()` - Check name uniqueness
+  - [ ] Sort devices by ID within groups
+  - [ ] Assign instance_name and instance_index to each device
+  - [ ] Unit tests for grouping logic
+  - [ ] Unit tests for name compaction
 
-- [ ] B6: Implement link creation
+- [ ] B6: Implement instance creation
+  - [ ] `_build_instances()` - Create Instance objects from grouped devices
+  - [ ] Set proper count for each instance
+  - [ ] Unit tests
+
+- [ ] B7: Implement link creation
   - [ ] Extract speeds
   - [ ] Create link types
 
-- [ ] B7: Implement edge creation
+- [ ] B8: Implement edge creation
   - [ ] Map cables to edges
   - [ ] Use interface mapper
-  - [ ] Set endpoints correctly
+  - [ ] Use instance_name and instance_index from devices
+  - [ ] `_find_device_by_name()` helper
+  - [ ] Set endpoints correctly with proper instance indices
 
-- [ ] B8: Add export method to NBFactory
+- [ ] B9: Implement NetBox annotations
+  - [ ] `_add_netbox_annotations()` - Add metadata via annotate_graph API
+  - [ ] Annotate with device_name, site, role, platform
+  - [ ] Write annotated output file
+  - [ ] Unit tests for annotation logic
+
+- [ ] B10: Add export method to NBFactory
   - [ ] Implement `export_graph_infragraph()`
+  - [ ] Call `_add_netbox_annotations()` if enabled
   - [ ] Add validation option
 
-- [ ] B9: Update CLI
+- [ ] B11: Update CLI
   - [ ] Support `--output infragraph`
 
-- [ ] B10: Testing
+- [ ] B12: Testing
   - [ ] Unit tests for all components
-  - [ ] System tests with real data
+  - [ ] System tests with single-site data
+  - [ ] System tests with multi-site data
   - [ ] Validation with InfraGraphService
+  - [ ] Test annotation queries
 
 ### Documentation
 
@@ -772,7 +1094,56 @@ if config['output_format'] == 'infragraph':
 - Proper component indexing
 - Validated output using InfraGraphService
 
-## Questions & Decisions
+## Key Design Decisions
+
+All design decisions have been finalized and documented in [INFRAGRAPH_INSTANCE_INDEXING.md](INFRAGRAPH_INSTANCE_INDEXING.md).
+
+### Decision 1: Use Device Names, Not IDs ✅
+
+**Problem:** NetBox database IDs change between instances
+**Solution:** Use device names as portable identifiers
+**Impact:** Exports from different NetBox instances produce consistent infragraph output
+
+### Decision 2: Automatic Instance Grouping ✅
+
+**Problem:** Need to map NetBox devices to infragraph instances with count
+**Solution:** Always group by (site, role, vendor, model) initially
+**Benefits:**
+- Devices from different sites never accidentally combined
+- Automatic name compaction removes unnecessary parts
+- No user configuration required
+
+### Decision 3: Smart Name Compaction ✅
+
+**Problem:** Instance names can be verbose (dc1_leaf_arista_7050)
+**Solution:** Progressive compaction removes unnecessary parts
+**Examples:**
+- Single-site: `leaf_7050` (site removed)
+- Multi-site same devices: `dc1_leaf_7050`, `dc2_leaf_7050` (site needed)
+- Multi-site different devices: `leaf_7050`, `leaf_9300` (site removed, vendor removed)
+
+### Decision 4: Device ID Sorting ✅
+
+**Problem:** Need stable instance indices across exports
+**Solution:** Sort devices by NetBox device ID within groups
+**Benefits:**
+- Stable across device renames
+- Preserves chronological order
+- High portability probability between NetBox instances
+
+### Decision 5: Annotations for Metadata ✅
+
+**Problem:** Need to preserve NetBox device names for reverse lookup
+**Solution:** Use infragraph's `annotate_graph` API
+**Benefits:**
+- Standard infragraph pattern
+- Queryable via `query_graph` API
+- Two-file output: clean + annotated
+- Separates infrastructure from metadata
+
+**Reference:** See [INFRAGRAPH_INSTANCE_INDEXING.md](INFRAGRAPH_INSTANCE_INDEXING.md) for complete rationale and examples.
+
+## Questions & Decisions (Legacy)
 
 ### Q1: Component granularity
 **Question:** Should we support other component types (CPU, XPU, Memory)?
