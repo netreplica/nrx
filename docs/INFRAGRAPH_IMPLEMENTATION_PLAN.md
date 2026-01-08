@@ -60,19 +60,26 @@ Interface ID: 423 → "Ethernet1" on device 108
 **Infragraph requires consistent, portable identifiers:**
 
 ```python
-# Both NetBox instances produce:
-instance: "leaf01"           # Device name (portable)
+# Both NetBox instances produce (after grouping and compaction):
+# Assume leaf01, leaf02 both have role=leaf, type=arista/dcs-7050sx-64
+
+instance_name: "leaf_7050"   # Grouped by role+type, compacted name (portable)
+instance_index: 0            # leaf01 is first by device ID (portable with high probability)
 component: "port"            # Component type
 component_idx: 0             # 0-based index (Ethernet1 = first interface alphabetically)
 
-# Infragraph node: leaf01.0.port.0
-# Always the same, regardless of NetBox instance!
+# Infragraph node for leaf01's first interface: leaf_7050.0.port.0
+# Infragraph node for leaf02's first interface: leaf_7050.1.port.0
+# Always the same, regardless of NetBox instance (if import order similar)!
 ```
 
 **Solution:**
-- Use **device names** as instance identifiers
-- Use **interface names** sorted alphabetically to generate **0-based sequential indices**
-- Never use NetBox database IDs in exported data
+- Group devices by **(site, role, vendor, model)** then compact names
+- Use **compacted instance names** (e.g., `leaf_7050`) not individual device names
+- Sort devices by **NetBox device ID** within groups for stable instance indices
+- Use **interface names** sorted alphabetically to generate **0-based component indices**
+- Never use NetBox database IDs in exported infragraph data (only for internal sorting)
+- Preserve original NetBox device names via **annotations** for reverse lookup
 
 ## Current State Analysis
 
