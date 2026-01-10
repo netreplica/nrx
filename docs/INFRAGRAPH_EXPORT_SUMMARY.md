@@ -71,10 +71,10 @@ Use infragraph's `annotate_graph` API to preserve NetBox metadata:
 ```python
 # Annotations on instance nodes:
 leaf_7050.0:
-  netbox_device_name: "leaf01"
-  netbox_site: "dc1"
-  netbox_role: "leaf"
-  netbox_platform: "arista-eos"
+  device_name: "leaf01"
+  site: "dc1"
+  role: "leaf"
+  platform: "arista-eos"
 ```
 
 **Two-file output:**

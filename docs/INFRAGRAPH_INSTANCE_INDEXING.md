@@ -405,13 +405,13 @@ def _add_annotations(self, infrastructure):
         # Infragraph node identifier
         node_id = f"{instance_name}.{instance_idx}"
 
-        # Store NetBox metadata
+        # Store device metadata
         annotations[node_id] = {
-            'netbox_device_name': device['name'],
-            'netbox_site': device['site'],
-            'netbox_role': device['role'],
-            'netbox_platform': device['platform'],
-            'netbox_id': device['id']  # Optional, for debugging
+            'device_name': device['name'],
+            'site': device['site'],
+            'role': device['role'],
+            'platform': device['platform'],
+            'source_id': device['id']  # Optional, for reference to source system
         }
 
     # TODO: Determine how to include annotations in infragraph export
@@ -443,19 +443,19 @@ def _add_annotations(self, infrastructure):
   ],
   "annotations": {
     "leaf_7050.0": {
-      "netbox_device_name": "leaf01",
-      "netbox_site": "datacenter1",
-      "netbox_role": "leaf"
+      "device_name": "leaf01",
+      "site": "datacenter1",
+      "role": "leaf"
     },
     "leaf_7050.1": {
-      "netbox_device_name": "leaf02",
-      "netbox_site": "datacenter1",
-      "netbox_role": "leaf"
+      "device_name": "leaf02",
+      "site": "datacenter1",
+      "role": "leaf"
     },
     "spine_7280.0": {
-      "netbox_device_name": "spine01",
-      "netbox_site": "datacenter1",
-      "netbox_role": "spine"
+      "device_name": "spine01",
+      "site": "datacenter1",
+      "role": "spine"
     }
   }
 }
@@ -483,7 +483,7 @@ def build_from_infragraph(self, infragraph_file):
             # Try to get NetBox name from annotations
             node_id = f"{instance_name}.{idx}"
             if 'annotations' in infra_data and node_id in infra_data['annotations']:
-                device_name = infra_data['annotations'][node_id]['netbox_device_name']
+                device_name = infra_data['annotations'][node_id]['device_name']
             else:
                 # Generate name if no annotation
                 device_name = f"{instance_name}_{idx}"
@@ -513,11 +513,11 @@ spine02 - Arista DCS-7280SR-48C6 - Role: spine
     {"name": "spine_7280sr", "device": "arista_dcs_7280sr_48c6", "count": 2}
   ],
   "annotations": {
-    "leaf_7050sx.0": {"netbox_device_name": "leaf01"},
-    "leaf_7050sx.1": {"netbox_device_name": "leaf02"},
-    "leaf_7050sx.2": {"netbox_device_name": "leaf03"},
-    "spine_7280sr.0": {"netbox_device_name": "spine01"},
-    "spine_7280sr.1": {"netbox_device_name": "spine02"}
+    "leaf_7050sx.0": {"device_name": "leaf01"},
+    "leaf_7050sx.1": {"device_name": "leaf02"},
+    "leaf_7050sx.2": {"device_name": "leaf03"},
+    "spine_7280sr.0": {"device_name": "spine01"},
+    "spine_7280sr.1": {"device_name": "spine02"}
   }
 }
 ```
@@ -919,7 +919,7 @@ NetBox device IDs provide the best balance of stability and portability:
 
 5. **Annotations provide safety net:**
    - If indices do change between instances, annotations preserve mapping
-   - `annotations.netbox_device_name` allows reconstruction
+   - `annotations.device_name` allows reconstruction
 
 **Trade-off accepted:**
 - ❌ Not alphabetically ordered (less predictable for humans)
@@ -1234,9 +1234,9 @@ annotate_request = AnnotateRequest()
 
 # Add annotation for each node
 annotate_request.nodes.add(
-    name="leaf_7050.0",           # Node ID
-    attribute="netbox_device_name",  # Attribute key
-    value="leaf01"                   # Attribute value (string)
+    name="leaf_7050.0",      # Node ID
+    attribute="device_name",  # Attribute key
+    value="leaf01"           # Attribute value (string)
 )
 
 # Apply annotations
@@ -1280,31 +1280,31 @@ def export_graph_infragraph(self):
                 instance_idx = device['instance_index']
                 node_id = f"{instance_name}.{instance_idx}"
 
-                # Add NetBox device metadata as annotations
+                # Add device metadata as annotations
                 annotate_request.nodes.add(
                     name=node_id,
-                    attribute="netbox_device_name",
+                    attribute="device_name",
                     value=device['name']
                 )
                 annotate_request.nodes.add(
                     name=node_id,
-                    attribute="netbox_site",
+                    attribute="site",
                     value=device.get('site', '')
                 )
                 annotate_request.nodes.add(
                     name=node_id,
-                    attribute="netbox_role",
+                    attribute="role",
                     value=device.get('role', '')
                 )
                 annotate_request.nodes.add(
                     name=node_id,
-                    attribute="netbox_platform",
+                    attribute="platform",
                     value=device.get('platform', '')
                 )
-                # Optional: Add NetBox ID for reference (not for portability)
+                # Optional: Add source_id for reference to original data source
                 annotate_request.nodes.add(
                     name=node_id,
-                    attribute="netbox_id",
+                    attribute="source_id",
                     value=str(device['id'])
                 )
 
@@ -1339,7 +1339,7 @@ def export_graph_infragraph(self):
 # Later, can query by NetBox device name
 filter = QueryNodeFilter()
 filter.choice = QueryNodeFilter.ATTRIBUTE_FILTER
-filter.attribute_filter.name = "netbox_device_name"
+filter.attribute_filter.name = "device_name"
 filter.attribute_filter.operator = QueryNodeId.EQ
 filter.attribute_filter.value = "leaf01"
 

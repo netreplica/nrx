@@ -797,31 +797,31 @@ def _add_netbox_annotations(self, json_output, output_dir):
             instance_idx = device['instance_index']
             node_id = f"{instance_name}.{instance_idx}"
 
-            # Add NetBox device metadata
+            # Add device metadata as annotations
             annotate_request.nodes.add(
                 name=node_id,
-                attribute="netbox_device_name",
+                attribute="device_name",
                 value=device['name']
             )
             annotate_request.nodes.add(
                 name=node_id,
-                attribute="netbox_site",
+                attribute="site",
                 value=device.get('site', '')
             )
             annotate_request.nodes.add(
                 name=node_id,
-                attribute="netbox_role",
+                attribute="role",
                 value=device.get('role', '')
             )
             annotate_request.nodes.add(
                 name=node_id,
-                attribute="netbox_platform",
+                attribute="platform",
                 value=device.get('platform', '')
             )
-            # Optional: Add NetBox ID for reference (not for portability!)
+            # Optional: Add source_id for reference to original data source
             annotate_request.nodes.add(
                 name=node_id,
-                attribute="netbox_id",
+                attribute="source_id",
                 value=str(device['id'])
             )
 
@@ -847,26 +847,27 @@ def _add_netbox_annotations(self, json_output, output_dir):
         return False
 
 # Example annotations usage:
-# Query devices by NetBox name:
+# Query devices by original device name:
 # filter = QueryNodeFilter()
 # filter.choice = QueryNodeFilter.ATTRIBUTE_FILTER
-# filter.attribute_filter.name = "netbox_device_name"
+# filter.attribute_filter.name = "device_name"
 # filter.attribute_filter.operator = QueryNodeId.EQ
 # filter.attribute_filter.value = "leaf01"
 # matches = service.query_graph(filter)  # Returns: leaf_7050.0
 ```
 
 **Benefits:**
-- ✅ Preserves NetBox device names for reverse lookup
+- ✅ Preserves original device names for reverse lookup
 - ✅ Queryable via infragraph `query_graph` API
 - ✅ Standard infragraph pattern (not custom format)
 - ✅ Two-file output: clean + annotated
 - ✅ Site, role, platform metadata available
+- ✅ Clean attribute names (no vendor-specific prefixes)
 
 **Configuration:**
 ```toml
 [INFRAGRAPH]
-# Add NetBox annotations to exported graph (default: true)
+# Add metadata annotations to exported graph (default: true)
 ADD_ANNOTATIONS = true
 ```
 
