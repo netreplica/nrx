@@ -64,22 +64,23 @@ Interface ID: 423 → "Ethernet1" on device 108
 # Assume leaf01, leaf02 both have role=leaf, type=arista/dcs-7050sx-64
 
 instance_name: "leaf_7050"   # Grouped by role+type, compacted name (portable)
-instance_index: 0            # leaf01 is first by device ID (portable with high probability)
+instance_index: 0            # leaf01 is first alphabetically by name (via ordering='name')
 component: "port"            # Component type
 component_idx: 0             # 0-based index (Ethernet1 = first interface alphabetically)
 
 # Infragraph node for leaf01's first interface: leaf_7050.0.port.0
 # Infragraph node for leaf02's first interface: leaf_7050.1.port.0
-# Always the same, regardless of NetBox instance (if import order similar)!
+# Consistent across exports when NetBox device names are preserved!
 ```
 
 **Solution:**
 - Group devices by **(site, role, vendor, model)** then compact names
 - Use **compacted instance names** (e.g., `leaf_7050`) not individual device names
-- Sort devices by **NetBox device ID** within groups for stable instance indices
+- Request **name-based ordering** from NetBox API (`ordering='name'`) and preserve that ordering
 - Use **interface names** sorted alphabetically to generate **0-based component indices**
-- Never use NetBox database IDs in exported infragraph data (only for internal sorting)
+- Never use NetBox database IDs in exported infragraph data
 - Preserve original NetBox device names via **annotations** for reverse lookup
+- Final ordering depends on NetBox's implementation of name sorting
 
 ## Current State Analysis
 
@@ -374,8 +375,8 @@ class InterfaceMapper:
         for device_type_key, interfaces in self.nb_net.device_type_interfaces.items():
             # CRITICAL: Sort interfaces by name for consistent 0-based indexing
             # This ensures port.0, port.1, port.2... are always the same interfaces
-            # Note: For devices, we sort by ID; for interfaces, we sort by name
-            # because interface IDs are less stable and names are more meaningful
+            # Note: For devices, we preserve NetBox ordering (name-based via API);
+            # for interfaces, we sort locally by name for component indexing
             sorted_interfaces = sorted(interfaces, key=lambda x: x['name'])
 
             # Apply mapping to ALL devices of this type
@@ -485,7 +486,7 @@ def _build_device_templates(self, infra):
 - Group devices by (site, role, vendor, model) initially
 - Use compaction routine to automatically remove unnecessary parts from names
 - Devices with same (site, role, type) become instances with count > 1
-- Sort by NetBox device ID for stable, chronological ordering
+- Preserve NetBox name-based ordering (requested via `ordering='name'` from API)
 
 ```python
 def _build_instance_index(self):
@@ -495,7 +496,8 @@ def _build_instance_index(self):
     Strategy:
     1. Always group by (site, role, vendor, model) initially
     2. Compaction routine removes unnecessary parts (site, vendor) if they don't add distinction
-    3. Assign sequential indices within each group based on device ID sort
+    3. Assign sequential indices within each group preserving NetBox name-based ordering
+       (devices already ordered by name from API via ordering='name')
     """
     instance_groups = {}
 
@@ -517,8 +519,8 @@ def _build_instance_index(self):
 
     # Assign instance names and indices
     for instance_key, devices in instance_groups.items():
-        # Sort by NetBox device ID (stable, chronological)
-        devices.sort(key=lambda d: d['id'])
+        # Preserve NetBox ordering as returned by the API
+        # Note: Devices should be fetched with ordering='name' from NetBox API
         instance_name = optimal_names[instance_key]
 
         for idx, device in enumerate(devices):
@@ -610,7 +612,7 @@ def _build_instances(self, infra):
 **Key Benefits:**
 - ✅ Automatic grouping (no user configuration needed)
 - ✅ Shortest possible names via compaction
-- ✅ Stable indices via device ID sorting
+- ✅ Stable indices via NetBox name-based ordering
 - ✅ Handles single-site, multi-site, and mixed scenarios
 
 ### B6: Link Creation
@@ -898,7 +900,7 @@ if config['output_format'] == 'infragraph':
    - Test name compaction algorithm
    - Test single-site exports (site removed)
    - Test multi-site exports (site kept when needed)
-   - Test device ID sorting for stable indices
+   - Test preservation of NetBox name-based ordering for stable indices
 
 3. `test_infragraph_exporter.py`
    - Test device template creation
@@ -975,7 +977,7 @@ if config['output_format'] == 'infragraph':
   - [ ] `_compact_instance_names()` - Optimize names by removing unnecessary parts
   - [ ] `_extract_model_core()` - Extract short model identifiers
   - [ ] `_is_unique_across_groups()` - Check name uniqueness
-  - [ ] Sort devices by ID within groups
+  - [ ] Preserve NetBox name-based ordering within groups (from API ordering='name')
   - [ ] Assign instance_name and instance_index to each device
   - [ ] Unit tests for grouping logic
   - [ ] Unit tests for name compaction
@@ -1086,14 +1088,28 @@ All design decisions have been finalized and documented in [INFRAGRAPH_INSTANCE_
 - Multi-site same devices: `dc1_leaf_7050`, `dc2_leaf_7050` (site needed)
 - Multi-site different devices: `leaf_7050`, `leaf_9300` (site removed, vendor removed)
 
-### Decision 4: Device ID Sorting ✅
+### Decision 4: Request and Preserve NetBox Name-Based Ordering ✅
 
-**Problem:** Need stable instance indices across exports
-**Solution:** Sort devices by NetBox device ID within groups
+**Problem:** Need stable instance indices across exports with user control
+**Solution:** Request `ordering='name'` from NetBox API and preserve that ordering within groups
 **Benefits:**
-- Stable across device renames
-- Preserves chronological order
-- High portability probability between NetBox instances
+- Users have direct control via NetBox device naming
+- Ordering depends on NetBox's implementation (typically case-sensitive alphabetical)
+- Mirrors what users see in NetBox when sorted by name
+- Portable across NetBox instances when names are preserved
+- No local re-sorting ensures consistency with NetBox
+
+**Implementation:**
+```python
+# In _get_nb_devices():
+devices = nb_session.dcim.devices.filter(..., ordering='name')
+
+# In _build_instance_index():
+# Preserve API ordering (do not re-sort)
+for instance_key, devices in instance_groups.items():
+    # devices are already in NetBox name order
+    ...
+```
 
 ### Decision 5: Annotations for Metadata ✅
 

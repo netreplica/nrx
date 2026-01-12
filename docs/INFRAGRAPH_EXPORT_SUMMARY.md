@@ -62,21 +62,29 @@ count: 2                        # Two devices in group
 
 ### 3. Stable Instance Indexing
 
-**Sort by NetBox device ID** within each group:
+**Request and preserve NetBox name-based ordering** within each group:
 
 ```python
-# Group: dc1_leaf_7050
-devices.sort(key=lambda d: d['id'])
+# Request name-based ordering from NetBox API
+devices = nb_session.dcim.devices.filter(..., ordering='name')
 
-device_id: 42  → leaf01 → instance_index: 0
-device_id: 43  → leaf02 → instance_index: 1
-device_id: 47  → leaf03 → instance_index: 2
+# Group: dc1_leaf_7050
+# Devices are kept in NetBox API order (name-sorted by NetBox)
+device_name: leaf01 → instance_index: 0
+device_name: leaf02 → instance_index: 1
+device_name: leaf03 → instance_index: 2
 ```
 
 **Benefits:**
-- Stable across device renames
-- Preserves chronological order
-- High portability probability between NetBox instances
+- Users have direct control via NetBox device naming
+- Ordering depends on NetBox's implementation (typically case-sensitive alphabetical)
+- Mirrors what users see in NetBox when sorted by name
+- Portable across NetBox instances when names are preserved
+
+**Implementation Note:**
+- nrx explicitly requests `ordering='name'` from NetBox API
+- The final ordering depends on how NetBox implements name sorting
+- No local re-sorting in Python ensures consistency with NetBox
 
 ### 4. NetBox Metadata Preservation
 
@@ -101,8 +109,8 @@ leaf_7050.0:
 - ✅ Device names (portable)
 - ✅ Compacted instance names (portable)
 - ✅ Alphabetically sorted interface indices (portable)
-- ❌ NetBox device IDs (only for internal sorting)
-- ❌ NetBox interface IDs (database-specific)
+- ❌ NetBox device IDs (database-specific, not used)
+- ❌ NetBox interface IDs (database-specific, not used)
 
 ## Mapping Summary
 

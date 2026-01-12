@@ -36,7 +36,7 @@ instances = [
 
 ### Critical Requirements
 
-1. **Stable indexing**: Device indices must not change if NetBox device names change
+1. **Stable indexing**: Device indices follow NetBox ordering; if NetBox ordering changes, indices may change
 2. **Reversible mapping**: Must be able to map back from infragraph to NetBox
 3. **Type consistency**: Each instance must use exactly one device template
 4. **Future input support**: nrx should be able to import infragraph as input format
@@ -103,9 +103,8 @@ Infragraph instances:
 
 **Pros:**
 - ✅ Ensures type consistency (each instance has exactly one device type)
-- ✅ Stable even if device names change
 - ✅ Groups logically by role + hardware
-- ✅ Deterministic ordering (sort by device name within group)
+- ✅ Deterministic ordering (preserves NetBox ordering within group)
 
 **Cons:**
 - Longer instance names
@@ -203,11 +202,10 @@ def _build_instance_index(self):
             instance_groups[instance_key] = []
         instance_groups[instance_key].append(device)
 
-    # Sort devices within each group for stable, deterministic indexing
+    # Preserve NetBox ordering within each group for stable, deterministic indexing
     for instance_key, devices in instance_groups.items():
-        # CRITICAL: Sort by device name for consistent ordering
-        # This ensures leaf.0, leaf.1, etc. always map to same devices
-        devices.sort(key=lambda d: d['name'])
+        # CRITICAL: Do not re-sort; keep NetBox API ordering
+        # This mirrors NetBox's configured ordering (often name-ordered)
 
         role, vendor, model = instance_key
 
@@ -557,9 +555,13 @@ NetBox: leaf01 → infragraph: leaf_7050sx.0 (annotation: "leaf01")
 NetBox: access-switch-01 → infragraph: leaf_7050sx.0 (annotation: "access-switch-01")
 ```
 
-**Index remains stable** because sorting is by original device name at time of export.
+**Index remains stable** as long as NetBox ordering remains stable at time of export.
 
-**Question:** Should we preserve original sort order or re-sort on each export?
+**Answer:** We request fresh ordering from NetBox on each export using `ordering='name'` parameter. This ensures:
+- Indices always reflect current NetBox name-based ordering
+- Changes to device names are reflected in new exports
+- Ordering is always consistent with what users see in NetBox
+- No need to cache or preserve previous ordering
 
 ## User-Configurable Instance Grouping
 
@@ -667,9 +669,7 @@ class NBFactory:
 
         # Build instance metadata
         for instance_key, devices in instance_groups.items():
-            # CRITICAL: Sort by NetBox device ID for stable, chronological ordering
-            # This preserves indices across device renames and has high portability
-            devices.sort(key=lambda d: d['id'])
+            # CRITICAL: Preserve NetBox ordering as returned by the API
 
             # Generate instance name from key parts
             instance_name = self._generate_instance_name(instance_key, grouping_fields)
@@ -877,59 +877,47 @@ nrx --output infragraph --infragraph-grouping "site,role"
 
 ### Q1: Sorting Stability ✅ DECIDED
 
-**Decision:** Sort devices by NetBox device ID
+**Decision:** Preserve NetBox ordering within each group
 
 **Rationale:**
 
-NetBox device IDs provide the best balance of stability and portability:
+NetBox ordering is user-controlled and should be mirrored in export:
 
-1. **Stable across renames:**
+1. **Direct user control:**
    ```
-   leaf01 (ID=42) → leaf_7050.0
-   Rename to: access-sw-01 (ID=42) → leaf_7050.0 ✓ Same index
-   ```
-
-2. **Preserves deployment/creation order:**
-   ```
-   Day 1: leaf01 created → ID=100
-   Day 2: leaf02 created → ID=101
-   Sorted by ID = chronological deployment
+   Users choose naming/ordering in NetBox (often name-ordered)
+   Export preserves the same sequence for instance indices
    ```
 
-3. **Consistent across multiple exports:**
+   NetBox supports explicit ordering via API query params like `?ordering=name`.
+
+2. **Consistent across multiple exports:**
    ```
-   Export 1: ID sort → [42, 43, 44] → indices [0, 1, 2]
-   Export 2: ID sort → [42, 43, 44] → indices [0, 1, 2] ✓
-   ```
-
-4. **High portability probability:**
-   - Most NetBox imports preserve chronological order
-   - Bulk imports typically maintain relative ID ordering
-   - Even if absolute IDs differ, sort order usually matches
-
-   ```python
-   # Instance A
-   leaf01 → ID 42, leaf02 → ID 43, leaf03 → ID 44
-   Sorted: [42, 43, 44] → indices [0, 1, 2]
-
-   # Instance B (imported from A)
-   leaf01 → ID 108, leaf02 → ID 109, leaf03 → ID 110
-   Sorted: [108, 109, 110] → indices [0, 1, 2] ✓ Same order!
+   Export 1: NetBox order → indices [0, 1, 2]
+   Export 2: NetBox order → indices [0, 1, 2] ✓
    ```
 
-5. **Annotations provide safety net:**
-   - If indices do change between instances, annotations preserve mapping
+3. **High portability:**
+   - NetBox ordering is preserved across exports when names/order are preserved
+   - No dependence on database IDs
+
+4. **Annotations provide safety net:**
+   - If ordering changes (rename/reorder), annotations preserve original mapping
    - `annotations.device_name` allows reconstruction
 
 **Trade-off accepted:**
-- ❌ Not alphabetically ordered (less predictable for humans)
-- ❌ Could break if selective/out-of-order import to new instance
-- ✅ But: annotations preserve device name mapping regardless
+- ⚠️ Indices change if NetBox ordering changes
+- ✅ But: ordering matches what users see/configure in NetBox
+- ✅ And: annotations preserve device name mapping regardless
 
 **Implementation:**
 ```python
-# Sort by NetBox device ID
-devices.sort(key=lambda d: d['id'])
+# Request name-based ordering from NetBox API
+# The ordering depends on how NetBox implements it (typically case-sensitive)
+devices = nb_session.dcim.devices.filter(..., ordering='name')
+
+# Preserve the API ordering (do not re-sort locally in Python)
+# This ensures the export mirrors what users see/configure in NetBox
 ```
 
 ### Q2: Instance Name Collisions ✅ DECIDED
@@ -1127,7 +1115,7 @@ def _build_instance_index_with_auto_grouping(self):
 
     # Assign instance names and indices
     for instance_key, devices in instance_groups.items():
-        devices.sort(key=lambda d: d['id'])
+        # Preserve NetBox ordering as returned by the API
         instance_name = optimal_names[instance_key]
 
         for idx, device in enumerate(devices):
@@ -1454,7 +1442,7 @@ dc3_spine_9500: count=1  # Site needed (collision)
 **Recommended Strategy: Role + Device Type Grouping**
 
 - ✅ Ensures each instance has exactly one device template
-- ✅ Stable indexing based on sorted device names
+- ✅ Stable indexing based on NetBox ordering
 - ✅ NetBox device names preserved in annotations
 - ✅ Reversible for future infragraph input support
 - ⚠️ Need to resolve: sorting stability, name collisions, annotation format
