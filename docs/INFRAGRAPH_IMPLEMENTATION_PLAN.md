@@ -529,78 +529,34 @@ def _compact_instance_names(self, instance_groups):
     """
     Generate shortest possible instance names by removing unnecessary parts
 
-    Progressive compaction:
-    1. Try without site (leaf_7050)
-    2. Try without vendor but with site (dc1_leaf_7050)
-    3. Try compact model without site (leaf_7050)
-    4. Try compact model with site (dc1_leaf_7050)
-    5. Full detail (dc1_leaf_arista_7050)
+    **See INFRAGRAPH_INSTANCE_INDEXING.md Q4 for the complete authoritative
+    algorithm.**
+
+    Strategy:
+    1. Start with maximal name: site_role_vendor_model_full
+    2. Try removing site (if still unique)
+    3. Try removing vendor (if still unique)
+    4. Try compacting model (full → extended → core) only if still unique
+    5. Stop at the shortest unique form
+
+    Example:
+    - Start: dc1_leaf_arista_7050sx64
+    - Try without site: leaf_arista_7050sx64 → Unique? Yes → Keep
+    - Try without vendor: leaf_7050sx64 → Unique? Yes → Keep
+    - Try compact model: leaf_7050sx → Unique? Yes → Keep
+    - Try compact model: leaf_7050 → Unique? Yes → Use it
 
     Returns: {instance_key → optimized_name}
     """
-    final_names = {}
-
-    for instance_key in instance_groups.keys():
-        site, role, vendor, model = instance_key
-        model_compact = self._extract_model_core(model)
-
-        # Level 1: Try without site (shortest)
-        candidate = f"{role}_{model_compact}"
-        if self._is_unique_across_groups(candidate, instance_key, instance_groups):
-            final_names[instance_key] = candidate
-            continue
-
-        # Level 2: Try with site, no vendor
-        candidate = f"{site}_{role}_{model_compact}"
-        if self._is_unique_across_groups(candidate, instance_key, instance_groups):
-            final_names[instance_key] = candidate
-            continue
-
-        # Level 3: Add vendor (without site)
-        candidate = f"{role}_{vendor}_{model_compact}"
-        if self._is_unique_across_groups(candidate, instance_key, instance_groups):
-            final_names[instance_key] = candidate
-            continue
-
-        # Level 4: Full detail (guaranteed unique)
-        final_names[instance_key] = f"{site}_{role}_{vendor}_{model_compact}"
-
-    return final_names
-
-def _extract_model_core(self, model):
-    """
-    Extract shortest meaningful model identifier
-
-    Examples:
-        dcs-7050sx-64 → 7050
-        nexus-9300-48p → 9300
-        catalyst-9500 → 9500
-    """
-    model = model.lower()
-    # Remove common prefixes
-    for prefix in ['dcs-', 'catalyst-', 'nexus-', 'ws-c']:
-        if model.startswith(prefix):
-            model = model[len(prefix):]
-
-    # Extract first numeric part
-    parts = model.split('-')
-    for part in parts:
-        if any(c.isdigit() for c in part):
-            return ''.join(c for c in part if c.isdigit() or c.isalpha())[:4]
-
-    return parts[0][:8] if parts else model[:8]
-
-def _is_unique_across_groups(self, candidate_name, instance_key, instance_groups):
-    """Check if candidate name would be unique across all instance groups"""
-    # Count how many other instance_keys would generate this same candidate
-    count = 0
-    for other_key in instance_groups.keys():
-        if other_key == instance_key:
-            count += 1
-        # Check if other_key would produce same candidate
-        # (implementation depends on level of compaction being tested)
-
-    return count == 1
+    # Implementation: See INFRAGRAPH_INSTANCE_INDEXING.md Q4 for complete code
+    # Key helper functions needed:
+    # - _build_name_without_site(role, vendor, model_part)
+    # - _build_name_without_vendor(site, role, model_part)
+    # - _build_name_without_site_vendor(role, model_part)
+    # - _extract_model_core(model) → "7050"
+    # - _extract_model_extended(model) → "7050sx"
+    # - _extract_model_full(model) → "7050sx64"
+    # - _is_unique_across_groups(candidate_name, instance_key, instance_groups)
 
 def _build_instances(self, infra):
     """

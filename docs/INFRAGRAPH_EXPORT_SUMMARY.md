@@ -38,13 +38,27 @@ count: 2                        # Two devices in group
 
 ### 2. Smart Name Compaction
 
-Progressive compaction finds shortest conflict-free names:
+**Start maximal, then remove parts** to find shortest conflict-free names:
 
-| Scenario | NetBox | Infragraph Instance |
-|----------|--------|---------------------|
-| Single-site | dc1/leaf01, dc1/leaf02 | `leaf_7050` (site removed) |
-| Multi-site same devices | dc1/leaf01, dc2/leaf01 | `dc1_leaf_7050`, `dc2_leaf_7050` (site kept) |
-| Multi-site different devices | dc1/arista-leaf, dc2/cisco-leaf | `leaf_7050`, `leaf_9300` (site+vendor removed) |
+**Phase 1:** Start with maximal name (site_role_vendor_model_full)
+**Phase 2:** Remove parts only if uniqueness is preserved
+
+**Removal and compaction order:**
+1. Drop site (if still unique)
+2. Drop vendor (if still unique)
+3. Compact model (full → extended → core) only if still unique
+4. Stop at the shortest unique form
+
+**Example scenarios:**
+
+| Scenario | NetBox Devices | Initial Names | Conflict? | Final Names |
+|----------|----------------|---------------|-----------|-------------|
+| Single-site | dc1/leaf01 (7050sx), dc1/leaf02 (7050sx) | dc1_leaf_arista_7050sx64 | No | `leaf_7050` (site+vendor removed, model compacted) |
+| Multi-site same type | dc1/leaf01 (7050sx), dc2/leaf01 (7050sx) | dc1_leaf_arista_7050sx64, dc2_leaf_arista_7050sx64 | Yes | `dc1_leaf_7050`, `dc2_leaf_7050` (site kept) |
+| Same role, different models | leaf01 (7050sx), leaf02 (7050tx) | leaf_arista_7050sx64, leaf_arista_7050tx48 | Yes | `leaf_7050sx`, `leaf_7050tx` (extended model) |
+| Multi-site different vendors | dc1/arista-leaf, dc2/cisco-leaf | dc1_leaf_arista_7050sx64, dc2_leaf_cisco_9300 | No | `leaf_7050`, `leaf_9300` (site+vendor removed) |
+
+**See [INFRAGRAPH_INSTANCE_INDEXING.md](INFRAGRAPH_INSTANCE_INDEXING.md) Q4 (lines 1091-1235) for complete algorithm details.**
 
 ### 3. Stable Instance Indexing
 
