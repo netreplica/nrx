@@ -18,6 +18,12 @@ Preserve complete NetBox data in the existing NetworkX graph structure:
 ### Phase B: Infragraph Export
 Transform enhanced graph to infragraph format using the [infragraph Python SDK](https://pypi.org/project/infragraph/).
 
+**Critical Difference:** Unlike other exporters (clab, cml, cyjs) which use actual device interfaces, infragraph export uses **NetBox Device Type templates** to ensure consistent component indices across all devices of the same type. This means:
+- Device interface templates are fetched from NetBox Device Types API
+- Per-device customizations (modules, subinterfaces) are ignored
+- Edges with interfaces not in device type templates are skipped with warnings
+- Users must ensure NetBox device types are accurate and complete
+
 ## Key Design Decisions
 
 ### 1. Automatic Instance Grouping
@@ -117,11 +123,14 @@ leaf_7050.0:
 | NetBox Concept | Infragraph Concept | Mapping |
 |----------------|-------------------|---------|
 | Device Type | Device (template) | Group by (vendor, model) |
+| Device Type Interfaces | Component (Port) count | Fetched from Device Types API, sorted alphabetically |
 | Devices (grouped) | Instance with count | Automatic grouping + compaction |
 | Individual Device | Instance index | Preserve NetBox API order |
-| Interface | Component (Port) | Alphabetical by interface name |
-| Cable | Edge (ONE2ONE) | Point-to-point connection |
+| Device Interface (actual) | Component index | Only if exists in Device Type template |
+| Cable | Edge (ONE2ONE) | Point-to-point connection (if both interfaces in templates) |
 | Interface speed | Link bandwidth | Kbps → Gbps conversion |
+
+**Important:** Infragraph uses Device Type interface definitions, not actual device interfaces. Cables connecting interfaces not defined in device types are skipped.
 
 ## Node Naming Convention
 
@@ -224,6 +233,32 @@ nrx --source netbox --output infragraph
 # - topology.infragraph.json (clean infrastructure)
 # - topology.infragraph.annotated.json (with NetBox metadata)
 ```
+
+## Troubleshooting
+
+### Warning: Skipped edges due to interfaces not in device type templates
+
+**Cause:** The export found cables connecting interfaces that are not defined in the NetBox Device Type.
+
+**Example:**
+```
+⚠ Warning: Skipped 3 edges due to interfaces not in device type templates:
+  - leaf01:Ethernet49 (not in device type)
+  - spine01:Management0 (not in device type)
+  - leaf02:Ethernet1.100 (not in device type)
+```
+
+**Solution:**
+1. Review the NetBox Device Type definition for the affected devices
+2. Add missing interfaces to the Device Type template in NetBox
+3. Re-run the export
+
+**Why this happens:**
+- Device has a custom module or add-on interface not in the device type
+- Device has subinterfaces (e.g., `Ethernet1.100`) not defined in device type
+- Device has management interfaces not included in device type template
+
+**Expected behavior:** Infragraph requires consistent device templates. Per-device customizations are intentionally ignored to ensure all devices of the same type have identical component structures.
 
 ## References
 

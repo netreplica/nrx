@@ -9,6 +9,21 @@ This document outlines the plan to add infragraph export capability to nrx. The 
 
 This approach ensures a single code path for data collection that benefits all export formats.
 
+## Critical Design Decision: Device Type Templates for Infragraph
+
+**Problem:** Infragraph requires consistent, template-based device definitions. Using actual device interfaces (which may have per-device customizations like modules, subinterfaces, or missing interfaces) leads to:
+- Inconsistent component indices across devices of the same type
+- Unpredictable template structures
+- Missing edges when device interfaces don't match the "sample" device
+
+**Solution:** For infragraph export only, fetch interface templates directly from **NetBox Device Types API**:
+- ✅ All devices of the same type get identical component indices
+- ✅ Predictable, consistent templates regardless of device customizations
+- ✅ Edges for non-template interfaces are skipped with clear warnings
+- ✅ Users are directed to fix NetBox device type definitions (canonical source)
+
+**Impact on Other Exporters:** None. Existing exporters (clab, cml, cyjs) continue to use actual device interfaces collected from individual devices. This change only affects infragraph export logic.
+
 ## Background
 
 ### What is Infragraph?
@@ -245,7 +260,6 @@ class NBNetwork:
     def __init__(self):
         # ... existing fields ...
         self.device_types = {}  # (vendor, model) → device_type_info
-        self.device_type_interfaces = {}  # (vendor, model) → [sorted interface list]
         self.device_name_to_type = {}  # device_name → (vendor, model)
 ```
 
@@ -270,30 +284,15 @@ def _get_nb_devices(self):
                 'model_name': d['model_name'],
                 'platform': d['platform'],
                 'platform_name': d['platform_name'],
-                'sample_device_name': d['name'],  # Use name for interface template
+                'device_type_id': device.device_type.id,  # For fetching device type templates
             }
 ```
 
 **Important:** Use device names, not IDs. NetBox IDs are instance-specific database keys that change when data is imported into different NetBox instances.
 
-**Build interface inventory:**
-```python
-def _get_nb_interfaces(self, block_size=4):
-    # ... existing code to fetch interfaces ...
-
-    # After creating interface dict
-    device_name = i['device_name']
-    device_type_key = self.nb_net.device_name_to_type.get(device_name)
-
-    if device_type_key:
-        # Build interface list using first device of each type as template
-        sample_name = self.nb_net.device_types[device_type_key]['sample_device_name']
-
-        if device_name == sample_name:
-            if device_type_key not in self.nb_net.device_type_interfaces:
-                self.nb_net.device_type_interfaces[device_type_key] = []
-            self.nb_net.device_type_interfaces[device_type_key].append(i)
-```
+**Note on Interface Handling:**
+- **For existing exporters (clab, cml, cyjs):** Continue using actual device interfaces collected via `_get_nb_interfaces()`. This preserves per-device customizations (modules, subinterfaces, etc.)
+- **For infragraph export only:** Fetch canonical interface templates from NetBox Device Types API. This ensures consistent component indices across all devices of the same type.
 
 **Helper method:**
 ```python
@@ -307,9 +306,8 @@ def _find_device_by_name(self, device_name):
 
 **Benefits:**
 - Fast device type iteration for infragraph Device creation
-- Pre-built interface lists per device type
 - Device name-based lookups (portable across NetBox instances)
-- Proper 0-based sequential indexing for infragraph components
+- Stores device_type_id for fetching canonical templates
 
 **Backward compatibility:** ✅ Additive only, no changes to existing data
 
@@ -357,34 +355,56 @@ infragraph>=0.6.1
 
 ### B2: InterfaceMapper Class
 
-Purpose: Map NetBox interface names to infragraph component indices (0-based, sequential)
+Purpose: Map NetBox interface names to infragraph component indices (0-based, sequential) using NetBox Device Type templates
 
 ```python
 class InterfaceMapper:
-    """Maps NetBox interfaces to infragraph component indices"""
+    """Maps NetBox interfaces to infragraph component indices using Device Type templates"""
 
-    def __init__(self, nb_net):
+    def __init__(self, nb_net, nb_session):
         self.nb_net = nb_net
+        self.nb_session = nb_session
         # "device_name.interface_name" → (component_name, idx)
         # Using device_name (not ID) for portability across NetBox instances
         self.interface_to_component = {}
+        self.device_type_templates = {}  # (vendor, model) → sorted interface names
+
+    def _fetch_device_type_templates(self):
+        """Fetch canonical interface templates from NetBox Device Types API
+
+        This ensures consistent component indices regardless of per-device customizations.
+        """
+        for device_type_key, device_type_info in self.nb_net.device_types.items():
+            device_type_id = device_type_info['device_type_id']
+
+            # Fetch device type object with interface templates
+            device_type_obj = self.nb_session.dcim.device_types.get(id=device_type_id)
+
+            # Get ALL interfaces defined in the device type (not from actual devices)
+            type_interfaces = list(device_type_obj.interfaces.all())
+
+            # Sort by name for consistent 0-based indexing
+            interface_names = sorted([iface.name for iface in type_interfaces])
+
+            self.device_type_templates[device_type_key] = interface_names
 
     def build_mappings(self):
-        """Build interface→component mapping with 0-based sequential indices"""
-        # For each device type, create consistent component index mapping
-        for device_type_key, interfaces in self.nb_net.device_type_interfaces.items():
-            # CRITICAL: Sort interfaces by name for consistent 0-based indexing
-            # This ensures port.0, port.1, port.2... are always the same interfaces
-            # Note: For devices, we preserve NetBox ordering (name-based via API);
-            # for interfaces, we sort locally by name for component indexing
-            sorted_interfaces = sorted(interfaces, key=lambda x: x['name'])
+        """Build interface→component mapping with 0-based sequential indices
 
+        Uses Device Type templates to ensure all devices of the same type have
+        identical component indices, even if individual devices have custom interfaces.
+        """
+        # First fetch canonical templates from NetBox Device Types
+        self._fetch_device_type_templates()
+
+        # For each device type, create consistent component index mapping
+        for device_type_key, template_interfaces in self.device_type_templates.items():
             # Apply mapping to ALL devices of this type
             for device in self.nb_net.devices:
                 if (device['vendor'], device['model']) == device_type_key:
-                    # Map each interface: device_name.interface_name → (component, idx)
-                    for idx, iface_template in enumerate(sorted_interfaces):
-                        mapping_key = f"{device['name']}.{iface_template['name']}"
+                    # Map each interface from device type template
+                    for idx, interface_name in enumerate(template_interfaces):
+                        mapping_key = f"{device['name']}.{interface_name}"
                         # idx is 0-based sequential, as required by infragraph
                         self.interface_to_component[mapping_key] = ("port", idx)
 
@@ -396,17 +416,20 @@ class InterfaceMapper:
             interface_name: NetBox interface name
 
         Returns:
-            Tuple of (component_name, component_idx) where idx is 0-based
+            Tuple of (component_name, component_idx) where idx is 0-based,
+            or None if interface not in device type template
         """
         key = f"{device_name}.{interface_name}"
-        return self.interface_to_component.get(key, ("port", 0))
+        return self.interface_to_component.get(key)
 ```
 
 **Key design decisions:**
+- Fetch interface templates from **NetBox Device Types API** (not from actual devices)
 - Use device **names** not IDs (portable across NetBox instances)
 - Sort interfaces by name for consistent ordering
 - Generate 0-based sequential indices (infragraph requirement)
 - Same device type always has same component indices
+- **Strict enforcement:** Interfaces not in device type template return None
 
 ### B3: InfragraphExporter Class
 
@@ -416,17 +439,18 @@ from infragraph import Device, Infrastructure, Component, InfrastructureEdge
 class InfragraphExporter:
     """Export NetBox topology to infragraph format"""
 
-    def __init__(self, network_graph, nb_net, topology_name, config):
+    def __init__(self, network_graph, nb_net, nb_session, topology_name, config):
         self.G = network_graph
         self.nb_net = nb_net
+        self.nb_session = nb_session  # Need for fetching device type templates
         self.topology_name = topology_name
         self.config = config
-        self.mapper = InterfaceMapper(nb_net)
+        self.mapper = InterfaceMapper(nb_net, nb_session)
         self.device_templates = {}  # (vendor, model) → Device object
 
     def build_infrastructure(self):
         """Main export method"""
-        # Build interface mappings
+        # Build interface mappings from Device Type templates
         self.mapper.build_mappings()
 
         # Create Infrastructure
@@ -454,7 +478,11 @@ class InfragraphExporter:
 
 ```python
 def _build_device_templates(self, infra):
-    """Create Device objects from cached device types"""
+    """Create Device objects from NetBox Device Type templates
+
+    Uses interface templates from Device Types (not from actual devices),
+    ensuring consistent component counts across all devices of the same type.
+    """
     for device_type_key, device_type_info in self.nb_net.device_types.items():
         # Create Device using infragraph SDK
         device = Device()
@@ -465,13 +493,13 @@ def _build_device_templates(self, infra):
             f"{device_type_info['vendor_name']} {device_type_info['model_name']}"
         )
 
-        # Add port components
-        interfaces = self.nb_net.device_type_interfaces.get(device_type_key, [])
-        if interfaces:
+        # Get interface template from Device Type (already fetched by InterfaceMapper)
+        template_interfaces = self.mapper.device_type_templates.get(device_type_key, [])
+        if template_interfaces:
             port = device.components.add(
                 name="port",
                 description="Network interface port",
-                count=len(interfaces)
+                count=len(template_interfaces)  # Count from device type, not actual devices
             )
             port.choice = Component.PORT
 
@@ -479,6 +507,11 @@ def _build_device_templates(self, infra):
         self.device_templates[device_type_key] = device
         infra.devices.append(device)
 ```
+
+**Key changes from original plan:**
+- Uses `mapper.device_type_templates` instead of `nb_net.device_type_interfaces`
+- Component count comes from Device Type definition, not from sample device
+- Ensures all devices of same type have identical template structure
 
 ### B5: Instance Creation with Automatic Grouping
 
@@ -648,9 +681,18 @@ def _build_links(self, infra):
 
 ### B7: Edge Creation with Instance Indexing
 
+**CRITICAL:** Validate that interfaces exist in device type templates before creating edges.
+
 ```python
 def _build_edges(self, infra):
-    """Convert cables to Infrastructure edges using instance names and indices"""
+    """Convert cables to Infrastructure edges using instance names and indices
+
+    Only creates edges for interfaces that exist in device type templates.
+    Skips edges where interfaces are device-specific customizations.
+    """
+    skipped_edges = []
+    created_edges = 0
+
     for edge in self.G.edges(data=True):
         node_a_name, node_b_name, edge_data = edge
 
@@ -674,13 +716,21 @@ def _build_edges(self, infra):
         device_a = self._find_device_by_name(device_name_a)
         device_b = self._find_device_by_name(device_name_b)
 
-        # Map to component indices using device names
-        component_a, idx_a = self.mapper.get_component_index(
-            device_name_a, iface_a['name']
-        )
-        component_b, idx_b = self.mapper.get_component_index(
-            device_name_b, iface_b['name']
-        )
+        # Map to component indices using device type templates
+        mapping_a = self.mapper.get_component_index(device_name_a, iface_a['name'])
+        mapping_b = self.mapper.get_component_index(device_name_b, iface_b['name'])
+
+        # STRICT ENFORCEMENT: Skip edge if interface not in device type template
+        if mapping_a is None:
+            skipped_edges.append((device_name_a, iface_a['name'], "not in device type"))
+            continue
+
+        if mapping_b is None:
+            skipped_edges.append((device_name_b, iface_b['name'], "not in device type"))
+            continue
+
+        component_a, idx_a = mapping_a
+        component_b, idx_b = mapping_b
 
         # Determine link type from interface speed
         link_name = self._get_link_name(iface_a.get('speed', 0))
@@ -703,6 +753,16 @@ def _build_edges(self, infra):
         infra_edge.ep2.instance = f"{instance_name_b}[{instance_idx_b}]"
         infra_edge.ep2.component = f"{component_b}[{idx_b}]"
 
+        created_edges += 1
+
+    # Report skipped edges
+    if skipped_edges:
+        print(f"\n⚠ Warning: Skipped {len(skipped_edges)} edges due to interfaces not in device type templates:")
+        for device, iface, reason in skipped_edges:
+            print(f"  - {device}:{iface} ({reason})")
+        print(f"\n✓ Action: Update NetBox device type definitions to include these interfaces")
+        print(f"  Created {created_edges} edges successfully\n")
+
 def _find_device_by_name(self, device_name):
     """Find device in nb_net.devices by name"""
     for device in self.nb_net.devices:
@@ -723,6 +783,8 @@ def _get_link_name(self, speed_kbps):
 - Use `instance_name` and `instance_index` from device (from grouping)
 - Correctly reference devices within instance groups (not always [0])
 - Component indices are 0-based sequential from InterfaceMapper
+- **STRICT VALIDATION:** Interfaces not in device type templates are skipped with clear warnings
+- **User guidance:** Clear message about fixing device types in NetBox
 
 ### B8: NetBox Metadata Annotations
 
@@ -891,9 +953,12 @@ if config['output_format'] == 'infragraph':
 **Unit tests:**
 
 1. `test_interface_mapper.py`
-   - Test interface→component index mapping
-   - Test consistent ordering
+   - Test device type template fetching from NetBox API
+   - Test interface→component index mapping from device types
+   - Test consistent ordering across all devices of same type
    - Test mapping retrieval
+   - Test return None for interfaces not in device type
+   - Test with mock NetBox API responses
 
 2. `test_instance_grouping.py`
    - Test automatic grouping by (site, role, vendor, model)
@@ -903,11 +968,14 @@ if config['output_format'] == 'infragraph':
    - Test preservation of NetBox name-based ordering for stable indices
 
 3. `test_infragraph_exporter.py`
-   - Test device template creation
+   - Test device template creation from device types
+   - Test component counts match device type interface counts
    - Test instance creation with proper count
    - Test instance indexing within groups
    - Test link creation with speeds
    - Test edge creation with correct instance indices
+   - Test edge skipping for non-template interfaces
+   - Test warning output for skipped edges
 
 4. `test_infragraph_annotations.py`
    - Test NetBox metadata annotation
@@ -944,10 +1012,10 @@ if config['output_format'] == 'infragraph':
   - [ ] Test edge attributes
 
 - [ ] A3: Add device type caching
-  - [ ] Add fields to NBNetwork class
-  - [ ] Update `_get_nb_devices()` to build cache
-  - [ ] Update `_get_nb_interfaces()` to build interface inventory
-  - [ ] Add `_find_device_by_id()` helper
+  - [ ] Add fields to NBNetwork class (`device_types`, `device_name_to_type`)
+  - [ ] Update `_get_nb_devices()` to cache device types with `device_type_id`
+  - [ ] ~~Update `_get_nb_interfaces()` to build interface inventory~~ (NOT NEEDED - infragraph fetches from Device Types API)
+  - [ ] Add `_find_device_by_name()` helper
 
 - [ ] A4: Test enhanced graph
   - [ ] Create `test_enhanced_graph.py`
@@ -961,8 +1029,12 @@ if config['output_format'] == 'infragraph':
   - [ ] Update documentation
 
 - [ ] B2: Create InterfaceMapper class
-  - [ ] Implement mapping logic
-  - [ ] Unit tests
+  - [ ] Implement `__init__` with `nb_net` and `nb_session` parameters
+  - [ ] Implement `_fetch_device_type_templates()` - Fetch from NetBox Device Types API
+  - [ ] Implement `build_mappings()` - Use device type templates (not actual devices)
+  - [ ] Implement `get_component_index()` - Return None for non-template interfaces
+  - [ ] Unit tests for device type template fetching
+  - [ ] Unit tests for mapping with missing interfaces
 
 - [ ] B3: Create InfragraphExporter class skeleton
   - [ ] Basic structure
@@ -970,7 +1042,8 @@ if config['output_format'] == 'infragraph':
 
 - [ ] B4: Implement device template creation
   - [ ] Build from cached device types
-  - [ ] Add components
+  - [ ] Use `mapper.device_type_templates` for component counts
+  - [ ] Add port components with counts from device type (not sample device)
 
 - [ ] B5: Implement instance grouping and indexing
   - [ ] `_build_instance_index()` - Group by (site, role, vendor, model)
@@ -992,11 +1065,15 @@ if config['output_format'] == 'infragraph':
   - [ ] Create link types
 
 - [ ] B8: Implement edge creation
-  - [ ] Map cables to edges
-  - [ ] Use interface mapper
-  - [ ] Use instance_name and instance_index from devices
-  - [ ] `_find_device_by_name()` helper
+  - [ ] Map cables to edges using device type templates
+  - [ ] Validate interfaces exist in device type templates (return None from mapper)
+  - [ ] Skip edges with non-template interfaces
+  - [ ] Collect and report skipped edges with clear warnings
+  - [ ] Use interface mapper with None-checking
+  - [ ] Use `instance_name` and `instance_index` from devices
+  - [ ] Implement `_find_device_by_name()` helper
   - [ ] Set endpoints correctly with proper instance indices
+  - [ ] Unit tests for edge skipping behavior
 
 - [ ] B9: Implement NetBox annotations
   - [ ] `_add_netbox_annotations()` - Add metadata via annotate_graph API
