@@ -62,7 +62,7 @@ count: 2                        # Two devices in group
 
 ### 3. Stable Instance Indexing
 
-**Request and preserve NetBox name-based ordering** within each group:
+**Request name-based ordering from NetBox API** within each group:
 
 ```python
 # Request name-based ordering from NetBox API
@@ -118,7 +118,7 @@ leaf_7050.0:
 |----------------|-------------------|---------|
 | Device Type | Device (template) | Group by (vendor, model) |
 | Devices (grouped) | Instance with count | Automatic grouping + compaction |
-| Individual Device | Instance index | Sort by device ID |
+| Individual Device | Instance index | Preserve NetBox API order |
 | Interface | Component (Port) | Alphabetical by interface name |
 | Cable | Edge (ONE2ONE) | Point-to-point connection |
 | Interface speed | Link bandwidth | Kbps → Gbps conversion |
