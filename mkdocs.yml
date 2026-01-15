@@ -113,6 +113,10 @@ nav:
       - Building: development/build.md
       - Testing: development/testing.md
       - Contributing: development/contributing.md
+  - Technical Documentation:
+      - Infragraph Export Summary: INFRAGRAPH_EXPORT_SUMMARY.md
+      - Infragraph Implementation Plan: INFRAGRAPH_IMPLEMENTATION_PLAN.md
+      - Infragraph Instance Indexing: INFRAGRAPH_INSTANCE_INDEXING.md
   - About:
       - Credits: about/credits.md
       - License: about/license.md
