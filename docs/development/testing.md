@@ -33,8 +33,8 @@ System tests are divided into two groups:
 Activate the development environment:
 
 ```Shell
-python3.9 -m venv nrx39-dev
-source nrx39-dev/bin/activate
+python3.10 -m venv nrx310-dev
+source nrx310-dev/bin/activate
 pip install -r requirements.txt -r requirements-dev.txt
 ```
 
