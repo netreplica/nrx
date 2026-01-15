@@ -254,10 +254,10 @@ uv run pytest tests/unit/ -v
 
 Releases are managed by maintainers:
 
-1. Version bumps in `setup.py` and `src/nrx/__init__.py`
+1. Version bump in `src/nrx/__about__.py`
 2. Update `CHANGELOG.md`
 3. Tag release in git
-4. Publish to PyPI
+4. Publish to PyPI via GitHub Actions
 5. Update documentation
 
 ## License
