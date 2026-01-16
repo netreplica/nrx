@@ -777,8 +777,12 @@ def _add_netbox_annotations(self, json_output, output_dir):
     """
     Add NetBox metadata as annotations using infragraph API
 
-    Annotations preserve the mapping between infragraph nodes and NetBox devices,
+    Annotations preserve the mapping between infragraph nodes and NetBox devices/interfaces,
     enabling reverse lookups and metadata queries.
+
+    Annotates both:
+    - Instance nodes (devices) with device metadata
+    - Component nodes (interfaces) with interface metadata
     """
     try:
         from infragraph import InfraGraphService, AnnotateRequest
@@ -790,6 +794,7 @@ def _add_netbox_annotations(self, json_output, output_dir):
         # Build annotation request
         annotate_request = AnnotateRequest()
 
+        # Annotate device instance nodes
         for device in self.nb_net.devices:
             # Node ID format: instance_name.instance_index
             instance_name = self._sanitize_name(device['instance_name'])
@@ -824,6 +829,9 @@ def _add_netbox_annotations(self, json_output, output_dir):
                 value=str(device['id'])
             )
 
+        # Annotate Device component nodes (not instance components)
+        self._annotate_device_components(annotate_request)
+
         # Apply annotations
         service.annotate_graph(annotate_request)
 
@@ -845,7 +853,39 @@ def _add_netbox_annotations(self, json_output, output_dir):
         print(f"⚠ Annotation failed: {e}")
         return False
 
+def _annotate_device_components(self, annotate_request):
+    """
+    Annotate Device component nodes with interface names
+
+    Annotates at the Device level, not Instance level.
+    This ensures interface names are defined once per device type, not per device instance.
+
+    Component node ID format: device_name.port.component_idx
+    (where device_name is like "arista_dcs_7050sx_64")
+    """
+    # For each device type that has been created as a Device
+    for device_type_key, device in self.device_templates.items():
+        # Get the device name
+        device_name = device.name  # Already sanitized
+
+        # Get interface template for this device type
+        template_interfaces = self.mapper.device_type_templates.get(device_type_key, [])
+
+        # Annotate each component in the Device
+        for component_idx, interface_name in enumerate(template_interfaces):
+            # Component node ID at Device level: device_name.port.component_idx
+            # NOT at instance level (no instance_idx)
+            component_node_id = f"{device_name}.port.{component_idx}"
+
+            # Annotate with interface name (maps component_idx back to interface name)
+            annotate_request.nodes.add(
+                name=component_node_id,
+                attribute="interface_name",
+                value=interface_name
+            )
+
 # Example annotations usage:
+
 # Query devices by original device name:
 # filter = QueryNodeFilter()
 # filter.choice = QueryNodeFilter.ATTRIBUTE_FILTER
@@ -853,15 +893,34 @@ def _add_netbox_annotations(self, json_output, output_dir):
 # filter.attribute_filter.operator = QueryNodeId.EQ
 # filter.attribute_filter.value = "leaf01"
 # matches = service.query_graph(filter)  # Returns: leaf_7050.0
+
+# Query Device component nodes by interface name:
+# filter = QueryNodeFilter()
+# filter.choice = QueryNodeFilter.ATTRIBUTE_FILTER
+# filter.attribute_filter.name = "interface_name"
+# filter.attribute_filter.operator = QueryNodeId.EQ
+# filter.attribute_filter.value = "Ethernet1"
+# matches = service.query_graph(filter)  # Returns: Device components (e.g., "arista_dcs_7050sx_64.port.0")
+
+# Reverse lookup: Given Device component, find interface name
+# node = service.get_node("arista_dcs_7050sx_64.port.5")
+# interface_name = node.annotations.get("interface_name")  # Returns: "Ethernet6"
+
+# Note: Instance components (leaf_7050.0.port.5) are NOT annotated
+# They reference Device (arista_dcs_7050sx_64) which has the interface names
 ```
 
 **Benefits:**
-- ✅ Preserves original device names for reverse lookup
+- ✅ Preserves original device names for reverse lookup on Instance nodes
+- ✅ Maps component indices back to interface names on Device components
+- ✅ Annotations at Device level (not duplicated per instance)
 - ✅ Queryable via infragraph `query_graph` API
 - ✅ Standard infragraph pattern (not custom format)
 - ✅ Two-file output: clean + annotated
-- ✅ Site, role, platform metadata available
+- ✅ Site, role, platform metadata available on instances
+- ✅ Interface names defined once per device type (not per instance)
 - ✅ Clean attribute names (no vendor-specific prefixes)
+- ✅ No per-device configuration data (MTU, descriptions) that can vary
 
 **Configuration:**
 ```toml
@@ -957,10 +1016,15 @@ if config['output_format'] == 'infragraph':
    - Test warning output for skipped edges
 
 4. `test_infragraph_annotations.py`
-   - Test NetBox metadata annotation
+   - Test device instance metadata annotation
+   - Test Device component annotation (interface names)
+   - Test `_annotate_device_components()` method
    - Test annotate_graph API integration
-   - Test reverse lookup by NetBox device name
+   - Test reverse lookup by NetBox device name (Instance level)
+   - Test interface queries by name (Device level)
    - Test two-file output (clean + annotated)
+   - Verify annotations only in annotated file (not in clean)
+   - Verify instance components are NOT annotated (reference Device)
 
 5. `test_infragraph_validation.py`
    - Test output validates with InfraGraphService
@@ -1056,9 +1120,15 @@ if config['output_format'] == 'infragraph':
 
 - [ ] B9: Implement NetBox annotations
   - [ ] `_add_netbox_annotations()` - Add metadata via annotate_graph API
-  - [ ] Annotate with device_name, site, role, platform
-  - [ ] Write annotated output file
-  - [ ] Unit tests for annotation logic
+  - [ ] Annotate Instance nodes with device_name, site, role, platform, source_id
+  - [ ] Implement `_annotate_device_components()` - Annotate Device components
+  - [ ] Annotate Device components (not instance components) with interface names
+  - [ ] Interface names come from device type templates
+  - [ ] Do NOT annotate instance components (they reference Device)
+  - [ ] Write annotated output file (separate from clean file)
+  - [ ] Unit tests for Instance annotation logic
+  - [ ] Unit tests for Device component annotation logic
+  - [ ] Verify instance components are NOT annotated
 
 - [ ] B10: Add export method to NBFactory
   - [ ] Implement `export_graph_infragraph()`
