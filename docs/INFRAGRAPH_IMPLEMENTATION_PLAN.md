@@ -296,12 +296,13 @@ class InterfaceMapper:
         # "device_name.interface_name" → (component_name, idx)
         # Using device_name (not ID) for portability across NetBox instances
         self.interface_to_component = {}
-        self.device_type_templates = {}  # (vendor, model) → sorted interface names
+        self.device_type_templates = {}  # (vendor, model) → interface names in NetBox order
 
     def _fetch_device_type_templates(self):
         """Fetch canonical interface templates from NetBox Device Types API
 
         This ensures consistent component indices regardless of per-device customizations.
+        Preserves NetBox's interface ordering as the canonical source of truth.
         """
         for device_type_key, device_type_info in self.nb_net.device_types.items():
             device_type_id = device_type_info['device_type_id']
@@ -312,8 +313,10 @@ class InterfaceMapper:
             # Get ALL interfaces defined in the device type (not from actual devices)
             type_interfaces = list(device_type_obj.interfaces.all())
 
-            # Sort by name for consistent 0-based indexing
-            interface_names = sorted([iface.name for iface in type_interfaces])
+            # Preserve NetBox's interface order (do NOT sort)
+            # NetBox device type interface order is the canonical ordering
+            # Users must ensure interfaces are ordered correctly in NetBox
+            interface_names = [iface.name for iface in type_interfaces]
 
             self.device_type_templates[device_type_key] = interface_names
 
@@ -355,9 +358,13 @@ class InterfaceMapper:
 **Key design decisions:**
 - Fetch interface templates from **NetBox Device Types API** (not from actual devices)
 - Use device **names** not IDs (portable across NetBox instances)
-- Sort interfaces by name for consistent ordering
+- **Preserve NetBox's interface order** - Trust device type interface ordering from NetBox
+  - Do NOT sort locally (no alphabetical, natural, or custom sorting)
+  - NetBox device type order is canonical source of truth
+  - Component indices match NetBox device type interface order exactly
+  - Users must ensure device type interfaces are ordered correctly in NetBox UI
 - Generate 0-based sequential indices (infragraph requirement)
-- Same device type always has same component indices
+- Same device type always has same component indices (if device type unchanged in NetBox)
 - **Strict enforcement:** Interfaces not in device type template return None
 
 ### B3: InfragraphExporter Class

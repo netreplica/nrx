@@ -296,6 +296,37 @@ nrx --source netbox --output infragraph
 
 **Expected behavior:** Infragraph requires consistent device templates. Per-device customizations are intentionally ignored to ensure all devices of the same type have identical component structures.
 
+### Interface Ordering and Component Indices
+
+**How component indices are assigned:**
+
+Component indices for interfaces are assigned based on the **order of interfaces in the NetBox Device Type definition**, not by alphabetical or natural sorting.
+
+**Example:**
+```
+NetBox Device Type: Arista DCS-7050SX-64
+Interface order in NetBox:
+  1. Management1        → component index 0
+  2. Ethernet1          → component index 1
+  3. Ethernet2          → component index 2
+  ...
+  50. Ethernet49        → component index 49
+```
+
+**Important notes:**
+
+- nrx preserves the exact interface order from NetBox device types
+- No local sorting is performed (alphabetical, natural, or otherwise)
+- Component indices will shift if you reorder interfaces in the NetBox device type
+- Users should ensure device type interfaces are ordered correctly in NetBox before export
+
+**Why this approach:**
+
+- NetBox is the canonical source of truth for device type definitions
+- Users have full control over interface ordering in NetBox UI
+- Avoids issues with complex interface naming schemes (e.g., `Ethernet1/10` vs `Ethernet1/2`)
+- Consistent behavior across different NetBox versions
+
 ## References
 
 - **Detailed Design:** [INFRAGRAPH_INSTANCE_INDEXING.md](INFRAGRAPH_INSTANCE_INDEXING.md)
