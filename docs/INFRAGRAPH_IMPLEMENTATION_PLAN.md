@@ -581,7 +581,10 @@ def _build_instances(self, infra):
 
 ```python
 def _build_links(self, infra):
-    """Create link definitions with bandwidth from interface speeds"""
+    """Create link definitions with bandwidth from interface speeds
+
+    Handles fractional speeds (2.5G, 12.5G) and creates unique link names.
+    """
     # Analyze interface speeds to determine link types needed
     speeds_used = set()
     for iface in self.nb_net.interfaces:
@@ -589,10 +592,16 @@ def _build_links(self, infra):
             speeds_used.add(iface['speed'])
 
     # Create links for each speed
-    # Convert Kbps to Gbps
+    # Convert Kbps to Gbps, preserving fractional precision
     for speed_kbps in speeds_used:
         speed_gbps = speed_kbps / 1_000_000
-        link_name = f"ethernet_{int(speed_gbps)}g"
+
+        # Keep fractional precision for non-integer speeds (2.5G, 12.5G)
+        if speed_gbps == int(speed_gbps):
+            link_name = f"ethernet_{int(speed_gbps)}g"
+        else:
+            # Use underscore for decimal point (2.5G → ethernet_2_5g)
+            link_name = f"ethernet_{str(speed_gbps).replace('.', '_')}g"
 
         link = infra.links.add(
             name=link_name,
@@ -661,8 +670,20 @@ def _build_edges(self, infra):
         component_a, idx_a = mapping_a
         component_b, idx_b = mapping_b
 
-        # Determine link type from interface speed
-        link_name = self._get_link_name(iface_a.get('speed', 0))
+        # Validate and determine link type from interface speeds
+        speed_a = iface_a.get('speed', 0)
+        speed_b = iface_b.get('speed', 0)
+
+        # Use minimum speed (conservative approach for mismatched speeds)
+        # Log warning if speeds differ
+        if speed_a != speed_b and speed_a > 0 and speed_b > 0:
+            link_speed = min(speed_a, speed_b)
+            print(f"⚠ Speed mismatch: {device_name_a}:{iface_a['name']} ({speed_a}Kbps) "
+                  f"<-> {device_name_b}:{iface_b['name']} ({speed_b}Kbps), using {link_speed}Kbps")
+        else:
+            link_speed = speed_a or speed_b or 0
+
+        link_name = self._get_link_name(link_speed)
 
         # Create edge using ONE2ONE scheme (point-to-point cable)
         infra_edge = infra.edges.add(
@@ -700,10 +721,30 @@ def _find_device_by_name(self, device_name):
     raise ValueError(f"Device not found: {device_name}")
 
 def _get_link_name(self, speed_kbps):
-    """Determine link name from interface speed"""
+    """Determine link name from interface speed, preserving fractional precision
+
+    Args:
+        speed_kbps: Speed in kilobits per second
+
+    Returns:
+        Link name like "ethernet_25g", "ethernet_2_5g", or "ethernet"
+
+    Examples:
+        25000000 Kbps → "ethernet_25g"
+        2500000 Kbps → "ethernet_2_5g"
+        12500000 Kbps → "ethernet_12_5g"
+        0 Kbps → "ethernet"
+    """
     if speed_kbps > 0:
         speed_gbps = speed_kbps / 1_000_000
-        return f"ethernet_{int(speed_gbps)}g"
+
+        # Keep fractional precision for non-integer speeds
+        if speed_gbps == int(speed_gbps):
+            return f"ethernet_{int(speed_gbps)}g"
+        else:
+            # Use underscore for decimal point (2.5G → ethernet_2_5g)
+            return f"ethernet_{str(speed_gbps).replace('.', '_')}g"
+
     return "ethernet"
 ```
 
@@ -713,7 +754,9 @@ def _get_link_name(self, speed_kbps):
 - Correctly reference devices within instance groups (not always [0])
 - Component indices are 0-based sequential from InterfaceMapper
 - **STRICT VALIDATION:** Interfaces not in device type templates are skipped with clear warnings
-- **User guidance:** Clear message about fixing device types in NetBox
+- **Speed validation:** Validates both endpoints and uses minimum speed for mismatched pairs
+- **Fractional precision:** Link names preserve fractional speeds (2.5G → "ethernet_2_5g")
+- **User guidance:** Clear warnings for skipped edges and speed mismatches
 
 ### B8: NetBox Metadata Annotations
 
