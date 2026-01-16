@@ -4,10 +4,33 @@
 
 Export NetBox network topologies to [infragraph](https://infragraph.dev/) format, enabling AI/HPC infrastructure modeling with automatic device grouping and intelligent name optimization.
 
+## Background
+
+### What is Infragraph?
+
+[Infragraph](https://infragraph.dev/) is a model-driven, vendor-neutral API for representing AI/HPC infrastructure using graph theory. It uses:
+
+- **Devices**: Templates defining hardware types with components
+- **Components**: Device parts (CPU, XPU, NIC, Port, Switch, Memory)
+- **Instances**: Actual deployed copies of devices
+- **Links**: Connection characteristics (bandwidth, latency)
+- **Edges**: Connections between instance components
+
+### Key Insights from infragraph_service.py
+
+The `InfraGraphService` module reveals that:
+
+1. **Node naming convention**: `{instance}.{device_idx}.{component}.{component_idx}`
+2. **Service generates graph**: `InfraGraphService.set_graph()` converts Infrastructure → NetworkX
+3. **Built-in validation**: We can validate our output by loading it back
+4. **Component indexing is critical**: Must map interface names to component indices precisely
+5. **Indices must be 0-based and sequential**: Component indices start at 0 and increment
+
 ## Two-Phase Implementation
 
 ### Phase A: Enhance NetworkX Graph
 Preserve complete NetBox data in the existing NetworkX graph structure:
+
 - Add interface metadata (speed, type, description, tags)
 - Add cable attributes (type, status, length)
 - Use **device names** (not IDs) for portable references
@@ -19,6 +42,7 @@ Preserve complete NetBox data in the existing NetworkX graph structure:
 Transform enhanced graph to infragraph format using the [infragraph Python SDK](https://pypi.org/project/infragraph/).
 
 **Critical Difference:** Unlike other exporters (clab, cml, cyjs) which use actual device interfaces, infragraph export uses **NetBox Device Type templates** to ensure consistent component indices across all devices of the same type. This means:
+
 - Device interface templates are fetched from NetBox Device Types API
 - Per-device customizations (modules, subinterfaces) are ignored
 - Edges with interfaces not in device type templates are skipped with warnings
@@ -47,9 +71,11 @@ count: 2                        # Two devices in group
 **Start maximal, then remove parts** to find shortest conflict-free names:
 
 **Phase 1:** Start with maximal name (site_role_vendor_model_full)
+
 **Phase 2:** Remove parts only if uniqueness is preserved
 
 **Removal and compaction order:**
+
 1. Drop site (if still unique)
 2. Drop vendor (if still unique)
 3. Compact model (full → extended → core) only if still unique
@@ -82,12 +108,14 @@ device_name: leaf03 → instance_index: 2
 ```
 
 **Benefits:**
+
 - Users have direct control via NetBox device naming
 - Ordering depends on NetBox's implementation (typically case-sensitive alphabetical)
 - Mirrors what users see in NetBox when sorted by name
 - Portable across NetBox instances when names are preserved
 
 **Implementation Note:**
+
 - nrx explicitly requests `ordering='name'` from NetBox API
 - The final ordering depends on how NetBox implements name sorting
 - No local re-sorting in Python ensures consistency with NetBox
@@ -106,17 +134,23 @@ leaf_7050.0:
 ```
 
 **Two-file output:**
+
 - `topology.infragraph.json` - Clean infrastructure model
 - `topology.infragraph.annotated.json` - With NetBox metadata
 
-### 5. Portable Identifiers
+### 5. Portable Identifiers (Use Names, Not IDs)
 
-**Never use NetBox database IDs in exported data:**
-- ✅ Device names (portable)
+**Problem:** NetBox database IDs change between instances. Same topology in different NetBox instances will have different device/interface IDs, making exports non-portable.
+
+**Solution:** Use names and sorted indices for all identifiers:
+
+- ✅ Device names (portable across NetBox instances)
 - ✅ Compacted instance names (portable)
-- ✅ Alphabetically sorted interface indices (portable)
+- ✅ Alphabetically sorted interface names → component indices (portable)
 - ❌ NetBox device IDs (database-specific, not used)
 - ❌ NetBox interface IDs (database-specific, not used)
+
+**Result:** Same NetBox topology data produces identical infragraph exports regardless of which NetBox instance it comes from, as long as device names are preserved.
 
 ## Mapping Summary
 
@@ -249,11 +283,13 @@ nrx --source netbox --output infragraph
 ```
 
 **Solution:**
+
 1. Review the NetBox Device Type definition for the affected devices
 2. Add missing interfaces to the Device Type template in NetBox
 3. Re-run the export
 
 **Why this happens:**
+
 - Device has a custom module or add-on interface not in the device type
 - Device has subinterfaces (e.g., `Ethernet1.100`) not defined in device type
 - Device has management interfaces not included in device type template
@@ -264,5 +300,5 @@ nrx --source netbox --output infragraph
 
 - **Detailed Design:** [INFRAGRAPH_INSTANCE_INDEXING.md](INFRAGRAPH_INSTANCE_INDEXING.md)
 - **Implementation Plan:** [INFRAGRAPH_IMPLEMENTATION_PLAN.md](INFRAGRAPH_IMPLEMENTATION_PLAN.md)
-- **Infragraph Docs:** https://infragraph.dev/
-- **Infragraph SDK:** https://pypi.org/project/infragraph/
+- **Infragraph Docs:** [https://infragraph.dev/](https://infragraph.dev/)
+- **Infragraph SDK:** [https://pypi.org/project/infragraph/](https://pypi.org/project/infragraph/)

@@ -24,78 +24,7 @@ This approach ensures a single code path for data collection that benefits all e
 
 **Impact on Other Exporters:** None. Existing exporters (clab, cml, cyjs) continue to use actual device interfaces collected from individual devices. This change only affects infragraph export logic.
 
-## Background
-
-### What is Infragraph?
-
-[Infragraph](https://infragraph.dev/) is a model-driven, vendor-neutral API for representing AI/HPC infrastructure using graph theory. It uses:
-
-- **Devices**: Templates defining hardware types with components
-- **Components**: Device parts (CPU, XPU, NIC, Port, Switch, Memory)
-- **Instances**: Actual deployed copies of devices
-- **Links**: Connection characteristics (bandwidth, latency)
-- **Edges**: Connections between instance components
-
-### NetBox to Infragraph Mapping
-
-| NetBox Concept | Infragraph Concept | Mapping Strategy |
-|----------------|-------------------|------------------|
-| Device Type (manufacturer + model) | Device (template) | Group by (vendor, model) |
-| Device (instance) | Instance | One-to-one |
-| Interface | Component (Port/NIC) | Grouped by device type |
-| Cable | Infrastructure.Edge | One-to-one with proper endpoints |
-| Interface speed | Link.bandwidth | Extract from interface data |
-
-### Key Insights from infragraph_service.py
-
-The `InfraGraphService` module reveals that:
-
-1. **Node naming convention**: `{instance}.{device_idx}.{component}.{component_idx}`
-2. **Service generates graph**: `InfraGraphService.set_graph()` converts Infrastructure → NetworkX
-3. **Built-in validation**: We can validate our output by loading it back
-4. **Component indexing is critical**: Must map interface names to component indices precisely
-5. **Indices must be 0-based and sequential**: Component indices start at 0 and increment
-
-### Critical Design Decision: Use Names, Not IDs
-
-**NetBox IDs are not suitable for portable exports:**
-
-```python
-# NetBox Instance A
-Device ID: 42 → "leaf01" (Arista DCS-7050)
-Interface ID: 156 → "Ethernet1" on device 42
-
-# Same data imported into NetBox Instance B
-Device ID: 108 → "leaf01" (same Arista DCS-7050)
-Interface ID: 423 → "Ethernet1" on device 108
-
-# Result: Same topology, different IDs!
-```
-
-**Infragraph requires consistent, portable identifiers:**
-
-```python
-# Both NetBox instances produce (after grouping and compaction):
-# Assume leaf01, leaf02 both have role=leaf, type=arista/dcs-7050sx-64
-
-instance_name: "leaf_7050"   # Grouped by role+type, compacted name (portable)
-instance_index: 0            # leaf01 is first alphabetically by name (via ordering='name')
-component: "port"            # Component type
-component_idx: 0             # 0-based index (Ethernet1 = first interface alphabetically)
-
-# Infragraph node for leaf01's first interface: leaf_7050.0.port.0
-# Infragraph node for leaf02's first interface: leaf_7050.1.port.0
-# Consistent across exports when NetBox device names are preserved!
-```
-
-**Solution:**
-- Group devices by **(site, role, vendor, model)** then compact names
-- Use **compacted instance names** (e.g., `leaf_7050`) not individual device names
-- Request **name-based ordering** from NetBox API (`ordering='name'`) and preserve that ordering
-- Use **interface names** sorted alphabetically to generate **0-based component indices**
-- Never use NetBox database IDs in exported infragraph data
-- Preserve original NetBox device names via **annotations** for reverse lookup
-- Final ordering depends on NetBox's implementation of name sorting
+**Note:** For background on infragraph concepts and design rationale, see [INFRAGRAPH_EXPORT_SUMMARY.md](INFRAGRAPH_EXPORT_SUMMARY.md).
 
 ## Current State Analysis
 
