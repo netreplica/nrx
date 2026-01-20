@@ -420,10 +420,10 @@ def _add_annotations(self, infrastructure):
             'source_id': device['id']  # Optional, for reference to source system
         }
 
-    # TODO: Determine how to include annotations in infragraph export
-    # Option 1: Use InfraGraphService annotation API if available
-    # Option 2: Include in custom section of JSON output
-    # Option 3: Generate separate annotation file
+    # NOTE: Annotations are added using infragraph's annotate_graph API.
+    # See Q3: Annotation Format (below) for the complete implementation.
+    # This function builds the annotation data structure, which is then
+    # passed to InfraGraphService.annotate_graph() after infrastructure export.
 
     return annotations
 ```
@@ -1457,4 +1457,4 @@ dc3_spine_9500: count=1  # Site needed (collision)
 - ✅ Stable indexing based on NetBox ordering
 - ✅ NetBox device names preserved in annotations
 - ✅ Reversible for future infragraph input support
-- ⚠️ Need to resolve: sorting stability, name collisions, annotation format
+- ✅ Sorting stability, name collisions, annotation format
