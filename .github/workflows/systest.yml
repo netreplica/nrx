@@ -8,6 +8,7 @@ on:
       - '!**.md'
       - '!**.png'
       - '!**/__about__.py'
+      - '!mkdocs.yml'
       - '!.github/workflows/**'
       - '.github/workflows/systest.yml'
   pull_request:
@@ -17,6 +18,7 @@ on:
       - '!**.md'
       - '!**.png'
       - '!**/__about__.py'
+      - '!mkdocs.yml'
       - '!.github/workflows/**'
       - '.github/workflows/systest.yml'
   workflow_dispatch:
