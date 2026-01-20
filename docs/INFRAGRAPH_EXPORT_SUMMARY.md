@@ -150,6 +150,7 @@ arista_dcs_7050sx_64.port.1:
 - `topology.infragraph.annotated.json` - With NetBox device and instance annotations
 
 **Annotation strategy:**
+
 - **Instance nodes**: Annotated with device-specific metadata (device_name, site, role, platform)
 - **Device components**: Annotated with interface names (once per device type)
 - **Instance components**: NOT annotated (reference Device for interface names)
@@ -157,6 +158,7 @@ arista_dcs_7050sx_64.port.1:
 - No per-device configuration data (MTU, descriptions, etc.) which can vary between devices
 
 **Queryable metadata:** Use infragraph's `query_graph` API to:
+
 - Find device instance by name: `device_name = "leaf01"` → `leaf_7050.0`
 - Find Device components: `interface_name = "Ethernet1"` → `arista_dcs_7050sx_64.port.0`
 - Reverse lookup: `arista_dcs_7050sx_64.port.5` → `interface_name = "Ethernet6"`

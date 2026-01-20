@@ -12,11 +12,13 @@ This approach ensures a single code path for data collection that benefits all e
 ## Critical Design Decision: Device Type Templates for Infragraph
 
 **Problem:** Infragraph requires consistent, template-based device definitions. Using actual device interfaces (which may have per-device customizations like modules, subinterfaces, or missing interfaces) leads to:
+
 - Inconsistent component indices across devices of the same type
 - Unpredictable template structures
 - Missing edges when device interfaces don't match the "sample" device
 
 **Solution:** For infragraph export only, fetch interface templates directly from **NetBox Device Types API**:
+
 - ✅ All devices of the same type get identical component indices
 - ✅ Predictable, consistent templates regardless of device customizations
 - ✅ Edges for non-template interfaces are skipped with clear warnings
@@ -68,6 +70,7 @@ This approach ensures a single code path for data collection that benefits all e
 ```
 
 **Edges:**
+
 - Device → Interface (ownership)
 - Interface → Interface (cable connection, no attributes)
 
@@ -76,6 +79,7 @@ This approach ensures a single code path for data collection that benefits all e
 Comparing NetBox API objects to what nrx currently stores:
 
 **Missing from Interface:**
+
 - `label` - User-friendly label
 - `description` - Interface description
 - `interface_type` - Full type info (only partially checked)
@@ -87,6 +91,7 @@ Comparing NetBox API objects to what nrx currently stores:
 - `tags` - Interface tags (checked but not stored)
 
 **Missing from Cable (edge):**
+
 - `cable_id` - Cable identifier
 - `cable_type` - Cable type
 - `cable_status` - Connection status
@@ -94,6 +99,7 @@ Comparing NetBox API objects to what nrx currently stores:
 - `cable_length_unit` - Length unit
 
 **Missing from Device Type:**
+
 - No cached inventory of device types
 - No pre-built interface list per device type
 - Must iterate all devices to find unique types
@@ -143,6 +149,7 @@ i = {
 **Important:** Store `device_name` NOT `device_id`. NetBox IDs are database primary keys that change between NetBox instances. Device names are portable identifiers.
 
 **Benefits:**
+
 - Direct device lookup by name (portable across NetBox instances)
 - Speed data for infragraph link bandwidth calculation
 - Tags for filtering/annotation
@@ -175,6 +182,7 @@ self.G.add_edge(
 **Implementation location:** `NBFactory._add_cable_to_graph()` around line 456
 
 **Benefits:**
+
 - Cable metadata available for all exporters
 - Can filter by cable type/status
 - Physical length data available
@@ -220,6 +228,7 @@ def _get_nb_devices(self):
 **Important:** Use device names, not IDs. NetBox IDs are instance-specific database keys that change when data is imported into different NetBox instances.
 
 **Note on Interface Handling:**
+
 - **For existing exporters (clab, cml, cyjs):** Continue using actual device interfaces collected via `_get_nb_interfaces()`. This preserves per-device customizations (modules, subinterfaces, etc.)
 - **For infragraph export only:** Fetch canonical interface templates from NetBox Device Types API. This ensures consistent component indices across all devices of the same type.
 
@@ -234,6 +243,7 @@ def _find_device_by_name(self, device_name):
 ```
 
 **Benefits:**
+
 - Fast device type iteration for infragraph Device creation
 - Device name-based lookups (portable across NetBox instances)
 - Stores device_type_id for fetching canonical templates
@@ -245,24 +255,28 @@ def _find_device_by_name(self, device_name):
 **Unit tests needed:**
 
 1. Test interface data completeness
-   - Verify all new fields populated
-   - Verify device_id reference correct
-   - Verify tags list correct
+
+    - Verify all new fields populated
+    - Verify device_id reference correct
+    - Verify tags list correct
 
 2. Test cable edge attributes
-   - Verify cable metadata on edges
-   - Verify backward compatibility (edges still exist)
+
+    - Verify cable metadata on edges
+    - Verify backward compatibility (edges still exist)
 
 3. Test device type caching
-   - Verify unique device types identified
-   - Verify interface lists built correctly
-   - Verify device lookup works
+
+    - Verify unique device types identified
+    - Verify interface lists built correctly
+    - Verify device lookup works
 
 4. Test existing exporters
-   - Run clab export with enhanced graph
-   - Run cml export with enhanced graph
-   - Run cyjs export with enhanced graph
-   - Verify outputs unchanged
+
+    - Run clab export with enhanced graph
+    - Run cml export with enhanced graph
+    - Run cyjs export with enhanced graph
+    - Verify outputs unchanged
 
 **Implementation location:** `tests/unit/test_enhanced_graph.py` (new file)
 
@@ -356,6 +370,7 @@ class InterfaceMapper:
 ```
 
 **Key design decisions:**
+
 - Fetch interface templates from **NetBox Device Types API** (not from actual devices)
 - Use device **names** not IDs (portable across NetBox instances)
 - **Preserve NetBox's interface order** - Trust device type interface ordering from NetBox
@@ -363,6 +378,7 @@ class InterfaceMapper:
   - NetBox device type order is canonical source of truth
   - Component indices match NetBox device type interface order exactly
   - Users must ensure device type interfaces are ordered correctly in NetBox UI
+
 - Generate 0-based sequential indices (infragraph requirement)
 - Same device type always has same component indices (if device type unchanged in NetBox)
 - **Strict enforcement:** Interfaces not in device type template return None
@@ -445,6 +461,7 @@ def _build_device_templates(self, infra):
 ```
 
 **Key changes from original plan:**
+
 - Uses `mapper.device_type_templates` instead of `nb_net.device_type_interfaces`
 - Component count comes from Device Type definition, not from sample device
 - Ensures all devices of same type have identical template structure
@@ -452,6 +469,7 @@ def _build_device_templates(self, infra):
 ### B5: Instance Creation with Automatic Grouping
 
 **Key Decision (from INFRAGRAPH_INSTANCE_INDEXING.md):**
+
 - Group devices by (site, role, vendor, model) initially
 - Use compaction routine to automatically remove unnecessary parts from names
 - Devices with same (site, role, type) become instances with count > 1
@@ -579,6 +597,7 @@ def _build_instances(self, infra):
 ```
 
 **Key Benefits:**
+
 - ✅ Automatic grouping (no user configuration needed)
 - ✅ Shortest possible names via compaction
 - ✅ Stable indices via NetBox name-based ordering
@@ -756,6 +775,7 @@ def _get_link_name(self, speed_kbps):
 ```
 
 **Key improvements:**
+
 - Use `device_name` from interface data (portable identifier)
 - Use `instance_name` and `instance_index` from device (from grouping)
 - Correctly reference devices within instance groups (not always [0])
@@ -768,6 +788,7 @@ def _get_link_name(self, speed_kbps):
 ### B8: NetBox Metadata Annotations
 
 **Key Decision (from INFRAGRAPH_INSTANCE_INDEXING.md Q3):**
+
 - Use infragraph's standard `annotate_graph` API to preserve NetBox metadata
 - Annotations separate infrastructure model from use-case-specific data
 - Produces two files: clean infrastructure + annotated version
@@ -911,6 +932,7 @@ def _annotate_device_components(self, annotate_request):
 ```
 
 **Benefits:**
+
 - ✅ Preserves original device names for reverse lookup on Instance nodes
 - ✅ Maps component indices back to interface names on Device components
 - ✅ Annotations at Device level (not duplicated per instance)
@@ -991,46 +1013,51 @@ if config['output_format'] == 'infragraph':
 **Unit tests:**
 
 1. `test_interface_mapper.py`
-   - Test device type template fetching from NetBox API
-   - Test interface→component index mapping from device types
-   - Test consistent ordering across all devices of same type
-   - Test mapping retrieval
-   - Test return None for interfaces not in device type
-   - Test with mock NetBox API responses
+
+    - Test device type template fetching from NetBox API
+    - Test interface→component index mapping from device types
+    - Test consistent ordering across all devices of same type
+    - Test mapping retrieval
+    - Test return None for interfaces not in device type
+    - Test with mock NetBox API responses
 
 2. `test_instance_grouping.py`
-   - Test automatic grouping by (site, role, vendor, model)
-   - Test name compaction algorithm
-   - Test single-site exports (site removed)
-   - Test multi-site exports (site kept when needed)
-   - Test preservation of NetBox name-based ordering for stable indices
+
+    - Test automatic grouping by (site, role, vendor, model)
+    - Test name compaction algorithm
+    - Test single-site exports (site removed)
+    - Test multi-site exports (site kept when needed)
+    - Test preservation of NetBox name-based ordering for stable indices
 
 3. `test_infragraph_exporter.py`
-   - Test device template creation from device types
-   - Test component counts match device type interface counts
-   - Test instance creation with proper count
-   - Test instance indexing within groups
-   - Test link creation with speeds
-   - Test edge creation with correct instance indices
-   - Test edge skipping for non-template interfaces
-   - Test warning output for skipped edges
+
+    - Test device template creation from device types
+    - Test component counts match device type interface counts
+    - Test instance creation with proper count
+    - Test instance indexing within groups
+    - Test link creation with speeds
+    - Test edge creation with correct instance indices
+    - Test edge skipping for non-template interfaces
+    - Test warning output for skipped edges
 
 4. `test_infragraph_annotations.py`
-   - Test device instance metadata annotation
-   - Test Device component annotation (interface names)
-   - Test `_annotate_device_components()` method
-   - Test annotate_graph API integration
-   - Test reverse lookup by NetBox device name (Instance level)
-   - Test interface queries by name (Device level)
-   - Test two-file output (clean + annotated)
-   - Verify annotations only in annotated file (not in clean)
-   - Verify instance components are NOT annotated (reference Device)
+
+    - Test device instance metadata annotation
+    - Test Device component annotation (interface names)
+    - Test `_annotate_device_components()` method
+    - Test annotate_graph API integration
+    - Test reverse lookup by NetBox device name (Instance level)
+    - Test interface queries by name (Device level)
+    - Test two-file output (clean + annotated)
+    - Verify annotations only in annotated file (not in clean)
+    - Verify instance components are NOT annotated (reference Device)
 
 5. `test_infragraph_validation.py`
-   - Test output validates with InfraGraphService
-   - Test generated graph has correct nodes
-   - Test edge connectivity
-   - Test annotations queryable
+
+    - Test output validates with InfraGraphService
+    - Test generated graph has correct nodes
+    - Test edge connectivity
+    - Test annotations queryable
 
 **System tests:**
 
@@ -1046,117 +1073,136 @@ if config['output_format'] == 'infragraph':
 ### Phase A: Enhance NetworkX Graph
 
 - [ ] A1: Enhance interface node data
-  - [ ] Update `_get_nb_interfaces()` to store all fields
-  - [ ] Add device_id, speed, tags, etc.
-  - [ ] Test field population
+
+    - [ ] Update `_get_nb_interfaces()` to store all fields
+    - [ ] Add device_id, speed, tags, etc.
+    - [ ] Test field population
 
 - [ ] A2: Add cable edge attributes
-  - [ ] Update `_add_cable_to_graph()` to store cable metadata
-  - [ ] Test edge attributes
+
+    - [ ] Update `_add_cable_to_graph()` to store cable metadata
+    - [ ] Test edge attributes
 
 - [ ] A3: Add device type caching
-  - [ ] Add fields to NBNetwork class (`device_types`, `device_name_to_type`)
-  - [ ] Update `_get_nb_devices()` to cache device types with `device_type_id`
-  - [ ] ~~Update `_get_nb_interfaces()` to build interface inventory~~ (NOT NEEDED - infragraph fetches from Device Types API)
-  - [ ] Add `_find_device_by_name()` helper
+
+    - [ ] Add fields to NBNetwork class (`device_types`, `device_name_to_type`)
+    - [ ] Update `_get_nb_devices()` to cache device types with `device_type_id`
+    - [ ] ~~Update `_get_nb_interfaces()` to build interface inventory~~ (NOT NEEDED - infragraph fetches from Device Types API)
+    - [ ] Add `_find_device_by_name()` helper
 
 - [ ] A4: Test enhanced graph
-  - [ ] Create `test_enhanced_graph.py`
-  - [ ] Test all existing exporters still work
-  - [ ] Run system tests
+
+    - [ ] Create `test_enhanced_graph.py`
+    - [ ] Test all existing exporters still work
+    - [ ] Run system tests
 
 ### Phase B: Infragraph Export
 
 - [ ] B1: Add infragraph dependency
-  - [ ] Add to requirements.txt
-  - [ ] Update documentation
+
+    - [ ] Add to requirements.txt
+    - [ ] Update documentation
 
 - [ ] B2: Create InterfaceMapper class
-  - [ ] Implement `__init__` with `nb_net` and `nb_session` parameters
-  - [ ] Implement `_fetch_device_type_templates()` - Fetch from NetBox Device Types API
-  - [ ] Implement `build_mappings()` - Use device type templates (not actual devices)
-  - [ ] Implement `get_component_index()` - Return None for non-template interfaces
-  - [ ] Unit tests for device type template fetching
-  - [ ] Unit tests for mapping with missing interfaces
+
+    - [ ] Implement `__init__` with `nb_net` and `nb_session` parameters
+    - [ ] Implement `_fetch_device_type_templates()` - Fetch from NetBox Device Types API
+    - [ ] Implement `build_mappings()` - Use device type templates (not actual devices)
+    - [ ] Implement `get_component_index()` - Return None for non-template interfaces
+    - [ ] Unit tests for device type template fetching
+    - [ ] Unit tests for mapping with missing interfaces
 
 - [ ] B3: Create InfragraphExporter class skeleton
-  - [ ] Basic structure
-  - [ ] Sanitization helper
+
+    - [ ] Basic structure
+    - [ ] Sanitization helper
 
 - [ ] B4: Implement device template creation
-  - [ ] Build from cached device types
-  - [ ] Use `mapper.device_type_templates` for component counts
-  - [ ] Add port components with counts from device type (not sample device)
+
+    - [ ] Build from cached device types
+    - [ ] Use `mapper.device_type_templates` for component counts
+    - [ ] Add port components with counts from device type (not sample device)
 
 - [ ] B5: Implement instance grouping and indexing
-  - [ ] `_build_instance_index()` - Group by (site, role, vendor, model)
-  - [ ] `_compact_instance_names()` - Optimize names by removing unnecessary parts
-  - [ ] `_extract_model_core()` - Extract short model identifiers
-  - [ ] `_is_unique_across_groups()` - Check name uniqueness
-  - [ ] Preserve NetBox name-based ordering within groups (from API ordering='name')
-  - [ ] Assign instance_name and instance_index to each device
-  - [ ] Unit tests for grouping logic
-  - [ ] Unit tests for name compaction
+
+    - [ ] `_build_instance_index()` - Group by (site, role, vendor, model)
+    - [ ] `_compact_instance_names()` - Optimize names by removing unnecessary parts
+    - [ ] `_extract_model_core()` - Extract short model identifiers
+    - [ ] `_is_unique_across_groups()` - Check name uniqueness
+    - [ ] Preserve NetBox name-based ordering within groups (from API ordering='name')
+    - [ ] Assign instance_name and instance_index to each device
+    - [ ] Unit tests for grouping logic
+    - [ ] Unit tests for name compaction
 
 - [ ] B6: Implement instance creation
-  - [ ] `_build_instances()` - Create Instance objects from grouped devices
-  - [ ] Set proper count for each instance
-  - [ ] Unit tests
+
+    - [ ] `_build_instances()` - Create Instance objects from grouped devices
+    - [ ] Set proper count for each instance
+    - [ ] Unit tests
 
 - [ ] B7: Implement link creation
-  - [ ] Extract speeds
-  - [ ] Create link types
+
+    - [ ] Extract speeds
+    - [ ] Create link types
 
 - [ ] B8: Implement edge creation
-  - [ ] Map cables to edges using device type templates
-  - [ ] Validate interfaces exist in device type templates (return None from mapper)
-  - [ ] Skip edges with non-template interfaces
-  - [ ] Collect and report skipped edges with clear warnings
-  - [ ] Use interface mapper with None-checking
-  - [ ] Use `instance_name` and `instance_index` from devices
-  - [ ] Implement `_find_device_by_name()` helper
-  - [ ] Set endpoints correctly with proper instance indices
-  - [ ] Unit tests for edge skipping behavior
+
+    - [ ] Map cables to edges using device type templates
+    - [ ] Validate interfaces exist in device type templates (return None from mapper)
+    - [ ] Skip edges with non-template interfaces
+    - [ ] Collect and report skipped edges with clear warnings
+    - [ ] Use interface mapper with None-checking
+    - [ ] Use `instance_name` and `instance_index` from devices
+    - [ ] Implement `_find_device_by_name()` helper
+    - [ ] Set endpoints correctly with proper instance indices
+    - [ ] Unit tests for edge skipping behavior
 
 - [ ] B9: Implement NetBox annotations
-  - [ ] `_add_netbox_annotations()` - Add metadata via annotate_graph API
-  - [ ] Annotate Instance nodes with device_name, site, role, platform, source_id
-  - [ ] Implement `_annotate_device_components()` - Annotate Device components
-  - [ ] Annotate Device components (not instance components) with interface names
-  - [ ] Interface names come from device type templates
-  - [ ] Do NOT annotate instance components (they reference Device)
-  - [ ] Write annotated output file (separate from clean file)
-  - [ ] Unit tests for Instance annotation logic
-  - [ ] Unit tests for Device component annotation logic
-  - [ ] Verify instance components are NOT annotated
+
+    - [ ] `_add_netbox_annotations()` - Add metadata via annotate_graph API
+    - [ ] Annotate Instance nodes with device_name, site, role, platform, source_id
+    - [ ] Implement `_annotate_device_components()` - Annotate Device components
+    - [ ] Annotate Device components (not instance components) with interface names
+    - [ ] Interface names come from device type templates
+    - [ ] Do NOT annotate instance components (they reference Device)
+    - [ ] Write annotated output file (separate from clean file)
+    - [ ] Unit tests for Instance annotation logic
+    - [ ] Unit tests for Device component annotation logic
+    - [ ] Verify instance components are NOT annotated
 
 - [ ] B10: Add export method to NBFactory
-  - [ ] Implement `export_graph_infragraph()`
-  - [ ] Call `_add_netbox_annotations()` if enabled
-  - [ ] Add validation option
+
+    - [ ] Implement `export_graph_infragraph()`
+    - [ ] Call `_add_netbox_annotations()` if enabled
+    - [ ] Add validation option
 
 - [ ] B11: Update CLI
-  - [ ] Support `--output infragraph`
+
+    - [ ] Support `--output infragraph`
 
 - [ ] B12: Testing
-  - [ ] Unit tests for all components
-  - [ ] System tests with single-site data
-  - [ ] System tests with multi-site data
-  - [ ] Validation with InfraGraphService
-  - [ ] Test annotation queries
+
+    - [ ] Unit tests for all components
+    - [ ] System tests with single-site data
+    - [ ] System tests with multi-site data
+    - [ ] Validation with InfraGraphService
+    - [ ] Test annotation queries
 
 ### Documentation
 
 - [ ] Update README.md
-  - [ ] Add infragraph to supported formats
-  - [ ] Add usage example
+
+    - [ ] Add infragraph to supported formats
+    - [ ] Add usage example
 
 - [ ] Update CLAUDE.md
-  - [ ] Add infragraph development notes
+
+    - [ ] Add infragraph development notes
 
 - [ ] Create infragraph mapping documentation
-  - [ ] Document NetBox → infragraph mapping decisions
-  - [ ] Include examples
+
+    - [ ] Document NetBox → infragraph mapping decisions
+    - [ ] Include examples
 
 ## Benefits Summary
 
@@ -1201,6 +1247,7 @@ All design decisions have been finalized and documented in [INFRAGRAPH_INSTANCE_
 **Problem:** Need to map NetBox devices to infragraph instances with count
 **Solution:** Always group by (site, role, vendor, model) initially
 **Benefits:**
+
 - Devices from different sites never accidentally combined
 - Automatic name compaction removes unnecessary parts
 - No user configuration required
@@ -1210,6 +1257,7 @@ All design decisions have been finalized and documented in [INFRAGRAPH_INSTANCE_
 **Problem:** Instance names can be verbose (dc1_leaf_arista_7050)
 **Solution:** Progressive compaction removes unnecessary parts
 **Examples:**
+
 - Single-site: `leaf_7050` (site removed)
 - Multi-site same devices: `dc1_leaf_7050`, `dc2_leaf_7050` (site needed)
 - Multi-site different devices: `leaf_7050`, `leaf_9300` (site removed, vendor removed)
@@ -1219,6 +1267,7 @@ All design decisions have been finalized and documented in [INFRAGRAPH_INSTANCE_
 **Problem:** Need stable instance indices across exports with user control
 **Solution:** Request `ordering='name'` from NetBox API and preserve that ordering within groups
 **Benefits:**
+
 - Users have direct control via NetBox device naming
 - Ordering depends on NetBox's implementation (typically case-sensitive alphabetical)
 - Mirrors what users see in NetBox when sorted by name
@@ -1242,6 +1291,7 @@ for instance_key, devices in instance_groups.items():
 **Problem:** Need to preserve NetBox device names for reverse lookup
 **Solution:** Use infragraph's `annotate_graph` API
 **Benefits:**
+
 - Standard infragraph pattern
 - Queryable via `query_graph` API
 - Two-file output: clean + annotated

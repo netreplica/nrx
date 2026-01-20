@@ -65,11 +65,13 @@ Infragraph instances:
 ```
 
 **Pros:**
+
 - Simple and intuitive
 - Matches common network design patterns
 - Short instance names
 
 **Cons:**
+
 - ❌ **FAILS if same role has multiple device types!**
   ```python
   leaf01 (role=leaf, type=Arista-7050)
@@ -102,11 +104,13 @@ Infragraph instances:
 ```
 
 **Pros:**
+
 - ✅ Ensures type consistency (each instance has exactly one device type)
 - ✅ Groups logically by role + hardware
 - ✅ Deterministic ordering (preserves NetBox ordering within group)
 
 **Cons:**
+
 - Longer instance names
 - Multiple instances for same role if hardware varies
 
@@ -133,11 +137,13 @@ Infragraph instances:
 ```
 
 **Pros:**
+
 - ✅ Separates by location
 - ✅ Type consistency maintained
 - ✅ Useful for multi-site topologies
 
 **Cons:**
+
 - More instances (multiplied by number of sites)
 - Longer names
 - Less useful if exporting single site
@@ -159,10 +165,12 @@ instance_key = (custom_field_value, vendor, model)
 ```
 
 **Pros:**
+
 - ✅ Maximum flexibility
 - ✅ Users control logical grouping
 
 **Cons:**
+
 - ❌ Requires NetBox configuration
 - ❌ Complex setup for users
 - ❌ Falls back to role if custom field not set
@@ -558,6 +566,7 @@ NetBox: access-switch-01 → infragraph: leaf_7050sx.0 (annotation: "access-swit
 **Index remains stable** as long as NetBox ordering remains stable at time of export.
 
 **Answer:** We request fresh ordering from NetBox on each export using `ordering='name'` parameter. This ensures:
+
 - Indices always reflect current NetBox name-based ordering
 - Changes to device names are reflected in new exports
 - Ordering is always consistent with what users see in NetBox
@@ -868,6 +877,7 @@ nrx --output infragraph --infragraph-grouping "site,role"
 ```
 
 **Example:**
+
 - NetBox devices: `dc1-leaf01`, `dc1-leaf02`, `dc2-leaf01`
 - Grouping: `site,role`
 - Infragraph instances: `dc1_leaf`, `dc2_leaf`
@@ -906,6 +916,7 @@ NetBox ordering is user-controlled and should be mirrored in export:
    - `annotations.device_name` allows reconstruction
 
 **Trade-off accepted:**
+
 - ⚠️ Indices change if NetBox ordering changes
 - ✅ But: ordering matches what users see/configure in NetBox
 - ✅ And: annotations preserve device name mapping regardless
@@ -1046,6 +1057,7 @@ def export_graph_infragraph(self):
 ```
 
 **Benefits of using infragraph API:**
+
 - ✅ Standard infragraph pattern (not custom format)
 - ✅ Annotations queryable via `query_graph` API
 - ✅ Separates infrastructure from metadata (clean design)
