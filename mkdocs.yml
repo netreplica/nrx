@@ -109,9 +109,9 @@ nav:
       - Testing: development/testing.md
       - Contributing: development/contributing.md
       - Infragraph:
-        - Summary: INFRAGRAPH_EXPORT_SUMMARY.md
-        - Implementation Plan: INFRAGRAPH_IMPLEMENTATION_PLAN.md
-        - Instance Indexing: INFRAGRAPH_INSTANCE_INDEXING.md
+        - Summary: development/infragraph/summary.md
+        - Implementation Plan: development/infragraph/implementation.md
+        - Instance Indexing: development/infragraph/indexing.md
   - About:
     - Project: project.md
     - License: license.md

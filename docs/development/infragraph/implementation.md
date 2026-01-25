@@ -26,7 +26,7 @@ This approach ensures a single code path for data collection that benefits all e
 
 **Impact on Other Exporters:** None. Existing exporters (clab, cml, cyjs) continue to use actual device interfaces collected from individual devices. This change only affects infragraph export logic.
 
-**Note:** For background on infragraph concepts and design rationale, see [INFRAGRAPH_EXPORT_SUMMARY.md](INFRAGRAPH_EXPORT_SUMMARY.md).
+**Note:** For background on infragraph concepts and design rationale, see [summary.md](summary.md).
 
 ## Current State Analysis
 
@@ -468,7 +468,7 @@ def _build_device_templates(self, infra):
 
 ### B5: Instance Creation with Automatic Grouping
 
-**Key Decision (from INFRAGRAPH_INSTANCE_INDEXING.md):**
+**Key Decision (from indexing.md):**
 
 - Group devices by (site, role, vendor, model) initially
 - Use compaction routine to automatically remove unnecessary parts from names
@@ -518,7 +518,7 @@ def _compact_instance_names(self, instance_groups):
     """
     Generate shortest possible instance names by removing unnecessary parts
 
-    **See INFRAGRAPH_INSTANCE_INDEXING.md Q4 for the complete authoritative
+    **See indexing.md Q4 for the complete authoritative
     algorithm.**
 
     Strategy:
@@ -537,7 +537,7 @@ def _compact_instance_names(self, instance_groups):
 
     Returns: {instance_key → optimized_name}
     """
-    # Implementation: See INFRAGRAPH_INSTANCE_INDEXING.md Q4 for complete code
+    # Implementation: See indexing.md Q4 for complete code
     # Key helper functions needed:
     # - _build_name_without_site(role, vendor, model_part)
     # - _build_name_without_vendor(site, role, model_part)
@@ -787,7 +787,7 @@ def _get_link_name(self, speed_kbps):
 
 ### B8: NetBox Metadata Annotations
 
-**Key Decision (from INFRAGRAPH_INSTANCE_INDEXING.md Q3):**
+**Key Decision (from indexing.md Q3):**
 
 - Use infragraph's standard `annotate_graph` API to preserve NetBox metadata
 - Annotations separate infrastructure model from use-case-specific data
@@ -1234,7 +1234,7 @@ if config['output_format'] == 'infragraph':
 
 ## Key Design Decisions
 
-All design decisions have been finalized and documented in [INFRAGRAPH_INSTANCE_INDEXING.md](INFRAGRAPH_INSTANCE_INDEXING.md).
+All design decisions have been finalized and documented in [indexing.md](indexing.md).
 
 ### Decision 1: Use Device Names, Not IDs ✅
 
@@ -1297,7 +1297,7 @@ for instance_key, devices in instance_groups.items():
 - Two-file output: clean + annotated
 - Separates infrastructure from metadata
 
-**Reference:** See [INFRAGRAPH_INSTANCE_INDEXING.md](INFRAGRAPH_INSTANCE_INDEXING.md) for complete rationale and examples.
+**Reference:** See [indexing.md](indexing.md) for complete rationale and examples.
 
 ## Questions & Decisions (Legacy)
 

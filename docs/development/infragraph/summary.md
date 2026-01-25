@@ -90,7 +90,7 @@ count: 2                        # Two devices in group
 | Same role, different models | leaf01 (7050sx), leaf02 (7050tx) | leaf_arista_7050sx64, leaf_arista_7050tx48 | Yes | `leaf_7050sx`, `leaf_7050tx` (extended model) |
 | Multi-site different vendors | dc1/arista-leaf, dc2/cisco-leaf | dc1_leaf_arista_7050sx64, dc2_leaf_cisco_9300 | No | `leaf_7050`, `leaf_9300` (site+vendor removed) |
 
-**See [INFRAGRAPH_INSTANCE_INDEXING.md](INFRAGRAPH_INSTANCE_INDEXING.md) Q4 (lines 1091-1235) for complete algorithm details.**
+**See [indexing.md](indexing.md) Q4 (lines 1091-1235) for complete algorithm details.**
 
 ### 3. Stable Instance Indexing
 
@@ -354,7 +354,7 @@ Interface order in NetBox:
 
 ## References
 
-- **Detailed Design:** [INFRAGRAPH_INSTANCE_INDEXING.md](INFRAGRAPH_INSTANCE_INDEXING.md)
-- **Implementation Plan:** [INFRAGRAPH_IMPLEMENTATION_PLAN.md](INFRAGRAPH_IMPLEMENTATION_PLAN.md)
+- **Detailed Design:** [indexing.md](indexing.md)
+- **Implementation Plan:** [implementation.md](implementation.md)
 - **Infragraph Docs:** [https://infragraph.dev/](https://infragraph.dev/)
 - **Infragraph SDK:** [https://pypi.org/project/infragraph/](https://pypi.org/project/infragraph/)
