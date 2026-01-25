@@ -87,6 +87,10 @@ extra:
       link: https://github.com/netreplica/
     - icon: fontawesome/brands/discord
       link: https://discord.gg/M2SkgSdKht
+extra:
+  analytics:
+    provider: google
+    property: G-WPCYB23MS5
 
 nav:
   - Home: index.md
@@ -100,9 +104,9 @@ nav:
       - Graphite Visualization: examples/graphite.md
   - Customization:
       - Platform Map: customization/platform_map.md
-      - Templates: customization/templates.md
   - Development:
       - Building: development/build.md
+      - Templates: customization/templates.md
       - Testing: development/testing.md
       - Contributing: development/contributing.md
       - Infragraph:
