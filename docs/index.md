@@ -16,9 +16,6 @@
 
 It can also read the topology graph previously saved as a CYJS file to convert it into other formats.
 
-!!! info "Early Phase Project"
-    This project is in early phase. We're experimenting with the best ways to automate software network lab orchestration. If you have any feedback, questions or suggestions, please reach out to us via the Netreplica Discord server, [#netreplica](https://netdev-community.slack.com/archives/C054GKBC4LB) channel in NetDev Community on Slack, or open a GitHub issue.
-
 ## Latest Updates
 
 * **0.8.0** - NVIDIA Air export format.

@@ -102,8 +102,8 @@ extra:
 nav:
   - Home:
     - Overview: index.md
-    - Credits: about/credits.md
-    - License: about/license.md
+    - About: about.md
+    - License: license.md
   - User Guide:
       - Installation: installation.md
       - Configuration: CONFIGURATION.md

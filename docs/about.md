@@ -1,4 +1,16 @@
-# Credits
+# About the Project
+
+## Help
+
+Where to ask questions:
+
+* [Discord Server](https://discord.gg/M2SkgSdKht)
+* [NetDev Community Slack - #netreplica](https://netdev-community.slack.com/archives/C054GKBC4LB)
+* [GitHub Issues](https://github.com/netreplica/nrx/issues)
+
+## Contributing
+
+We welcome contributions! See our [Contributing Guide](./development/contributing.md) for details.
 
 ## Original Idea and Implementation
 
@@ -31,39 +43,6 @@ We added capabilities to export device configurations at [NANOG-88 Hackathon](ht
 Watch [the demo of the project on YouTube](https://youtu.be/cP8PUr306ZM):
 
 [![Watch the video](https://img.youtube.com/vi/cP8PUr306ZM/maxresdefault.jpg)](https://youtu.be/cP8PUr306ZM)
-
-## Community
-
-### Get Involved
-
-Join the community:
-
-* [Discord Server](https://discord.gg/M2SkgSdKht)
-* [NetDev Community Slack - #netreplica](https://netdev-community.slack.com/archives/C054GKBC4LB)
-* [GitHub Issues](https://github.com/netreplica/nrx/issues)
-
-### Contributing
-
-We welcome contributions! See our [Contributing Guide](../development/contributing.md) for details.
-
-## Technology Stack
-
-nrx is built with:
-
-* **Python** - Core implementation
-* **pynetbox** - NetBox API client
-* **Jinja2** - Template engine
-* **pytest** - Testing framework
-
-### Integration Partners
-
-nrx integrates with:
-
-* [NetBox](https://docs.netbox.dev/) - Network infrastructure modeling
-* [Containerlab](https://containerlab.dev) - Container-based network labs
-* [NVIDIA Air](https://www.nvidia.com/en-us/networking/ethernet-switching/air/) - Cloud-hosted data center simulation
-* [Cisco Modeling Labs](https://developer.cisco.com/modeling-labs/) - Network simulation platform
-* [Graphite](https://github.com/netreplica/graphite) - Network topology visualization
 
 ## Acknowledgments
 
