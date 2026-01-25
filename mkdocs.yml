@@ -100,7 +100,10 @@ extra:
             <a href="https://github.com/netreplica/nrx/issues/new" target="_blank" rel="noopener">opening an issue</a>.
 
 nav:
-  - Home: index.md
+  - Home:
+    - Overview: index.md
+    - Credits: about/credits.md
+    - License: about/license.md
   - Getting Started:
       - Installation: installation.md
       - Configuration: CONFIGURATION.md
@@ -120,8 +123,5 @@ nav:
       - Infragraph Export Summary: INFRAGRAPH_EXPORT_SUMMARY.md
       - Infragraph Implementation Plan: INFRAGRAPH_IMPLEMENTATION_PLAN.md
       - Infragraph Instance Indexing: INFRAGRAPH_INSTANCE_INDEXING.md
-  - About:
-      - Credits: about/credits.md
-      - License: about/license.md
 
 copyright: Copyright &copy; 2023-2024 Netreplica Team
