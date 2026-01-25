@@ -105,13 +105,13 @@ nav:
     - About: about.md
     - License: license.md
   - User Guide:
-      - Installation: installation.md
-      - Configuration: CONFIGURATION.md
-      - Examples:
-          - Containerlab: examples/containerlab.md
-          - Cisco Modeling Labs: examples/cml.md
-          - NVIDIA Air: examples/air.md
-          - Graphite Visualization: examples/graphite.md
+      - Installation: userguide/installation.md
+      - Configuration: userguide/configuration.md
+  - Examples:
+      - Containerlab: examples/containerlab.md
+      - Cisco Modeling Labs: examples/cml.md
+      - NVIDIA Air: examples/air.md
+      - Graphite Visualization: examples/graphite.md
   - Customization:
       - Platform Map: platform_map.md
       - Templates: templates.md

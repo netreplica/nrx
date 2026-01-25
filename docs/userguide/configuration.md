@@ -181,6 +181,7 @@ This ensures you get templates compatible with a specific version of nrx.
 
 ## Next Steps
 
-* [Templates](templates.md) - Learn about template customization
-* [Platform Map](platform_map.md) - Configure platform mappings
-* [Examples](examples/containerlab.md) - See configuration in action
+* [Containerlab](../examples/containerlab.md) - Export and deploy container-based labs
+* [Cisco Modeling Labs](../examples/cml.md) - Export for CML VM-based labs
+* [NVIDIA Air](../examples/air.md) - Export for Air digital twin labs
+* [Graphite Visualization](../examples/graphite.md) - Visualize network topologies
