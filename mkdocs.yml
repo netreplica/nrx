@@ -1,14 +1,15 @@
-site_name: nrx - netreplica exporter
+site_name: nrx / netreplica exporter
 site_description: Network topology exporter from NetBox to various lab formats
 site_author: Netreplica Team
 site_url: https://netreplica.github.io/nrx/
 
 repo_name: netreplica/nrx
 repo_url: https://github.com/netreplica/nrx
-edit_uri: edit/main/docs/
 
 theme:
   name: material
+  logo: images/nr-logo.svg
+  favicon: images/favicon.ico
   palette:
     # Palette toggle for light mode
     - media: "(prefers-color-scheme: light)"
@@ -39,7 +40,6 @@ theme:
     - search.highlight
     - content.code.copy
     - content.code.annotate
-    - content.action.edit
     - toc.follow
   icon:
     repo: fontawesome/brands/github
@@ -79,25 +79,14 @@ markdown_extensions:
 
 extra:
   social:
+    - icon: fontawesome/solid/globe
+      link: https://netreplica.com
+    - icon: fontawesome/brands/x-twitter
+      link: https://x.com/netreplica
     - icon: fontawesome/brands/github
-      link: https://github.com/netreplica/nrx
+      link: https://github.com/netreplica/
     - icon: fontawesome/brands/discord
       link: https://discord.gg/M2SkgSdKht
-  analytics:
-    feedback:
-      title: Was this page helpful?
-      ratings:
-        - icon: material/emoticon-happy-outline
-          name: This page was helpful
-          data: 1
-          note: >-
-            Thanks for your feedback!
-        - icon: material/emoticon-sad-outline
-          name: This page could be improved
-          data: 0
-          note: >-
-            Thanks for your feedback! Help us improve this page by
-            <a href="https://github.com/netreplica/nrx/issues/new" target="_blank" rel="noopener">opening an issue</a>.
 
 nav:
   - Home:
@@ -124,4 +113,4 @@ nav:
         - Implementation Plan: INFRAGRAPH_IMPLEMENTATION_PLAN.md
         - Instance Indexing: INFRAGRAPH_INSTANCE_INDEXING.md
 
-copyright: Copyright &copy; 2023-2024 Netreplica Team
+copyright: Copyright &copy; 2023-2026 Netreplica Team
