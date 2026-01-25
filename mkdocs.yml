@@ -1,0 +1,119 @@
+site_name: nrx / netreplica exporter
+site_description: Network topology exporter from NetBox to various lab formats
+site_author: Netreplica Team
+site_url: https://netreplica.github.io/nrx/
+
+repo_name: netreplica/nrx
+repo_url: https://github.com/netreplica/nrx
+
+theme:
+  name: material
+  logo: images/nr-logo.svg
+  favicon: images/favicon.ico
+  palette:
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.expand
+    - navigation.path
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.code.annotate
+    - toc.follow
+  icon:
+    repo: fontawesome/brands/github
+    edit: material/pencil
+    view: material/eye
+
+extra_css:
+  - stylesheets/extra.css
+
+plugins:
+  - search:
+      separator: '[\s\-,:!=\[\]()"/]+|(?!\b)(?=[A-Z][a-z])|\.(?!\d)|&[lg]t;'
+  - minify:
+      minify_html: true
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - tables
+  - attr_list
+  - md_in_html
+  - toc:
+      permalink: true
+      toc_depth: 3
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+extra:
+  social:
+    - icon: fontawesome/solid/globe
+      link: https://netreplica.com
+    - icon: fontawesome/brands/x-twitter
+      link: https://x.com/netreplica
+    - icon: fontawesome/brands/github
+      link: https://github.com/netreplica/
+    - icon: fontawesome/brands/discord
+      link: https://discord.gg/M2SkgSdKht
+  analytics:
+    provider: google
+    property: G-WPCYB23MS5
+
+nav:
+  - Home: index.md
+  - User Guide:
+      - Installation: userguide/installation.md
+      - Configuration: userguide/configuration.md
+  - Examples:
+      - Containerlab: examples/containerlab.md
+      - Cisco Modeling Labs: examples/cml.md
+      - NVIDIA Air: examples/air.md
+      - Graphite Visualization: examples/graphite.md
+  - Customization:
+      - Platform Map: customization/platform_map.md
+  - Development:
+      - Building: development/build.md
+      - Templates: customization/templates.md
+      - Testing: development/testing.md
+      - Contributing: development/contributing.md
+      - Infragraph:
+        - Summary: development/infragraph/summary.md
+        - Implementation Plan: development/infragraph/implementation.md
+        - Instance Indexing: development/infragraph/indexing.md
+  - About:
+    - Project: project.md
+    - License: license.md
+
+copyright: Copyright &copy; 2023-2026 Netreplica Team

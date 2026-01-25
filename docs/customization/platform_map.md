@@ -2,7 +2,7 @@
 
 The platform map is a YAML file that defines the mapping between values used in NetBox for Device Platforms and the templates to be used when rendering corresponding nodes in the output topology. A [default platform map](https://github.com/netreplica/templates/blob/main/platform_map.yaml) is provided with the copy of Netreplica [`templates`](https://github.com/netreplica/templates), but it can and most likely should be customized by the user to match the actual platforms used in their NetBox instance.
 
-By default, the `nrx` searches the file `platform_map.yaml` in the current directory, and then in the `TEMPLATES_PATH` folders. The path to the file can be overridden using the `--platform-map` argument or the `PLATFORM_MAP` parameter in the [configuration file](CONFIGURATION.md).
+By default, the `nrx` searches the file `platform_map.yaml` in the current directory, and then in the `TEMPLATES_PATH` folders. The path to the file can be overridden using the `--platform-map` argument or the `PLATFORM_MAP` parameter in the [configuration file](../userguide/configuration.md).
 
 ## Sections of the platform map file
 

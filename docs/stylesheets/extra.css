@@ -1,0 +1,114 @@
+/* Custom header background color */
+.md-header {
+  background-color: #212529;
+}
+
+/* Ensure text remains readable on dark header */
+.md-header__button {
+  color: rgba(255, 255, 255, 0.87);
+}
+
+/* Apply dark background to navigation tabs */
+.md-tabs {
+  background-color: #212529;
+}
+
+/* Make navigation tab text readable */
+.md-tabs__link {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.md-tabs__link--active,
+.md-tabs__link:hover {
+  color: rgba(255, 255, 255, 0.87);
+}
+
+/* Light gray background for main content area in dark mode */
+[data-md-color-scheme="slate"] .md-main {
+  background-color: #2a2e33;
+}
+
+[data-md-color-scheme="slate"] .md-content {
+  background-color: #2a2e33;
+}
+
+[data-md-color-scheme="slate"] .md-sidebar {
+  background-color: #2a2e33;
+}
+
+/* Remove black background and border from TOC titles */
+[data-md-color-scheme="slate"] .md-nav__title {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.md-nav__title {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Also remove from section titles */
+[data-md-color-scheme="slate"] .md-sidebar__scrollwrap .md-nav__title {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.md-sidebar__scrollwrap .md-nav__title {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Specifically target left sidebar primary navigation title */
+[data-md-color-scheme="slate"] .md-sidebar--primary .md-nav__title {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.md-sidebar--primary .md-nav__title {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Remove background from nav labels */
+[data-md-color-scheme="slate"] .md-nav__title[for^="__nav_"] {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.md-nav__title[for^="__nav_"] {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Remove background from nav links that act as labels */
+[data-md-color-scheme="slate"] .md-nav__link[for^="__nav_"] {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.md-nav__link[for^="__nav_"] {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Remove background from all nav title links in sidebar */
+[data-md-color-scheme="slate"] .md-nav__item--section > .md-nav__link {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.md-nav__item--section > .md-nav__link {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Remove background from active nav items */
+[data-md-color-scheme="slate"] .md-nav__item--active > .md-nav__link {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.md-nav__item--active > .md-nav__link {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}

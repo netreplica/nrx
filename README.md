@@ -9,6 +9,7 @@
 **nrx** reads a network topology graph from [NetBox](https://docs.netbox.dev/en/stable/) DCIM system and exports as one of the following:
 
 * [Containerlab](https://containerlab.dev) topology for container-based networking labs
+* [NVIDIA Air](https://www.nvidia.com/en-us/networking/ethernet-switching/air/) topology for data center digital twin labs
 * [Cisco Modeling Labs](https://developer.cisco.com/modeling-labs/) topology for VM-based labs
 * Network visualization format for [Graphite](https://github.com/netreplica/graphite) or [D2](https://d2lang.com/)
 * Graph data as a JSON file in [Cytoscape](https://cytoscape.org/) format [CYJS](http://manual.cytoscape.org/en/stable/Supported_Network_File_Formats.html#cytoscape-js-json)
@@ -21,13 +22,13 @@ This project is in early phase. We're experimenting with the best ways to automa
 # Latest capabilities added
 
 The latest releases have a significant set of the new capabilities:
-* `0.8.0` Nvidia Air support
+* `0.8.0` NVIDIA Air support
 * `0.7.0` NetBox `v4.2` compatibility. Bug fixes. Minimum Python version `3.10`.
 * `0.6.2` NetBox `v4.1` compatibility
 * `0.6.0` Filter links between devices via interface tags
 * `0.5.0` PyPA packaging and distribution: `pip install nrx`
 * `0.4.0` Ability to create new output formats without a need for **nrx** code changes
-* `0.4.0` Mapping between NetBox platform values and node parameters via [`platform_map.yaml`](docs/platform_map.md) file
+* `0.4.0` Mapping between NetBox platform values and node parameters via [`platform_map.yaml`](docs/customization/platform_map.md) file
 * `0.4.0` `$HOME/.nr` configuration directory with automatic initialization using `--init` argument
 
 Find detailed release notes on the [Releases page](https://github.com/netreplica/nrx/releases).
@@ -71,7 +72,7 @@ Data sourcing capabilities:
 Export capabilities:
 
 * Exports the graph as a Containerlab (Clab) topology definition file in YAML format
-* Exports the graph as a Nvidia Air topology definition file in JSON format
+* Exports the graph as a NVIDIA Air topology definition file in JSON format
 * Exports the graph as a Cisco Modeling Labs (CML) topology definition file in YAML format
 * Exported device configurations can be used as `startup-config` for Containerlab and CML
 * Exports the graph in formats for visualization with Graphite or D2
@@ -88,37 +89,55 @@ The following software versions were tested for compatibility with `nrx`:
 
 * NetBox `v4.1`-`v4.2`. We no longer run tests with previously supported `v3.4-4.0` versions, and underlying [`pynetbox`](https://github.com/netbox-community/pynetbox) library is no longer tested with these older versions.
 * Containerlab `v0.39`, but earlier and later versions should work fine
-* Nvidia Air API starting with `v9.15.8` (API v2 is used)
+* NVIDIA Air API starting with `v9.15.8` (API v2 is used)
 * Cisco Modeling Labs `v2.5`
 * Netreplica Graphite `v0.4.0`
 
 # Prerequisites
 
-* Python 3.10+. In the commands below we assume you have `python3.10` executable. If it is under a different name, change accordingly.
-* PIP
+Python 3.10+. In the commands below we assume you have `python3.10` executable. If it is under a different name, change accordingly.
 
-    ```Shell
-    curl -sL https://bootstrap.pypa.io/get-pip.py | python3.10 -
-    ```
+Choose one of the following installation methods:
 
-* Virtualenv (recommended)
+**Option 1: uv (fast)**
 
-    ```Shell
-    pip install virtualenv
-    ```
+[uv](https://docs.astral.sh/uv/) is a fast Python package installer and runner. It allows running Python tools without installation, or installing them without creating and managing virtual environments manually.
+
+```Shell
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+**Option 2: pip (traditional)**
+
+```Shell
+curl -sL https://bootstrap.pypa.io/get-pip.py | python3.10 -
+pip install virtualenv
+```
 
 # How to install
 
-## PyPI package (recommended)
+**Option 1: uv**
+
+```Shell
+# Install nrx as a persistent tool
+uv tool install nrx
+nrx --version
+
+# Or run nrx directly without installation
+uv tool run nrx --version
+```
+
+**Option 2: pip**
 
 ```Shell
 mkdir -p ~/.venv
 python3.10 -m venv ~/.venv/nrx
 source ~/.venv/nrx/bin/activate
 pip install nrx
+nrx --version
 ```
 
-## From source code (development)
+**Development: git**
 
 After running the following commands, you will have a working `nrx` command in the current directory.
 
@@ -128,6 +147,7 @@ cd nrx
 python3.10 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
+nrx --version
 ```
 
 # How to configure
@@ -191,7 +211,7 @@ export NB_API_TOKEN='replace_with_valid_API_token'
 
 ## Configuration file
 
-Use `--config <filename>` argument to specify a configuration file to use. By default, **nrx** uses `$HOME/.nr/nrx.conf` if such file exists. The sample configuration file is provided as [`nrx.conf`](nrx.conf). Detailed information on the configuration options can be found in [CONFIGURATION.md](docs/CONFIGURATION.md).
+Use `--config <filename>` argument to specify a configuration file to use. By default, **nrx** uses `$HOME/.nr/nrx.conf` if such file exists. The sample configuration file is provided as [`nrx.conf`](nrx.conf). Detailed information on the configuration options can be found in the [user guide](docs/userguide/configuration.md).
 
 ## Configuration directory
 
@@ -212,7 +232,7 @@ Inside the template folders, the required Jinja2 files are taken from a subfolde
 
 A user can create their own templates for any output format and store them in a subfolder with a format name they would use for `--output` argument. To make the new output format available to **nrx**, an entry describing basic properties of the format must be added to `formats.yaml` file in the `templates` folder.
 
-To identify which template to use for each device in the topology, **nrx** uses the `slug` field of the device's **platform** field in NetBox. If a template with a name matching the platform `slug` exists, it would be used by default. Since naming of the platforms is unique for every NetBox deployment, it is not possible to create a generic library of templates that could work out-of-the box for all users. Instead, **nrx** uses a mapping file [`platform_map.yaml`](docs/platform_map.md) to identify which template to use for each platform, with possible additional parameters like value of the `image` tag for Containerlab nodes.
+To identify which template to use for each device in the topology, **nrx** uses the `slug` field of the device's **platform** field in NetBox. If a template with a name matching the platform `slug` exists, it would be used by default. Since naming of the platforms is unique for every NetBox deployment, it is not possible to create a generic library of templates that could work out-of-the box for all users. Instead, **nrx** uses a mapping file [`platform_map.yaml`](docs/customization/platform_map.md) to identify which template to use for each platform, with possible additional parameters like value of the `image` tag for Containerlab nodes.
 
 The full list of template search rules:
 
@@ -227,11 +247,14 @@ Although you can always directly customize the templates according to your needs
 
 # How to use
 
-Start with activating venv environment. See [How to install](#how-to-install) if you didn't install `nrx` yet.
+If you installed `nrx` with `uv tool install`, you can skip directly to the next step.
+
+If you're using the traditional venv installation, start by activating the environment:
 
 ```Shell
 source ~/.venv/nrx/bin/activate
 ```
+## Initialize configuration directory
 
 If this is first time you're running `nrx`, you need to initialize its configuration directory. This will create the `$HOME/.nr` folder and populate it with a configuration file example and a compatible version of the templates. The examples below don't require a configuration file, but do require the templates to be present in the configuration directory.
 
