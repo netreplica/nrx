@@ -87,7 +87,6 @@ extra:
       link: https://github.com/netreplica/
     - icon: fontawesome/brands/discord
       link: https://discord.gg/M2SkgSdKht
-extra:
   analytics:
     provider: google
     property: G-WPCYB23MS5
