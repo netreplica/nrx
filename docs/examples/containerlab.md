@@ -146,7 +146,7 @@ nrx --api https://demo.netbox.dev \
 
 ### Missing Device Images
 
-If you see errors about missing container images, update your [platform_map.yaml](../platform_map.md) to specify the correct container images for your platforms.
+If you see errors about missing container images, update your [platform_map.yaml](../customization/platform_map.md) to specify the correct container images for your platforms.
 
 ### Configuration Issues
 
@@ -160,4 +160,4 @@ nrx --debug --api https://demo.netbox.dev --site DM-Albany --output clab
 
 * [Cisco Modeling Labs Example](cml.md) - Export for CML
 * [NVIDIA Air Example](air.md) - Export for Air
-* [Platform Map](../platform_map.md) - Configure platform mappings
+* [Platform Map](../customization/platform_map.md) - Configure platform mappings

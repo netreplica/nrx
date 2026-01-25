@@ -141,7 +141,7 @@ NVIDIA Air supports simulation of:
 * Generic Linux hosts and servers
 * Ubuntu, CentOS, and other Linux distributions
 
-Ensure your [platform_map.yaml](../platform_map.md) correctly maps NetBox platforms to Air-compatible node types.
+Ensure your [platform_map.yaml](../customization/platform_map.md) correctly maps NetBox platforms to Air-compatible node types.
 
 ## Device Configurations
 
@@ -157,7 +157,7 @@ When device configurations are available in NetBox:
 
 If you see warnings about unsupported devices:
 
-1. Check the [platform_map.yaml](../platform_map.md)
+1. Check the [platform_map.yaml](../customization/platform_map.md)
 2. Verify the platform maps to an Air-compatible node type
 3. Consider using a generic Linux host as a substitute
 
@@ -192,5 +192,5 @@ NVIDIA Air topologies can be:
 
 * [Containerlab Example](containerlab.md) - Export for Containerlab
 * [CML Example](cml.md) - Export for Cisco Modeling Labs
-* [Platform Map](../platform_map.md) - Configure platform mappings
-* [Templates](../templates.md) - Customize Air output format
+* [Platform Map](../customization/platform_map.md) - Configure platform mappings
+* [Templates](../customization/templates.md) - Customize Air output format

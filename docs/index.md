@@ -25,7 +25,7 @@ Find detailed release notes on the [Releases page](https://github.com/netreplica
 
 ### Install
 
-For detailed installation instructions, see the [Installation Guide](installation.md).
+For detailed installation instructions, see the [Installation Guide](userguide/installation.md).
 
 ```bash
 uv tool install nrx
@@ -103,7 +103,7 @@ The following software versions were tested for compatibility with `nrx`:
 
 ## Next Steps
 
-* [Installation Guide](installation.md) - Detailed installation instructions
-* [Configuration](CONFIGURATION.md) - How to configure nrx
-* [Templates](templates.md) - Understanding and customizing templates
+* [Installation Guide](userguide/installation.md) - Detailed installation instructions
+* [Configuration](userguide/configuration.md) - How to configure nrx
+* [Templates](customization/templates.md) - Understanding and customizing templates
 * [Examples](examples/containerlab.md) - Step-by-step usage examples

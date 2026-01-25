@@ -159,7 +159,7 @@ When device configurations are available in NetBox, nrx will export them as star
 
 If you see errors about unsupported node types:
 
-1. Check your [platform_map.yaml](../platform_map.md)
+1. Check your [platform_map.yaml](../customization/platform_map.md)
 2. Ensure the platform slug in NetBox maps to a CML node definition
 3. Verify the node definition exists in your CML installation
 
@@ -186,5 +186,5 @@ nrx --debug \
 
 * [Containerlab Example](containerlab.md) - Export for Containerlab
 * [NVIDIA Air Example](air.md) - Export for Air
-* [Platform Map](../platform_map.md) - Configure platform mappings
+* [Platform Map](../customization/platform_map.md) - Configure platform mappings
 * [Graphite Visualization](graphite.md) - Visualize your topology

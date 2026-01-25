@@ -79,6 +79,6 @@ You should see the version number of nrx displayed.
 
 ## Next Steps
 
-* [Configuration](CONFIGURATION.md) - Learn how to configure nrx
-* [Templates](templates.md) - Understanding templates
-* [Examples](examples/containerlab.md) - Try some examples
+* [Configuration](configuration.md) - Learn how to configure nrx
+* [Templates](../customization/templates.md) - Understanding templates
+* [Examples](../examples/containerlab.md) - Try some examples

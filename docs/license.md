@@ -212,4 +212,4 @@ See the respective project repositories for full license texts.
 
 By contributing to nrx, you agree that your contributions will be licensed under the Apache License 2.0.
 
-See [Contributing Guide](../development/contributing.md) for more information.
+See [Contributing Guide](development/contributing.md) for more information.

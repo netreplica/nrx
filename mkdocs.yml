@@ -89,10 +89,7 @@ extra:
       link: https://discord.gg/M2SkgSdKht
 
 nav:
-  - Home:
-    - Overview: index.md
-    - About: about.md
-    - License: license.md
+  - Home: index.md
   - User Guide:
       - Installation: userguide/installation.md
       - Configuration: userguide/configuration.md
@@ -102,8 +99,8 @@ nav:
       - NVIDIA Air: examples/air.md
       - Graphite Visualization: examples/graphite.md
   - Customization:
-      - Platform Map: platform_map.md
-      - Templates: templates.md
+      - Platform Map: customization/platform_map.md
+      - Templates: customization/templates.md
   - Development:
       - Building: development/build.md
       - Testing: development/testing.md
@@ -112,5 +109,8 @@ nav:
         - Summary: INFRAGRAPH_EXPORT_SUMMARY.md
         - Implementation Plan: INFRAGRAPH_IMPLEMENTATION_PLAN.md
         - Instance Indexing: INFRAGRAPH_INSTANCE_INDEXING.md
+  - About:
+    - Project: project.md
+    - License: license.md
 
 copyright: Copyright &copy; 2023-2026 Netreplica Team

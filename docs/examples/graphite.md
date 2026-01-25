@@ -238,5 +238,5 @@ D2 files can be rendered to SVG or PNG using the D2 CLI tool.
 
 * [Graphite Documentation](https://github.com/netreplica/graphite) - Learn more about Graphite
 * [Containerlab Example](containerlab.md) - Deploy labs from visualized topologies
-* [Platform Map](../platform_map.md) - Customize node appearance
-* [Templates](../templates.md) - Customize visualization output
+* [Platform Map](../customization/platform_map.md) - Customize node appearance
+* [Templates](../customization/templates.md) - Customize visualization output

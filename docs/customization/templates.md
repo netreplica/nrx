@@ -9,7 +9,7 @@ If `--templates` parameter is not provided, **nrx** will search for Jinja2 files
 1. `templates` folder in the current directory
 2. `$HOME/.nr/templates`
 
-You can also provide an alternative list of folders to search via `TEMPLATES_PATH` parameter in the [configuration file](CONFIGURATION.md).
+You can also provide an alternative list of folders to search via `TEMPLATES_PATH` parameter in the [configuration file](../userguide/configuration.md).
 
 ## Template Organization
 
@@ -133,5 +133,5 @@ Refer to existing templates in the [netreplica/templates](https://github.com/net
 ## Next Steps
 
 * [Platform Map](platform_map.md) - Configure platform-to-template mappings
-* [Examples](examples/containerlab.md) - See templates in action
+* [Examples](../examples/containerlab.md) - See templates in action
 * [Templates Repository](https://github.com/netreplica/templates) - Browse available templates
