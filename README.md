@@ -28,7 +28,7 @@ The latest releases have a significant set of the new capabilities:
 * `0.6.0` Filter links between devices via interface tags
 * `0.5.0` PyPA packaging and distribution: `pip install nrx`
 * `0.4.0` Ability to create new output formats without a need for **nrx** code changes
-* `0.4.0` Mapping between NetBox platform values and node parameters via [`platform_map.yaml`](docs/platform_map.md) file
+* `0.4.0` Mapping between NetBox platform values and node parameters via [`platform_map.yaml`](docs/customization/platform_map.md) file
 * `0.4.0` `$HOME/.nr` configuration directory with automatic initialization using `--init` argument
 
 Find detailed release notes on the [Releases page](https://github.com/netreplica/nrx/releases).
@@ -211,7 +211,7 @@ export NB_API_TOKEN='replace_with_valid_API_token'
 
 ## Configuration file
 
-Use `--config <filename>` argument to specify a configuration file to use. By default, **nrx** uses `$HOME/.nr/nrx.conf` if such file exists. The sample configuration file is provided as [`nrx.conf`](nrx.conf). Detailed information on the configuration options can be found in [CONFIGURATION.md](docs/CONFIGURATION.md).
+Use `--config <filename>` argument to specify a configuration file to use. By default, **nrx** uses `$HOME/.nr/nrx.conf` if such file exists. The sample configuration file is provided as [`nrx.conf`](nrx.conf). Detailed information on the configuration options can be found in the [user guide](docs/userguide/configuration.md).
 
 ## Configuration directory
 
@@ -232,7 +232,7 @@ Inside the template folders, the required Jinja2 files are taken from a subfolde
 
 A user can create their own templates for any output format and store them in a subfolder with a format name they would use for `--output` argument. To make the new output format available to **nrx**, an entry describing basic properties of the format must be added to `formats.yaml` file in the `templates` folder.
 
-To identify which template to use for each device in the topology, **nrx** uses the `slug` field of the device's **platform** field in NetBox. If a template with a name matching the platform `slug` exists, it would be used by default. Since naming of the platforms is unique for every NetBox deployment, it is not possible to create a generic library of templates that could work out-of-the box for all users. Instead, **nrx** uses a mapping file [`platform_map.yaml`](docs/platform_map.md) to identify which template to use for each platform, with possible additional parameters like value of the `image` tag for Containerlab nodes.
+To identify which template to use for each device in the topology, **nrx** uses the `slug` field of the device's **platform** field in NetBox. If a template with a name matching the platform `slug` exists, it would be used by default. Since naming of the platforms is unique for every NetBox deployment, it is not possible to create a generic library of templates that could work out-of-the box for all users. Instead, **nrx** uses a mapping file [`platform_map.yaml`](docs/customization/platform_map.md) to identify which template to use for each platform, with possible additional parameters like value of the `image` tag for Containerlab nodes.
 
 The full list of template search rules:
 
