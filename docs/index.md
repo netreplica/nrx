@@ -19,20 +19,54 @@ It can also read the topology graph previously saved as a CYJS file to convert i
 !!! info "Early Phase Project"
     This project is in early phase. We're experimenting with the best ways to automate software network lab orchestration. If you have any feedback, questions or suggestions, please reach out to us via the Netreplica Discord server, [#netreplica](https://netdev-community.slack.com/archives/C054GKBC4LB) channel in NetDev Community on Slack, or open a GitHub issue.
 
-## Latest Capabilities
+## Latest Updates
 
-The latest releases have a significant set of new capabilities:
-
-* **0.8.0** - NVIDIA Air support
+* **0.8.0** - NVIDIA Air export format.
 * **0.7.0** - NetBox v4.2 compatibility. Bug fixes. Minimum Python version 3.10
-* **0.6.2** - NetBox v4.1 compatibility
 * **0.6.0** - Filter links between devices via interface tags
-* **0.5.0** - PyPA packaging and distribution: `pip install nrx`
-* **0.4.0** - Ability to create new output formats without code changes
-* **0.4.0** - Mapping between NetBox platform values and node parameters via [`platform_map.yaml`](platform_map.md)
-* **0.4.0** - `$HOME/.nr` configuration directory with automatic initialization using `--init` argument
 
 Find detailed release notes on the [Releases page](https://github.com/netreplica/nrx/releases).
+
+## Quick Start
+
+### Install
+
+For detailed installation instructions, see the [Installation Guide](installation.md).
+
+```bash
+# Install nrx as a persistent tool
+uv tool install nrx
+nrx --init
+```
+
+### Connect to NetBox
+
+In this example we're using [NetBox Demo](https://demo.netbox.dev) instance to export data. You need to create an API token in the demo instance to access the data and set it as an environment variable:
+
+```bash
+export NB_API_URL='https://demo.netbox.dev'
+export NB_API_TOKEN='replace_with_valid_API_token'
+```
+
+### Export Containerlab topology
+
+Run `nrx --output clab` to export a topology graph from NetBox in Containerlab format. Here's an example exporting the "DM-Albany" site:
+
+```bash
+nrx --output clab --site DM-Albany
+```
+
+This will create:
+
+* `DM-Albany.clab.yaml` - Containerlab topology file
+
+### Deploy the Topology
+
+Deploy the topology using Containerlab:
+
+```bash
+sudo -E containerlab deploy -t DM-Albany.clab.yaml --reconfigure
+```
 
 ## Key Capabilities
 
@@ -73,31 +107,6 @@ The following software versions were tested for compatibility with `nrx`:
 * **NVIDIA Air** API v9.15.8+ (API v2 is used)
 * **Cisco Modeling Labs** v2.5
 * **Netreplica Graphite** v0.4.0
-
-## Quick Start
-
-For detailed installation instructions, see the [Installation Guide](installation.md).
-
-### Using uv (fast)
-
-```bash
-# Install nrx as a persistent tool
-uv tool install nrx
-nrx --version
-
-# Or run nrx directly without installation
-uv tool run nrx --version
-```
-
-### Using pip (traditional)
-
-```bash
-mkdir -p ~/.venv
-python3.10 -m venv ~/.venv/nrx
-source ~/.venv/nrx/bin/activate
-pip install nrx
-nrx --version
-```
 
 ## Next Steps
 
