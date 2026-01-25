@@ -4,9 +4,11 @@
 
 Where to ask questions:
 
-* [Discord Server](https://discord.gg/M2SkgSdKht)
+* [Netreplica Discord Server](https://discord.gg/M2SkgSdKht)
 * [NetDev Community Slack - #netreplica](https://netdev-community.slack.com/archives/C054GKBC4LB)
 * [GitHub Issues](https://github.com/netreplica/nrx/issues)
+
+[![Discord](https://img.shields.io/discord/1075106069862416525?label=discord)](https://discord.gg/M2SkgSdKht)
 
 ## Contributing
 

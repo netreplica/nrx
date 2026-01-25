@@ -19,7 +19,6 @@ Here's an example exporting the "DM-Albany" site from [NetBox Demo](https://demo
 ```bash
 export NB_API_TOKEN='replace_with_valid_API_token'
 nrx --api https://demo.netbox.dev \
-    --templates templates \
     --output clab \
     --dir demo \
     --site DM-Albany
@@ -34,7 +33,6 @@ This will create:
 ### Command Options Explained
 
 * `--api` - NetBox API URL
-* `--templates` - Path to template directory
 * `--output clab` - Export in Containerlab format
 * `--dir demo` - Save output to `demo` directory
 * `--site DM-Albany` - Export devices from DM-Albany site
@@ -93,7 +91,6 @@ Convert the CYJS file to Containerlab format:
 ```bash
 nrx --input cyjs \
     --file demo/DM-Albany.cyjs \
-    --templates templates \
     --output clab \
     --dir demo
 ```

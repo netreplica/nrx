@@ -1,11 +1,8 @@
-# nrx - netreplica exporter
-
 <p align=center><img src="https://github.com/netreplica/nrx/raw/main/images/concept_diagram.png" width="500px"/></p>
 
-[![Discord](https://img.shields.io/discord/1075106069862416525?label=discord)](https://discord.gg/M2SkgSdKht)
-[![CI](https://github.com/netreplica/nrx/actions/workflows/systest.yml/badge.svg)](https://github.com/netreplica/nrx/actions/workflows/systest.yml)
+<!--p ><h1 align=center>nrx - netreplica exporter</h1></p-->
 
-**nrx** reads a network topology graph from [NetBox](https://docs.netbox.dev/en/stable/) DCIM system and exports as one of the following:
+**nrx** reads data center inventory from [NetBox](https://docs.netbox.dev/en/stable/) and exports as one of:
 
 * [Containerlab](https://containerlab.dev) topology for container-based networking labs
 * [NVIDIA Air](https://www.nvidia.com/en-us/networking/ethernet-switching/air/) topology for data center digital twin labs
@@ -14,7 +11,7 @@
 * Graph data as a JSON file in [Cytoscape](https://cytoscape.org/) format [CYJS](http://manual.cytoscape.org/en/stable/Supported_Network_File_Formats.html#cytoscape-js-json)
 * Any other user-defined format using [Jinja2](https://palletsprojects.com/p/jinja/) templates
 
-It can also read the topology graph previously saved as a CYJS file to convert it into other formats.
+It can also read a topology data previously saved as a CYJS file to convert it into other formats.
 
 ## Latest Updates
 
@@ -31,14 +28,13 @@ Find detailed release notes on the [Releases page](https://github.com/netreplica
 For detailed installation instructions, see the [Installation Guide](installation.md).
 
 ```bash
-# Install nrx as a persistent tool
 uv tool install nrx
 nrx --init
 ```
 
 ### Connect to NetBox
 
-In this example we're using [NetBox Demo](https://demo.netbox.dev) instance to export data. You need to create an API token in the demo instance to access the data and set it as an environment variable:
+In this example we're using NetBox [Demo](https://demo.netbox.dev) instance to source data. Login to the demo instance, [create an API token](https://demo.netbox.dev/users/tokens/) and set it as an environment variable:
 
 ```bash
 export NB_API_URL='https://demo.netbox.dev'
@@ -55,14 +51,14 @@ nrx --output clab --site DM-Albany
 
 This will create:
 
-* `DM-Albany.clab.yaml` - Containerlab topology file
+* `DM-Albany/DM-Albany.clab.yaml` - Containerlab topology file
 
 ### Deploy the Topology
 
 Deploy the topology using Containerlab:
 
 ```bash
-sudo -E containerlab deploy -t DM-Albany.clab.yaml --reconfigure
+sudo -E clab deploy -t DM-Albany/DM-Albany.clab.yaml
 ```
 
 ## Key Capabilities
