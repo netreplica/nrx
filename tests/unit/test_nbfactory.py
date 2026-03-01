@@ -14,6 +14,44 @@ sys.modules['pynetbox.core.query'] = mock_pynetbox_module.core.query
 from nrx.nrx import NBFactory  # pylint: disable=wrong-import-position
 
 
+def make_mock_device_dict_compatible(mock_device, device_dict):
+    """Helper to make a mock device compatible with dict() conversion."""
+    mock_device.keys = device_dict.keys
+    mock_device.__getitem__ = device_dict.__getitem__
+    mock_device.__iter__ = device_dict.__iter__
+
+
+def create_test_config():
+    """Create a minimal test configuration."""
+    return {
+        'nb_api_url': 'https://netbox.example.com',
+        'nb_api_token': 'test_token',
+        'tls_validate': True,
+        'api_timeout': 10,
+        'export_sites': [],
+        'export_tags': ['test-tag'],
+        'export_device_roles': ['router'],
+        'topology_name': '',
+        'export_configs': False,
+        'nb_api_params': {
+            'interfaces_block_size': 4,
+            'cables_block_size': 64,
+        }
+    }
+
+
+def setup_mock_api(mock_pynetbox, api_version="4.0.0"):
+    """Setup mock pynetbox API."""
+    mock_api = Mock()
+    mock_api.version = api_version
+    mock_pynetbox.api.return_value = mock_api
+    # Mock empty returns to avoid actual API calls
+    mock_api.dcim.devices.filter.return_value = []
+    mock_api.dcim.interfaces.filter.return_value = []
+    mock_api.dcim.cables.filter.return_value = []
+    return mock_api
+
+
 class TestNBFactoryInitialization:
     """Test NBFactory initialization."""
 
@@ -100,37 +138,10 @@ class TestInitDevice:
     """Test _init_device method behavior."""
 
     @patch('nrx.nrx.pynetbox')
-    def test_init_device_preserves_all_raw_fields(self, mock_pynetbox):
+    def test_init_device_preserves_all_raw_fields(self, mock_pynetbox):  # pylint: disable=too-many-statements
         """Test that _init_device preserves all raw NetBox device fields."""
-        # Mock the pynetbox API
-        mock_api = Mock()
-        mock_api.version = "4.0.0"
-        mock_pynetbox.api.return_value = mock_api
-
-        # Create minimal config
-        config = {
-            'nb_api_url': 'https://netbox.example.com',
-            'nb_api_token': 'test_token',
-            'tls_validate': True,
-            'api_timeout': 10,
-            'export_sites': [],
-            'export_tags': ['test-tag'],
-            'export_device_roles': ['router'],
-            'topology_name': '',
-            'export_configs': False,
-            'nb_api_params': {
-                'interfaces_block_size': 4,
-                'cables_block_size': 64,
-            }
-        }
-
-        # Mock empty returns to avoid actual API calls
-        mock_api.dcim.devices.filter.return_value = []
-        mock_api.dcim.interfaces.filter.return_value = []
-        mock_api.dcim.cables.filter.return_value = []
-
-        # Create NBFactory instance
-        nb_factory = NBFactory(config)
+        setup_mock_api(mock_pynetbox)
+        nb_factory = NBFactory(create_test_config())
 
         # Create a mock device with raw NetBox fields
         mock_device = Mock()
@@ -180,7 +191,7 @@ class TestInitDevice:
         mock_device.location = None
         mock_device.rack = None
 
-        # Mock dict() conversion - need both __iter__ and keys()
+        # Mock dict() conversion
         device_dict = {
             'id': 123,
             'name': 'test-device',
@@ -189,12 +200,10 @@ class TestInitDevice:
             'comments': 'Test device comments',
             'custom_fields': {"environment": "production", "owner": "team-a"},
         }
-        mock_device.keys = lambda: device_dict.keys()
-        mock_device.__getitem__ = lambda self, key: device_dict[key]
-        mock_device.__iter__ = lambda self: iter(device_dict.keys())
+        make_mock_device_dict_compatible(mock_device, device_dict)
 
         # Call _init_device
-        result = nb_factory._init_device(mock_device)
+        result = nb_factory._init_device(mock_device)  # pylint: disable=protected-access
 
         # Verify raw NetBox fields are preserved
         assert result['id'] == 123
@@ -207,35 +216,8 @@ class TestInitDevice:
     @patch('nrx.nrx.pynetbox')
     def test_init_device_backward_compatible_fields(self, mock_pynetbox):
         """Test that _init_device extracts backward-compatible fields correctly."""
-        # Mock the pynetbox API
-        mock_api = Mock()
-        mock_api.version = "4.0.0"
-        mock_pynetbox.api.return_value = mock_api
-
-        # Create minimal config
-        config = {
-            'nb_api_url': 'https://netbox.example.com',
-            'nb_api_token': 'test_token',
-            'tls_validate': True,
-            'api_timeout': 10,
-            'export_sites': [],
-            'export_tags': ['test-tag'],
-            'export_device_roles': ['router'],
-            'topology_name': '',
-            'export_configs': False,
-            'nb_api_params': {
-                'interfaces_block_size': 4,
-                'cables_block_size': 64,
-            }
-        }
-
-        # Mock empty returns
-        mock_api.dcim.devices.filter.return_value = []
-        mock_api.dcim.interfaces.filter.return_value = []
-        mock_api.dcim.cables.filter.return_value = []
-
-        # Create NBFactory instance
-        nb_factory = NBFactory(config)
+        setup_mock_api(mock_pynetbox)
+        nb_factory = NBFactory(create_test_config())
 
         # Create a mock device
         mock_device = Mock()
@@ -283,12 +265,10 @@ class TestInitDevice:
             'id': 123,
             'name': 'test-router',
         }
-        mock_device.keys = lambda: device_dict.keys()
-        mock_device.__getitem__ = lambda self, key: device_dict[key]
-        mock_device.__iter__ = lambda self: iter(device_dict.keys())
+        make_mock_device_dict_compatible(mock_device, device_dict)
 
         # Call _init_device
-        result = nb_factory._init_device(mock_device)
+        result = nb_factory._init_device(mock_device)  # pylint: disable=protected-access
 
         # Verify backward-compatible fields
         assert result['type'] == 'device'
@@ -310,35 +290,8 @@ class TestInitDevice:
     @patch('nrx.nrx.pynetbox')
     def test_init_device_handles_none_values(self, mock_pynetbox):
         """Test that _init_device handles None values correctly."""
-        # Mock the pynetbox API
-        mock_api = Mock()
-        mock_api.version = "4.0.0"
-        mock_pynetbox.api.return_value = mock_api
-
-        # Create minimal config
-        config = {
-            'nb_api_url': 'https://netbox.example.com',
-            'nb_api_token': 'test_token',
-            'tls_validate': True,
-            'api_timeout': 10,
-            'export_sites': [],
-            'export_tags': ['test-tag'],
-            'export_device_roles': ['router'],
-            'topology_name': '',
-            'export_configs': False,
-            'nb_api_params': {
-                'interfaces_block_size': 4,
-                'cables_block_size': 64,
-            }
-        }
-
-        # Mock empty returns
-        mock_api.dcim.devices.filter.return_value = []
-        mock_api.dcim.interfaces.filter.return_value = []
-        mock_api.dcim.cables.filter.return_value = []
-
-        # Create NBFactory instance
-        nb_factory = NBFactory(config)
+        setup_mock_api(mock_pynetbox)
+        nb_factory = NBFactory(create_test_config())
 
         # Create a mock device with None values
         mock_device = Mock()
@@ -362,12 +315,10 @@ class TestInitDevice:
             'id': 456,
             'name': None,
         }
-        mock_device.keys = lambda: device_dict.keys()
-        mock_device.__getitem__ = lambda self, key: device_dict[key]
-        mock_device.__iter__ = lambda self: iter(device_dict.keys())
+        make_mock_device_dict_compatible(mock_device, device_dict)
 
         # Call _init_device
-        result = nb_factory._init_device(mock_device)
+        result = nb_factory._init_device(mock_device)  # pylint: disable=protected-access
 
         # Verify defaults for None values
         assert result['name'] == 'unknown-456'  # Auto-generated from role
@@ -384,35 +335,8 @@ class TestInitDevice:
     @patch('nrx.nrx.pynetbox')
     def test_init_device_netbox_v3_compatibility(self, mock_pynetbox):
         """Test that _init_device handles NetBox v3.x device_role correctly."""
-        # Mock the pynetbox API with v3 version
-        mock_api = Mock()
-        mock_api.version = "3.7.0"
-        mock_pynetbox.api.return_value = mock_api
-
-        # Create minimal config
-        config = {
-            'nb_api_url': 'https://netbox.example.com',
-            'nb_api_token': 'test_token',
-            'tls_validate': True,
-            'api_timeout': 10,
-            'export_sites': [],
-            'export_tags': ['test-tag'],
-            'export_device_roles': ['router'],
-            'topology_name': '',
-            'export_configs': False,
-            'nb_api_params': {
-                'interfaces_block_size': 4,
-                'cables_block_size': 64,
-            }
-        }
-
-        # Mock empty returns
-        mock_api.dcim.devices.filter.return_value = []
-        mock_api.dcim.interfaces.filter.return_value = []
-        mock_api.dcim.cables.filter.return_value = []
-
-        # Create NBFactory instance
-        nb_factory = NBFactory(config)
+        setup_mock_api(mock_pynetbox, api_version="3.7.0")
+        nb_factory = NBFactory(create_test_config())
 
         # Create a mock device with NetBox v3.x style device_role
         mock_device = Mock()
@@ -437,12 +361,10 @@ class TestInitDevice:
             'id': 789,
             'name': 'v3-device',
         }
-        mock_device.keys = lambda: device_dict.keys()
-        mock_device.__getitem__ = lambda self, key: device_dict[key]
-        mock_device.__iter__ = lambda self: iter(device_dict.keys())
+        make_mock_device_dict_compatible(mock_device, device_dict)
 
         # Call _init_device
-        result = nb_factory._init_device(mock_device)
+        result = nb_factory._init_device(mock_device)  # pylint: disable=protected-access
 
         # Verify it uses device_role instead of role for v3.x
         assert result['role'] == 'leaf'
