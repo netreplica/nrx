@@ -332,40 +332,43 @@ class NBFactory:
 
 
     def _init_device(self, device):
-        """Initialize device data"""
-        d = {
-            "id": device.id,
-            "type": "device",
-            "name": None,
-            "node_id": -1,
-            "site": "",
-            "platform": "unknown",
-            "platform_name": "unknown",
-            "vendor": "unknown",
-            "vendor_name": "unknown",
-            "model": "unknown",
-            "model_name": "unknown",
-            "role": "unknown",
-            "role_name": "unknown",
-            "primary_ip4": "",
-            "primary_ip6": "",
-            "config": "",
-        }
+        """Initialize device data with all available fields from NetBox"""
+        # Start with all raw device data from NetBox
+        d = dict(device)
 
-        if device.name is not None and len(device.name) > 0:
-            d["name"] = device.name
-        if device.site is not None:
-            d["site"] = device.site.name
+        # Add nrx-specific fields
+        d["type"] = "device"
+        d["node_id"] = -1
+
+        # Extract nested object fields for backward compatibility and template convenience
+        # Site
+        d["site"] = device.site.name if device.site is not None else ""
+
+        # Platform
         if device.platform is not None:
             d["platform"] = device.platform.slug
             d["platform_name"] = device.platform.name
+        else:
+            d["platform"] = "unknown"
+            d["platform_name"] = "unknown"
+
+        # Device Type / Model and Vendor
         if device.device_type is not None:
             d["model"] = device.device_type.slug
             d["model_name"] = device.device_type.model
             if device.device_type.manufacturer is not None:
                 d["vendor"] = device.device_type.manufacturer.slug
                 d["vendor_name"] = device.device_type.manufacturer.name
+            else:
+                d["vendor"] = "unknown"
+                d["vendor_name"] = "unknown"
+        else:
+            d["model"] = "unknown"
+            d["model_name"] = "unknown"
+            d["vendor"] = "unknown"
+            d["vendor_name"] = "unknown"
 
+        # Role (handle NetBox 3.x vs 4.x difference)
         if device.role is not None:
             if self.nb_api_version >= version.parse("4.0"):
                 d["role"] = device.role.slug
@@ -373,15 +376,21 @@ class NBFactory:
             else:
                 d["role"] = device.device_role.slug
                 d["role_name"] = device.device_role.name
-            if d["name"] is None:
-                d["name"] = f"{d['role']}-{device.id}"
+        else:
+            d["role"] = "unknown"
+            d["role_name"] = "unknown"
 
-        if device.primary_ip4 is not None:
-            d["primary_ip4"] = device.primary_ip4.address
-        if device.primary_ip6 is not None:
-            d["primary_ip6"] = device.primary_ip6.address
-        if self.config["export_configs"]:
-            d["config"] = self._get_device_config(device)
+        # Generate name if not set
+        if d.get("name") is None or len(d.get("name", "")) == 0:
+            d["name"] = f"{d['role']}-{device.id}"
+
+        # Primary IPs
+        d["primary_ip4"] = device.primary_ip4.address if device.primary_ip4 is not None else ""
+        d["primary_ip6"] = device.primary_ip6.address if device.primary_ip6 is not None else ""
+
+        # Config (if export is enabled)
+        d["config"] = self._get_device_config(device) if self.config["export_configs"] else ""
+
         return d
 
     def _get_device_config(self, device):
