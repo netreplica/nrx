@@ -16,9 +16,11 @@ from nrx.nrx import NBFactory  # pylint: disable=wrong-import-position
 
 def make_mock_device_dict_compatible(mock_device, device_dict):
     """Helper to make a mock device compatible with dict() conversion."""
-    mock_device.keys = device_dict.keys
-    mock_device.__getitem__ = device_dict.__getitem__
-    mock_device.__iter__ = device_dict.__iter__
+    # Mock wraps magic methods and passes the mock instance as first arg,
+    # so these callables must accept a dummy `self` parameter.
+    mock_device.keys = lambda: device_dict.keys()
+    mock_device.__getitem__ = lambda _, key: device_dict[key]
+    mock_device.__iter__ = lambda _: iter(device_dict)
 
 
 def create_test_config():
