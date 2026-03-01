@@ -77,6 +77,7 @@ Export capabilities:
 * Exported device configurations can be used as `startup-config` for Containerlab and CML
 * Exports the graph in formats for visualization with Graphite or D2
 * User-defined output formats using Jinja2 templates
+* Exports all device fields from NetBox - templates have access to all device data including custom fields, tags, serial numbers, and any other NetBox field
 * Uses NetBox Device Platform `slug` field to identify node templates when rendering the export file
 * Customizable mapping between NetBox Platform values and node parameters via `platform_map.yaml` file
 * Creates mapping between real interface names and interface names used by the supported lab tools
