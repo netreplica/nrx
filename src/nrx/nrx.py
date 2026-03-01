@@ -369,16 +369,21 @@ class NBFactory:
             d["vendor_name"] = "unknown"
 
         # Role (handle NetBox 3.x vs 4.x difference)
-        if device.role is not None:
-            if self.nb_api_version >= version.parse("4.0"):
+        if self.nb_api_version >= version.parse("4.0"):
+            if device.role is not None:
                 d["role"] = device.role.slug
                 d["role_name"] = device.role.name
             else:
+                d["role"] = "unknown"
+                d["role_name"] = "unknown"
+        else:
+            # NetBox 3.x uses device_role
+            if hasattr(device, 'device_role') and device.device_role is not None:
                 d["role"] = device.device_role.slug
                 d["role_name"] = device.device_role.name
-        else:
-            d["role"] = "unknown"
-            d["role_name"] = "unknown"
+            else:
+                d["role"] = "unknown"
+                d["role_name"] = "unknown"
 
         # Generate name if not set
         if d.get("name") is None or len(d.get("name", "")) == 0:
