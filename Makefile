@@ -1,5 +1,5 @@
 lint:
-	pylint src/nrx/*.py
+	pylint $$(git ls-files '*/*.py')
 
 unit-test:
 	PYTHONPATH=./src pytest tests/unit/ -v
