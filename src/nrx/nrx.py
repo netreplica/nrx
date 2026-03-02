@@ -240,6 +240,7 @@ class NBFactory:
             self._get_nb_devices()
             self._get_nb_objects("interfaces", self.config['nb_api_params']['interfaces_block_size'])
             self._get_nb_objects("cables", self.config['nb_api_params']['cables_block_size'])
+            self._add_disconnected_devices_to_graph()
         except (pynetbox.core.query.RequestError, pynetbox.core.query.ContentError) as e:
             error("NetBox API failure", e)
 
@@ -509,6 +510,13 @@ class NBFactory:
             for cable in list(self.nb_session.dcim.cables.filter(id=cables_block)):
                 self._add_cable_to_graph(cable)
 
+    def _add_disconnected_devices_to_graph(self):
+        """Add devices that have no connections to the graph"""
+        for device in self.nb_net.devices:
+            node_id = device["node_id"]
+            if node_id not in self.G.nodes:
+                debug(f"Adding disconnected device: {device['name']}")
+                self.G.add_node(node_id, type="device", device=device)
 
     def export_graph_gml(self):
         export_file = self.topology_name + ".gml"

@@ -15,7 +15,8 @@ It can also read a topology data previously saved as a CYJS file to convert it i
 
 ## Latest Updates
 
-* **0.8.0** - NVIDIA Air export format.
+* **0.9.0** - **Disconnected devices export**: All devices matching site/tag/role filters are now exported, including devices without cable connections
+* **0.8.0** - NVIDIA Air export format
 * **0.7.0** - NetBox v4.2 compatibility. Bug fixes. Minimum Python version 3.10
 * **0.6.0** - Filter links between devices via interface tags
 

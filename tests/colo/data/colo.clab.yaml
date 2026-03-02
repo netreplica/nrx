@@ -1,0 +1,65 @@
+name: colo
+topology:
+    nodes:
+        graphite:
+            kind: linux
+            image: netreplica/graphite:latest
+            env:
+                HOST_CONNECTION: ${SSH_CONNECTION}
+            binds:
+                - __clabDir__/topology-data.json:/htdocs/default/default.json:ro
+                - __clabDir__/ansible-inventory.yml:/htdocs/lab/default/ansible-inventory.yml:ro
+            ports:
+                - 8080:80
+            exec:
+                - sh -c 'graphite_motd.sh 8080'
+            labels:
+                graph-hide: yes
+
+        sw1:
+            kind: ceos
+            binds:
+                - sw1_interface_map.json:/mnt/flash/EosIntfMapping.json:ro
+            image: ceos:latest
+            labels:
+                graph-icon: access-switch
+                graph-level: 9
+                role: Access Switch
+                group: colo
+                platform: Arista EOS
+                vendor: Arista
+                model: CCS-720XP-24Y6
+
+        sw2:
+            kind: ceos
+            binds:
+                - sw2_interface_map.json:/mnt/flash/EosIntfMapping.json:ro
+            image: ceos:latest
+            labels:
+                graph-icon: access-switch
+                graph-level: 9
+                role: Access Switch
+                group: colo
+                platform: Arista EOS
+                vendor: Arista
+                model: CCS-720XP-24Y6
+
+        host1:
+            kind: linux
+            image: alpine:latest
+            labels:
+                graph-icon: server
+                graph-level: 10
+                role: server
+                group: colo
+                platform: unknown
+                vendor: Dell
+                model: PowerEdge R200
+
+    links:
+        - endpoints: ["sw2:eth1", "sw1:eth1"]
+        - endpoints: ["sw2:eth2", "sw1:eth2"]
+        - endpoints: ["sw2:eth3", "sw1:eth3"]
+        - endpoints: ["sw1:eth4", "sw2:eth4"]
+        - endpoints: ["sw1:eth5", "sw2:eth5"]
+        - endpoints: ["sw1:eth6", "sw2:eth6"]
