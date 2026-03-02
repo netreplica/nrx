@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-Python 3.10 or higher is required. In the commands below we assume you have `python3.10` executable. If it is under a different name, change accordingly.
+Python 3.11 or higher is required. In the commands below we assume you have `python3.11` executable. If it is under a different name, change accordingly.
 
 Choose one of the following installation methods:
 
@@ -17,7 +17,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 ### Option 2: pip (traditional)
 
 ```bash
-curl -sL https://bootstrap.pypa.io/get-pip.py | python3.10 -
+curl -sL https://bootstrap.pypa.io/get-pip.py | python3.11 -
 pip install virtualenv
 ```
 
@@ -38,7 +38,7 @@ uv tool run nrx --version
 
 ```bash
 mkdir -p ~/.venv
-python3.10 -m venv ~/.venv/nrx
+python3.11 -m venv ~/.venv/nrx
 source ~/.venv/nrx/bin/activate
 pip install nrx
 nrx --version
@@ -51,7 +51,7 @@ After running the following commands, you will have a working `nrx` command in t
 ```bash
 git clone https://github.com/netreplica/nrx.git --recursive
 cd nrx
-python3.10 -m venv venv
+python3.11 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 nrx --version

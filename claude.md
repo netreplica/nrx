@@ -4,12 +4,12 @@
 
 **Use the development virtual environment for all operations:**
 ```bash
-source ./nrx310-dev/bin/activate
+source ./nrx311-dev/bin/activate
 ```
 
 **Do NOT use:**
-- `~/.venv/nrx310` - This is for production testing only
-- `./nrx310` - Wrong environment
+- `~/.venv/nrx` - This is for production testing only
+- Other venv names - Wrong environment
 
 ## Running Tests
 
@@ -82,8 +82,8 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 ## CI/CD Pipeline
 
 GitHub Actions run on push/PR:
-1. **Pylint** - Python 3.10, 3.11
-2. **Unit Tests** - Python 3.10, 3.11
+1. **Pylint** - Python 3.11, 3.12
+2. **Unit Tests** - Python 3.11, 3.12
 3. **System Tests** - Integration tests
 
 All must pass before merging.
@@ -109,8 +109,8 @@ nrx/
 
 ```bash
 # Development setup
-python3.10 -m venv nrx310-dev
-source nrx310-dev/bin/activate
+python3.11 -m venv nrx311-dev
+source nrx311-dev/bin/activate
 pip install -r requirements.txt -r requirements-dev.txt
 
 # Run all checks before committing
