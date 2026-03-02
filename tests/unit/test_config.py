@@ -2,9 +2,9 @@
 
 import os
 import tempfile
+from argparse import Namespace
 from unittest import mock
 from nrx.nrx import load_toml_config, load_config
-from argparse import Namespace
 
 
 class TestConfigBackwardCompatibility:
