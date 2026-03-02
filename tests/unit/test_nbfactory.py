@@ -18,9 +18,18 @@ def make_mock_device_dict_compatible(mock_device, device_dict):
     """Helper to make a mock device compatible with dict() conversion."""
     # Mock wraps magic methods and passes the mock instance as first arg,
     # so these callables must accept a dummy `self` parameter.
-    mock_device.keys = lambda: device_dict.keys()
-    mock_device.__getitem__ = lambda _, key: device_dict[key]
-    mock_device.__iter__ = lambda _: iter(device_dict)
+    def get_keys():
+        return device_dict.keys()
+
+    def get_item(_, key):
+        return device_dict[key]
+
+    def get_iter(_):
+        return iter(device_dict)
+
+    mock_device.keys = get_keys
+    mock_device.__getitem__ = get_item
+    mock_device.__iter__ = get_iter
 
 
 def create_test_config():
