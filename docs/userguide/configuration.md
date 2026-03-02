@@ -134,6 +134,9 @@ EXPORT_SITES = ['DM-Akron']
 # NetBox tags to export. Alternatively, use --tags argument
 EXPORT_TAGS = []
 
+# Note: All devices matching the role, site, and tag filters will be exported,
+# including disconnected devices (devices without any cable connections)
+
 # Export device configurations, when available
 EXPORT_CONFIGS = true
 
