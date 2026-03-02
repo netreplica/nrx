@@ -406,17 +406,41 @@ class NBFactory:
             debug(f"{device.name}: Get device configuration failed: can't parse rendered configuration - {e}")
         return ""
 
+    def _unwrap_termination(self, term):
+        """Unwrap cable termination object, handling pynetbox 7.6.1+ GenericListObject."""
+        # In pynetbox 7.6.1+, terminations are wrapped in GenericListObject
+        # GenericListObject has 'object', 'object_id', and 'object_type' attributes
+        # We need to extract the 'object' which contains the actual interface
+        if hasattr(term, 'object'):
+            # pynetbox 7.6.1+ format - get the object attribute
+            return term.object
+        # Fallback for older versions - return as-is
+        return term
+
+    def _is_interface(self, obj):
+        """Check if an object is an Interface, handling pynetbox version differences."""
+        # Check by isinstance first (preferred)
+        if isinstance(obj, pynetbox.models.dcim.Interfaces):
+            return True
+        # Fallback: check by class name and attributes for compatibility
+        # This handles cases where the object type might differ across pynetbox versions
+        class_name = obj.__class__.__name__
+        if class_name == 'Interfaces' and hasattr(obj, 'device') and hasattr(obj, 'name'):
+            return True
+        return False
+
     def _trace_cable(self, cable):
         if len(cable.a_terminations) == 1 and len(cable.b_terminations) == 1:
-            term_a = cable.a_terminations[0]
-            term_b = cable.b_terminations[0]
-            if isinstance(term_a, pynetbox.models.dcim.Interfaces) and \
-               isinstance(term_b, pynetbox.models.dcim.Interfaces):
+            # Unwrap terminations (pynetbox 7.6.1+ wraps them in GenericListObject)
+            term_a = self._unwrap_termination(cable.a_terminations[0])
+            term_b = self._unwrap_termination(cable.b_terminations[0])
+
+            if self._is_interface(term_a) and self._is_interface(term_b):
                 return [term_a, term_b]
             interface = None
-            if isinstance(term_a, pynetbox.models.dcim.Interfaces):
+            if self._is_interface(term_a):
                 interface = term_a
-            elif isinstance(term_b, pynetbox.models.dcim.Interfaces):
+            elif self._is_interface(term_b):
                 interface = term_b
             if interface is not None:
                 trace = interface.trace()
@@ -424,7 +448,7 @@ class NBFactory:
                     if len(trace[0]) == 1 and len(trace[-1]) == 1:
                         side_a = trace[0][0]
                         side_b = trace[-1][0]
-                        if isinstance(side_a, pynetbox.models.dcim.Interfaces) and isinstance(side_b, pynetbox.models.dcim.Interfaces):
+                        if self._is_interface(side_a) and self._is_interface(side_b):
                             debug(f"Traced {side_a.device} {side_a.name} <-> {side_b.device} {side_b.name}: {trace}")
                             return [side_a, side_b]
             debug(f"Skipping {cable} as both terminations are not interfaces or cannot be traced")
