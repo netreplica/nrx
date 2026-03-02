@@ -1284,6 +1284,7 @@ def load_config(args):
     config = load_toml_config(args.config)
     config['nb_api_url'] = os.getenv('NB_API_URL', config['nb_api_url'])
     config['nb_api_token'] = os.getenv('NB_API_TOKEN', config['nb_api_token'])
+    config['output_dir'] = os.getenv('OUTPUT_DIR', config['output_dir'])
 
     # Override config values with arguments and validate
     if args.input is not None and len(args.input) > 0:
