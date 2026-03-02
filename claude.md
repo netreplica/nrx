@@ -109,7 +109,7 @@ nrx/
 
 ```bash
 # Development setup
-python3.9 -m venv nrx310-dev
+python3.10 -m venv nrx310-dev
 source nrx310-dev/bin/activate
 pip install -r requirements.txt -r requirements-dev.txt
 
@@ -164,6 +164,10 @@ PYTHONPATH=./src python -c "from nrx.nrx import load_toml_config; print(load_tom
 # Unit test specific file
 PYTHONPATH=./src pytest tests/unit/test_config.py -v
 ```
+
+### Running tests against cloud NetBox instance
+
+Credentials can be sourced from `tests/.env_cloud` and then you can use the config file in `tests/dc1/nrx.conf` as an example to run tests against the cloud NetBox instance.
 
 ## Special Considerations
 
