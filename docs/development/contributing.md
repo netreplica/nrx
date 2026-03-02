@@ -6,7 +6,7 @@ Thank you for your interest in contributing to nrx! This guide will help you get
 
 ### Prerequisites
 
-* Python 3.10 or higher
+* Python 3.11 or higher
 * Git
 * Make
 
@@ -137,8 +137,8 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 GitHub Actions run on push/PR:
 
-1. **Pylint** - Python 3.10, 3.11
-2. **Unit Tests** - Python 3.10, 3.11
+1. **Pylint** - Python 3.11, 3.12
+2. **Unit Tests** - Python 3.11, 3.12
 3. **System Tests** - Integration tests
 
 All must pass before merging.
