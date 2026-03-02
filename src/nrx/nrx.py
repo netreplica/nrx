@@ -1279,12 +1279,27 @@ def config_apply_netbox_args(config, args):
 
     return config
 
-def load_config(args):
-    """Load, consolidate and validate configuration"""
-    config = load_toml_config(args.config)
+def apply_env_var_overrides(config):
+    """Apply environment variable overrides to configuration"""
     config['nb_api_url'] = os.getenv('NB_API_URL', config['nb_api_url'])
     config['nb_api_token'] = os.getenv('NB_API_TOKEN', config['nb_api_token'])
     config['output_dir'] = os.getenv('OUTPUT_DIR', config['output_dir'])
+
+    # Handle TEMPLATES_PATH env var (can be string or colon-separated list)
+    if 'TEMPLATES_PATH' in os.environ:
+        templates_env = os.getenv('TEMPLATES_PATH')
+        # Check if it's a colon-separated list (Unix-style PATH)
+        if ':' in templates_env:
+            config['templates_path'] = templates_env.split(':')
+        else:
+            config['templates_path'] = templates_env
+
+    config['platform_map'] = os.getenv('PLATFORM_MAP', config['platform_map'])
+
+def load_config(args):
+    """Load, consolidate and validate configuration"""
+    config = load_toml_config(args.config)
+    apply_env_var_overrides(config)
 
     # Override config values with arguments and validate
     if args.input is not None and len(args.input) > 0:
@@ -1310,6 +1325,9 @@ def load_config(args):
         config['platform_map'] = args.map
 
     if args.templates is not None and len(args.templates) > 0:
+        # Ensure templates_path is a list before inserting
+        if isinstance(config['templates_path'], str):
+            config['templates_path'] = [config['templates_path']]
         config['templates_path'].insert(0, args.templates)
 
     if args.dir is not None and len(args.dir) > 0:
