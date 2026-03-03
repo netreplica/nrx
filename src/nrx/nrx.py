@@ -238,8 +238,9 @@ class NBFactory:
 
         try:
             self._get_nb_devices()
-            self._get_nb_objects("interfaces", self.config['nb_api_params']['interfaces_block_size'])
-            self._get_nb_objects("cables", self.config['nb_api_params']['cables_block_size'])
+            if self.config['export_links']:
+                self._get_nb_objects("interfaces", self.config['nb_api_params']['interfaces_block_size'])
+                self._get_nb_objects("cables", self.config['nb_api_params']['cables_block_size'])
             self._add_disconnected_devices_to_graph()
         except (pynetbox.core.query.RequestError, pynetbox.core.query.ContentError) as e:
             error("NetBox API failure", e)
@@ -1084,6 +1085,8 @@ def parse_args():
     args_parser.add_argument('-n', '--name',        required=False, help='name of the exported topology (site name or tags by default)')
     args_parser.add_argument(      '--noconfigs',   required=False, help='disable device configuration export (enabled by default)',
                                                         action=argparse.BooleanOptionalAction)
+    args_parser.add_argument(      '--nolinks',     required=False, help='disable network links export (enabled by default)',
+                                                        action=argparse.BooleanOptionalAction)
     args_parser.add_argument('-k', '--insecure',    required=False, help='allow insecure server connections when using TLS',
                                                         action=argparse.BooleanOptionalAction)
     args_parser.add_argument('-f', '--file',        required=False, help='file with the network graph to import')
@@ -1246,6 +1249,7 @@ def load_toml_config(filename):
         'export_interface_tags': [],
         'topology_name': '',
         'export_configs': True,
+        'export_links': True,
         'templates_path': ["./templates", f"{nrx_config_dir()}/templates"],
         'formats_map': NRX_FORMATS_NAME,
         'platform_map': NRX_MAP_NAME,
@@ -1283,6 +1287,12 @@ def load_toml_config(filename):
             config[k] = [os.path.expandvars(p) for p in config[k]]
     return config
 
+def apply_boolean_arg(config, arg_value, config_key):
+    """Apply boolean optional action argument to config"""
+    if arg_value is not None:
+        config[config_key] = not arg_value
+    return config
+
 def config_apply_netbox_args(config, args):
     """Apply netbox-related arguments to the configuration and validate it"""
     if args.api is not None and len(args.api) > 0:
@@ -1303,11 +1313,9 @@ def config_apply_netbox_args(config, args):
         debug(f"List of tags to filter interfaces for export: {config['export_interface_tags']}")
     if len(config['export_sites']) == 0 and len(config['export_tags']) == 0:
         error("Need a Site name or Tags to export. Use --sites/--tags arguments, or EXPORT_SITES/EXPORT_TAGS key in --config file")
-    if args.noconfigs is not None:
-        if args.noconfigs:
-            config['export_configs'] = False
-        else:
-            config['export_configs'] = True
+
+    apply_boolean_arg(config, args.noconfigs, 'export_configs')
+    apply_boolean_arg(config, args.nolinks, 'export_links')
 
     return config
 

@@ -176,6 +176,7 @@ class TestOutputDirConfig:
                 dir=None,
                 insecure=False,
                 noconfigs=None,
+                nolinks=None,
                 file=None
             )
 
@@ -211,6 +212,7 @@ class TestOutputDirConfig:
                 dir='/tmp/cli_output',
                 insecure=False,
                 noconfigs=None,
+                nolinks=None,
                 file=None
             )
 
@@ -246,6 +248,7 @@ class TestOutputDirConfig:
                 dir=None,
                 insecure=False,
                 noconfigs=None,
+                nolinks=None,
                 file=None
             )
 
@@ -310,6 +313,7 @@ class TestOutputDirConfig:
                 dir=None,
                 insecure=False,
                 noconfigs=None,
+                nolinks=None,
                 file=None
             )
 
@@ -383,6 +387,7 @@ class TestTemplatesPathConfig:
                 dir=None,
                 insecure=False,
                 noconfigs=None,
+                nolinks=None,
                 file=None
             )
 
@@ -418,6 +423,7 @@ class TestTemplatesPathConfig:
                 dir=None,
                 insecure=False,
                 noconfigs=None,
+                nolinks=None,
                 file=None
             )
 
@@ -508,6 +514,7 @@ class TestPlatformMapConfig:
                 dir=None,
                 insecure=False,
                 noconfigs=None,
+                nolinks=None,
                 file=None
             )
 
@@ -542,6 +549,7 @@ class TestPlatformMapConfig:
                 dir=None,
                 insecure=False,
                 noconfigs=None,
+                nolinks=None,
                 file=None
             )
 
@@ -577,6 +585,7 @@ class TestPlatformMapConfig:
                 dir=None,
                 insecure=False,
                 noconfigs=None,
+                nolinks=None,
                 file=None
             )
 
