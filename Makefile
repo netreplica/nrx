@@ -300,6 +300,15 @@ test-colo-nb-2-cyjs-cloud:
 	diff colo.cyjs ../data/colo.latest.cyjs
 	@echo
 
+test-colo-nb-2-cyjs-cloud-nolinks:
+	@echo "#################################################################"
+	@echo "# Colo: read from NetBox cloud and export devices only (no links)"
+	@echo "#################################################################"
+	mkdir -p tests/colo/test && cd tests/colo/test && rm -rf * && \
+	../../../nrx -c ../nrx.conf -o cyjs --nolinks -d && \
+	diff colo.cyjs ../data/colo.nolinks.cyjs
+	@echo
+
 test-colo-nb-2-cyjs-interface-tags:
 	@echo "#################################################################"
 	@echo "# Colo: read from NetBox latest version and export as CYJS using interface tags"
