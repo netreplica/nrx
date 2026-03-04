@@ -44,6 +44,7 @@ def create_test_config():
         'export_device_roles': ['router'],
         'topology_name': '',
         'export_configs': False,
+        'export_links': True,
         'nb_api_params': {
             'interfaces_block_size': 4,
             'cables_block_size': 64,
@@ -73,6 +74,9 @@ class TestNBFactoryInitialization:
         mock_api = Mock()
         mock_api.version = "3.5.0"
         mock_pynetbox.api.return_value = mock_api
+        # Mock the exception classes
+        mock_pynetbox.core.query.RequestError = Exception
+        mock_pynetbox.core.query.ContentError = Exception
 
         # Create minimal config
         config = {
@@ -84,6 +88,8 @@ class TestNBFactoryInitialization:
             'export_tags': ['test-tag'],
             'export_device_roles': ['router'],
             'topology_name': '',
+            'export_configs': False,
+            'export_links': True,
             'nb_api_params': {
                 'interfaces_block_size': 4,
                 'cables_block_size': 64,
@@ -114,6 +120,9 @@ class TestNBSitesInitialization:
         mock_api = Mock()
         mock_api.version = "3.5.0"
         mock_pynetbox.api.return_value = mock_api
+        # Mock the exception classes
+        mock_pynetbox.core.query.RequestError = Exception
+        mock_pynetbox.core.query.ContentError = Exception
 
         # Create config
         config = {
@@ -125,6 +134,8 @@ class TestNBSitesInitialization:
             'export_tags': ['test-tag'],
             'export_device_roles': ['router'],
             'topology_name': '',
+            'export_configs': False,
+            'export_links': True,
             'nb_api_params': {
                 'interfaces_block_size': 4,
                 'cables_block_size': 64,

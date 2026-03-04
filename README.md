@@ -22,6 +22,7 @@ This project is in early phase. We're experimenting with the best ways to automa
 # Latest capabilities added
 
 The latest releases have a significant set of the new capabilities:
+* `0.9.0` **Devices-only export**: New `--nolinks` option to export device inventory without network connections (useful for inventory, documentation, CMDB integration)
 * `0.9.0` **Disconnected devices export**: All devices matching site/tag/role filters are now exported, including devices without cable connections
 * `0.8.0` NVIDIA Air support
 * `0.7.0` NetBox `v4.2` compatibility. Bug fixes. Minimum Python version `3.10`.

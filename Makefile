@@ -32,7 +32,7 @@ test-local: test-dc1 test-dc2 test-colo test-site1 test-h88
 test-previous: test-dc1-nb-2-cyjs-previous test-dc2-nb-2-cyjs-previous test-colo-nb-2-cyjs-previous test-site1-nb-2-cyjs-previous test-h88-nb-2-cyjs-previous
 test-current: test-dc1-nb-2-cyjs-current test-dc2-nb-2-cyjs-current test-colo-nb-2-cyjs-current test-site1-nb-2-cyjs-current test-h88-nb-2-cyjs-current
 test-latest: test-dc1-nb-2-cyjs-latest test-dc2-nb-2-cyjs-latest test-colo-nb-2-cyjs-latest test-site1-nb-2-cyjs-latest test-h88-nb-2-cyjs-latest
-test-cloud: test-dc1-nb-2-cyjs-cloud test-dc2-nb-2-cyjs-cloud test-colo-nb-2-cyjs-cloud test-site1-nb-2-cyjs-cloud test-h88-nb-2-cyjs-cloud test-air-nb-2-cyjs-cloud
+test-cloud: test-dc1-nb-2-cyjs-cloud test-dc2-nb-2-cyjs-cloud test-colo-nb-2-cyjs-cloud test-site1-nb-2-cyjs-cloud test-h88-nb-2-cyjs-cloud test-air-nb-2-cyjs-cloud test-colo-nb-2-cyjs-cloud-nolinks
 test: test-args test-dc1-cyjs-2-clab test-dc1-cyjs-2-clab-custom-platform-map test-dc2-cyjs-2-cml test-site1-cyjs-2-clab test-site1-cyjs-2-clab-rename test-dc1-cyjs-2-graphite test-dc2-cyjs-2-graphite test-h88-cyjs-2-clab test-dc1-cyjs-2-d2 test-lrg-cyjs-2-graphite test-air-cyjs-2-air
 
 test-args: test-args-site-and-sites
@@ -298,6 +298,15 @@ test-colo-nb-2-cyjs-cloud:
 	mkdir -p tests/colo/test && cd tests/colo/test && rm -rf * && \
 	../../../nrx -c ../nrx.conf -o cyjs -d && \
 	diff colo.cyjs ../data/colo.latest.cyjs
+	@echo
+
+test-colo-nb-2-cyjs-cloud-nolinks:
+	@echo "#################################################################"
+	@echo "# Colo: read from NetBox cloud and export devices only (no links)"
+	@echo "#################################################################"
+	mkdir -p tests/colo/test && cd tests/colo/test && rm -rf * && \
+	../../../nrx -c ../nrx.conf -o cyjs --nolinks -d && \
+	diff colo.cyjs ../data/colo.nolinks.cyjs
 	@echo
 
 test-colo-nb-2-cyjs-interface-tags:
