@@ -22,6 +22,8 @@ This project is in early phase. We're experimenting with the best ways to automa
 # Latest capabilities added
 
 The latest releases have a significant set of the new capabilities:
+* `0.9.0` **Devices-only export**: New `--nolinks` option to export device inventory without network connections (useful for inventory, documentation, CMDB integration)
+* `0.9.0` **Disconnected devices export**: All devices matching site/tag/role filters are now exported, including devices without cable connections
 * `0.8.0` NVIDIA Air support
 * `0.7.0` NetBox `v4.2` compatibility. Bug fixes. Minimum Python version `3.10`.
 * `0.6.2` NetBox `v4.1` compatibility
@@ -77,6 +79,7 @@ Export capabilities:
 * Exported device configurations can be used as `startup-config` for Containerlab and CML
 * Exports the graph in formats for visualization with Graphite or D2
 * User-defined output formats using Jinja2 templates
+* Exports all device fields from NetBox - templates have access to all device data including custom fields, tags, serial numbers, and any other NetBox field
 * Uses NetBox Device Platform `slug` field to identify node templates when rendering the export file
 * Customizable mapping between NetBox Platform values and node parameters via `platform_map.yaml` file
 * Creates mapping between real interface names and interface names used by the supported lab tools
@@ -95,7 +98,7 @@ The following software versions were tested for compatibility with `nrx`:
 
 # Prerequisites
 
-Python 3.10+. In the commands below we assume you have `python3.10` executable. If it is under a different name, change accordingly.
+Python 3.11+. In the commands below we assume you have `python3.11` executable. If it is under a different name, change accordingly.
 
 Choose one of the following installation methods:
 
@@ -110,7 +113,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 **Option 2: pip (traditional)**
 
 ```Shell
-curl -sL https://bootstrap.pypa.io/get-pip.py | python3.10 -
+curl -sL https://bootstrap.pypa.io/get-pip.py | python3.11 -
 pip install virtualenv
 ```
 
@@ -131,7 +134,7 @@ uv tool run nrx --version
 
 ```Shell
 mkdir -p ~/.venv
-python3.10 -m venv ~/.venv/nrx
+python3.11 -m venv ~/.venv/nrx
 source ~/.venv/nrx/bin/activate
 pip install nrx
 nrx --version
@@ -144,7 +147,7 @@ After running the following commands, you will have a working `nrx` command in t
 ```Shell
 git clone https://github.com/netreplica/nrx.git --recursive
 cd nrx
-python3.10 -m venv venv
+python3.11 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 nrx --version

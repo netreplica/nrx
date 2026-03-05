@@ -1,0 +1,337 @@
+{
+    "data": [
+        [
+            "name",
+            "colo"
+        ]
+    ],
+    "directed": false,
+    "multigraph": false,
+    "elements": {
+        "nodes": [
+            {
+                "data": {
+                    "type": "device",
+                    "device": {
+                        "id": 162,
+                        "url": "https://vqic3478.cloud.netboxapp.com/api/dcim/devices/162/",
+                        "display_url": "https://vqic3478.cloud.netboxapp.com/dcim/devices/162/",
+                        "display": "host1",
+                        "name": "host1",
+                        "device_type": {
+                            "id": 1674,
+                            "url": "https://vqic3478.cloud.netboxapp.com/api/dcim/device-types/1674/",
+                            "display": "PowerEdge R200",
+                            "manufacturer": {
+                                "id": 53,
+                                "url": "https://vqic3478.cloud.netboxapp.com/api/dcim/manufacturers/53/",
+                                "display": "Dell",
+                                "name": "Dell",
+                                "slug": "dell",
+                                "description": ""
+                            },
+                            "model": "PowerEdge R200",
+                            "slug": "dell_poweredge_r200",
+                            "description": "",
+                            "device_count": 1
+                        },
+                        "role": "server",
+                        "tenant": null,
+                        "platform": "unknown",
+                        "serial": "",
+                        "asset_tag": null,
+                        "site": "colo",
+                        "location": null,
+                        "rack": null,
+                        "position": null,
+                        "face": null,
+                        "latitude": null,
+                        "longitude": null,
+                        "parent_device": null,
+                        "status": {
+                            "value": "active",
+                            "label": "Active"
+                        },
+                        "airflow": null,
+                        "primary_ip": null,
+                        "primary_ip4": "",
+                        "primary_ip6": "",
+                        "oob_ip": null,
+                        "cluster": null,
+                        "virtual_chassis": null,
+                        "vc_position": null,
+                        "vc_priority": null,
+                        "description": "Airgapped server",
+                        "owner": null,
+                        "comments": "",
+                        "config_template": null,
+                        "config_context": {},
+                        "local_context_data": null,
+                        "tags": [],
+                        "custom_fields": {},
+                        "created": "2026-03-02T05:28:48.072597Z",
+                        "last_updated": "2026-03-02T05:28:48.072616Z",
+                        "console_port_count": 2,
+                        "console_server_port_count": 0,
+                        "power_port_count": 1,
+                        "power_outlet_count": 0,
+                        "interface_count": 2,
+                        "front_port_count": 0,
+                        "rear_port_count": 0,
+                        "device_bay_count": 0,
+                        "module_bay_count": 0,
+                        "inventory_item_count": 0,
+                        "type": "device",
+                        "node_id": 0,
+                        "platform_name": "unknown",
+                        "model": "dell_poweredge_r200",
+                        "model_name": "PowerEdge R200",
+                        "vendor": "dell",
+                        "vendor_name": "Dell",
+                        "role_name": "server",
+                        "config": "",
+                        "device_index": 0
+                    },
+                    "id": "0",
+                    "value": 0,
+                    "name": "0"
+                }
+            },
+            {
+                "data": {
+                    "type": "device",
+                    "device": {
+                        "id": 35,
+                        "url": "https://vqic3478.cloud.netboxapp.com/api/dcim/devices/35/",
+                        "display_url": "https://vqic3478.cloud.netboxapp.com/dcim/devices/35/",
+                        "display": "sw1",
+                        "name": "sw1",
+                        "device_type": {
+                            "id": 55,
+                            "url": "https://vqic3478.cloud.netboxapp.com/api/dcim/device-types/55/",
+                            "display": "CCS-720XP-24Y6",
+                            "manufacturer": {
+                                "id": 8,
+                                "url": "https://vqic3478.cloud.netboxapp.com/api/dcim/manufacturers/8/",
+                                "display": "Arista",
+                                "name": "Arista",
+                                "slug": "arista",
+                                "description": ""
+                            },
+                            "model": "CCS-720XP-24Y6",
+                            "slug": "ccs-720xp-24y6",
+                            "description": "",
+                            "device_count": 2
+                        },
+                        "role": "access-switch",
+                        "tenant": null,
+                        "platform": "eos",
+                        "serial": "",
+                        "asset_tag": null,
+                        "site": "colo",
+                        "location": null,
+                        "rack": null,
+                        "position": null,
+                        "face": null,
+                        "latitude": null,
+                        "longitude": null,
+                        "parent_device": null,
+                        "status": {
+                            "value": "active",
+                            "label": "Active"
+                        },
+                        "airflow": null,
+                        "primary_ip": {
+                            "id": 1,
+                            "url": "https://vqic3478.cloud.netboxapp.com/api/ipam/ip-addresses/1/",
+                            "display": "10.0.0.1/24",
+                            "family": {
+                                "value": 4,
+                                "label": "IPv4"
+                            },
+                            "address": "10.0.0.1/24",
+                            "description": ""
+                        },
+                        "primary_ip4": "10.0.0.1/24",
+                        "primary_ip6": "",
+                        "oob_ip": null,
+                        "cluster": null,
+                        "virtual_chassis": null,
+                        "vc_position": null,
+                        "vc_priority": null,
+                        "description": "",
+                        "owner": null,
+                        "comments": "",
+                        "config_template": null,
+                        "config_context": {},
+                        "local_context_data": null,
+                        "tags": [
+                            {
+                                "id": 2,
+                                "url": "https://vqic3478.cloud.netboxapp.com/api/extras/tags/2/",
+                                "display_url": "https://vqic3478.cloud.netboxapp.com/extras/tags/2/",
+                                "display": "primary",
+                                "name": "primary",
+                                "slug": "primary",
+                                "color": "4caf50"
+                            },
+                            {
+                                "id": 1,
+                                "url": "https://vqic3478.cloud.netboxapp.com/api/extras/tags/1/",
+                                "display_url": "https://vqic3478.cloud.netboxapp.com/extras/tags/1/",
+                                "display": "wan",
+                                "name": "wan",
+                                "slug": "wan",
+                                "color": "2196f3"
+                            }
+                        ],
+                        "custom_fields": {},
+                        "created": "2023-04-29T22:21:04.724866Z",
+                        "last_updated": "2023-06-02T05:15:38.739315Z",
+                        "console_port_count": 1,
+                        "console_server_port_count": 0,
+                        "power_port_count": 2,
+                        "power_outlet_count": 0,
+                        "interface_count": 31,
+                        "front_port_count": 0,
+                        "rear_port_count": 0,
+                        "device_bay_count": 0,
+                        "module_bay_count": 0,
+                        "inventory_item_count": 0,
+                        "type": "device",
+                        "node_id": 1,
+                        "platform_name": "Arista EOS",
+                        "model": "ccs-720xp-24y6",
+                        "model_name": "CCS-720XP-24Y6",
+                        "vendor": "arista",
+                        "vendor_name": "Arista",
+                        "role_name": "Access Switch",
+                        "config": "",
+                        "device_index": 1
+                    },
+                    "id": "1",
+                    "value": 1,
+                    "name": "1"
+                }
+            },
+            {
+                "data": {
+                    "type": "device",
+                    "device": {
+                        "id": 36,
+                        "url": "https://vqic3478.cloud.netboxapp.com/api/dcim/devices/36/",
+                        "display_url": "https://vqic3478.cloud.netboxapp.com/dcim/devices/36/",
+                        "display": "sw2",
+                        "name": "sw2",
+                        "device_type": {
+                            "id": 55,
+                            "url": "https://vqic3478.cloud.netboxapp.com/api/dcim/device-types/55/",
+                            "display": "CCS-720XP-24Y6",
+                            "manufacturer": {
+                                "id": 8,
+                                "url": "https://vqic3478.cloud.netboxapp.com/api/dcim/manufacturers/8/",
+                                "display": "Arista",
+                                "name": "Arista",
+                                "slug": "arista",
+                                "description": ""
+                            },
+                            "model": "CCS-720XP-24Y6",
+                            "slug": "ccs-720xp-24y6",
+                            "description": "",
+                            "device_count": 2
+                        },
+                        "role": "access-switch",
+                        "tenant": null,
+                        "platform": "eos",
+                        "serial": "",
+                        "asset_tag": null,
+                        "site": "colo",
+                        "location": null,
+                        "rack": null,
+                        "position": null,
+                        "face": null,
+                        "latitude": null,
+                        "longitude": null,
+                        "parent_device": null,
+                        "status": {
+                            "value": "active",
+                            "label": "Active"
+                        },
+                        "airflow": null,
+                        "primary_ip": {
+                            "id": 2,
+                            "url": "https://vqic3478.cloud.netboxapp.com/api/ipam/ip-addresses/2/",
+                            "display": "10.0.0.2/24",
+                            "family": {
+                                "value": 4,
+                                "label": "IPv4"
+                            },
+                            "address": "10.0.0.2/24",
+                            "description": ""
+                        },
+                        "primary_ip4": "10.0.0.2/24",
+                        "primary_ip6": "",
+                        "oob_ip": null,
+                        "cluster": null,
+                        "virtual_chassis": null,
+                        "vc_position": null,
+                        "vc_priority": null,
+                        "description": "",
+                        "owner": null,
+                        "comments": "",
+                        "config_template": null,
+                        "config_context": {},
+                        "local_context_data": null,
+                        "tags": [
+                            {
+                                "id": 3,
+                                "url": "https://vqic3478.cloud.netboxapp.com/api/extras/tags/3/",
+                                "display_url": "https://vqic3478.cloud.netboxapp.com/extras/tags/3/",
+                                "display": "backup",
+                                "name": "backup",
+                                "slug": "backup",
+                                "color": "607d8b"
+                            },
+                            {
+                                "id": 1,
+                                "url": "https://vqic3478.cloud.netboxapp.com/api/extras/tags/1/",
+                                "display_url": "https://vqic3478.cloud.netboxapp.com/extras/tags/1/",
+                                "display": "wan",
+                                "name": "wan",
+                                "slug": "wan",
+                                "color": "2196f3"
+                            }
+                        ],
+                        "custom_fields": {},
+                        "created": "2023-04-29T22:21:45.533282Z",
+                        "last_updated": "2023-06-01T04:51:45.135794Z",
+                        "console_port_count": 1,
+                        "console_server_port_count": 0,
+                        "power_port_count": 2,
+                        "power_outlet_count": 0,
+                        "interface_count": 31,
+                        "front_port_count": 0,
+                        "rear_port_count": 0,
+                        "device_bay_count": 0,
+                        "module_bay_count": 0,
+                        "inventory_item_count": 0,
+                        "type": "device",
+                        "node_id": 2,
+                        "platform_name": "Arista EOS",
+                        "model": "ccs-720xp-24y6",
+                        "model_name": "CCS-720XP-24Y6",
+                        "vendor": "arista",
+                        "vendor_name": "Arista",
+                        "role_name": "Access Switch",
+                        "config": "",
+                        "device_index": 2
+                    },
+                    "id": "2",
+                    "value": 2,
+                    "name": "2"
+                }
+            }
+        ],
+        "edges": []
+    }
+}

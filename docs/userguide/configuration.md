@@ -42,6 +42,7 @@ optional arguments:
                             comma-separated list: tag1,tag2,tag3 (uses OR logic)
   -n, --name NAME           name of the exported topology (site name or tags by default)
       --noconfigs           disable device configuration export (enabled by default)
+      --nolinks             disable network links export (enabled by default)
   -k, --insecure            allow insecure server connections when using TLS
   -f, --file FILE           file with the network graph to import
   -T, --templates TEMPLATES directory with template files, will be prepended to TEMPLATES_PATH
@@ -134,8 +135,16 @@ EXPORT_SITES = ['DM-Akron']
 # NetBox tags to export. Alternatively, use --tags argument
 EXPORT_TAGS = []
 
+# Note: All devices matching the role, site, and tag filters will be exported,
+# including disconnected devices (devices without any cable connections)
+
 # Export device configurations, when available
 EXPORT_CONFIGS = true
+
+# Export network links between devices. Alternatively, use --nolinks argument
+# When false, only devices are exported without any connections/topology edges
+# Useful for: device inventory, documentation, CMDB integration, simplified labs
+EXPORT_LINKS = true
 
 # Levels of device roles for visualization
 [DEVICE_ROLE_LEVELS]

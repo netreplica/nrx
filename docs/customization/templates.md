@@ -124,11 +124,94 @@ myformat:
 Templates have access to various variables representing the network topology:
 
 * `topology_name` - Name of the topology
-* `nodes` - Dictionary of all devices/nodes
-* `edges` - List of all connections
-* `configs` - Device configurations (if exported)
+* `nodes` - List of all devices/nodes
+* `links` - List of all connections between devices
+* `roles` - Dictionary grouping devices by role
 
-Refer to existing templates in the [netreplica/templates](https://github.com/netreplica/templates) repository for examples of how to use these variables.
+### Device Fields Available in Templates
+
+Each device in the `nodes` list includes **all fields from NetBox**, plus processed fields for convenience:
+
+#### Commonly Used Fields
+
+**Backward-compatible fields** (extracted for template convenience):
+
+* `name` - Device name (auto-generated if not set)
+* `site` - Site name (string)
+* `platform` - Platform slug
+* `platform_name` - Platform display name
+* `model` - Device type slug
+* `model_name` - Device type model name
+* `vendor` - Manufacturer slug
+* `vendor_name` - Manufacturer display name
+* `role` - Device role slug
+* `role_name` - Device role display name
+* `primary_ip4` - Primary IPv4 address (string)
+* `primary_ip6` - Primary IPv6 address (string)
+* `config` - Rendered device configuration (if enabled)
+
+**nrx-specific fields:**
+
+* `type` - Always "device"
+* `node_id` - Internal node identifier
+* `device_index` - Device index in the topology
+* `level` - Device level (based on role)
+* `rank` - Device rank within its role group
+* `interfaces` - Dictionary of device interfaces
+
+#### All NetBox Fields
+
+In addition to the above, templates have access to **all raw NetBox device fields**, including:
+
+* `id` - NetBox device ID
+* `url` - NetBox API URL for the device
+* `display` - Display name
+* `device_type` - Full device type object (with id, url, manufacturer details)
+* `status` - Device status object
+* `serial` - Serial number
+* `asset_tag` - Asset tag
+* `tenant` - Tenant object (if assigned)
+* `location` - Location object (if assigned)
+* `rack` - Rack object (if assigned)
+* `position` - Position in rack
+* `face` - Rack face
+* `latitude` - Latitude coordinate
+* `longitude` - Longitude coordinate
+* `comments` - Comments
+* `tags` - List of tag objects
+* `custom_fields` - Dictionary of custom field values
+* `config_context` - Merged configuration context
+* `created` - Creation timestamp
+* `last_updated` - Last update timestamp
+
+And many more! Templates can access any field that NetBox provides in its device API response.
+
+!!! tip "Exploring Available Fields"
+    To see all available fields for your NetBox version, export a topology as CYJS format (`--output cyjs`) and examine the device data in the resulting JSON file.
+
+### Example Template Usage
+
+```jinja2
+{# Access backward-compatible fields #}
+{{ node.name }} - {{ node.vendor_name }} {{ node.model_name }}
+
+{# Access NetBox fields directly #}
+Serial: {{ node.serial }}
+Asset Tag: {{ node.asset_tag }}
+Status: {{ node.status.label }}
+
+{# Check custom fields #}
+{% if node.custom_fields.environment %}
+Environment: {{ node.custom_fields.environment }}
+{% endif %}
+
+{# Use tags #}
+{% for tag in node.tags %}
+  - {{ tag.name }}
+{% endfor %}
+```
+
+Refer to existing templates in the [netreplica/templates](https://github.com/netreplica/templates) repository for more examples.
 
 ## Next Steps
 

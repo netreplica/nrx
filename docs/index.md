@@ -15,7 +15,9 @@ It can also read a topology data previously saved as a CYJS file to convert it i
 
 ## Latest Updates
 
-* **0.8.0** - NVIDIA Air export format.
+* **0.9.0** - **Devices-only export**: New `--nolinks` option to export device inventory without network connections
+* **0.9.0** - **Disconnected devices export**: All devices matching site/tag/role filters are now exported, including devices without cable connections
+* **0.8.0** - NVIDIA Air export format
 * **0.7.0** - NetBox v4.2 compatibility. Bug fixes. Minimum Python version 3.10
 * **0.6.0** - Filter links between devices via interface tags
 
@@ -85,6 +87,7 @@ sudo -E clab deploy -t DM-Albany/DM-Albany.clab.yaml
 * Exported device configurations can be used as `startup-config` for Containerlab and CML
 * Exports the graph in formats for visualization with Graphite or D2
 * User-defined output formats using Jinja2 templates
+* Exports all device fields from NetBox - templates have access to all device data including custom fields, tags, serial numbers, and any other NetBox field
 * Uses NetBox Device Platform `slug` field to identify node templates when rendering the export file
 * Customizable mapping between NetBox Platform values and node parameters via `platform_map.yaml` file
 * Creates mapping between real interface names and interface names used by the supported lab tools

@@ -238,8 +238,10 @@ class NBFactory:
 
         try:
             self._get_nb_devices()
-            self._get_nb_objects("interfaces", self.config['nb_api_params']['interfaces_block_size'])
-            self._get_nb_objects("cables", self.config['nb_api_params']['cables_block_size'])
+            if self.config['export_links']:
+                self._get_nb_objects("interfaces", self.config['nb_api_params']['interfaces_block_size'])
+                self._get_nb_objects("cables", self.config['nb_api_params']['cables_block_size'])
+            self._add_disconnected_devices_to_graph()
         except (pynetbox.core.query.RequestError, pynetbox.core.query.ContentError) as e:
             error("NetBox API failure", e)
 
@@ -332,56 +334,70 @@ class NBFactory:
 
 
     def _init_device(self, device):
-        """Initialize device data"""
-        d = {
-            "id": device.id,
-            "type": "device",
-            "name": None,
-            "node_id": -1,
-            "site": "",
-            "platform": "unknown",
-            "platform_name": "unknown",
-            "vendor": "unknown",
-            "vendor_name": "unknown",
-            "model": "unknown",
-            "model_name": "unknown",
-            "role": "unknown",
-            "role_name": "unknown",
-            "primary_ip4": "",
-            "primary_ip6": "",
-            "config": "",
-        }
+        """Initialize device data with all available fields from NetBox"""
+        # Start with all raw device data from NetBox
+        d = dict(device)
 
-        if device.name is not None and len(device.name) > 0:
-            d["name"] = device.name
-        if device.site is not None:
-            d["site"] = device.site.name
+        # Add nrx-specific fields
+        d["type"] = "device"
+        d["node_id"] = -1
+
+        # Extract nested object fields for backward compatibility and template convenience
+        # Site
+        d["site"] = device.site.name if device.site is not None else ""
+
+        # Platform
         if device.platform is not None:
             d["platform"] = device.platform.slug
             d["platform_name"] = device.platform.name
+        else:
+            d["platform"] = "unknown"
+            d["platform_name"] = "unknown"
+
+        # Device Type / Model and Vendor
         if device.device_type is not None:
             d["model"] = device.device_type.slug
             d["model_name"] = device.device_type.model
             if device.device_type.manufacturer is not None:
                 d["vendor"] = device.device_type.manufacturer.slug
                 d["vendor_name"] = device.device_type.manufacturer.name
+            else:
+                d["vendor"] = "unknown"
+                d["vendor_name"] = "unknown"
+        else:
+            d["model"] = "unknown"
+            d["model_name"] = "unknown"
+            d["vendor"] = "unknown"
+            d["vendor_name"] = "unknown"
 
-        if device.role is not None:
-            if self.nb_api_version >= version.parse("4.0"):
+        # Role (handle NetBox 3.x vs 4.x difference)
+        if self.nb_api_version >= version.parse("4.0"):
+            if device.role is not None:
                 d["role"] = device.role.slug
                 d["role_name"] = device.role.name
             else:
+                d["role"] = "unknown"
+                d["role_name"] = "unknown"
+        else:
+            # NetBox 3.x uses device_role
+            if hasattr(device, 'device_role') and device.device_role is not None:
                 d["role"] = device.device_role.slug
                 d["role_name"] = device.device_role.name
-            if d["name"] is None:
-                d["name"] = f"{d['role']}-{device.id}"
+            else:
+                d["role"] = "unknown"
+                d["role_name"] = "unknown"
 
-        if device.primary_ip4 is not None:
-            d["primary_ip4"] = device.primary_ip4.address
-        if device.primary_ip6 is not None:
-            d["primary_ip6"] = device.primary_ip6.address
-        if self.config["export_configs"]:
-            d["config"] = self._get_device_config(device)
+        # Generate name if not set
+        if d.get("name") is None or len(d.get("name", "")) == 0:
+            d["name"] = f"{d['role']}-{device.id}"
+
+        # Primary IPs
+        d["primary_ip4"] = device.primary_ip4.address if device.primary_ip4 is not None else ""
+        d["primary_ip6"] = device.primary_ip6.address if device.primary_ip6 is not None else ""
+
+        # Config (if export is enabled)
+        d["config"] = self._get_device_config(device) if self.config["export_configs"] else ""
+
         return d
 
     def _get_device_config(self, device):
@@ -406,17 +422,41 @@ class NBFactory:
             debug(f"{device.name}: Get device configuration failed: can't parse rendered configuration - {e}")
         return ""
 
+    def _unwrap_termination(self, term):
+        """Unwrap cable termination object, handling pynetbox 7.6.1+ GenericListObject."""
+        # In pynetbox 7.6.1+, terminations are wrapped in GenericListObject
+        # GenericListObject has 'object', 'object_id', and 'object_type' attributes
+        # We need to extract the 'object' which contains the actual interface
+        if hasattr(term, 'object'):
+            # pynetbox 7.6.1+ format - get the object attribute
+            return term.object
+        # Fallback for older versions - return as-is
+        return term
+
+    def _is_interface(self, obj):
+        """Check if an object is an Interface, handling pynetbox version differences."""
+        # Check by isinstance first (preferred)
+        if isinstance(obj, pynetbox.models.dcim.Interfaces):
+            return True
+        # Fallback: check by class name and attributes for compatibility
+        # This handles cases where the object type might differ across pynetbox versions
+        class_name = obj.__class__.__name__
+        if class_name == 'Interfaces' and hasattr(obj, 'device') and hasattr(obj, 'name'):
+            return True
+        return False
+
     def _trace_cable(self, cable):
         if len(cable.a_terminations) == 1 and len(cable.b_terminations) == 1:
-            term_a = cable.a_terminations[0]
-            term_b = cable.b_terminations[0]
-            if isinstance(term_a, pynetbox.models.dcim.Interfaces) and \
-               isinstance(term_b, pynetbox.models.dcim.Interfaces):
+            # Unwrap terminations (pynetbox 7.6.1+ wraps them in GenericListObject)
+            term_a = self._unwrap_termination(cable.a_terminations[0])
+            term_b = self._unwrap_termination(cable.b_terminations[0])
+
+            if self._is_interface(term_a) and self._is_interface(term_b):
                 return [term_a, term_b]
             interface = None
-            if isinstance(term_a, pynetbox.models.dcim.Interfaces):
+            if self._is_interface(term_a):
                 interface = term_a
-            elif isinstance(term_b, pynetbox.models.dcim.Interfaces):
+            elif self._is_interface(term_b):
                 interface = term_b
             if interface is not None:
                 trace = interface.trace()
@@ -424,7 +464,7 @@ class NBFactory:
                     if len(trace[0]) == 1 and len(trace[-1]) == 1:
                         side_a = trace[0][0]
                         side_b = trace[-1][0]
-                        if isinstance(side_a, pynetbox.models.dcim.Interfaces) and isinstance(side_b, pynetbox.models.dcim.Interfaces):
+                        if self._is_interface(side_a) and self._is_interface(side_b):
                             debug(f"Traced {side_a.device} {side_a.name} <-> {side_b.device} {side_b.name}: {trace}")
                             return [side_a, side_b]
             debug(f"Skipping {cable} as both terminations are not interfaces or cannot be traced")
@@ -471,6 +511,13 @@ class NBFactory:
             for cable in list(self.nb_session.dcim.cables.filter(id=cables_block)):
                 self._add_cable_to_graph(cable)
 
+    def _add_disconnected_devices_to_graph(self):
+        """Add devices that have no connections to the graph"""
+        for device in self.nb_net.devices:
+            node_id = device["node_id"]
+            if node_id not in self.G.nodes:
+                debug(f"Adding disconnected device: {device['name']}")
+                self.G.add_node(node_id, type="device", device=device)
 
     def export_graph_gml(self):
         export_file = self.topology_name + ".gml"
@@ -1038,6 +1085,8 @@ def parse_args():
     args_parser.add_argument('-n', '--name',        required=False, help='name of the exported topology (site name or tags by default)')
     args_parser.add_argument(      '--noconfigs',   required=False, help='disable device configuration export (enabled by default)',
                                                         action=argparse.BooleanOptionalAction)
+    args_parser.add_argument(      '--nolinks',     required=False, help='disable network links export (enabled by default)',
+                                                        action=argparse.BooleanOptionalAction)
     args_parser.add_argument('-k', '--insecure',    required=False, help='allow insecure server connections when using TLS',
                                                         action=argparse.BooleanOptionalAction)
     args_parser.add_argument('-f', '--file',        required=False, help='file with the network graph to import')
@@ -1200,6 +1249,7 @@ def load_toml_config(filename):
         'export_interface_tags': [],
         'topology_name': '',
         'export_configs': True,
+        'export_links': True,
         'templates_path': ["./templates", f"{nrx_config_dir()}/templates"],
         'formats_map': NRX_FORMATS_NAME,
         'platform_map': NRX_MAP_NAME,
@@ -1237,6 +1287,12 @@ def load_toml_config(filename):
             config[k] = [os.path.expandvars(p) for p in config[k]]
     return config
 
+def apply_boolean_arg(config, arg_value, config_key):
+    """Apply boolean optional action argument to config"""
+    if arg_value is not None:
+        config[config_key] = not arg_value
+    return config
+
 def config_apply_netbox_args(config, args):
     """Apply netbox-related arguments to the configuration and validate it"""
     if args.api is not None and len(args.api) > 0:
@@ -1257,19 +1313,33 @@ def config_apply_netbox_args(config, args):
         debug(f"List of tags to filter interfaces for export: {config['export_interface_tags']}")
     if len(config['export_sites']) == 0 and len(config['export_tags']) == 0:
         error("Need a Site name or Tags to export. Use --sites/--tags arguments, or EXPORT_SITES/EXPORT_TAGS key in --config file")
-    if args.noconfigs is not None:
-        if args.noconfigs:
-            config['export_configs'] = False
-        else:
-            config['export_configs'] = True
+
+    apply_boolean_arg(config, args.noconfigs, 'export_configs')
+    apply_boolean_arg(config, args.nolinks, 'export_links')
 
     return config
+
+def apply_env_var_overrides(config):
+    """Apply environment variable overrides to configuration"""
+    config['nb_api_url'] = os.getenv('NB_API_URL', config['nb_api_url'])
+    config['nb_api_token'] = os.getenv('NB_API_TOKEN', config['nb_api_token'])
+    config['output_dir'] = os.getenv('OUTPUT_DIR', config['output_dir'])
+
+    # Handle TEMPLATES_PATH env var (can be string or colon-separated list)
+    if 'TEMPLATES_PATH' in os.environ:
+        templates_env = os.getenv('TEMPLATES_PATH')
+        # Check if it's a colon-separated list (Unix-style PATH)
+        if ':' in templates_env:
+            config['templates_path'] = templates_env.split(':')
+        else:
+            config['templates_path'] = templates_env
+
+    config['platform_map'] = os.getenv('PLATFORM_MAP', config['platform_map'])
 
 def load_config(args):
     """Load, consolidate and validate configuration"""
     config = load_toml_config(args.config)
-    config['nb_api_url'] = os.getenv('NB_API_URL', config['nb_api_url'])
-    config['nb_api_token'] = os.getenv('NB_API_TOKEN', config['nb_api_token'])
+    apply_env_var_overrides(config)
 
     # Override config values with arguments and validate
     if args.input is not None and len(args.input) > 0:
@@ -1295,6 +1365,9 @@ def load_config(args):
         config['platform_map'] = args.map
 
     if args.templates is not None and len(args.templates) > 0:
+        # Ensure templates_path is a list before inserting
+        if isinstance(config['templates_path'], str):
+            config['templates_path'] = [config['templates_path']]
         config['templates_path'].insert(0, args.templates)
 
     if args.dir is not None and len(args.dir) > 0:
