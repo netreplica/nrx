@@ -32,7 +32,8 @@
                             },
                             "model": "PowerEdge R200",
                             "slug": "dell_poweredge_r200",
-                            "description": ""
+                            "description": "",
+                            "device_count": 1
                         },
                         "role": "server",
                         "tenant": null,
@@ -61,6 +62,7 @@
                         "vc_position": null,
                         "vc_priority": null,
                         "description": "Airgapped server",
+                        "owner": null,
                         "comments": "",
                         "config_template": null,
                         "config_context": {},
@@ -118,7 +120,8 @@
                             },
                             "model": "CCS-720XP-24Y6",
                             "slug": "ccs-720xp-24y6",
-                            "description": ""
+                            "description": "",
+                            "device_count": 2
                         },
                         "role": "access-switch",
                         "tenant": null,
@@ -157,6 +160,7 @@
                         "vc_position": null,
                         "vc_priority": null,
                         "description": "",
+                        "owner": null,
                         "comments": "",
                         "config_template": null,
                         "config_context": {},
@@ -233,7 +237,8 @@
                             },
                             "model": "CCS-720XP-24Y6",
                             "slug": "ccs-720xp-24y6",
-                            "description": ""
+                            "description": "",
+                            "device_count": 2
                         },
                         "role": "access-switch",
                         "tenant": null,
@@ -272,6 +277,7 @@
                         "vc_position": null,
                         "vc_priority": null,
                         "description": "",
+                        "owner": null,
                         "comments": "",
                         "config_template": null,
                         "config_context": {},

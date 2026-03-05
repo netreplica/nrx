@@ -33,7 +33,8 @@
                             },
                             "model": "C9200-48P",
                             "slug": "c9200-48p",
-                            "description": ""
+                            "description": "",
+                            "device_count": 1
                         },
                         "role": "access-switch",
                         "tenant": null,
@@ -75,6 +76,7 @@
                         "vc_position": null,
                         "vc_priority": null,
                         "description": "",
+                        "owner": null,
                         "comments": "",
                         "config_template": {
                             "id": 5,
@@ -153,7 +155,8 @@
                             },
                             "model": "7220 IXR-D2",
                             "slug": "7220-ixr-d2",
-                            "description": ""
+                            "description": "",
+                            "device_count": 69
                         },
                         "role": "distribution-switch",
                         "tenant": null,
@@ -182,6 +185,7 @@
                         "vc_position": null,
                         "vc_priority": null,
                         "description": "",
+                        "owner": null,
                         "comments": "",
                         "config_template": {
                             "id": 3,
@@ -324,7 +328,8 @@
                             },
                             "model": "DCS-7010T-48",
                             "slug": "dcs-7010t-48",
-                            "description": ""
+                            "description": "",
+                            "device_count": 1
                         },
                         "role": "access-switch",
                         "tenant": null,
@@ -363,6 +368,7 @@
                         "vc_position": null,
                         "vc_priority": null,
                         "description": "",
+                        "owner": null,
                         "comments": "",
                         "config_template": {
                             "id": 6,
