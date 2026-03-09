@@ -11,6 +11,7 @@
 * [Containerlab](https://containerlab.dev) topology for container-based networking labs
 * [NVIDIA Air](https://www.nvidia.com/en-us/networking/ethernet-switching/air/) topology for data center digital twin labs
 * [Cisco Modeling Labs](https://developer.cisco.com/modeling-labs/) topology for VM-based labs
+* Device inventory dashboard or a CSV file for sharing with users who don't have direct NetBox access
 * Network visualization format for [Graphite](https://github.com/netreplica/graphite) or [D2](https://d2lang.com/)
 * Graph data as a JSON file in [Cytoscape](https://cytoscape.org/) format [CYJS](http://manual.cytoscape.org/en/stable/Supported_Network_File_Formats.html#cytoscape-js-json)
 * Any other user-defined format using [Jinja2](https://palletsprojects.com/p/jinja/) templates
