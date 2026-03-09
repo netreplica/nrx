@@ -1,3 +1,6 @@
 [submodule "templates"]
 	path = templates
 	url = https://github.com/netreplica/templates.git
+[submodule "docs/templates"]
+	path = docs/templates
+	url = git@github.com:netreplica/templates.git
