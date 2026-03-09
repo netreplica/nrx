@@ -1056,7 +1056,7 @@ def parse_args():
                                           description=textwrap.dedent("""
                                             nrx - network topology exporter by netreplica
 
-                                            online documentation: https://github.com/netreplica/nrx/blob/main/README.md"""),
+                                            online documentation: https://nrx.netreplica.com/"""),
                                           epilog=textwrap.dedent("""
                                             To pass authentication token, use configuration file or environment variable:
                                             export NB_API_TOKEN='replace_with_valid_API_token'"""))
