@@ -100,7 +100,6 @@ nav:
       - Containerlab: examples/containerlab.md
       - Cisco Modeling Labs: examples/cml.md
       - NVIDIA Air: examples/air.md
-      - Inventory: templates/docs/inventory_export.md
       - Graphite Visualization: examples/graphite.md
   - Customization:
       - Platform Map: customization/platform_map.md
