@@ -1,4 +1,4 @@
-certifi==2026.2.25
+certifi==2026.7.22
 charset-normalizer==3.4.4
 idna==3.11
 Jinja2==3.1.6
